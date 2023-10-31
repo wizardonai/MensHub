@@ -1,10 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
+import "./css/App.css";
+import HomePage from "./pages/Homepage";
 
 function App() {
-  return (
-    <p>ACCIDENTI</p>
-  );
+	return <HomePage />;
 }
 
 export default App;

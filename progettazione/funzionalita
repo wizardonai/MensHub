@@ -1,0 +1,19 @@
+\{Colori}
+Colori\:
+-FAE392;
+-FBD85D;
+-F1C93B;
+-1A5D1A.
+
+\{Funzionalità}
+L'utente può essere cliente o produttore. \n
+
+\[cliente]
+Navbar sotto con: home, cerca, i miei ordini, profilo.
+
+\(HomePage)
+Nell'homepage c'è\:
+-uno slider con le offerte;
+-il bottone cerca (che va alla pagina cerca);
+-slider con mense preferite;
+-riquadri che fanno la stessa cosa della navbar sotto.
