@@ -9,7 +9,7 @@ Colori\:
 L'utente può essere cliente o produttore. \n
 
 \[cliente]
-Navbar sotto con: home, cerca, i miei ordini, profilo.
+Navbar sotto con: home, cerca, menu, i miei ordini, profilo.
 
 \(HomePage)
 Nell'homepage c'è\:
@@ -17,3 +17,26 @@ Nell'homepage c'è\:
 -il bottone cerca (che va alla pagina cerca);
 -slider con mense preferite;
 -riquadri che fanno la stessa cosa della navbar sotto.
+
+\(Pagina cerca)
+Nella pagina cerca\:
+-barra di ricerca in alto;
+-sotto la barra le mense cercate di recente.
+
+\(Pagina menu)
+Nella pagina menu\:
+-lista gigante.
+
+\(Pagina ordini)
+Nella pagina ordini\:
+-lista gigante.
+
+\(Pagina profilo)
+Nella pagina profilo ho 4 pagine\:
+-dati personali;
+-metodo di pagamento;
+-mensa preferita;
+-impostazioni.
+
+\[Produttore]
+Navbar sotto con: ordini in coda, modifica menu, aggiungi offerte
