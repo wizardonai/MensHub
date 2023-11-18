@@ -1,9 +1,3 @@
-/*topbar*/
-#topbarHome {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
 #divSearchBar
 {
 	border: 1px solid black;
@@ -14,21 +8,18 @@
 	padding: 5px;
 	background-color: white;
 }
-#searchBarHome
+#searchBarSearch
 {
-	font-size: 15px;
+    font-size: 15px;
 	height: 30px;
 	border: 0;
 	background-color: transparent;
 	outline: none;
 	width: 150px;
 }
-#searchBarHome:focus
+#topbarSearch
 {
-	border: 0;
-	outline: none;
-}
-#bottoneCerca
-{
-	width: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -1,0 +1,19 @@
+.navbar
+{
+    height: 10%;
+	width: 100%;
+	background-color: #1a5d1a;
+
+    display: flex;
+    flex-direction: row;
+}
+.navbar div
+{
+    width: 20svw;
+    display: flex;
+    justify-content: center;
+}
+.navbar div img
+{
+    scale: 0.5;
+}

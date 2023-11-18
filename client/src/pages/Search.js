@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
 //css
-import "./css/Homepage.css";
+import "./css/Search.css";
 import './css/Default.css';
 
 //immagini
 import bottoneCerca from './image/search.png';
 
-function HomePage() {
+function Search() {
 	const navigate = useNavigate();
 
 	function navigateToSearch()
@@ -20,9 +20,9 @@ function HomePage() {
 
 	return (
 		<div className='page'>
-			<div className='topbar' id="topbarHome">
+			<div className='topbar' id="topbarSearch">
 				<div id="divSearchBar" onClick={navigateToSearch} >
-					<input type="text" id="searchBarHome" placeholder="Cerca prodotti..." readOnly/>
+					<input type="text" id="searchBarSearch" placeholder="Cerca prodotti..." autoFocus />
 					<img src={bottoneCerca} alt="" id="bottoneCerca" />
 				</div>
 			</div>
@@ -32,4 +32,4 @@ function HomePage() {
 	);
 }
 
-export default HomePage;
+export default Search;
