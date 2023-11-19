@@ -7,15 +7,17 @@
 	justify-content: center;
 	padding: 5px;
 	background-color: white;
+	width: calc(100% - 25px);
 }
 #searchBarSearch
 {
-    font-size: 15px;
+    font-size: 16px;
 	height: 30px;
 	border: 0;
 	background-color: transparent;
 	outline: none;
-	width: 150px;
+	width: 100%;
+	text-align: center;
 }
 #topbarSearch
 {

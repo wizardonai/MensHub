@@ -12,8 +12,10 @@
     width: 20svw;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .navbar div img
 {
-    scale: 0.5;
+    width: 40px;
+    height: 40px;
 }
