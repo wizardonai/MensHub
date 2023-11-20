@@ -1,12 +1,12 @@
 import Navbar from "./components/Navbar";
+import Topbar from "./components/Topbar";
 
-function Orders()
-{
-    return (
+function Orders() {
+	return (
 		<div className='page'>
-			<div className='topbar' id="topbarSearch">ORDINI</div>
+			<Topbar page='orders' />
 			<div className='container'></div>
-			<Navbar />
+			<Navbar page='orders' />
 		</div>
 	);
 }

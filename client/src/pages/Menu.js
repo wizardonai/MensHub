@@ -1,12 +1,12 @@
 import Navbar from "./components/Navbar";
+import Topbar from "./components/Topbar";
 
-function Menu()
-{
-    return (
+function Menu() {
+	return (
 		<div className='page'>
-			<div className='topbar' id="topbarSearch">MENU</div>
+			<Topbar page='menu' />
 			<div className='container'></div>
-			<Navbar />
+			<Navbar page='menu' />
 		</div>
 	);
 }

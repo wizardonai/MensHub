@@ -1,21 +1,31 @@
-.navbar
-{
-    height: 10%;
+.navbar {
+	height: 10%;
 	width: 100%;
 	background-color: #1a5d1a;
 
-    display: flex;
-    flex-direction: row;
+	display: flex;
+	flex-direction: row;
 }
-.navbar div
-{
-    width: 20svw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.navbar div {
+	width: 20svw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
-.navbar div img
-{
-    width: 40px;
-    height: 40px;
+.navbar div img {
+	width: 40px;
+	height: 40px;
+	filter: invert(83%) sepia(25%) saturate(962%) hue-rotate(353deg)
+		brightness(103%) contrast(97%);
+}
+#barrettaInBasso {
+	position: relative;
+	width: 50%;
+	height: 8%;
+	border-radius: 10px;
+	background-color: black;
+	filter: invert(83%) sepia(25%) saturate(962%) hue-rotate(353deg)
+		brightness(103%) contrast(97%);
+	margin: 3.5px;
 }
