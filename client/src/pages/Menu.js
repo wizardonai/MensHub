@@ -4,15 +4,27 @@ import Topbar from "./components/Topbar";
 
 import "./css/Menu.css";
 
-const ElementoLista = ({ prodotto }) => {
+import paninoMortazza from "./image/paninoMortazza.png";
+
+const ElementoLista = ({ item, setProdotto, setLista }) => {
 	return (
-		<div className='elemento'>
-			<div className='divImmagineElemento'></div>
-			<p className='nomeElemento'>{prodotto.nome}</p>
+		<div
+			className='elemento'
+			onClick={() => {
+				setProdotto(item);
+				setLista(false);
+			}}
+		>
+			<div className='divImmagineElemento'>
+				<img src={paninoMortazza} alt='' />
+			</div>
+			<div className='divNomeElemento'>
+				<p className='nomeElemento'>{item.nome}</p>
+			</div>
 		</div>
 	);
 };
-const Lista = ({ filtro }) => {
+const Lista = ({ filtro, setLista, setProdotto }) => {
 	const oggettone = {
 		prodotti: [
 			{
@@ -106,21 +118,47 @@ const Lista = ({ filtro }) => {
 		],
 	};
 
-	const lista = [];
+	const list = [];
 	oggettone.prodotti.forEach((item) => {
 		if (filtro !== "") {
 			if (filtro === item.categoria) {
-				lista.push(<ElementoLista prodotto={item} key={item.id} />);
+				list.push(
+					<ElementoLista
+						item={item}
+						key={item.id}
+						setLista={setLista}
+						setProdotto={setProdotto}
+					/>
+				);
 			}
 		} else {
-			lista.push(<ElementoLista prodotto={item} key={item.id} />);
+			list.push(
+				<ElementoLista
+					item={item}
+					key={item.id}
+					setLista={setLista}
+					setProdotto={setProdotto}
+				/>
+			);
 		}
 	});
 
-	return lista;
+	return list;
 };
 
-const Menu = () => {
+const PaginaProdotto = ({ setLista, prodotto }) => {
+	return (
+		<>
+			<div id='informazioniProdotto'>
+				<img src={paninoMortazza} alt='' id='imgProdotto' />
+				<p id='nomeProdotto'>{prodotto.nome}</p>
+				<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
+				<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
+			</div>
+		</>
+	);
+};
+const ListaProdotti = ({ lista, setLista, prodotto, setProdotto }) => {
 	const [antipasti, setAntipasti] = useState(false);
 	const [primi, setPrimi] = useState(false);
 	const [secondi, setSecondi] = useState(false);
@@ -174,86 +212,112 @@ const Menu = () => {
 	}
 
 	return (
+		<>
+			<div id='filtri'>
+				<div
+					className={antipasti ? "filtroCliccato" : ""}
+					onClick={() => {
+						if (antipasti) {
+							disattivaAltriFiltri(10);
+						} else {
+							disattivaAltriFiltri(0);
+						}
+					}}
+				>
+					Antipasti
+				</div>
+				<div
+					className={primi ? "filtroCliccato" : ""}
+					onClick={() => {
+						if (primi) {
+							disattivaAltriFiltri(10);
+						} else {
+							disattivaAltriFiltri(1);
+						}
+					}}
+				>
+					Primi
+				</div>
+				<div
+					className={secondi ? "filtroCliccato" : ""}
+					onClick={() => {
+						if (secondi) {
+							disattivaAltriFiltri(10);
+						} else {
+							disattivaAltriFiltri(2);
+						}
+					}}
+				>
+					Secondi
+				</div>
+				<div
+					className={contorni ? "filtroCliccato" : ""}
+					onClick={() => {
+						if (contorni) {
+							disattivaAltriFiltri(10);
+						} else {
+							disattivaAltriFiltri(3);
+						}
+					}}
+				>
+					Contorni
+				</div>
+				<div
+					className={panini ? "filtroCliccato" : ""}
+					onClick={() => {
+						if (panini) {
+							disattivaAltriFiltri(10);
+						} else {
+							disattivaAltriFiltri(4);
+						}
+					}}
+				>
+					Panini
+				</div>
+				<div
+					className={dolci ? "filtroCliccato" : ""}
+					onClick={() => {
+						if (dolci) {
+							disattivaAltriFiltri(10);
+						} else {
+							disattivaAltriFiltri(5);
+						}
+					}}
+				>
+					Dolci
+				</div>
+			</div>
+			<div id='lista'>
+				<Lista
+					filtro={filtroAttivo()}
+					setLista={setLista}
+					setProdotto={setProdotto}
+				/>
+			</div>
+		</>
+	);
+};
+
+const Menu = ({ lista, setLista, prodotto, setProdotto }) => {
+	return (
 		<div className='page'>
-			<Topbar page='menu' />
-			<div className='container'>
-				<div id='filtri'>
-					<div
-						className={antipasti ? "filtroCliccato" : ""}
-						onClick={() => {
-							if (antipasti) {
-								disattivaAltriFiltri(10);
-							} else {
-								disattivaAltriFiltri(0);
-							}
-						}}
-					>
-						Antipasti
-					</div>
-					<div
-						className={primi ? "filtroCliccato" : ""}
-						onClick={() => {
-							if (primi) {
-								disattivaAltriFiltri(10);
-							} else {
-								disattivaAltriFiltri(1);
-							}
-						}}
-					>
-						Primi
-					</div>
-					<div
-						className={secondi ? "filtroCliccato" : ""}
-						onClick={() => {
-							if (secondi) {
-								disattivaAltriFiltri(10);
-							} else {
-								disattivaAltriFiltri(2);
-							}
-						}}
-					>
-						Secondi
-					</div>
-					<div
-						className={contorni ? "filtroCliccato" : ""}
-						onClick={() => {
-							if (contorni) {
-								disattivaAltriFiltri(10);
-							} else {
-								disattivaAltriFiltri(3);
-							}
-						}}
-					>
-						Contorni
-					</div>
-					<div
-						className={panini ? "filtroCliccato" : ""}
-						onClick={() => {
-							if (panini) {
-								disattivaAltriFiltri(10);
-							} else {
-								disattivaAltriFiltri(4);
-							}
-						}}
-					>
-						Panini
-					</div>
-					<div
-						className={dolci ? "filtroCliccato" : ""}
-						onClick={() => {
-							if (dolci) {
-								disattivaAltriFiltri(10);
-							} else {
-								disattivaAltriFiltri(5);
-							}
-						}}
-					>
-						Dolci
-					</div>
-				</div>
-				<div id='lista'>
-					<Lista filtro={filtroAttivo()} />
-				</div>
+			<Topbar
+				page='menu'
+				setLista={setLista}
+				lista={lista}
+				prodotto={prodotto}
+			/>
+			<div className='container' id='containerMenu'>
+				{lista ? (
+					<ListaProdotti
+						lista={lista}
+						setLista={setLista}
+						prodotto={prodotto}
+						setProdotto={setProdotto}
+					/>
+				) : (
+					<PaginaProdotto setLista={setLista} prodotto={prodotto} />
+				)}
 			</div>
 			<Navbar page='menu' />
 		</div>

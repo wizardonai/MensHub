@@ -1,11 +1,18 @@
+#containerMenu {
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+/*pagina lista gigante e filtri*/
 #filtri {
 	width: 100%;
 	overflow-x: scroll;
+	overflow-y: hidden;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	padding: 5px;
-	height: 10%;
+	height: 7%;
 
 	-ms-overflow-style: none;
 	scrollbar-width: none;
@@ -21,40 +28,99 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 100%;
-	height: 35px;
 	font-size: 20px;
 	padding: 0 5px;
 	margin: 0 5px;
 	border: 2px solid black;
 	border-radius: 20px;
 }
+#filtri div:hover {
+	cursor: pointer;
+}
 .cliccato {
 	color: white;
 	background-color: #1a5d1a;
 }
 .filtroCliccato {
-	background-color: lightgray;
+	background-color: black;
+	color: white;
 }
 
 #lista {
 	padding: 15px;
-	height: 100%;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
-	overflow-y: scroll;
 }
 .elemento {
 	margin: 10px;
 	width: 35svw;
-	height: 35svw;
-	border: 1px solid black;
+	height: 50svw;
 	display: flex;
-	overflow-y: scroll;
+	flex-direction: column;
+	border-radius: 5px;
+	box-shadow: 3px 3px 17px -3px rgba(0, 0, 0, 0.56);
 }
 .divImmagineElemento {
+	width: 35svw;
+	height: 35svw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.divImmagineElemento img {
+	width: 34svw;
+	height: 34svw;
+}
+.divNomeElemento {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	width: 100%;
+	height: 15svw;
 }
 .nomeElemento {
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+/*pagina singolo prodotto*/
+#tornaListaProdotti {
+	width: 100%;
+	height: 7%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+#informazioniProdotto {
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
+#imgProdotto {
+	width: 75svw;
+	height: 75svw;
+}
+#nomeProdotto {
+	width: 100%;
+	padding: 5px;
+	text-align: center;
+	font-size: 25px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+#prezzoProdotto {
+	width: 100%;
+	font-size: 20px;
+	font-weight: bold;
+}
+#descrizioneProdotto {
+	width: 100%;
+	padding: 5px;
+	font-size: 18px;
 }

@@ -2,38 +2,19 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 10%;
+	height: 7svh;
 	width: 100%;
 	background-color: #1a5d1a;
 	color: #fbd85d;
-	font-size: 40px;
+	font-size: 30px;
 }
+#imgTornaIndietro {
+	position: absolute;
+	top: 1.5svh;
+	left: 1px;
+	height: 4svh;
+	width: 4svh;
 
-/*NON SERVE
-#divSearchBar {
-	border: 1px solid black;
-	border-radius: 15px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 5px;
-	background-color: white;
-	width: calc(100% - 25px);
+	filter: invert(77%) sepia(82%) saturate(313%) hue-rotate(354deg)
+		brightness(98%) contrast(102%);
 }
-#searchBar {
-	font-size: 16px;
-	height: 30px;
-	border: 0;
-	background-color: transparent;
-	outline: none;
-	width: 100%;
-	text-align: center;
-}
-#searchBar:focus {
-	border: 0;
-	outline: none;
-}
-#imageSearchIcon {
-	width: 25px;
-}
-*/
