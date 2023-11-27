@@ -59,7 +59,7 @@
 	height: 50svw;
 	display: flex;
 	flex-direction: column;
-	border-radius: 5px;
+	border-radius: 15px;
 	box-shadow: 3px 3px 17px -3px rgba(0, 0, 0, 0.56);
 }
 .divImmagineElemento {
@@ -72,6 +72,7 @@
 .divImmagineElemento img {
 	width: 34svw;
 	height: 34svw;
+	border-radius: 15px;
 }
 .divNomeElemento {
 	display: flex;

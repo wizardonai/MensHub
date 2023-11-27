@@ -17,11 +17,12 @@
 
 #slider {
 	overflow-x: auto;
-	height: 180px;
+	height: 55svw;
 	width: 100%;
 	display: flex;
 	flex-wrap: nowrap;
 	flex-direction: row;
+	align-items: center;
 }
 #slider div {
 	display: flex;
@@ -31,5 +32,15 @@
 
 	width: 100%;
 	/* padding: 50px; */
-	border: 1px solid black;
+	/* border: 1px solid black; */
+	border-radius: 15px;
+	text-align: center;
+	height: 45svw;
+	margin: 5px 5px;
+	box-shadow: 3px 3px 17px -3px rgba(0, 0, 0, 0.56);
+}
+#slider div img {
+	width: 35svw;
+	height: auto;
+	border-radius: 5px;
 }

@@ -9,10 +9,107 @@ import { useState } from "react";
 function App() {
 	const [lista, setLista] = useState(true);
 	const [prodotto, setProdotto] = useState({});
+	const [daDoveArrivo, setDaDoveArrivo] = useState("");
+
+	const [antipasti, setAntipasti] = useState(false);
+	const [primi, setPrimi] = useState(false);
+	const [secondi, setSecondi] = useState(false);
+	const [contorni, setContorni] = useState(false);
+	const [panini, setPanini] = useState(false);
+	const [dolci, setDolci] = useState(false);
+
+	const hostname = "http://172.20.10.7:80/";
+
+	const oggettone = {
+		prodotti: [
+			{
+				id: 1,
+				nome: "paninazzo",
+				descrizione: "panino con la mortadella casareccia",
+				prezzo: 69.69,
+				categoria: "panino",
+				indirizzoImg: `${hostname}products/paninoMortazza.png`,
+				disponibilita: true,
+				idm: "",
+				nacq: 1,
+				allergeni: "uova, molluschi, pipi di scapi",
+			},
+			{
+				id: 2,
+				nome: "carbonara",
+				descrizione: "panino con la mortadella casareccia",
+				prezzo: 69.69,
+				categoria: "primo",
+				indirizzoImg: `${hostname}products/carbonara.png`,
+				disponibilita: true,
+				idm: "",
+				nacq: 2,
+				allergeni: "uova, molluschi, pipi di scapi",
+			},
+			{
+				id: 3,
+				nome: "spaghetti all'arrabbiata",
+				descrizione: "panino con la mortadella casareccia",
+				prezzo: 69.69,
+				categoria: "primo",
+				indirizzoImg: `${hostname}products/spaghettiArrabbiata.png`,
+				disponibilita: true,
+				idm: "",
+				nacq: 3,
+				allergeni: "uova, molluschi, pipi di scapi",
+			},
+			{
+				id: 4,
+				nome: "cotoletta con le patatins",
+				descrizione: "panino con la mortadella casareccia",
+				prezzo: 69.69,
+				categoria: "secondo",
+				indirizzoImg: `${hostname}products/cotoletta.png`,
+				disponibilita: true,
+				idm: "",
+				nacq: 4,
+				allergeni: "uova, molluschi, pipi di scapi",
+			},
+			{
+				id: 5,
+				nome: "panna cotta",
+				descrizione: "panino con la mortadella casareccia",
+				prezzo: 69.69,
+				categoria: "dolce",
+				indirizzoImg: `${hostname}products/pannacotta.png`,
+				disponibilita: true,
+				idm: "",
+				nacq: 5,
+				allergeni: "uova, molluschi, pipi di scapi",
+			},
+			{
+				id: 6,
+				nome: "insalata",
+				descrizione: "panino con la mortadella casareccia",
+				prezzo: 69.69,
+				categoria: "contorno",
+				indirizzoImg: `${hostname}products/insalata.png`,
+				disponibilita: true,
+				idm: "",
+				nacq: 6,
+				allergeni: "uova, molluschi, pipi di scapi",
+			},
+		],
+	};
 
 	return (
 		<Routes>
-			<Route path='/' Component={HomePage} />
+			<Route
+				path='/'
+				element={
+					<HomePage
+						setLista={setLista}
+						setProdotto={setProdotto}
+						elencoProdotti={JSON.stringify(oggettone)}
+						setDaDoveArrivo={setDaDoveArrivo}
+					/>
+				}
+			/>
 			<Route path='/search' Component={Search} />
 			<Route
 				path='/menu'
@@ -22,6 +119,21 @@ function App() {
 						setLista={setLista}
 						prodotto={prodotto}
 						setProdotto={setProdotto}
+						antipasti={antipasti}
+						primi={primi}
+						secondi={secondi}
+						contorni={contorni}
+						panini={panini}
+						dolci={dolci}
+						setAntipasti={setAntipasti}
+						setPrimi={setPrimi}
+						setSecondi={setSecondi}
+						setContorni={setContorni}
+						setPanini={setPanini}
+						setDolci={setDolci}
+						daDoveArrivo={daDoveArrivo}
+						setDaDoveArrivo={setDaDoveArrivo}
+						elencoProdotti={JSON.stringify(oggettone)}
 					/>
 				}
 			/>

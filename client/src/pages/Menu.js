@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 
 import "./css/Menu.css";
 
-import paninoMortazza from "./image/paninoMortazza.png";
-
+//lista prodotti
 const ElementoLista = ({ item, setProdotto, setLista }) => {
 	return (
 		<div
@@ -16,7 +15,7 @@ const ElementoLista = ({ item, setProdotto, setLista }) => {
 			}}
 		>
 			<div className='divImmagineElemento'>
-				<img src={paninoMortazza} alt='' />
+				<img src={item.indirizzoImg} alt='' />
 			</div>
 			<div className='divNomeElemento'>
 				<p className='nomeElemento'>{item.nome}</p>
@@ -24,102 +23,11 @@ const ElementoLista = ({ item, setProdotto, setLista }) => {
 		</div>
 	);
 };
-const Lista = ({ filtro, setLista, setProdotto }) => {
-	const oggettone = {
-		prodotti: [
-			{
-				id: 1,
-				nome: "paninazzo",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "panino",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-			{
-				id: 2,
-				nome: "carbonara",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "primo",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-			{
-				id: 3,
-				nome: "spaghetti all'arrabbiata",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "primo",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-			{
-				id: 4,
-				nome: "cotoletta con le patatins",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "secondo",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-			{
-				id: 5,
-				nome: "panna cotta",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "dolce",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-			{
-				id: 6,
-				nome: "insalata",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "contorno",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-			{
-				id: 7,
-				nome: "paninazzo",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "panino",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-			{
-				id: 8,
-				nome: "paninazzo",
-				descrizione: "panino con la mortadella casareccia",
-				prezzo: 69.69,
-				categoria: "panino",
-				indirizzoImg: "asdasd",
-				disponibilita: true,
-				idm: "",
-				nacq: 69,
-			},
-		],
-	};
+const Lista = ({ filtro, setLista, setProdotto, elencoProdotti }) => {
+	elencoProdotti = JSON.parse(elencoProdotti);
 
 	const list = [];
-	oggettone.prodotti.forEach((item) => {
+	elencoProdotti.prodotti.forEach((item) => {
 		if (filtro !== "") {
 			if (filtro === item.categoria) {
 				list.push(
@@ -145,27 +53,26 @@ const Lista = ({ filtro, setLista, setProdotto }) => {
 
 	return list;
 };
-
-const PaginaProdotto = ({ setLista, prodotto }) => {
-	return (
-		<>
-			<div id='informazioniProdotto'>
-				<img src={paninoMortazza} alt='' id='imgProdotto' />
-				<p id='nomeProdotto'>{prodotto.nome}</p>
-				<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
-				<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
-			</div>
-		</>
-	);
-};
-const ListaProdotti = ({ lista, setLista, prodotto, setProdotto }) => {
-	const [antipasti, setAntipasti] = useState(false);
-	const [primi, setPrimi] = useState(false);
-	const [secondi, setSecondi] = useState(false);
-	const [contorni, setContorni] = useState(false);
-	const [panini, setPanini] = useState(false);
-	const [dolci, setDolci] = useState(false);
-
+const ListaProdotti = ({
+	lista,
+	setLista,
+	prodotto,
+	setProdotto,
+	antipasti,
+	primi,
+	secondi,
+	contorni,
+	panini,
+	dolci,
+	setAntipasti,
+	setPrimi,
+	setSecondi,
+	setContorni,
+	setPanini,
+	setDolci,
+	elencoProdotti,
+	setDaDoveArrivo,
+}) => {
 	function disattivaAltriFiltri(x) {
 		const array = [
 			setAntipasti,
@@ -210,6 +117,10 @@ const ListaProdotti = ({ lista, setLista, prodotto, setProdotto }) => {
 
 		return daRitornare;
 	}
+
+	useEffect(() => {
+		setDaDoveArrivo("menu");
+	}, []);
 
 	return (
 		<>
@@ -292,13 +203,48 @@ const ListaProdotti = ({ lista, setLista, prodotto, setProdotto }) => {
 					filtro={filtroAttivo()}
 					setLista={setLista}
 					setProdotto={setProdotto}
+					elencoProdotti={elencoProdotti}
 				/>
 			</div>
 		</>
 	);
 };
 
-const Menu = ({ lista, setLista, prodotto, setProdotto }) => {
+//pagina singolo prodotto
+const PaginaProdotto = ({ setLista, prodotto }) => {
+	return (
+		<>
+			<div id='informazioniProdotto'>
+				<img src={prodotto.indirizzoImg} alt='' id='imgProdotto' />
+				<p id='nomeProdotto'>{prodotto.nome}</p>
+				<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
+				<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
+			</div>
+		</>
+	);
+};
+
+const Menu = ({
+	lista,
+	setLista,
+	prodotto,
+	setProdotto,
+	antipasti,
+	primi,
+	secondi,
+	contorni,
+	panini,
+	dolci,
+	setAntipasti,
+	setPrimi,
+	setSecondi,
+	setContorni,
+	setPanini,
+	setDolci,
+	elencoProdotti,
+	daDoveArrivo,
+	setDaDoveArrivo,
+}) => {
 	return (
 		<div className='page'>
 			<Topbar
@@ -306,6 +252,7 @@ const Menu = ({ lista, setLista, prodotto, setProdotto }) => {
 				setLista={setLista}
 				lista={lista}
 				prodotto={prodotto}
+				daDoveArrivo={daDoveArrivo}
 			/>
 			<div className='container' id='containerMenu'>
 				{lista ? (
@@ -314,6 +261,20 @@ const Menu = ({ lista, setLista, prodotto, setProdotto }) => {
 						setLista={setLista}
 						prodotto={prodotto}
 						setProdotto={setProdotto}
+						antipasti={antipasti}
+						primi={primi}
+						secondi={secondi}
+						contorni={contorni}
+						panini={panini}
+						dolci={dolci}
+						setAntipasti={setAntipasti}
+						setPrimi={setPrimi}
+						setSecondi={setSecondi}
+						setContorni={setContorni}
+						setPanini={setPanini}
+						setDolci={setDolci}
+						elencoProdotti={elencoProdotti}
+						setDaDoveArrivo={setDaDoveArrivo}
 					/>
 				) : (
 					<PaginaProdotto setLista={setLista} prodotto={prodotto} />
