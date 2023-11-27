@@ -16,6 +16,8 @@ const Topbar = ({ page, setLista, lista, daDoveArrivo }) => {
 						setLista(true);
 						if (daDoveArrivo === "home") {
 							navigate("/");
+						} else if (daDoveArrivo === "search") {
+							navigate("/search");
 						}
 					}}
 				/>

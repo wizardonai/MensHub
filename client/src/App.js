@@ -4,7 +4,7 @@ import Search from "./pages/Search";
 import Menu from "./pages/Menu";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
 	const [lista, setLista] = useState(true);
@@ -18,9 +18,9 @@ function App() {
 	const [panini, setPanini] = useState(false);
 	const [dolci, setDolci] = useState(false);
 
-	const hostname = "http://172.20.10.7:80/";
+	const hostname = "http://192.168.1.147/";
 
-	const oggettone = {
+	let tmpOggettone = {
 		prodotti: [
 			{
 				id: 1,
@@ -94,8 +94,23 @@ function App() {
 				nacq: 6,
 				allergeni: "uova, molluschi, pipi di scapi",
 			},
+			{
+				id: 7,
+				nome: "uasard",
+				descrizione: "panino con la mortadella casareccia",
+				prezzo: 69.69,
+				categoria: "contorno",
+				indirizzoImg: `${hostname}products/insalata.png`,
+				disponibilita: true,
+				idm: "",
+				nacq: 6,
+				allergeni: "uova, molluschi, pipi di scapi",
+			},
 		],
 	};
+	const [oggettone, setOggettone] = useState(tmpOggettone);
+
+	const [stringaSearch, setStringaSearch] = useState("");
 
 	return (
 		<Routes>
@@ -110,7 +125,20 @@ function App() {
 					/>
 				}
 			/>
-			<Route path='/search' Component={Search} />
+			<Route
+				path='/search'
+				element={
+					<Search
+						elencoProdotti={JSON.stringify(oggettone)}
+						setProdotto={setProdotto}
+						setLista={setLista}
+						setDaDoveArrivo={setDaDoveArrivo}
+						stringaSearch={stringaSearch}
+						setStringaSearch={setStringaSearch}
+						hostname={hostname}
+					/>
+				}
+			/>
 			<Route
 				path='/menu'
 				element={

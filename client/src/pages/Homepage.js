@@ -17,7 +17,6 @@ const HomePage = ({
 	elencoProdotti = JSON.parse(elencoProdotti);
 
 	const [piuAcq, setPiuAcq] = useState([]);
-
 	const navigate = useNavigate();
 
 	useEffect(() => {
