@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/Homepage";
-import Search from "./pages/Search";
+import SearchBar from "./pages/components/SearchBar";
 import Menu from "./pages/Menu";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
@@ -18,7 +18,7 @@ function App() {
 	const [panini, setPanini] = useState(false);
 	const [dolci, setDolci] = useState(false);
 
-	const hostname = "http://192.168.1.147/";
+	const hostname = "http://172.20.10.7:80/";
 
 	let tmpOggettone = {
 		prodotti: [
@@ -32,7 +32,7 @@ function App() {
 				disponibilita: true,
 				idm: "",
 				nacq: 1,
-				allergeni: "uova, molluschi, pipi di scapi",
+				allergeni: "uova, molluschi",
 			},
 			{
 				id: 2,
@@ -112,6 +112,10 @@ function App() {
 
 	const [stringaSearch, setStringaSearch] = useState("");
 
+	const [prodottiDaStampare, setProdottiDaStampare] = useState(
+		oggettone.prodotti
+	);
+
 	return (
 		<Routes>
 			<Route
@@ -122,20 +126,6 @@ function App() {
 						setProdotto={setProdotto}
 						elencoProdotti={JSON.stringify(oggettone)}
 						setDaDoveArrivo={setDaDoveArrivo}
-					/>
-				}
-			/>
-			<Route
-				path='/search'
-				element={
-					<Search
-						elencoProdotti={JSON.stringify(oggettone)}
-						setProdotto={setProdotto}
-						setLista={setLista}
-						setDaDoveArrivo={setDaDoveArrivo}
-						stringaSearch={stringaSearch}
-						setStringaSearch={setStringaSearch}
-						hostname={hostname}
 					/>
 				}
 			/>
@@ -162,6 +152,11 @@ function App() {
 						daDoveArrivo={daDoveArrivo}
 						setDaDoveArrivo={setDaDoveArrivo}
 						elencoProdotti={JSON.stringify(oggettone)}
+						stringaSearch={stringaSearch}
+						setStringaSearch={setStringaSearch}
+						hostname={hostname}
+						prodottiDaStampare={prodottiDaStampare}
+						setProdottiDaStampare={setProdottiDaStampare}
 					/>
 				}
 			/>

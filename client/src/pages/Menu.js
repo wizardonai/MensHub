@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
+import SearchBar from "./components/SearchBar";
 
 import "./css/Menu.css";
 
@@ -24,10 +25,12 @@ const ElementoLista = ({ item, setProdotto, setLista }) => {
 	);
 };
 const Lista = ({ filtro, setLista, setProdotto, elencoProdotti }) => {
-	elencoProdotti = JSON.parse(elencoProdotti);
+	// elencoProdotti = JSON.parse(elencoProdotti);
+
+	console.log(elencoProdotti);
 
 	const list = [];
-	elencoProdotti.prodotti.forEach((item) => {
+	elencoProdotti.forEach((item) => {
 		if (filtro !== "") {
 			if (filtro === item.categoria) {
 				list.push(
@@ -72,6 +75,11 @@ const ListaProdotti = ({
 	setDolci,
 	elencoProdotti,
 	setDaDoveArrivo,
+	stringaSearch,
+	setStringaSearch,
+	hostname,
+	prodottiDaStampare,
+	setProdottiDaStampare,
 }) => {
 	function disattivaAltriFiltri(x) {
 		const array = [
@@ -124,6 +132,13 @@ const ListaProdotti = ({
 
 	return (
 		<>
+			<SearchBar
+				elencoProdotti={elencoProdotti}
+				stringaSearch={stringaSearch}
+				setStringaSearch={setStringaSearch}
+				hostname={hostname}
+				setProdottiDaStampare={setProdottiDaStampare}
+			/>
 			<div id='filtri'>
 				<div
 					className={antipasti ? "filtroCliccato" : ""}
@@ -203,7 +218,7 @@ const ListaProdotti = ({
 					filtro={filtroAttivo()}
 					setLista={setLista}
 					setProdotto={setProdotto}
-					elencoProdotti={elencoProdotti}
+					elencoProdotti={prodottiDaStampare}
 				/>
 			</div>
 		</>
@@ -244,6 +259,11 @@ const Menu = ({
 	elencoProdotti,
 	daDoveArrivo,
 	setDaDoveArrivo,
+	stringaSearch,
+	setStringaSearch,
+	hostname,
+	prodottiDaStampare,
+	setProdottiDaStampare,
 }) => {
 	return (
 		<div className='page'>
@@ -275,6 +295,11 @@ const Menu = ({
 						setDolci={setDolci}
 						elencoProdotti={elencoProdotti}
 						setDaDoveArrivo={setDaDoveArrivo}
+						stringaSearch={stringaSearch}
+						setStringaSearch={setStringaSearch}
+						hostname={hostname}
+						prodottiDaStampare={prodottiDaStampare}
+						setProdottiDaStampare={setProdottiDaStampare}
 					/>
 				) : (
 					<PaginaProdotto setLista={setLista} prodotto={prodotto} />
