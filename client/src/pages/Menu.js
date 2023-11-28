@@ -27,8 +27,6 @@ const ElementoLista = ({ item, setProdotto, setLista }) => {
 const Lista = ({ filtro, setLista, setProdotto, elencoProdotti }) => {
 	// elencoProdotti = JSON.parse(elencoProdotti);
 
-	console.log(elencoProdotti);
-
 	const list = [];
 	elencoProdotti.forEach((item) => {
 		if (filtro !== "") {

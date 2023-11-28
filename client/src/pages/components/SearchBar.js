@@ -1,5 +1,5 @@
 //css
-import "../css/Search.css";
+import "../css/SearchBar.css";
 import "../css/Default.css";
 import { useEffect, useState } from "react";
 
@@ -30,20 +30,46 @@ const SearchBar = ({
 
 		const nChar = str.length;
 
-		let indici = [];
-		for (let i = 0; i < elencoProdotti.prodotti.length; i++) {
-			if (elencoProdotti.prodotti[i].nome.slice(0, nChar) === str) {
-				indici.push(i);
+		if (str.length > 0) {
+			let indici = [];
+			for (let i = 0; i < elencoProdotti.prodotti.length; i++) {
+				let arr = elencoProdotti.prodotti[i].nome.split(" ");
+
+				let arr2 = [];
+				if (arr.length === 1) {
+					arr2.push(arr[0]);
+				} else {
+					let tmp = [];
+					arr.forEach((item) => {
+						let tmp2 = item.split("'");
+						tmp2.forEach((item2) => {
+							tmp.push(item2);
+						});
+					});
+
+					tmp.forEach((item) => {
+						arr2.push(item);
+					});
+				}
+
+				for (let j = 0; j < arr2.length; j++) {
+					if (arr2[j].slice(0, nChar) === str) {
+						indici.push(i);
+						break;
+					}
+				}
 			}
+
+			let prodotti = [];
+
+			indici.forEach((item) => {
+				prodotti.push(elencoProdotti.prodotti[item]);
+			});
+
+			setProdottiDaStampare(prodotti);
+		} else {
+			setProdottiDaStampare(elencoProdotti.prodotti);
 		}
-
-		let prodotti = [];
-
-		indici.forEach((item) => {
-			prodotti.push(elencoProdotti.prodotti[item]);
-		});
-
-		setProdottiDaStampare(prodotti);
 	}
 
 	return (

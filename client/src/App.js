@@ -18,7 +18,8 @@ function App() {
 	const [panini, setPanini] = useState(false);
 	const [dolci, setDolci] = useState(false);
 
-	const hostname = "http://172.20.10.7:80/";
+	const hostname = "http://192.168.1.147:80/";
+	// const hostname = "http://172.20.10.7:80/";
 
 	let tmpOggettone = {
 		prodotti: [
