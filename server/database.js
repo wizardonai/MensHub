@@ -1,25 +1,28 @@
-const mysql = require("mysql");
-const express = require("express");
-const cors = require("cors");
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-});
+function start() {
+    const mysql = require("mysql");
+    const express = require("express");
+    const cors = require("cors");
 
-connection.connect((err) => {
-    if (err) throw new Error(err);
-    console.log("Connected");
-    connection.query("CREATE DATABASE IF NOT EXISTS mensapp", (err) => {
+    const connection = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: '',
+    });
+
+    connection.connect((err) => {
         if (err) throw new Error(err);
-        console.log("Database created");
-        connection.changeUser({ database: "mensapp" }, () => {
+        console.log("Connected");
+        connection.query("CREATE DATABASE IF NOT EXISTS mensapp", (err) => {
             if (err) throw new Error(err);
-            createTable();
+            console.log("Database created");
+            connection.changeUser({ database: "mensapp" }, () => {
+                if (err) throw new Error(err);
+                createTable();
+            });
         });
     });
-});
+}
 
 function createTable() {
     connection.query(`CREATE TABLE IF NOT EXISTS mense (
@@ -76,3 +79,4 @@ function createTable() {
     )`);
 }
 
+module.exports = { start, createTable };
