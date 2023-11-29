@@ -1,10 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/Homepage";
-import SearchBar from "./pages/components/SearchBar";
 import Menu from "./pages/Menu";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
 import { useEffect, useState } from "react";
+
+import { getProdotti } from "./scripts/fetch";
 
 function App() {
 	const [lista, setLista] = useState(true);
@@ -18,8 +19,8 @@ function App() {
 	const [panini, setPanini] = useState(false);
 	const [dolci, setDolci] = useState(false);
 
-	const hostname = "http://192.168.1.147:80/";
-	// const hostname = "http://172.20.10.7:80/";
+	// const hostname = "http://192.168.1.147:80/";
+	const hostname = "http://172.20.10.7:80/";
 
 	let tmpOggettone = {
 		prodotti: [
@@ -109,13 +110,18 @@ function App() {
 			},
 		],
 	};
-	const [oggettone, setOggettone] = useState(tmpOggettone);
+	const [oggettone] = useState(tmpOggettone);
 
 	const [stringaSearch, setStringaSearch] = useState("");
 
 	const [prodottiDaStampare, setProdottiDaStampare] = useState(
 		oggettone.prodotti
 	);
+
+	useEffect(() => {
+		console.log("use effect");
+		console.log(getProdotti());
+	}, []);
 
 	return (
 		<Routes>

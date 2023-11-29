@@ -1,7 +1,7 @@
 //css
 import "../css/SearchBar.css";
 import "../css/Default.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const SearchBar = ({
 	elencoProdotti,
@@ -22,6 +22,7 @@ const SearchBar = ({
 			}
 			return 0;
 		});
+		//eslint-disable-next-line
 	}, []);
 
 	function controlliSearch(e) {
