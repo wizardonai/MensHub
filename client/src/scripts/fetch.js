@@ -3,17 +3,22 @@ import axios from "axios";
 export async function getProdotti() {
 	let response;
 
-	const hostname = "http://172.20.10.2:6969/";
+	const hostname = "http://localhost:6969/";
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${hostname}request/products`,
+		headers: {},
+	};
 
 	await axios
-		.post(`${hostname}request/products`, {
-			headers: {
-				"x-apikey": "API_KEY",
-			},
-		})
+		.request(config)
 		.then((res) => {
-			response = res;
-			console.log(res);
+			response = res.data;
+		})
+		.catch((err) => {
+			console.log(err);
 		});
 
 	return response;

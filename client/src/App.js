@@ -110,7 +110,7 @@ function App() {
 			},
 		],
 	};
-	const [oggettone] = useState(tmpOggettone);
+	const [oggettone, setOggettone] = useState(tmpOggettone);
 
 	const [stringaSearch, setStringaSearch] = useState("");
 
@@ -119,8 +119,15 @@ function App() {
 	);
 
 	useEffect(() => {
-		console.log("use effect");
-		console.log(getProdotti());
+		let response;
+		getProdotti().then((res) => {
+			let tmp = {
+				prodotti: res,
+			};
+			setOggettone(tmp);
+			console.log("nuovo oggetto:");
+			console.log(tmp);
+		});
 	}, []);
 
 	return (
