@@ -2,23 +2,18 @@ import { useNavigate } from "react-router-dom";
 import "../css/Topbar.css";
 import goBack from "../image/goBack.png";
 
-const Topbar = ({ page, setLista, lista, daDoveArrivo }) => {
+const Topbar = ({ page, daDoveArrivo }) => {
 	const navigate = useNavigate();
 
 	return (
 		<div id='topbar' style={{ textTransform: "uppercase" }}>
-			{page === "menu" && !lista ? (
+			{page === "product" ? (
 				<img
 					src={goBack}
 					alt=''
 					id='imgTornaIndietro'
 					onClick={() => {
-						setLista(true);
-						if (daDoveArrivo === "home") {
-							navigate("/");
-						} else if (daDoveArrivo === "search") {
-							navigate("/search");
-						}
+						navigate("/" + daDoveArrivo);
 					}}
 				/>
 			) : (

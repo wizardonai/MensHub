@@ -1,0 +1,78 @@
+#informazioniProdotto {
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
+#imgProdotto {
+	width: 75svw;
+	height: 75svw;
+}
+#nomeProdotto {
+	width: 100%;
+	padding: 5px;
+	text-align: center;
+	font-size: 25px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+#prezzoProdotto {
+	width: 100%;
+	font-size: 20px;
+	font-weight: bold;
+}
+#descrizioneProdotto {
+	width: 100%;
+	padding: 5px;
+	font-size: 18px;
+}
+
+/**/
+#allergeni {
+	width: 100%;
+}
+.espandiAllergeni {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	border: 1px solid gray;
+	background-color: lightgray;
+	padding: 5px;
+}
+.espanso {
+	border-bottom: none;
+}
+.sottosopra {
+	animation: sottoSopra 0.5s forwards;
+}
+.soprasotto {
+	animation: sopraSotto 0.5s forwards;
+}
+#imgEspandi {
+	width: 40px;
+	rotate: -90deg;
+}
+#elencoAllergeni {
+	border: 1px solid rgb(66, 66, 66);
+	background-color: lightgray;
+	border-top: none;
+}
+
+@keyframes sottoSopra {
+	0% {
+		rotate: -90deg;
+	}
+	100% {
+		rotate: 90deg;
+	}
+}
+@keyframes sopraSotto {
+	0% {
+		rotate: 90deg;
+	}
+	100% {
+		rotate: -90deg;
+	}
+}

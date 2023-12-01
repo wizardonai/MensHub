@@ -1,18 +1,20 @@
-import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import SearchBar from "./components/SearchBar";
 
 import "./css/Menu.css";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 //lista prodotti
-const ElementoLista = ({ item, setProdotto, setLista }) => {
+const ElementoLista = ({ item }) => {
+	const navigate = useNavigate();
+
 	return (
 		<div
 			className='elemento'
 			onClick={() => {
-				setProdotto(item);
-				setLista(false);
+				navigate("/menu/product?prodotto=" + item.id + "&daDoveArrivo=menu");
 			}}
 		>
 			<div className='divImmagineElemento'>
@@ -55,10 +57,6 @@ const Lista = ({ filtro, setLista, setProdotto, elencoProdotti }) => {
 	return list;
 };
 const ListaProdotti = ({
-	lista,
-	setLista,
-	prodotto,
-	setProdotto,
 	antipasti,
 	primi,
 	secondi,
@@ -72,10 +70,8 @@ const ListaProdotti = ({
 	setPanini,
 	setDolci,
 	elencoProdotti,
-	setDaDoveArrivo,
 	stringaSearch,
 	setStringaSearch,
-	hostname,
 	prodottiDaStampare,
 	setProdottiDaStampare,
 }) => {
@@ -124,18 +120,12 @@ const ListaProdotti = ({
 		return daRitornare;
 	}
 
-	useEffect(() => {
-		setDaDoveArrivo("menu");
-		//eslint-disable-next-line
-	}, []);
-
 	return (
 		<>
 			<SearchBar
 				elencoProdotti={elencoProdotti}
 				stringaSearch={stringaSearch}
 				setStringaSearch={setStringaSearch}
-				hostname={hostname}
 				setProdottiDaStampare={setProdottiDaStampare}
 			/>
 			<div id='filtri'>
@@ -213,36 +203,13 @@ const ListaProdotti = ({
 				</div>
 			</div>
 			<div id='lista'>
-				<Lista
-					filtro={filtroAttivo()}
-					setLista={setLista}
-					setProdotto={setProdotto}
-					elencoProdotti={prodottiDaStampare}
-				/>
-			</div>
-		</>
-	);
-};
-
-//pagina singolo prodotto
-const PaginaProdotto = ({ setLista, prodotto }) => {
-	return (
-		<>
-			<div id='informazioniProdotto'>
-				<img src={prodotto.indirizzoImg} alt='' id='imgProdotto' />
-				<p id='nomeProdotto'>{prodotto.nome}</p>
-				<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
-				<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
+				<Lista filtro={filtroAttivo()} elencoProdotti={prodottiDaStampare} />
 			</div>
 		</>
 	);
 };
 
 const Menu = ({
-	lista,
-	setLista,
-	prodotto,
-	setProdotto,
 	antipasti,
 	primi,
 	secondi,
@@ -256,53 +223,36 @@ const Menu = ({
 	setPanini,
 	setDolci,
 	elencoProdotti,
-	daDoveArrivo,
-	setDaDoveArrivo,
 	stringaSearch,
 	setStringaSearch,
-	hostname,
-	prodottiDaStampare,
-	setProdottiDaStampare,
 }) => {
+	const [prodottiDaStampare, setProdottiDaStampare] = useState(
+		JSON.parse(elencoProdotti).prodotti
+	);
+
 	return (
 		<div className='page'>
-			<Topbar
-				page='menu'
-				setLista={setLista}
-				lista={lista}
-				prodotto={prodotto}
-				daDoveArrivo={daDoveArrivo}
-			/>
+			<Topbar page='menu' />
 			<div className='container' id='containerMenu'>
-				{lista ? (
-					<ListaProdotti
-						lista={lista}
-						setLista={setLista}
-						prodotto={prodotto}
-						setProdotto={setProdotto}
-						antipasti={antipasti}
-						primi={primi}
-						secondi={secondi}
-						contorni={contorni}
-						panini={panini}
-						dolci={dolci}
-						setAntipasti={setAntipasti}
-						setPrimi={setPrimi}
-						setSecondi={setSecondi}
-						setContorni={setContorni}
-						setPanini={setPanini}
-						setDolci={setDolci}
-						elencoProdotti={elencoProdotti}
-						setDaDoveArrivo={setDaDoveArrivo}
-						stringaSearch={stringaSearch}
-						setStringaSearch={setStringaSearch}
-						hostname={hostname}
-						prodottiDaStampare={prodottiDaStampare}
-						setProdottiDaStampare={setProdottiDaStampare}
-					/>
-				) : (
-					<PaginaProdotto setLista={setLista} prodotto={prodotto} />
-				)}
+				<ListaProdotti
+					antipasti={antipasti}
+					primi={primi}
+					secondi={secondi}
+					contorni={contorni}
+					panini={panini}
+					dolci={dolci}
+					setAntipasti={setAntipasti}
+					setPrimi={setPrimi}
+					setSecondi={setSecondi}
+					setContorni={setContorni}
+					setPanini={setPanini}
+					setDolci={setDolci}
+					elencoProdotti={elencoProdotti}
+					stringaSearch={stringaSearch}
+					setStringaSearch={setStringaSearch}
+					prodottiDaStampare={prodottiDaStampare}
+					setProdottiDaStampare={setProdottiDaStampare}
+				/>
 			</div>
 			<Navbar page='menu' />
 		</div>
