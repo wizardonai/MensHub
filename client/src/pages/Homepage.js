@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import "./css/Homepage.css";
 import "./css/Default.css";
 import Topbar from "./components/Topbar";
-import { useEffect, useState, lazy } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = ({
@@ -21,6 +21,7 @@ const HomePage = ({
 
 	useEffect(() => {
 		trovaPiuAcq();
+		// eslint-disable-next-line
 	}, []);
 
 	function trovaPiuAcq() {
@@ -43,7 +44,7 @@ const HomePage = ({
 		<div className='page'>
 			<Topbar page='home' />
 			<div className='container' id='containerHome'>
-				<p id='nomeMensa'>NOME MENSA</p>
+				<p id='nomeMensa'>UASARD MENS</p>
 				<p id='titoloHome'>I più venduti</p>
 
 				<div id='slider'>
