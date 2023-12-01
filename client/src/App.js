@@ -22,6 +22,7 @@ function App() {
 	// const hostname = "http://192.168.1.147:80/";
 	const hostname = "http://172.20.10.7:80/";
 
+	/*
 	let tmpOggettone = {
 		prodotti: [
 			{
@@ -110,7 +111,9 @@ function App() {
 			},
 		],
 	};
-	const [oggettone, setOggettone] = useState(tmpOggettone);
+	*/
+
+	const [oggettone, setOggettone] = useState({ prodotti: [] });
 
 	const [stringaSearch, setStringaSearch] = useState("");
 
@@ -118,65 +121,82 @@ function App() {
 		oggettone.prodotti
 	);
 
+	const [pagDaStamp, setPagDaStamp] = useState(false);
+
+	function aggiungiHostname(prodotti) {
+		let tmp = prodotti;
+
+		tmp.forEach((item) => {
+			item.indirizzoImg = hostname + item.indirizzo_img;
+		});
+
+		return tmp;
+	}
+
 	useEffect(() => {
-		let response;
+		// let response;
 		getProdotti().then((res) => {
 			let tmp = {
-				prodotti: res,
+				prodotti: aggiungiHostname(res),
 			};
 			setOggettone(tmp);
-			console.log("nuovo oggetto:");
-			console.log(tmp);
+			setPagDaStamp(true);
 		});
 	}, []);
 
 	return (
-		<Routes>
-			<Route
-				path='/'
-				element={
-					<HomePage
-						setLista={setLista}
-						setProdotto={setProdotto}
-						elencoProdotti={JSON.stringify(oggettone)}
-						setDaDoveArrivo={setDaDoveArrivo}
+		<>
+			{pagDaStamp ? (
+				<Routes>
+					<Route
+						path='/'
+						element={
+							<HomePage
+								setLista={setLista}
+								setProdotto={setProdotto}
+								elencoProdotti={JSON.stringify(oggettone)}
+								setDaDoveArrivo={setDaDoveArrivo}
+							/>
+						}
 					/>
-				}
-			/>
-			<Route
-				path='/menu'
-				element={
-					<Menu
-						lista={lista}
-						setLista={setLista}
-						prodotto={prodotto}
-						setProdotto={setProdotto}
-						antipasti={antipasti}
-						primi={primi}
-						secondi={secondi}
-						contorni={contorni}
-						panini={panini}
-						dolci={dolci}
-						setAntipasti={setAntipasti}
-						setPrimi={setPrimi}
-						setSecondi={setSecondi}
-						setContorni={setContorni}
-						setPanini={setPanini}
-						setDolci={setDolci}
-						daDoveArrivo={daDoveArrivo}
-						setDaDoveArrivo={setDaDoveArrivo}
-						elencoProdotti={JSON.stringify(oggettone)}
-						stringaSearch={stringaSearch}
-						setStringaSearch={setStringaSearch}
-						hostname={hostname}
-						prodottiDaStampare={prodottiDaStampare}
-						setProdottiDaStampare={setProdottiDaStampare}
+					<Route
+						path='/menu'
+						element={
+							<Menu
+								lista={lista}
+								setLista={setLista}
+								prodotto={prodotto}
+								setProdotto={setProdotto}
+								antipasti={antipasti}
+								primi={primi}
+								secondi={secondi}
+								contorni={contorni}
+								panini={panini}
+								dolci={dolci}
+								setAntipasti={setAntipasti}
+								setPrimi={setPrimi}
+								setSecondi={setSecondi}
+								setContorni={setContorni}
+								setPanini={setPanini}
+								setDolci={setDolci}
+								daDoveArrivo={daDoveArrivo}
+								setDaDoveArrivo={setDaDoveArrivo}
+								elencoProdotti={JSON.stringify(oggettone)}
+								stringaSearch={stringaSearch}
+								setStringaSearch={setStringaSearch}
+								hostname={hostname}
+								prodottiDaStampare={prodottiDaStampare}
+								setProdottiDaStampare={setProdottiDaStampare}
+							/>
+						}
 					/>
-				}
-			/>
-			<Route path='/orders' Component={Orders} />
-			<Route path='/profile' Component={Profile} />
-		</Routes>
+					<Route path='/orders' Component={Orders} />
+					<Route path='/profile' Component={Profile} />
+				</Routes>
+			) : (
+				""
+			)}
+		</>
 	);
 }
 

@@ -25,53 +25,61 @@ const SearchBar = ({
 		//eslint-disable-next-line
 	}, []);
 
-	function controlliSearch(e) {
-		let str = e.target.value;
-		setStringaSearch(str);
+	function controlliSearch(e, effect) {
+		if (!effect) {
+			let str = e.target.value;
+			setStringaSearch(str);
 
-		const nChar = str.length;
+			const nChar = str.length;
 
-		if (str.length > 0) {
-			let indici = [];
-			for (let i = 0; i < elencoProdotti.prodotti.length; i++) {
-				let arr = elencoProdotti.prodotti[i].nome.split(" ");
+			if (str.length > 0) {
+				let indici = [];
+				for (let i = 0; i < elencoProdotti.prodotti.length; i++) {
+					let arr = elencoProdotti.prodotti[i].nome.split(" ");
 
-				let arr2 = [];
-				if (arr.length === 1) {
-					arr2.push(arr[0]);
-				} else {
-					let tmp = [];
-					arr.forEach((item) => {
-						let tmp2 = item.split("'");
-						tmp2.forEach((item2) => {
-							tmp.push(item2);
+					let arr2 = [];
+					if (arr.length === 1) {
+						arr2.push(arr[0]);
+					} else {
+						let tmp = [];
+						arr.forEach((item) => {
+							let tmp2 = item.split("'");
+							tmp2.forEach((item2) => {
+								tmp.push(item2);
+							});
 						});
-					});
 
-					tmp.forEach((item) => {
-						arr2.push(item);
-					});
-				}
+						tmp.forEach((item) => {
+							arr2.push(item);
+						});
+					}
 
-				for (let j = 0; j < arr2.length; j++) {
-					if (arr2[j].slice(0, nChar) === str) {
-						indici.push(i);
-						break;
+					for (let j = 0; j < arr2.length; j++) {
+						if (arr2[j].slice(0, nChar) === str) {
+							indici.push(i);
+							break;
+						}
 					}
 				}
+
+				let prodotti = [];
+
+				indici.forEach((item) => {
+					prodotti.push(elencoProdotti.prodotti[item]);
+				});
+
+				setProdottiDaStampare(prodotti);
+			} else {
+				setProdottiDaStampare(elencoProdotti.prodotti);
 			}
-
-			let prodotti = [];
-
-			indici.forEach((item) => {
-				prodotti.push(elencoProdotti.prodotti[item]);
-			});
-
-			setProdottiDaStampare(prodotti);
 		} else {
 			setProdottiDaStampare(elencoProdotti.prodotti);
 		}
 	}
+
+	useEffect(() => {
+		controlliSearch(null, true);
+	}, []);
 
 	return (
 		<div id='divSearchBar'>

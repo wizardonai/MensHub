@@ -57,13 +57,11 @@ const HomePage = ({
 						}}
 					>
 						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[0].indirizzoImg : ""
-							}
+							src={Object.keys(piuAcq).length > 0 ? piuAcq[0].indirizzoImg : ""}
 							alt=''
 						/>
 						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[0].nome : ""}
+							{Object.keys(piuAcq).length > 0 ? piuAcq[0].nome : ""}
 						</p>
 					</div>
 					<div
@@ -76,13 +74,11 @@ const HomePage = ({
 						}}
 					>
 						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[1].indirizzoImg : ""
-							}
+							src={Object.keys(piuAcq).length > 1 ? piuAcq[1].indirizzoImg : ""}
 							alt=''
 						/>
 						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[1].nome : ""}
+							{Object.keys(piuAcq).length > 1 ? piuAcq[1].nome : ""}
 						</p>
 					</div>
 					<div
@@ -95,13 +91,11 @@ const HomePage = ({
 						}}
 					>
 						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[2].indirizzoImg : ""
-							}
+							src={Object.keys(piuAcq).length > 2 ? piuAcq[2].indirizzoImg : ""}
 							alt=''
 						/>
 						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[2].nome : ""}
+							{Object.keys(piuAcq).length > 2 ? piuAcq[2].nome : ""}
 						</p>
 					</div>
 					<div
@@ -114,15 +108,13 @@ const HomePage = ({
 						}}
 					>
 						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[3].indirizzoImg : ""
-							}
+							src={Object.keys(piuAcq).length > 3 ? piuAcq[3].indirizzoImg : ""}
 							alt=''
 						/>
 						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[3].nome : ""}
+							{Object.keys(piuAcq).length > 3 ? piuAcq[3].nome : ""}
 						</p>
-					</div>
+					</div>{" "}
 				</div>
 			</div>
 			<Navbar page='home' />
