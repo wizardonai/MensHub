@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import SearchBar from "./components/SearchBar";
@@ -126,6 +126,7 @@ const ListaProdotti = ({
 
 	useEffect(() => {
 		setDaDoveArrivo("menu");
+		//eslint-disable-next-line
 	}, []);
 
 	return (
