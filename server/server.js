@@ -7,7 +7,7 @@ const connection = mysql.createConnection({
 	password: "",
 });
 connection.connect(function (err) {
-	if (err) throw err;
+	if (err) throw new Error(err);
 	console.log("Connected!");
 	connection.changeUser({ database: "mensapp" }, () => {
 		if (err) throw new Error(err);
