@@ -83,6 +83,7 @@ const SearchBar = ({
 
 	return (
 		<div id='divSearchBar'>
+			<img src={hostname + "search.png"} alt='' id='bottoneCerca' />
 			<input
 				type='text'
 				placeholder='Cerca prodotti...'
@@ -91,7 +92,6 @@ const SearchBar = ({
 				id='searchBar'
 				onClick={controlliSearch}
 			/>
-			<img src={hostname + "search.png"} alt='' id='bottoneCerca' />
 		</div>
 	);
 };

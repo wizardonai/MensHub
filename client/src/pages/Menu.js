@@ -5,6 +5,7 @@ import SearchBar from "./components/SearchBar";
 import "./css/Menu.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { hover } from "@testing-library/user-event/dist/hover";
 
 //lista prodotti
 const ElementoLista = ({ item }) => {
@@ -74,6 +75,7 @@ const ListaProdotti = ({
 	setStringaSearch,
 	prodottiDaStampare,
 	setProdottiDaStampare,
+	hostname,
 }) => {
 	function disattivaAltriFiltri(x) {
 		const array = [
@@ -127,6 +129,7 @@ const ListaProdotti = ({
 				stringaSearch={stringaSearch}
 				setStringaSearch={setStringaSearch}
 				setProdottiDaStampare={setProdottiDaStampare}
+				hostname={hostname}
 			/>
 			<div id='filtri'>
 				<div
@@ -225,6 +228,7 @@ const Menu = ({
 	elencoProdotti,
 	stringaSearch,
 	setStringaSearch,
+	hostname,
 }) => {
 	const [prodottiDaStampare, setProdottiDaStampare] = useState(
 		JSON.parse(elencoProdotti).prodotti
@@ -252,6 +256,7 @@ const Menu = ({
 					setStringaSearch={setStringaSearch}
 					prodottiDaStampare={prodottiDaStampare}
 					setProdottiDaStampare={setProdottiDaStampare}
+					hostname={hostname}
 				/>
 			</div>
 			<Navbar page='menu' />

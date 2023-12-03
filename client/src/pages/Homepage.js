@@ -14,20 +14,42 @@ const Slider = ({ piuAcq }) => {
 
 	piuAcq.forEach((item) => {
 		lista.push(
+			// <div
+			// 	class='elemento'
+			// 	onClick={() => {
+			// 		navigate("/menu/product?prodotto=" + item.id + "&daDoveArrivo=home");
+			// 	}}
+			// 	key={item.id}
+			// >
+			// 	<div className='divImmagineElemento'>
+			// 		<img
+			// 			src={Object.keys(piuAcq).length > 0 ? item.indirizzoImg : ""}
+			// 			alt=''
+			// 		/>
+			// 	</div>
+			// 	<div className='divNomeElemento'>
+			// 		<p className='nomeElemento'>
+			// 			{Object.keys(piuAcq).length > 0 ? item.nome : ""}
+			// 		</p>
+			// 	</div>
+			// </div>
 			<div
-				id='riquadro1'
+				className='elemento'
 				onClick={() => {
 					navigate("/menu/product?prodotto=" + item.id + "&daDoveArrivo=home");
 				}}
-				key={item.id}
 			>
-				<img
-					src={Object.keys(piuAcq).length > 0 ? item.indirizzoImg : ""}
-					alt=''
-				/>
-				<p className='descrizione'>
-					{Object.keys(piuAcq).length > 0 ? item.nome : ""}
-				</p>
+				<div className='divImmagineElemento'>
+					<img
+						src={Object.keys(piuAcq).length > 0 ? item.indirizzoImg : ""}
+						alt=''
+					/>
+				</div>
+				<div className='divNomeElemento'>
+					<p className='nomeElemento'>
+						{Object.keys(piuAcq).length > 0 ? item.nome : ""}
+					</p>
+				</div>
 			</div>
 		);
 	});

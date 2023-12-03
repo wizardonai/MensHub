@@ -17,11 +17,11 @@
 	display: flex;
 	align-items: center;
 	padding: 5px 0;
-	justify-content: center;
+	justify-content: space-evenly;
 	background-color: white;
 	width: calc(100% - 25px);
 	width: 98svw;
-	margin: 0.5svw;
+	margin: 0.5svw 0.5svw;
 }
 #searchBar {
 	font-size: 20px;
@@ -30,12 +30,11 @@
 	background-color: transparent;
 	outline: none;
 	width: 80%;
-	text-align: center;
 }
 #searchBar:focus {
 	border: 0;
 	outline: none;
 }
 #bottoneCerca {
-	width: 8%;
+	width: 6%;
 }

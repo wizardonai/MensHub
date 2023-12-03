@@ -4,7 +4,28 @@ import Topbar from "./components/Topbar";
 import "./css/ProductPage.css";
 import { useEffect, useState } from "react";
 
-const ProductPage = ({ elencoProdotti, hostname }) => {
+const ListaAllergeni = ({ arr }) => {
+	let lista = [];
+	arr.forEach((item, index) => {
+		lista.push(
+			<div
+				className={
+					index % 2 == 0
+						? "elementoAllergeno sfondoGrigietto"
+						: "elementoAllergeno"
+				}
+				key={index}
+			>
+				<p className='nomeAllergeno'>{item}</p>
+				<p className='allergenoPresente'>Si</p>
+			</div>
+		);
+	});
+
+	return lista;
+};
+
+const ProductPage = ({ elencoProdotti, hostname, carrello, setCarrello }) => {
 	elencoProdotti = JSON.parse(elencoProdotti);
 
 	const location = new useLocation();
@@ -12,6 +33,8 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 	const [prodotto, setProdotto] = useState({});
 
 	const [espandi, setEspandi] = useState(false);
+
+	const [popup, setPopup] = useState(false);
 
 	useEffect(() => {
 		let tmp = location.search.replace("?", "").split("&");
@@ -36,11 +59,13 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 	return (
 		<>
 			<Topbar page='product' daDoveArrivo={parametri["daDoveArrivo"]} />
-			<div className='container'>
+			<div className='container' id='containerProductPage'>
 				<div id='informazioniProdotto'>
 					<img src={prodotto.indirizzoImg} alt='' id='imgProdotto' />
 					<p id='nomeProdotto'>{prodotto.nome}</p>
-					<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
+					<div id='prezzoAggiungiCarrello'>
+						<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
+					</div>
 					<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
 					<div id='allergeni'>
 						<div
@@ -51,7 +76,7 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 								espandi ? "espandiAllergeni espanso" : "espandiAllergeni"
 							}
 						>
-							<p>Allergeni</p>
+							<p style={{ fontWeight: "bold" }}>Allergeni</p>
 							<img
 								src={hostname + "goBack.png"}
 								alt=''
@@ -64,9 +89,35 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 							id='elencoAllergeni'
 							style={espandi ? { display: "block" } : { display: "none" }}
 						>
-							{prodotto.allergeni}
+							{prodotto.allergeni !== undefined ? (
+								<ListaAllergeni
+									arr={prodotto.allergeni.replace(" ", "").split(",")}
+								/>
+							) : (
+								""
+							)}
 						</div>
 					</div>
+				</div>
+				<div
+					id='aggiungiAlCarrello'
+					onClick={() => {
+						let tmp = carrello;
+						tmp.push(prodotto);
+						setCarrello(tmp);
+						setPopup(true);
+						setTimeout(() => {
+							setPopup(false);
+						}, 1250);
+					}}
+				>
+					<div>Aggiungi al carrello</div>
+				</div>
+				<div
+					id='popUpAggiunto'
+					style={popup ? { display: "flex" } : { display: "none" }}
+				>
+					<p> Aggiunto al carrello!</p>
 				</div>
 			</div>
 			<Navbar page='menu' />

@@ -4,8 +4,11 @@
 	background-color: #1a5d1a;
 	display: flex;
 	flex-direction: row;
+	justify-content: center;
+	align-items: center;
 }
 .navbar div {
+	height: 80%;
 	width: 25svw;
 	display: flex;
 	justify-content: center;

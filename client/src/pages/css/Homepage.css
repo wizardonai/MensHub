@@ -17,27 +17,44 @@
 
 #slider {
 	overflow-x: auto;
-	height: 55svw;
+	height: 60svw;
 	width: 100%;
 	display: flex;
 	flex-wrap: nowrap;
 	flex-direction: row;
 	align-items: center;
 }
-#slider div {
+
+.elemento {
+	margin: 10px;
+	width: 35svw;
+	height: 50svw;
 	display: flex;
-	justify-content: space-around;
-	align-items: center;
 	flex-direction: column;
-	width: 100%;
 	border-radius: 15px;
-	text-align: center;
-	height: 45svw;
-	margin: 5px;
 	box-shadow: 3px 3px 17px -3px rgba(0, 0, 0, 0.56);
 }
-#slider div img {
+.divImmagineElemento {
 	width: 35svw;
-	height: auto;
-	border-radius: 5px;
+	height: 35svw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.divImmagineElemento img {
+	width: 34svw;
+	height: 34svw;
+	border-radius: 15px;
+}
+.divNomeElemento {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 15svw;
+}
+.nomeElemento {
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
 }
