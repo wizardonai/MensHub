@@ -5,7 +5,6 @@ import SearchBar from "./components/SearchBar";
 import "./css/Menu.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { hover } from "@testing-library/user-event/dist/hover";
 
 //lista prodotti
 const ElementoLista = ({ item }) => {

@@ -1,6 +1,33 @@
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import "./css/Orders.css";
+
+const ElementoCarrello = ({ index, item, hostname }) => {
+	const [quantita, setQuantita] = useState(0);
+
+	return (
+		<div className='elementoCarrello' key={index}>
+			<p className='nomeElementoCarrello'>{item.nome}</p>
+			<div className='pulsantiCarrello'>
+				<p className='quantitaCarrello'>{quantita}</p>
+				<div
+					className='pulsanteMeno'
+					onClick={() => {
+						if (quantita !== 0) {
+							setQuantita(quantita - 1);
+						}
+					}}
+				>
+					<img src={hostname + "minus.png"} alt='' />
+				</div>
+				<div className='pulsantePiu' onClick={() => setQuantita(quantita + 1)}>
+					<img src={hostname + "plus.png"} alt='' />
+				</div>
+			</div>
+		</div>
+	);
+};
 
 const ListaCarrello = ({ carrello, hostname }) => {
 	let lista = [];
@@ -9,24 +36,7 @@ const ListaCarrello = ({ carrello, hostname }) => {
 		console.log(carrello);
 		carrello.forEach((item, index) => {
 			lista.push(
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<p key={index}>{item.nome}</p>
-					<div id='pulsantiCarrello'>
-						<p id='quantitaCarrello'>0</p>
-						<div id='pulsanteMeno'>
-							<img src={hostname + "minus.png"} alt='' />
-						</div>
-						<div id='pulsantePiu'>
-							<img src={hostname + "plus.png"} alt='' />
-						</div>
-					</div>
-				</div>
+				<ElementoCarrello index={index} item={item} hostname={hostname} />
 			);
 		});
 
@@ -40,7 +50,9 @@ function Orders({ carrello, setCarrello, hostname }) {
 		<div className='page'>
 			<Topbar page='orders' />
 			<div className='container' id='containerOrders'>
-				<ListaCarrello carrello={carrello} hostname={hostname} />
+				<div id='elementiCarrello'>
+					<ListaCarrello carrello={carrello} hostname={hostname} />
+				</div>
 			</div>
 			<Navbar page='orders' />
 		</div>

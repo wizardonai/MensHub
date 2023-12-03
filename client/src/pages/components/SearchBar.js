@@ -79,6 +79,7 @@ const SearchBar = ({
 
 	useEffect(() => {
 		controlliSearch(null, true);
+		// eslint-disable-next-line
 	}, []);
 
 	return (

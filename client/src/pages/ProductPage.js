@@ -10,7 +10,7 @@ const ListaAllergeni = ({ arr }) => {
 		lista.push(
 			<div
 				className={
-					index % 2 == 0
+					index % 2 === 0
 						? "elementoAllergeno sfondoGrigietto"
 						: "elementoAllergeno"
 				}

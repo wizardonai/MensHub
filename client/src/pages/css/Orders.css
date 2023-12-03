@@ -1,15 +1,30 @@
 #containerOrders {
 	overflow-y: scroll;
 }
-#pulsantiCarrello {
-	width: 55%;
+#elementiCarrello {
+	display: flex;
+	flex-direction: column;
+}
+.elementoCarrello {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-evenly;
+	border-bottom: 1px solid gray;
+	padding: 5px;
+}
+.nomeElementoCarrello {
+	font-size: 25px;
+}
+
+.pulsantiCarrello {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
 	height: 35px;
 }
-#pulsantiCarrello div {
+.pulsantiCarrello div {
 	width: 30px;
 	height: 30px;
 	display: flex;
@@ -18,14 +33,14 @@
 	background-color: rgb(26, 93, 26);
 	border-radius: 5px;
 }
-#quantitaCarrello {
+.quantitaCarrello {
 	font-size: 25px;
 	margin-right: 5px;
 }
-#pulsanteMeno {
+.pulsanteMeno {
 	margin-right: 5px;
 }
-#pulsanteMeno img {
+.pulsanteMeno img {
 	width: 25px;
 	height: 25px;
 	display: flex;
@@ -34,9 +49,9 @@
 	filter: invert(78%) sepia(41%) saturate(587%) hue-rotate(356deg)
 		brightness(105%) contrast(97%);
 }
-#pulsantePiu {
+.pulsantePiu {
 }
-#pulsantePiu img {
+.pulsantePiu img {
 	width: 25px;
 	height: 25px;
 	filter: invert(78%) sepia(41%) saturate(587%) hue-rotate(356deg)

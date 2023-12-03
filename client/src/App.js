@@ -18,8 +18,8 @@ const ReinderizzaHome = () => {
 };
 
 const App = () => {
-	// const hostname = "http://192.168.1.147:80/";
-	const hostname = "http://172.20.10.7:80/";
+	const hostname = "http://192.168.1.147:80/";
+	// const hostname = "http://172.20.10.7:80/";
 
 	//tutti i dati
 	const [oggettone, setOggettone] = useState({ prodotti: [] });
