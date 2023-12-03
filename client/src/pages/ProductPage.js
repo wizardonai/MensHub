@@ -25,7 +25,7 @@ const ListaAllergeni = ({ arr }) => {
 	return lista;
 };
 
-const ProductPage = ({ elencoProdotti, hostname, carrello, setCarrello }) => {
+const ProductPage = ({ elencoProdotti, hostname }) => {
 	elencoProdotti = JSON.parse(elencoProdotti);
 
 	const location = new useLocation();
@@ -58,69 +58,79 @@ const ProductPage = ({ elencoProdotti, hostname, carrello, setCarrello }) => {
 
 	return (
 		<>
-			<Topbar page='product' daDoveArrivo={parametri["daDoveArrivo"]} />
-			<div className='container' id='containerProductPage'>
-				<div id='informazioniProdotto'>
-					<img src={prodotto.indirizzoImg} alt='' id='imgProdotto' />
-					<p id='nomeProdotto'>{prodotto.nome}</p>
-					<div id='prezzoAggiungiCarrello'>
-						<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
-					</div>
-					<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
-					<div id='allergeni'>
-						<div
-							onClick={() => {
-								setEspandi(!espandi);
-							}}
-							className={
-								espandi ? "espandiAllergeni espanso" : "espandiAllergeni"
-							}
-						>
-							<p style={{ fontWeight: "bold" }}>Allergeni</p>
-							<img
-								src={hostname + "goBack.png"}
-								alt=''
-								id='imgEspandi'
-								style={espandi ? { rotate: "90deg" } : { rotate: "-90deg" }}
-								className={espandi ? "sottosopra" : "soprasotto"}
-							/>
+			<div className='page'>
+				<Topbar page='product' daDoveArrivo={parametri["daDoveArrivo"]} />
+				<div className='container' id='containerProductPage'>
+					<div id='informazioniProdotto'>
+						<img src={prodotto.indirizzoImg} alt='' id='imgProdotto' />
+						<p id='nomeProdotto'>{prodotto.nome}</p>
+						<div id='prezzoAggiungiCarrello'>
+							<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
 						</div>
-						<div
-							id='elencoAllergeni'
-							style={espandi ? { display: "block" } : { display: "none" }}
-						>
-							{prodotto.allergeni !== undefined ? (
-								<ListaAllergeni
-									arr={prodotto.allergeni.replace(" ", "").split(",")}
+						<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
+						<div id='allergeni'>
+							<div
+								onClick={() => {
+									setEspandi(!espandi);
+								}}
+								className={
+									espandi ? "espandiAllergeni espanso" : "espandiAllergeni"
+								}
+							>
+								<p style={{ fontWeight: "bold" }}>Allergeni</p>
+								<img
+									src={hostname + "goBack.png"}
+									alt=''
+									id='imgEspandi'
+									style={espandi ? { rotate: "90deg" } : { rotate: "-90deg" }}
+									className={espandi ? "sottosopra" : "soprasotto"}
 								/>
-							) : (
-								""
-							)}
+							</div>
+							<div
+								id='elencoAllergeni'
+								style={espandi ? { display: "block" } : { display: "none" }}
+							>
+								{prodotto.allergeni !== undefined ? (
+									<ListaAllergeni
+										arr={prodotto.allergeni.replace(" ", "").split(",")}
+									/>
+								) : (
+									""
+								)}
+							</div>
 						</div>
 					</div>
+					<div
+						className='pulsanteFixatoInBasso'
+						onClick={() => {
+							if (!popup) {
+								let tmp = JSON.parse(localStorage.getItem("cart"));
+
+								//aggiunto prodotto con quantita
+								let tmp2 = prodotto;
+								tmp2.quantita = 1;
+								tmp.push(tmp2);
+								localStorage.setItem("cart", JSON.stringify(tmp));
+
+								//popup
+								setPopup(true);
+								setTimeout(() => {
+									setPopup(false);
+								}, 1250);
+							}
+						}}
+					>
+						<div>Aggiungi al carrello</div>
+					</div>
+					<div
+						className='popup'
+						style={popup ? { display: "flex" } : { display: "none" }}
+					>
+						<p> Aggiunto al carrello!</p>
+					</div>
 				</div>
-				<div
-					id='aggiungiAlCarrello'
-					onClick={() => {
-						let tmp = carrello;
-						tmp.push(prodotto);
-						setCarrello(tmp);
-						setPopup(true);
-						setTimeout(() => {
-							setPopup(false);
-						}, 1250);
-					}}
-				>
-					<div>Aggiungi al carrello</div>
-				</div>
-				<div
-					id='popUpAggiunto'
-					style={popup ? { display: "flex" } : { display: "none" }}
-				>
-					<p> Aggiunto al carrello!</p>
-				</div>
+				<Navbar page='menu' />
 			</div>
-			<Navbar page='menu' />
 		</>
 	);
 };
