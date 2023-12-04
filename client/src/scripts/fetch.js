@@ -1,29 +1,23 @@
 import axios from "axios";
-const FormData = require("form-data");
-const qs = require('qs');
+const qs = require("qs");
+
+const urlServer =
+	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_FETCH_PORT;
 
 export async function getProdotti() {
 	let response;
 
-	// const hostname = "http://localhost:6969/";
-	const hostname = "http://localhost:6969/";
-
 	let data = qs.stringify({
-		'idm': '1' 
-	  });
-	  
-	  let config = {
-		method: 'post',
+		idm: 1,
+	});
+
+	let config = {
+		method: "post",
 		maxBodyLength: Infinity,
-		url: `${hostname}request/products`,
-		headers: { 
-		  'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		data : data
-	  };
-	
-	
-	
+		url: `${urlServer}/request/products`,
+		headers: {},
+		data: data,
+	};
 
 	await axios
 		.request(config)
@@ -35,4 +29,21 @@ export async function getProdotti() {
 		});
 
 	return response;
+}
+
+export async function sendOrder(carrello) {
+	console.log(carrello);
+	let data = qs.stringify({ carrello: carrello });
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${urlServer}/send/cart`,
+		headers: {},
+		data: data,
+	};
+
+	await axios.request(config).catch((err) => {
+		console.log(err);
+	});
 }

@@ -18,8 +18,8 @@ const ReinderizzaHome = () => {
 };
 
 const App = () => {
-	const hostname = "http://192.168.1.147:80/";
-	// const hostname = "http://172.20.10.7:80/";
+	const hostname =
+		process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/";
 
 	//tutti i dati
 	const [oggettone, setOggettone] = useState({ prodotti: [] });
@@ -32,9 +32,6 @@ const App = () => {
 	const [panini, setPanini] = useState(false);
 	const [dolci, setDolci] = useState(false);
 	const [stringaSearch, setStringaSearch] = useState("");
-
-	//carrello
-	const [carrello, setCarrello] = useState([]);
 
 	//aspetto che arrivino dal server
 	const [pagDaStamp, setPagDaStamp] = useState(false);
@@ -55,9 +52,15 @@ const App = () => {
 				prodotti: aggiungiHostname(res),
 			};
 			setOggettone(tmp);
-			console.log(tmp);
+			// console.log(tmp);
 			setPagDaStamp(true);
 		});
+		if (
+			localStorage.getItem("cart") === null ||
+			localStorage.getItem("cart") === ""
+		) {
+			localStorage.setItem("cart", JSON.stringify([]));
+		}
 		//eslint-disable-next-line
 	}, []);
 
@@ -99,21 +102,10 @@ const App = () => {
 							<ProductPage
 								elencoProdotti={JSON.stringify(oggettone)}
 								hostname={hostname}
-								carrello={carrello}
-								setCarrello={setCarrello}
 							/>
 						}
 					/>
-					<Route
-						path='/orders'
-						element={
-							<Orders
-								carrello={carrello}
-								setCarrello={setCarrello}
-								hostname={hostname}
-							/>
-						}
-					/>
+					<Route path='/orders' element={<Orders hostname={hostname} />} />
 					<Route path='/profile' Component={Profile} />
 				</Routes>
 			) : (
