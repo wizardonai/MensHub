@@ -32,30 +32,31 @@ export async function getProdotti() {
 }
 
 export async function sendOrder(carrello) {
-
 	let response;
 	console.log(carrello);
-	let data = JSON.stringify({carrello: carrello});
+	let data = JSON.stringify({ carrello: carrello });
 
-	console.log("DATA: "+data);
+	console.log("DATA: " + data);
 
 	let config = {
 		method: "post",
 		maxBodyLength: Infinity,
 		url: `${urlServer}/send/cart`,
 		headers: {
-            'Content-Type': 'application/json', 
-        },
+			"Content-Type": "application/json",
+		},
 		data: data,
 	};
 
-	await axios.request(config)
-	.then((res) => {
-		response = res.data;
-		console.log("Risposta"+response);
-	}).catch((err) => {
-		console.log(err);
-	});
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+			console.log("Risposta" + response);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 
 	return response;
 }
