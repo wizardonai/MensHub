@@ -47,13 +47,20 @@ server.post("/send/cart", (req, res) => {
 
 	let data = req.body.carrello;
 	console.log(data);
-	let query = `INSERT INTO ordini (id_mensa, str_prod) VALUES(${data[0].id_mensa},"`;
+	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita) VALUES(${data[0].id_mensa},"`;
 	data.forEach((item, index) => {
 		query += `${item.id}`;
 		if (index !== data.length - 1)
 			query += ",";
 	});
+	query+=`","`;
+	data.forEach((item, index) => {
+		query += `${item.quantita}`;
+		if (index !== data.length - 1)
+			query += ",";
+	});
 	query += `");`;
+	console.log(query);
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		res.header("Access-Control-Allow-Origin", "*");
