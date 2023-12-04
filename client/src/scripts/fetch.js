@@ -1,5 +1,5 @@
 import axios from "axios";
-const FormData = require("form-data");
+const qs = require("qs");
 
 const urlServer =
 	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_FETCH_PORT;
@@ -7,8 +7,9 @@ const urlServer =
 export async function getProdotti() {
 	let response;
 
-	let data = new FormData();
-	data.append("idm", "69\n");
+	let data = qs.stringify({
+		idm: 69,
+	});
 
 	let config = {
 		method: "post",
@@ -31,8 +32,8 @@ export async function getProdotti() {
 }
 
 export async function sendOrder(carrello) {
-	let data = new FormData();
-	data.append("carrello", JSON.stringify(carrello));
+	console.log(carrello);
+	let data = qs.stringify({ carrello: carrello });
 
 	let config = {
 		method: "post",

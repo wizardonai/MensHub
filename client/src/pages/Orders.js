@@ -122,9 +122,11 @@ function Orders({ hostname }) {
 							onClick={() => {
 								setPopup(true);
 								if (carrello.length >= 1) {
-									localStorage.setItem("cart", JSON.stringify([]));
 									setMessaggioPopup("Ordinazione eseguita con successo!");
-									//sendOrder(carrello);
+									sendOrder(carrello).then(() => {
+										localStorage.setItem("cart", JSON.stringify([]));
+										setCarrello([]);
+									});
 								} else {
 									setMessaggioPopup("Il carrello è vuoto!");
 								}
