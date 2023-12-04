@@ -1,0 +1,154 @@
+#containerProductPage {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 83svh;
+}
+
+#informazioniProdotto {
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	margin-bottom: calc(7svh);
+}
+#imgProdotto {
+	width: 50svw;
+	height: 50svw;
+}
+#nomeProdotto {
+	width: 100%;
+	padding: 5px;
+	text-align: center;
+	font-size: 25px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+#prezzoAggiungiCarrello {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 25px;
+}
+#prezzoProdotto {
+	width: 35%;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+#descrizioneProdotto {
+	width: 100%;
+	padding: 5px;
+	font-size: 18px;
+	margin: 25px;
+}
+
+/**/
+#allergeni {
+	width: 100%;
+	margin-top: 25px;
+}
+.espandiAllergeni {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	border: 1px solid gray;
+	/* background-color: lightgray; */
+	padding: 5px;
+}
+.espanso {
+	border-bottom: none;
+}
+.sottosopra {
+	animation: sottoSopra 0.5s forwards;
+}
+.soprasotto {
+	animation: sopraSotto 0.5s forwards;
+}
+#imgEspandi {
+	width: 30px;
+	rotate: -90deg;
+}
+#elencoAllergeni {
+	border: 1px solid rgb(66, 66, 66);
+	border-top: none;
+}
+.elementoAllergeno {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+	height: 40px;
+}
+.elementoAllergeno p {
+	width: 100%;
+}
+.sfondoGrigietto {
+	background-color: lightgray;
+}
+.elementoAllergeno p:nth-child(1) {
+	margin-left: 5px;
+}
+@keyframes sottoSopra {
+	0% {
+		rotate: -90deg;
+	}
+	100% {
+		rotate: 90deg;
+	}
+}
+@keyframes sopraSotto {
+	0% {
+		rotate: 90deg;
+	}
+	100% {
+		rotate: -90deg;
+	}
+}
+
+/*aggiungi al carrello*/
+.pulsanteFixatoInBasso {
+	background-color: transparent;
+	height: 7svh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	width: 100%;
+	border-radius: 15px;
+	position: fixed;
+	bottom: calc(10svh);
+}
+.pulsanteFixatoInBasso div {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #fbd85d;
+	background-color: #1a5d1a;
+	font-size: 20px;
+	text-transform: uppercase;
+	width: 80%;
+	border-radius: 15px 15px 0 0;
+}
+
+/*popup*/
+.popup {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #fbd85d;
+	background-color: #1a5d1a;
+	height: 35svw;
+	width: 55svw;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -17.5svw 0 0 -27.5svw;
+	font-size: 7svw;
+	border-radius: 15px;
+	text-align: center;
+}

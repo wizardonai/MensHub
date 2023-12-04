@@ -5,23 +5,48 @@ import Navbar from "./components/Navbar";
 import "./css/Homepage.css";
 import "./css/Default.css";
 import Topbar from "./components/Topbar";
-import { useEffect, useState, lazy } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const HomePage = ({
-	elencoProdotti,
-	setLista,
-	setProdotto,
-	setDaDoveArrivo,
-}) => {
+const Slider = ({ piuAcq }) => {
+	const navigate = useNavigate();
+	let lista = [];
+
+	piuAcq.forEach((item, index) => {
+		lista.push(
+			<div
+				className='elemento'
+				onClick={() => {
+					navigate("/menu/product?prodotto=" + item.id + "&daDoveArrivo=home");
+				}}
+				key={index}
+			>
+				<div className='divImmagineElemento'>
+					<img
+						src={Object.keys(piuAcq).length > 0 ? item.indirizzoImg : ""}
+						alt=''
+					/>
+				</div>
+				<div className='divNomeElemento'>
+					<p className='nomeElemento'>
+						{Object.keys(piuAcq).length > 0 ? item.nome : ""}
+					</p>
+				</div>
+			</div>
+		);
+	});
+
+	return lista;
+};
+
+const HomePage = ({ elencoProdotti }) => {
 	elencoProdotti = JSON.parse(elencoProdotti);
 
 	const [piuAcq, setPiuAcq] = useState([]);
 
-	const navigate = useNavigate();
-
 	useEffect(() => {
 		trovaPiuAcq();
+		// eslint-disable-next-line
 	}, []);
 
 	function trovaPiuAcq() {
@@ -44,86 +69,10 @@ const HomePage = ({
 		<div className='page'>
 			<Topbar page='home' />
 			<div className='container' id='containerHome'>
-				<p id='nomeMensa'>NOME MENSA</p>
+				<p id='nomeMensa'>UASARD MENS</p>
 				<p id='titoloHome'>I più venduti</p>
-
 				<div id='slider'>
-					<div
-						id='riquadro1'
-						onClick={() => {
-							setLista(false);
-							setProdotto(piuAcq[0]);
-							setDaDoveArrivo("home");
-							navigate("/menu");
-						}}
-					>
-						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[0].indirizzoImg : ""
-							}
-							alt=''
-						/>
-						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[0].nome : ""}
-						</p>
-					</div>
-					<div
-						id='riquadro2'
-						onClick={() => {
-							setLista(false);
-							setProdotto(piuAcq[1]);
-							setDaDoveArrivo("home");
-							navigate("/menu");
-						}}
-					>
-						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[1].indirizzoImg : ""
-							}
-							alt=''
-						/>
-						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[1].nome : ""}
-						</p>
-					</div>
-					<div
-						id='riquadro3'
-						onClick={() => {
-							setLista(false);
-							setProdotto(piuAcq[2]);
-							setDaDoveArrivo("home");
-							navigate("/menu");
-						}}
-					>
-						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[2].indirizzoImg : ""
-							}
-							alt=''
-						/>
-						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[2].nome : ""}
-						</p>
-					</div>
-					<div
-						id='riquadro4'
-						onClick={() => {
-							setLista(false);
-							setProdotto(piuAcq[3]);
-							setDaDoveArrivo("home");
-							navigate("/menu");
-						}}
-					>
-						<img
-							src={
-								Object.keys(piuAcq).length !== 0 ? piuAcq[3].indirizzoImg : ""
-							}
-							alt=''
-						/>
-						<p className='descrizione'>
-							{Object.keys(piuAcq).length !== 0 ? piuAcq[3].nome : ""}
-						</p>
-					</div>
+					<Slider piuAcq={piuAcq} />
 				</div>
 			</div>
 			<Navbar page='home' />

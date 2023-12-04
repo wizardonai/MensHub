@@ -18,53 +18,53 @@ connection.connect((err) => {
 			if (err) throw new Error(err);
 			connection.query(`CREATE TABLE IF NOT EXISTS mense (
                     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                    nome VARCHAR(50),
-                    indirizzo VARCHAR(100),
+                    nome VARCHAR(50) NOT NULL,
+                    indirizzo VARCHAR(100) NOT NULL,
                     fd BOOLEAN
                 )`);
 
 			connection.query(`CREATE TABLE IF NOT EXISTS utenti (
                     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                    nome VARCHAR(50),
-                    cognome VARCHAR(50),
-                    email VARCHAR(100),
-                    password VARCHAR(255),
-                    id_mensa INT,
+                    nome VARCHAR(50) NOT NULL,
+                    cognome VARCHAR(50) NOT NULL,
+                    email VARCHAR(100) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    id_mensa INT NOT NULL,
                     fd BOOLEAN,
                     FOREIGN KEY (id_mensa) REFERENCES mense(id)
                 )`);
 
 			connection.query(`CREATE TABLE IF NOT EXISTS prodotti (
                     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                    nome VARCHAR(100),
-                    descrizione TEXT,
-                    allergeni VARCHAR(255),
-                    prezzo DECIMAL(10, 2),
-                    categoria VARCHAR(50),
-                    indirizzo_img VARCHAR(255),
-                    disponibile BOOLEAN,
-                    nacq INT,
-                    id_mensa INT,
+                    nome VARCHAR(100) NOT NULL,
+                    descrizione TEXT NOT NULL,
+                    allergeni VARCHAR(255) NOT NULL,
+                    prezzo DECIMAL(10, 2) NOT NULL,
+                    categoria VARCHAR(50) NOT NULL,
+                    indirizzo_img VARCHAR(255) NOT NULL,
+                    disponibile BOOLEAN NOT NULL,
+                    nacq INT NOT NULL,
+                    id_mensa INT NOT NULL,
                     fd BOOLEAN,
                     FOREIGN KEY (id_mensa) REFERENCES mense(id)
                 )`);
 
 			connection.query(`CREATE TABLE IF NOT EXISTS menu (
                     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                    nome VARCHAR(100),
-                    descrizione TEXT,
-                    prezzo DECIMAL(10, 2),
-                    id_mensa INT,
-                    disponibile BOOLEAN,
-                    str_prod VARCHAR(255),
+                    nome VARCHAR(100) NOT NULL,
+                    descrizione TEXT NOT NULL,
+                    prezzo DECIMAL(10, 2) NOT NULL,
+                    id_mensa INT NOT NULL,
+                    disponibile BOOLEAN NOT NULL,
+                    str_prod VARCHAR(255) NOT NULL,
                     fd BOOLEAN,
                     FOREIGN KEY (id_mensa) REFERENCES mense(id)
                 )`);
 
 			connection.query(`CREATE TABLE IF NOT EXISTS ordini (
                     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                    id_mensa INT,
-                    str_prod VARCHAR(255),
+                    id_mensa INT NOT NULL,
+                    str_prod VARCHAR(255) NOT NULL,
                     fd BOOLEAN,
                     FOREIGN KEY (id_mensa) REFERENCES mense(id)
                 )`);

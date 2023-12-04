@@ -1,6 +1,6 @@
 import "../css/Navbar.css";
 import imgHome from "../image/home.png";
-import imgSearch from "../image/search.png";
+// import imgSearch from "../image/search.png";
 import imgMenu from "../image/menu.png";
 import imgOrders from "../image/orders.png";
 import imgProfile from "../image/profile.png";
@@ -12,9 +12,9 @@ const Navbar = ({ page }) => {
 	function navigateHome() {
 		navigate("/");
 	}
-	function navigateSearch() {
-		navigate("/search");
-	}
+	// function navigateSearch() {
+	// 	navigate("/search");
+	// }
 	function navigateMenu() {
 		navigate("/menu");
 	}
@@ -35,10 +35,10 @@ const Navbar = ({ page }) => {
 				<img src={imgHome} alt='' />
 				{page === "home" ? <BarrettaInBasso /> : ""}
 			</div>
-			<div id='navbarSearch' onClick={navigateSearch}>
+			{/* <div id='navbarSearch' onClick={navigateSearch}>
 				<img src={imgSearch} alt='' />
 				{page === "search" ? <BarrettaInBasso /> : ""}
-			</div>
+			</div> */}
 			<div id='navbarMenu' onClick={navigateMenu}>
 				<img src={imgMenu} alt='' />
 				{page === "menu" ? <BarrettaInBasso /> : ""}
