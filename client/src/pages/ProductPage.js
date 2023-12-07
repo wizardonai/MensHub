@@ -56,6 +56,18 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 		//eslint-disable-next-line
 	}, []);
 
+	function prodottoGiaEsistente(id) {
+		let tmp = JSON.parse(localStorage.getItem("cart"));
+
+		for (let i = 0; i < tmp.length; i++) {
+			if (tmp[i].id === id) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 	return (
 		<>
 			<div className='page'>
@@ -104,14 +116,21 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 						className='pulsanteFixatoInBasso'
 						onClick={() => {
 							if (!popup) {
-								let tmp = JSON.parse(localStorage.getItem("cart"));
+								const ris = prodottoGiaEsistente(prodotto.id);
+								if (ris >= 0) {
+									let tmp = JSON.parse(localStorage.getItem("cart"));
 
-								//aggiunto prodotto con quantita
-								let tmp2 = prodotto;
-								tmp2.quantita = 1;
-								tmp.push(tmp2);
-								localStorage.setItem("cart", JSON.stringify(tmp));
+									tmp[0].quantita += 1;
 
+									localStorage.setItem("cart", JSON.stringify(tmp));
+								} else {
+									let tmp = JSON.parse(localStorage.getItem("cart"));
+									//aggiunto prodotto con quantita
+									let tmp2 = prodotto;
+									tmp2.quantita = 1;
+									tmp.push(tmp2);
+									localStorage.setItem("cart", JSON.stringify(tmp));
+								}
 								//popup
 								setPopup(true);
 								setTimeout(() => {
