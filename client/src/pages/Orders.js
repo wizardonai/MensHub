@@ -139,18 +139,18 @@ function Orders({ hostname }) {
 						>
 							<div>Ordina ora!</div>
 						</div>
-						<div
-							className='popup'
-							style={popup ? { display: "flex" } : { display: "none" }}
-						>
-							<p>{messaggioPopup}</p>
-						</div>
 					</>
 				) : (
 					<div id='messaggioFullPage'>
 						Aggiungi prodotti dalla pagina menu...
 					</div>
 				)}
+				<div
+					className='popup'
+					style={popup ? { display: "flex" } : { display: "none" }}
+				>
+					<p>{messaggioPopup}</p>
+				</div>
 			</div>
 			<Navbar page='orders' />
 		</div>
@@ -158,3 +158,10 @@ function Orders({ hostname }) {
 }
 
 export default Orders;
+
+/*
+- definizione di organizzazione [52]
+- modello di organizzazione gerarchico (modello di mizenberg) [53]
+- organigramma
+- ...
+*/
