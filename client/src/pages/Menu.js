@@ -6,7 +6,7 @@ import "./css/Menu.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-//lista prodotti
+//elemento della lista
 const ElementoLista = ({ item }) => {
 	const navigate = useNavigate();
 
@@ -26,6 +26,7 @@ const ElementoLista = ({ item }) => {
 		</div>
 	);
 };
+//lista completa
 const Lista = ({ filtro, setLista, setProdotto, elencoProdotti }) => {
 	// elencoProdotti = JSON.parse(elencoProdotti);
 
@@ -56,7 +57,9 @@ const Lista = ({ filtro, setLista, setProdotto, elencoProdotti }) => {
 
 	return list;
 };
-const ListaProdotti = ({
+
+//filtri
+const Filtri = ({
 	antipasti,
 	primi,
 	secondi,
@@ -69,12 +72,6 @@ const ListaProdotti = ({
 	setContorni,
 	setPanini,
 	setDolci,
-	elencoProdotti,
-	stringaSearch,
-	setStringaSearch,
-	prodottiDaStampare,
-	setProdottiDaStampare,
-	hostname,
 }) => {
 	function disattivaAltriFiltri(x) {
 		const array = [
@@ -101,114 +98,39 @@ const ListaProdotti = ({
 		}
 	}
 
-	function filtroAttivo() {
-		const stati = [antipasti, primi, secondi, contorni, panini, dolci];
-		const stringhe = [
-			"antipasto",
-			"primo",
-			"secondo",
-			"contorno",
-			"panino",
-			"dolce",
+	function ritornaElementi() {
+		const nomi = [
+			["antipasti", antipasti],
+			["primi", primi],
+			["secondi", secondi],
+			["contorni", contorni],
+			["panini", panini],
+			["dolci", dolci],
 		];
-		let daRitornare = "";
-		stati.forEach((item, index) => {
-			if (item) {
-				daRitornare = stringhe[index];
-			}
+
+		let lista = [];
+
+		nomi.forEach((item, index) => {
+			lista.push(
+				<div
+					className={item[1] ? "filtroCliccato" : ""}
+					onClick={() => {
+						if (item[1]) {
+							disattivaAltriFiltri(10);
+						} else {
+							disattivaAltriFiltri(index);
+						}
+					}}
+				>
+					{item[0]}
+				</div>
+			);
 		});
 
-		return daRitornare;
+		return lista;
 	}
 
-	return (
-		<>
-			<SearchBar
-				elencoProdotti={elencoProdotti}
-				stringaSearch={stringaSearch}
-				setStringaSearch={setStringaSearch}
-				setProdottiDaStampare={setProdottiDaStampare}
-				hostname={hostname}
-			/>
-			<div id='filtri'>
-				<div
-					className={antipasti ? "filtroCliccato" : ""}
-					onClick={() => {
-						if (antipasti) {
-							disattivaAltriFiltri(10);
-						} else {
-							disattivaAltriFiltri(0);
-						}
-					}}
-				>
-					Antipasti
-				</div>
-				<div
-					className={primi ? "filtroCliccato" : ""}
-					onClick={() => {
-						if (primi) {
-							disattivaAltriFiltri(10);
-						} else {
-							disattivaAltriFiltri(1);
-						}
-					}}
-				>
-					Primi
-				</div>
-				<div
-					className={secondi ? "filtroCliccato" : ""}
-					onClick={() => {
-						if (secondi) {
-							disattivaAltriFiltri(10);
-						} else {
-							disattivaAltriFiltri(2);
-						}
-					}}
-				>
-					Secondi
-				</div>
-				<div
-					className={contorni ? "filtroCliccato" : ""}
-					onClick={() => {
-						if (contorni) {
-							disattivaAltriFiltri(10);
-						} else {
-							disattivaAltriFiltri(3);
-						}
-					}}
-				>
-					Contorni
-				</div>
-				<div
-					className={panini ? "filtroCliccato" : ""}
-					onClick={() => {
-						if (panini) {
-							disattivaAltriFiltri(10);
-						} else {
-							disattivaAltriFiltri(4);
-						}
-					}}
-				>
-					Panini
-				</div>
-				<div
-					className={dolci ? "filtroCliccato" : ""}
-					onClick={() => {
-						if (dolci) {
-							disattivaAltriFiltri(10);
-						} else {
-							disattivaAltriFiltri(5);
-						}
-					}}
-				>
-					Dolci
-				</div>
-			</div>
-			<div id='lista'>
-				<Lista filtro={filtroAttivo()} elencoProdotti={prodottiDaStampare} />
-			</div>
-		</>
-	);
+	return <div id='filtri'>{ritornaElementi()}</div>;
 };
 
 const Menu = ({
@@ -233,11 +155,38 @@ const Menu = ({
 		JSON.parse(elencoProdotti).prodotti
 	);
 
+	function filtroAttivo() {
+		const stati = [antipasti, primi, secondi, contorni, panini, dolci];
+		const stringhe = [
+			"antipasto",
+			"primo",
+			"secondo",
+			"contorno",
+			"panino",
+			"dolce",
+		];
+		let daRitornare = "";
+		stati.forEach((item, index) => {
+			if (item) {
+				daRitornare = stringhe[index];
+			}
+		});
+
+		return daRitornare;
+	}
+
 	return (
 		<div className='page'>
 			<Topbar page='menu' />
 			<div className='container' id='containerMenu'>
-				<ListaProdotti
+				<SearchBar
+					elencoProdotti={elencoProdotti}
+					stringaSearch={stringaSearch}
+					setStringaSearch={setStringaSearch}
+					setProdottiDaStampare={setProdottiDaStampare}
+					hostname={hostname}
+				/>
+				<Filtri
 					antipasti={antipasti}
 					primi={primi}
 					secondi={secondi}
@@ -250,13 +199,10 @@ const Menu = ({
 					setContorni={setContorni}
 					setPanini={setPanini}
 					setDolci={setDolci}
-					elencoProdotti={elencoProdotti}
-					stringaSearch={stringaSearch}
-					setStringaSearch={setStringaSearch}
-					prodottiDaStampare={prodottiDaStampare}
-					setProdottiDaStampare={setProdottiDaStampare}
-					hostname={hostname}
 				/>
+				<div id='lista'>
+					<Lista filtro={filtroAttivo()} elencoProdotti={prodottiDaStampare} />
+				</div>
 			</div>
 			<Navbar page='menu' />
 		</div>
