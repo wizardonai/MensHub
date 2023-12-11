@@ -1,16 +1,19 @@
-const mysql = require("mysql");
-const express = require("express");
-const server = express(); //probabilmente da cambiare con express.Router();
-const emailValidator = require("deep-email-validator");
-const cors = require("cors");
-const bodyParser = require("body-parser");
+import { createConnection } from "mysql";
+import express from "express";
+//probabilmente da cambiare con express.Router();
+import { validate } from "deep-email-validator";
+import cors from "cors";
+import bodyParser from "body-parser";
+const { json, urlencoded } = bodyParser;
+
+const server = express();
 
 server.use(cors());
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({ extended: false }));
+server.use(json());
+server.use(urlencoded({ extended: false }));
 
 //creo connessione con il database
-const connection = mysql.createConnection({
+const connection = createConnection({
 	host: "localhost",
 	user: "root",
 	password: "",
@@ -97,7 +100,7 @@ server.post("/register/user", async function (req, res) {
 			message: "le password non combaciano.",
 		});
 	}
-	const { valid, reason, validators } = await emailValidator.validate(email);
+	const { valid, reason, validators } = await validate(email);
 
 	if (valid) {
 		//inserisci dati nel database
@@ -124,7 +127,7 @@ server.post("/login/user", async function (req, res) {
 	let email = req.body.email;
 	let password = req.body.password;
 
-	const { valid, reason, validators } = await emailValidator.validate(email);
+	const { valid, reason, validators } = await validate(email);
 	if (valid) {
 		query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
 		connection.query(query, (err, result) => {
