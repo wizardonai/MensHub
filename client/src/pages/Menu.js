@@ -27,85 +27,68 @@ const ElementoLista = ({ item }) => {
 	);
 };
 //lista completa
-const Lista = ({ filtro, setLista, setProdotto, elencoProdotti }) => {
-	// elencoProdotti = JSON.parse(elencoProdotti);
+const Lista = ({ filtro, elencoProdotti }) => {
+	let prodottiFiltrati;
+	if (filtro !== "") {
+		prodottiFiltrati = Object.groupBy(elencoProdotti, (element) => {
+			return element.categoria === filtro ? "filtrati" : "nonFiltrati";
+		});
+	} else {
+		prodottiFiltrati = { filtrati: elencoProdotti };
+	}
 
 	const list = [];
-	elencoProdotti.forEach((item) => {
-		if (filtro !== "") {
-			if (filtro === item.categoria) {
-				list.push(
-					<ElementoLista
-						item={item}
-						key={item.id}
-						setLista={setLista}
-						setProdotto={setProdotto}
-					/>
-				);
-			}
-		} else {
-			list.push(
-				<ElementoLista
-					item={item}
-					key={item.id}
-					setLista={setLista}
-					setProdotto={setProdotto}
-				/>
-			);
-		}
+
+	prodottiFiltrati.filtrati.forEach((item) => {
+		list.push(<ElementoLista item={item} key={item.id} />);
 	});
 
 	return list;
 };
 
 //filtri
-const Filtri = ({
-	antipasti,
-	primi,
-	secondi,
-	contorni,
-	panini,
-	dolci,
-	setAntipasti,
-	setPrimi,
-	setSecondi,
-	setContorni,
-	setPanini,
-	setDolci,
-}) => {
+const Filtri = ({ filtri, setFiltri }) => {
 	function disattivaAltriFiltri(x) {
-		const array = [
-			setAntipasti,
-			setPrimi,
-			setSecondi,
-			setContorni,
-			setPanini,
-			setDolci,
+		const possibiliFiltri = [
+			"antipasti",
+			"primi",
+			"secondi",
+			"contorni",
+			"panini",
+			"dolci",
 		];
 
-		if (x > array.length) {
-			array.forEach((item) => {
-				item(false);
-			});
+		if (x > possibiliFiltri.length) {
+			setFiltri((prev) => ({
+				antipasti: false,
+				primi: false,
+				secondi: false,
+				contorni: false,
+				panini: false,
+				dolci: false,
+			}));
 		} else {
-			array.forEach((item, index) => {
-				if (index !== x) {
-					item(false);
-				} else {
-					item(true);
-				}
-			});
+			let tmp = {
+				antipasti: false,
+				primi: false,
+				secondi: false,
+				contorni: false,
+				panini: false,
+				dolci: false,
+			};
+			tmp[possibiliFiltri[x]] = true;
+			setFiltri(tmp);
 		}
 	}
 
 	function ritornaElementi() {
 		const nomi = [
-			["antipasti", antipasti],
-			["primi", primi],
-			["secondi", secondi],
-			["contorni", contorni],
-			["panini", panini],
-			["dolci", dolci],
+			"antipasti",
+			"primi",
+			"secondi",
+			"contorni",
+			"panini",
+			"dolci",
 		];
 
 		let lista = [];
@@ -113,16 +96,17 @@ const Filtri = ({
 		nomi.forEach((item, index) => {
 			lista.push(
 				<div
-					className={item[1] ? "filtroCliccato" : ""}
+					key={index}
+					className={filtri[nomi[index]] ? "filtroCliccato" : ""}
 					onClick={() => {
-						if (item[1]) {
+						if (filtri[nomi[index]]) {
 							disattivaAltriFiltri(10);
 						} else {
 							disattivaAltriFiltri(index);
 						}
 					}}
 				>
-					{item[0]}
+					{item}
 				</div>
 			);
 		});
@@ -134,29 +118,27 @@ const Filtri = ({
 };
 
 const Menu = ({
-	antipasti,
-	primi,
-	secondi,
-	contorni,
-	panini,
-	dolci,
-	setAntipasti,
-	setPrimi,
-	setSecondi,
-	setContorni,
-	setPanini,
-	setDolci,
 	elencoProdotti,
 	stringaSearch,
 	setStringaSearch,
 	hostname,
+	filtri,
+	setFiltri,
 }) => {
 	const [prodottiDaStampare, setProdottiDaStampare] = useState(
 		JSON.parse(elencoProdotti).prodotti
 	);
 
 	function filtroAttivo() {
-		const stati = [antipasti, primi, secondi, contorni, panini, dolci];
+		const stati = [
+			filtri.antipasti,
+			filtri.primi,
+			filtri.secondi,
+			filtri.contorni,
+			filtri.panini,
+			filtri.dolci,
+		];
+
 		const stringhe = [
 			"antipasto",
 			"primo",
@@ -165,6 +147,7 @@ const Menu = ({
 			"panino",
 			"dolce",
 		];
+
 		let daRitornare = "";
 		stati.forEach((item, index) => {
 			if (item) {
@@ -186,20 +169,7 @@ const Menu = ({
 					setProdottiDaStampare={setProdottiDaStampare}
 					hostname={hostname}
 				/>
-				<Filtri
-					antipasti={antipasti}
-					primi={primi}
-					secondi={secondi}
-					contorni={contorni}
-					panini={panini}
-					dolci={dolci}
-					setAntipasti={setAntipasti}
-					setPrimi={setPrimi}
-					setSecondi={setSecondi}
-					setContorni={setContorni}
-					setPanini={setPanini}
-					setDolci={setDolci}
-				/>
+				<Filtri filtri={filtri} setFiltri={setFiltri} />
 				<div id='lista'>
 					<Lista filtro={filtroAttivo()} elencoProdotti={prodottiDaStampare} />
 				</div>

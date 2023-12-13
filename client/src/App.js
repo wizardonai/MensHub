@@ -25,13 +25,16 @@ const App = () => {
 	const [oggettone, setOggettone] = useState({ prodotti: [] });
 
 	//menu
-	const [antipasti, setAntipasti] = useState(false);
-	const [primi, setPrimi] = useState(false);
-	const [secondi, setSecondi] = useState(false);
-	const [contorni, setContorni] = useState(false);
-	const [panini, setPanini] = useState(false);
-	const [dolci, setDolci] = useState(false);
 	const [stringaSearch, setStringaSearch] = useState("");
+
+	const [filtri, setFiltri] = useState({
+		antipasti: false,
+		primi: false,
+		secondi: false,
+		contorni: false,
+		panini: false,
+		dolci: false,
+	});
 
 	//aspetto che arrivino dal server
 	const [pagDaStamp, setPagDaStamp] = useState(false);
@@ -48,11 +51,8 @@ const App = () => {
 
 	useEffect(() => {
 		getProdotti().then((res) => {
-			let tmp = {
-				prodotti: aggiungiHostname(res),
-			};
-			setOggettone(tmp);
-			// console.log(tmp);
+			setOggettone({ prodotti: aggiungiHostname(res) });
+
 			setPagDaStamp(true);
 		});
 		if (
@@ -77,22 +77,12 @@ const App = () => {
 						path='/menu'
 						element={
 							<Menu
-								antipasti={antipasti}
-								primi={primi}
-								secondi={secondi}
-								contorni={contorni}
-								panini={panini}
-								dolci={dolci}
-								setAntipasti={setAntipasti}
-								setPrimi={setPrimi}
-								setSecondi={setSecondi}
-								setContorni={setContorni}
-								setPanini={setPanini}
-								setDolci={setDolci}
 								elencoProdotti={JSON.stringify(oggettone)}
 								stringaSearch={stringaSearch}
 								setStringaSearch={setStringaSearch}
 								hostname={hostname}
+								filtri={filtri}
+								setFiltri={setFiltri}
 							/>
 						}
 					/>
@@ -109,7 +99,17 @@ const App = () => {
 					<Route path='/profile' Component={Profile} />
 				</Routes>
 			) : (
-				""
+				<div
+					style={{
+						height: "100svh",
+						width: "100%",
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<p>Caricamento...</p>
+				</div>
 			)}
 		</>
 	);
