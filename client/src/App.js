@@ -11,7 +11,7 @@ import LoginPage from "./login/pages/LoginPage";
 import RegisterPage from "./login/pages/RegisterPage";
 
 const hostname =
-	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/";
+	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/image/";
 
 const ReinderizzaHome = () => {
 	const navigate = useNavigate();
@@ -22,7 +22,7 @@ const ReinderizzaHome = () => {
 	}, []);
 };
 
-const Cliente = ({ hostname, refreshStorage }) => {
+const Cliente = ({ refreshStorage }) => {
 	const [prodottiPresi, setProdottiPresi] = useState(false);
 
 	//stati

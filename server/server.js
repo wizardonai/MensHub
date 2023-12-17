@@ -27,12 +27,12 @@ connection.connect(function (err) {
 });
 
 //deploy react
-server.use(express.static("../client/build")); //questa stringa va sostituita con "../client/build" una volta buildato il progetto
+// server.use(express.static("../client/build")); //questa stringa va sostituita con "../client/build" una volta buildato il progetto
 
 //all methods that return a response to the client
-server.get("/", (req, res) => {
-	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
-});
+// server.get("/", (req, res) => {
+// 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
+// });
 
 server.post("/request/products", (req, res) => {
 	let data = req.body;
