@@ -39,6 +39,8 @@ const Slider = ({ piuAcq }) => {
 	return lista;
 };
 
+const NPIUACQ = 5;
+
 const HomePage = ({ elencoProdotti }) => {
 	elencoProdotti = JSON.parse(elencoProdotti);
 
@@ -62,7 +64,11 @@ const HomePage = ({ elencoProdotti }) => {
 			}
 		}
 
-		setPiuAcq([tmp[0], tmp[1], tmp[2], tmp[3]]);
+		let tmp2 = [];
+		for (let i = 0; i < NPIUACQ; i++) {
+			tmp2.push(tmp[i]);
+		}
+		setPiuAcq(tmp2);
 	}
 
 	return (

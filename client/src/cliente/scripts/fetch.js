@@ -60,3 +60,59 @@ export async function sendOrder(carrello) {
 
 	return response;
 }
+
+export async function registerUser(dati) {
+	let data = JSON.parse(dati);
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${urlServer}/register/user`,
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data: data,
+	};
+
+	let response;
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+			console.log("Risposta" + response);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}
+
+export async function loginUser(dati) {
+	let data = JSON.parse(dati);
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${urlServer}/login/user`,
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data: data,
+	};
+
+	let response;
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+			console.log("Risposta" + response);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}
