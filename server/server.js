@@ -85,39 +85,48 @@ server.post("/register/user", async function (req, res) {
 	console.log("-----------------");
 	console.log("registrazione utente");
 	//forse si può provare anche con questa sintassi : const {email, password} = req.body; e poi usare email e password come variabili
-	let nome = req.body.nome;
-	let cognome = req.body.cognome;
-	let email = req.body.email;
-	let password = req.body.password;
-	let confirm_password = req.body.confirm_password;
+	// let nome = req.body.nome;
+	// let cognome = req.body.cognome;
+	// let email = req.body.email;
+	// let password = req.body.password;
+	// let confirm_password = req.body.confirm_password;
+
+	const { nome, cognome, email, password, confirm_password } = req.body;
+
 	if (!email || !password) {
-		return res.status(400).send({
-			message: "email o password mancante.",
-		});
+		// return res.status(400).send({
+		// 	message: "email o password mancante.",
+		// });
+		res.send("Email o password mancante!");
+		res.end();
 	}
 	if (password !== confirm_password) {
-		return res.status(400).send({
-			message: "le password non combaciano.",
-		});
+		// return res.status(400).send({
+		// 	message: "le password non combaciano.",
+		// });
+		res.send("Le password non combaciano!");
+		res.end();
 	}
 	const { valid, reason, validators } = await validate(email);
 
 	if (valid) {
 		//inserisci dati nel database
-		query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
-		console.log(query);
+		let query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
+		// console.log(query);
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
 			res.header("Access-Control-Allow-Origin", "*");
-			res.send("Utente aggiunto");
+			res.send("Registrazione avvenuta con successo");
 			res.end();
 		});
 	} else {
 		console.log("EMAIL NON VALIDA");
-		return res.status(400).send({
-			message: "Please provide a valid email address.",
-			reason: validators[reason].reason,
-		});
+		// return res.status(400).send({
+		// 	message: "Please provide a valid email address.",
+		// 	reason: validators[reason].reason,
+		// });
+		res.send("Email non valida!");
+		res.end();
 	}
 });
 
@@ -129,12 +138,13 @@ server.post("/login/user", async function (req, res) {
 
 	const { valid, reason, validators } = await validate(email);
 	if (valid) {
-		query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
+		let query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
 			res.header("Access-Control-Allow-Origin", "*");
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
+				console.log("Login effettuato");
 				res.send("Login effettuato");
 				res.end();
 			} else {
@@ -143,11 +153,13 @@ server.post("/login/user", async function (req, res) {
 			}
 		});
 	} else {
-		console.log("EMAIL NON VALIDA");
-		return res.status(400).send({
-			message: "Please provide a valid email address.",
-			reason: validators[reason].reason,
-		});
+		console.log("Email non valida!");
+		// return res.status(400).send({
+		// 	message: "Please provide a valid email address.",
+		// 	reason: validators[reason].reason,
+		// });
+		res.send("Email non valida!");
+		res.end();
 	}
 });
 

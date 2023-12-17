@@ -8,6 +8,10 @@ import { useEffect, useState } from "react";
 
 import { getProdotti } from "./cliente/scripts/fetch";
 import LoginPage from "./login/pages/LoginPage";
+import RegisterPage from "./login/pages/RegisterPage";
+
+const hostname =
+	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/";
 
 const ReinderizzaHome = () => {
 	const navigate = useNavigate();
@@ -18,76 +22,12 @@ const ReinderizzaHome = () => {
 	}, []);
 };
 
-const Cliente = ({
-	elencoProdotti,
-	stringaSearch,
-	setStringaSearch,
-	hostname,
-	filtri,
-	setFiltri,
-}) => {
-	console.log(window.location.href);
+const Cliente = ({ hostname, refreshStorage }) => {
+	const [prodottiPresi, setProdottiPresi] = useState(false);
 
-	return (
-		<Routes>
-			<Route
-				path='/home'
-				element={<HomePage elencoProdotti={JSON.stringify(elencoProdotti)} />}
-			/>
-			<Route
-				path='/menu'
-				element={
-					<Menu
-						elencoProdotti={JSON.stringify(elencoProdotti)}
-						stringaSearch={stringaSearch}
-						setStringaSearch={setStringaSearch}
-						hostname={hostname}
-						filtri={filtri}
-						setFiltri={setFiltri}
-					/>
-				}
-			/>
-			<Route
-				path='/menu/product'
-				element={
-					<ProductPage
-						elencoProdotti={JSON.stringify(elencoProdotti)}
-						hostname={hostname}
-					/>
-				}
-			/>
-			<Route path='/orders' element={<Orders hostname={hostname} />} />
-			<Route path='/profile' Component={Profile} />
-			<Route path='*' element={<ReinderizzaHome />} />
-		</Routes>
-	);
-};
-
-const NavigateLogin = () => {
-	const navigate = useNavigate();
-	useEffect(() => {
-		navigate("/login");
-	});
-};
-const Login = () => {
-	return (
-		<Routes>
-			<Route path='/login' element={<LoginPage />} />
-			<Route path='*' element={<NavigateLogin />} />
-		</Routes>
-	);
-};
-
-const App = () => {
-	const hostname =
-		process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/";
-
-	//tutti i dati
-	const [oggettone, setOggettone] = useState({ prodotti: [] });
-
-	//menu
+	//stati
+	const [elencoProdotti, setElencoProdotti] = useState({ prodotti: [] });
 	const [stringaSearch, setStringaSearch] = useState("");
-
 	const [filtri, setFiltri] = useState({
 		antipasti: false,
 		primi: false,
@@ -96,9 +36,6 @@ const App = () => {
 		panini: false,
 		dolci: false,
 	});
-
-	//aspetto che arrivino dal server
-	const [utente, setUtente] = useState("no");
 
 	function aggiungiHostname(prodotti) {
 		let tmp = prodotti;
@@ -111,6 +48,97 @@ const App = () => {
 	}
 
 	useEffect(() => {
+		getProdotti().then((res) => {
+			setElencoProdotti({ prodotti: aggiungiHostname(res) });
+
+			if (
+				localStorage.getItem("cart") === null ||
+				localStorage.getItem("cart") === ""
+			) {
+				localStorage.setItem("cart", JSON.stringify([]));
+			}
+
+			setProdottiPresi(true);
+		});
+	}, []);
+
+	return (
+		<>
+			{prodottiPresi ? (
+				<Routes>
+					<Route
+						path='/home'
+						element={
+							<HomePage elencoProdotti={JSON.stringify(elencoProdotti)} />
+						}
+					/>
+					<Route
+						path='/menu'
+						element={
+							<Menu
+								elencoProdotti={JSON.stringify(elencoProdotti)}
+								stringaSearch={stringaSearch}
+								setStringaSearch={setStringaSearch}
+								hostname={hostname}
+								filtri={filtri}
+								setFiltri={setFiltri}
+							/>
+						}
+					/>
+					<Route
+						path='/menu/product'
+						element={
+							<ProductPage
+								elencoProdotti={JSON.stringify(elencoProdotti)}
+								hostname={hostname}
+							/>
+						}
+					/>
+					<Route path='/orders' element={<Orders hostname={hostname} />} />
+					<Route
+						path='/profile'
+						element={<Profile refreshStorage={refreshStorage} />}
+					/>
+					<Route path='*' element={<ReinderizzaHome />} />
+				</Routes>
+			) : (
+				""
+			)}
+		</>
+	);
+};
+
+const NavigateLogin = () => {
+	const navigate = useNavigate();
+	useEffect(() => {
+		navigate("/login");
+	});
+};
+const Login = ({ refreshStorage }) => {
+	return (
+		<Routes>
+			<Route
+				path='/login'
+				element={<LoginPage refreshStorage={refreshStorage} />}
+			/>
+			<Route path='/register' element={<RegisterPage />} />
+			<Route path='*' element={<NavigateLogin />} />
+		</Routes>
+	);
+};
+
+const App = () => {
+	const navigate = useNavigate();
+
+	//aspetto che arrivino dal server
+	const [utente, setUtente] = useState("no");
+
+	const refreshStorage = () => {
+		setUtente(localStorage.getItem("login"));
+		return localStorage.getItem("login");
+	};
+
+	useEffect(() => {
 		if (
 			localStorage.getItem("login") === null ||
 			localStorage.getItem("login") === ""
@@ -118,43 +146,31 @@ const App = () => {
 			localStorage.setItem("login", "no");
 		}
 
-		if (localStorage.getItem("login") === "cliente") {
-			getProdotti().then((res) => {
-				setOggettone({ prodotti: aggiungiHostname(res) });
+		refreshStorage();
+	}, []);
 
-				if (
-					localStorage.getItem("cart") === null ||
-					localStorage.getItem("cart") === ""
-				) {
-					localStorage.setItem("cart", JSON.stringify([]));
-				}
-
-				setUtente("cliente");
-			});
-		} else if (localStorage.getItem("login") === "produttore") {
-			setUtente("produttore");
+	useEffect(() => {
+		console.log("entro qua");
+		const utenteTmp = localStorage.getItem("login");
+		if (utenteTmp === "cliente") {
+			//
+		} else if (utenteTmp === "produttore") {
+			//
 		} else {
 			setUtente("no");
 		}
 		//eslint-disable-next-line
-	}, []);
+	}, [utente]);
 
 	return (
 		<>
 			{
 				utente === "cliente" ? (
-					<Cliente
-						elencoProdotti={oggettone}
-						stringaSearch={stringaSearch}
-						setStringaSearch={setStringaSearch}
-						hostname={hostname}
-						filtri={filtri}
-						setFiltri={setFiltri}
-					/>
+					<Cliente refreshStorage={refreshStorage} />
 				) : utente === "produttore" ? (
 					<p>Produttore</p>
 				) : (
-					<Login />
+					<Login refreshStorage={refreshStorage} />
 				)
 				/*
 			(

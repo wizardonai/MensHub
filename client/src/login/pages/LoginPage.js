@@ -1,8 +1,12 @@
 import "./css/LoginPage.css";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
+import { loginUser } from "../scripts/fetch";
 
-const LoginPage = () => {
+const LoginPage = ({ refreshStorage }) => {
+	const navigate = useNavigate();
+
 	const [errore, setErrore] = useState({
 		presente: false,
 		messaggio: <></>,
@@ -48,13 +52,29 @@ const LoginPage = () => {
 		}
 
 		if (!errore) {
-			//mando i dati al server
+			loginUser({ email: valueEmail, password: valuePassword }).then((res) => {
+				if (res !== "Login effettuato") {
+					setErrore((prev) => ({
+						presente: true,
+						messaggio: (
+							<>
+								{prev.messaggio} {res} <br />
+							</>
+						),
+					}));
+					errore = true;
+				} else {
+					localStorage.setItem("login", "cliente");
+					refreshStorage();
+					navigate("/home");
+				}
+			});
 		}
 	};
 
 	return (
 		<div className='pageLogin'>
-			<div className='schedaForm'>
+			<div id='schedaFormLogin'>
 				<div id='divh1'>
 					<h1>Login</h1>
 				</div>
@@ -72,9 +92,18 @@ const LoginPage = () => {
 					>
 						<p className='messaggioErrore'>{errore.messaggio}</p>
 					</div>
-					<button id='submit' onClick={submitLoginCliccato}>
+					<button
+						id='submit'
+						onClick={submitLoginCliccato}
+						style={
+							!errore.presente ? { marginTop: "15px" } : { marginTop: "0px" }
+						}
+					>
 						Login
 					</button>
+				</div>
+				<div id='linkLogin'>
+					<a href='/register'>Non hai un account? Registrati!</a>
 				</div>
 			</div>
 		</div>
