@@ -84,12 +84,6 @@ server.post("/send/cart", (req, res) => {
 server.post("/register/user", async function (req, res) {
 	console.log("-----------------");
 	console.log("registrazione utente");
-	//forse si può provare anche con questa sintassi : const {email, password} = req.body; e poi usare email e password come variabili
-	// let nome = req.body.nome;
-	// let cognome = req.body.cognome;
-	// let email = req.body.email;
-	// let password = req.body.password;
-	// let confirm_password = req.body.confirm_password;
 
 	const { nome, cognome, email, password, confirm_password } = req.body;
 
@@ -107,6 +101,7 @@ server.post("/register/user", async function (req, res) {
 		res.send("Le password non combaciano!");
 		res.end();
 	}
+
 	const { valid, reason, validators } = await validate(email);
 
 	if (valid) {
@@ -145,7 +140,14 @@ server.post("/login/user", async function (req, res) {
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				console.log("Login effettuato");
-				res.send("Login effettuato");
+
+				res.send({
+					id: result[0].id,
+					nome: result[0].nome,
+					cognome: result[0].cognome,
+					email: result[0].email,
+				});
+
 				res.end();
 			} else {
 				res.send("Utente non trovato");

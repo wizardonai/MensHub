@@ -33,10 +33,7 @@ export async function getProdotti() {
 
 export async function sendOrder(carrello) {
 	let response;
-	console.log(carrello);
 	let data = JSON.stringify({ carrello: carrello });
-
-	console.log("DATA: " + data);
 
 	let config = {
 		method: "post",
@@ -52,7 +49,6 @@ export async function sendOrder(carrello) {
 		.request(config)
 		.then((res) => {
 			response = res.data;
-			console.log("Risposta" + response);
 		})
 		.catch((err) => {
 			console.log(err);
