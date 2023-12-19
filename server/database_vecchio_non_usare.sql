@@ -71,6 +71,7 @@ CREATE TABLE `menu` (
 CREATE TABLE `ordini` (
   `id` int(11) NOT NULL,
   `id_mensa` int(11) NOT NULL,
+  `id_utente` int(11) NOT NULL,
   `str_prod` varchar(255) NOT NULL,
   `quantita` varchar(255) NOT NULL,
   `fd` tinyint(1) DEFAULT NULL

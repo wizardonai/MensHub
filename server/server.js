@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 const { json, urlencoded } = bodyParser;
 
 const server = express();
+const secretKey = 'CaccaPoopShitMierda';
 
 server.use(cors());
 server.use(json());
@@ -28,12 +29,12 @@ connection.connect(function (err) {
 });
 
 //deploy react
-// server.use(express.static("../client/build")); //questa stringa va sostituita con "../client/build" una volta buildato il progetto
+ server.use(express.static("../client/build"));
 
 //all methods that return a response to the client
-// server.get("/", (req, res) => {
+//server.get("/", (req, res) => {
 // 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
-// });
+//});
 
 server.post("/request/products", (req, res) => {
   let data = req.body;
@@ -55,7 +56,7 @@ server.post("/send/cart", (req, res) => {
 
 	let data = req.body.carrello;
 	console.log(data);
-	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita) VALUES(${data[0].id_mensa},"`;
+	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita, id_utente) VALUES(${data[0].id_mensa},"`;
 	data.forEach((item, index) => {
 		query += `${item.id}`;
 		if (index !== data.length - 1) query += ",";
@@ -65,13 +66,13 @@ server.post("/send/cart", (req, res) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
 	});
-	query += `","`;
+	/* query += `","`;
 	data.forEach((item, index) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1)
 			query += ",";
-	});
-	query += `");`;
+	}); questo pezzo di codice è spownato dal branch di opal penso si inutile ma è da verificare */
+	query += `",${req.body.id_utente});`; //aggiunto id utente da testare
 	console.log(query);
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
@@ -147,20 +148,13 @@ server.post("/login/user", async function (req, res) {
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				console.log("Login effettuato");
-
-				/*res.send({
-					id: result[0].id,
-					nome: result[0].nome,
-					cognome: result[0].cognome,
-					email: result[0].email,
-				});*/
 				console.log("Id="+result[0].id);
 				const token = jwt.sign({
 					id: result[0].id,
 					nome: result[0].nome,
 					cognome: result[0].cognome,
 					email: result[0].email,
-				}, 'CaccaPoopShitMierda', { expiresIn: '1h' }); // Sostituisci 'chiaveSegreta' con una chiave segreta sicura
+				}, secretKey, { expiresIn: '1h' });
 
 				// Invia il token al client
 				res.json({ token });
@@ -180,6 +174,27 @@ server.post("/login/user", async function (req, res) {
 		// });
 		res.send("Email non valida!");
 		res.end();
+	}
+});
+
+
+server.post("/request/profile", (req,res) => {
+	//controllo che il token di sessione sia valido
+	let token = req.headers.authorization;
+	if(!token)
+		res.send("Token non trovato");
+	else {
+		console.log(token);
+		jwt.verify(token.replace('Bearer ', ''),secretKey,(err,decoded)=> {
+			if(err) {
+				console.log(err);
+				res.send(err);
+			}else {
+				console.log(decoded);	
+				res.send(decoded);
+			}
+			res.end();
+		});
 	}
 });
 
