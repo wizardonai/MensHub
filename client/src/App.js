@@ -197,6 +197,6 @@ export default App;
 
 - prezzo che superati i 100€ esce dallo schermo
 - stile dei filtri
-
+- rimozione local storage di cart e datiUtente dopo il logout
 
 */
