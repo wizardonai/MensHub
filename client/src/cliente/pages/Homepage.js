@@ -43,7 +43,6 @@ const NPIUACQ = 5;
 
 const HomePage = ({ elencoProdotti }) => {
 	elencoProdotti = JSON.parse(elencoProdotti);
-	console.log(elencoProdotti);
 
 	const [piuAcq, setPiuAcq] = useState([]);
 

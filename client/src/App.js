@@ -150,7 +150,6 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log("entro qua");
 		const utenteTmp = localStorage.getItem("login");
 		if (utenteTmp === "cliente") {
 			//

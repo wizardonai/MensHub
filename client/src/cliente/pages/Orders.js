@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import "./css/Orders.css";
@@ -22,13 +22,15 @@ function rimuoviDalCarrello(item, carrello, setCarrello) {
 const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 	return (
 		<div className='elementoCarrello' key={index}>
-			<img src={item.indirizzoImg} alt='' />
+			<div className='divImg'>
+				<img src={item.indirizzoImg} alt='' />
+			</div>
 			<p className='nomeElementoCarrello'>{item.nome}</p>
 			<div className='pulsantiCarrello'>
 				<p className='quantitaCarrello'>
 					{JSON.parse(localStorage.getItem("cart"))[index].quantita}
 				</p>
-				<div
+				{/* <div
 					className='pulsanteMeno'
 					onClick={() => {
 						let elementi = JSON.parse(localStorage.getItem("cart"));
@@ -44,7 +46,7 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 				>
 					<img src={hostname + "minus.png"} alt='' />
 				</div>
-				<div
+				<div\\
 					className='pulsantePiu'
 					onClick={() => {
 						let elementi = JSON.parse(localStorage.getItem("cart"));
@@ -55,7 +57,40 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 					}}
 				>
 					<img src={hostname + "plus.png"} alt='' />
+				</div> */}
+				<div className='divSuEgiu'>
+					<img
+						src={hostname + "goBack.png"}
+						alt=''
+						onClick={() => {
+							let elementi = JSON.parse(localStorage.getItem("cart"));
+							elementi[index].quantita += 1;
+							localStorage.setItem("cart", JSON.stringify(elementi));
+
+							setCarrello(JSON.parse(localStorage.getItem("cart")));
+						}}
+					/>
+					<img
+						src={hostname + "goBack.png"}
+						alt=''
+						onClick={() => {
+							let elementi = JSON.parse(localStorage.getItem("cart"));
+							elementi[index].quantita -= 1;
+							localStorage.setItem("cart", JSON.stringify(elementi));
+
+							if (elementi[index].quantita === 0) {
+								rimuoviDalCarrello(item, carrello, setCarrello);
+							}
+
+							setCarrello(JSON.parse(localStorage.getItem("cart")));
+						}}
+					/>
 				</div>
+			</div>
+			<div className='divPrezzo'>
+				<p className='prezzoSingolo'>
+					{(item.prezzo * item.quantita).toFixed(2)}€
+				</p>
 			</div>
 		</div>
 	);
@@ -86,11 +121,22 @@ function Orders({ hostname }) {
 	const [carrello, setCarrello] = useState(
 		JSON.parse(localStorage.getItem("cart"))
 	);
+	const [prezzoTot, setPrezzoTot] = useState(0.0);
+
+	useEffect(() => {
+		let tot = 0;
+		carrello.forEach((item) => {
+			tot += item.prezzo * item.quantita;
+		});
+		setPrezzoTot(tot.toFixed(2));
+	}, [carrello]);
 
 	return (
 		<div className='page'>
-			<Topbar page='orders' />
+			{/* <Topbar page='orders' /> */}
 			<div className='container' id='containerOrders'>
+				<p id='titoloCarrello'>Carrello</p>
+				<p id='totalePrezzo'>Totale: {prezzoTot}€</p>
 				{carrello.length >= 1 ? (
 					<>
 						<div id='elementiCarrello'>

@@ -1,37 +1,81 @@
 #containerOrders {
 	overflow-y: scroll;
+	height: 90svh;
 }
+
+#titoloCarrello {
+	font-size: 45px;
+	margin: 20px 0 0 20px;
+}
+#totalePrezzo {
+	width: 100%;
+	text-align: right;
+	font-size: 25px;
+	border-bottom: 2px solid gray;
+}
+
 #elementiCarrello {
 	display: flex;
 	flex-direction: column;
 }
+
 .elementoCarrello {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 1px solid gray;
+	border-bottom: 2px solid gray;
+	/* border-top: 2px solid gray; */
 	padding: 5px;
-	height: 60px;
+	height: 80px;
 }
-.elementoCarrello img {
-	width: 55px;
+.divImg {
+	width: 60px;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.divImg img {
+	width: 15svw;
 	height: 55px;
 }
 .nomeElementoCarrello {
-	font-size: 25px;
+	font-size: 22px;
 	margin-left: 5px;
 	text-align: center;
+	width: 45svw;
 }
 
 .pulsantiCarrello {
 	display: flex;
 	flex-direction: row;
-	justify-content: flex-end;
+	justify-content: center;
 	align-items: center;
 	height: 35px;
+	width: 22svw;
 }
-.pulsantiCarrello div {
+
+.quantitaCarrello {
+	font-size: 22px;
+	margin-right: 5px;
+}
+.divSuEgiu {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.divSuEgiu img {
+	width: 23px;
+}
+.divSuEgiu img:nth-child(1) {
+	rotate: 90deg;
+}
+.divSuEgiu img:nth-child(2) {
+	rotate: -90deg;
+}
+/* .pulsantiCarrello div {
 	width: 30px;
 	height: 30px;
 	display: flex;
@@ -39,12 +83,8 @@
 	align-items: center;
 	background-color: rgb(26, 93, 26);
 	border-radius: 5px;
-}
-.quantitaCarrello {
-	font-size: 25px;
-	margin-right: 5px;
-}
-.pulsanteMeno {
+} 
+/* .pulsanteMeno {
 	margin-right: 5px;
 }
 .pulsanteMeno img {
@@ -63,6 +103,15 @@
 	height: 25px;
 	filter: invert(78%) sepia(41%) saturate(587%) hue-rotate(356deg)
 		brightness(105%) contrast(97%);
+} */
+
+.divPrezzo {
+	width: 18svw;
+}
+.prezzoSingolo {
+	font-size: 22px;
+	text-align: center;
+	margin-left: 2px;
 }
 
 #messaggioFullPage {

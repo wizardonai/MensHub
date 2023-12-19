@@ -53,7 +53,7 @@ const LoginPage = ({ refreshStorage }) => {
 
 		if (!errore) {
 			loginUser({ email: valueEmail, password: valuePassword }).then((res) => {
-				if (res !== "Login effettuato") {
+				if (typeof res === "string") {
 					setErrore((prev) => ({
 						presente: true,
 						messaggio: (
@@ -65,6 +65,7 @@ const LoginPage = ({ refreshStorage }) => {
 					errore = true;
 				} else {
 					localStorage.setItem("login", "cliente");
+					localStorage.setItem("datiUtente", JSON.stringify(res));
 					refreshStorage();
 					navigate("/home");
 				}
