@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import "./css/Orders.css";
@@ -20,35 +20,26 @@ function rimuoviDalCarrello(item, carrello, setCarrello) {
 }
 
 const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
-	const [quantita, setQuantita] = useState(
-		JSON.parse(localStorage.getItem("cart"))[index].quantita
-	);
-
-	let quantitaPerAggiornare = JSON.parse(localStorage.getItem("cart"))[index]
-		.quantita;
-
-	useEffect(() => {
-		localStorage.setItem("cart", localStorage.getItem("cart"));
-	}, [quantitaPerAggiornare]);
-
 	return (
 		<div className='elementoCarrello' key={index}>
 			<img src={item.indirizzoImg} alt='' />
 			<p className='nomeElementoCarrello'>{item.nome}</p>
 			<div className='pulsantiCarrello'>
-				<p className='quantitaCarrello'>{quantita}</p>
+				<p className='quantitaCarrello'>
+					{JSON.parse(localStorage.getItem("cart"))[index].quantita}
+				</p>
 				<div
 					className='pulsanteMeno'
 					onClick={() => {
 						let elementi = JSON.parse(localStorage.getItem("cart"));
 						elementi[index].quantita -= 1;
 						localStorage.setItem("cart", JSON.stringify(elementi));
-						setQuantita(elementi[index].quantita);
-						quantitaPerAggiornare -= 1;
 
 						if (elementi[index].quantita === 0) {
 							rimuoviDalCarrello(item, carrello, setCarrello);
 						}
+
+						setCarrello(JSON.parse(localStorage.getItem("cart")));
 					}}
 				>
 					<img src={hostname + "minus.png"} alt='' />
@@ -59,8 +50,8 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 						let elementi = JSON.parse(localStorage.getItem("cart"));
 						elementi[index].quantita += 1;
 						localStorage.setItem("cart", JSON.stringify(elementi));
-						setQuantita(elementi[index].quantita);
-						quantitaPerAggiornare += 1;
+
+						setCarrello(JSON.parse(localStorage.getItem("cart")));
 					}}
 				>
 					<img src={hostname + "plus.png"} alt='' />
@@ -73,36 +64,28 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 const ListaCarrello = ({ carrello, hostname, setCarrello }) => {
 	let lista = [];
 
-	if (carrello.length !== 0) {
-		carrello.forEach((item, index) => {
-			lista.push(
-				<ElementoCarrello
-					index={index}
-					item={item}
-					hostname={hostname}
-					key={index}
-					carrello={carrello}
-					setCarrello={setCarrello}
-				/>
-			);
-		});
+	carrello.forEach((item, index) => {
+		lista.push(
+			<ElementoCarrello
+				index={index}
+				item={item}
+				hostname={hostname}
+				key={index}
+				carrello={carrello}
+				setCarrello={setCarrello}
+			/>
+		);
+	});
 
-		return lista;
-	}
-	return "";
+	return lista;
 };
 
 function Orders({ hostname }) {
 	const [popup, setPopup] = useState(false);
-	const [messaggioPopup, setMessaggioPopup] = useState("");
 
 	const [carrello, setCarrello] = useState(
 		JSON.parse(localStorage.getItem("cart"))
 	);
-
-	useEffect(() => {
-		setCarrello(JSON.parse(localStorage.getItem("cart")));
-	}, [localStorage.getItem("cart")]);
 
 	return (
 		<div className='page'>
@@ -121,29 +104,16 @@ function Orders({ hostname }) {
 							className='pulsanteFixatoInBasso'
 							onClick={() => {
 								setPopup(true);
-								if (carrello.length >= 1) {
-									setMessaggioPopup("Ordinazione eseguita con successo!");
-									sendOrder(JSON.parse(localStorage.getItem("cart"))).then(
-										() => {
-											localStorage.setItem("cart", JSON.stringify([]));
-											setCarrello([]);
-										}
-									);
-								} else {
-									setMessaggioPopup("Il carrello è vuoto!");
-								}
-								setTimeout(() => {
-									setPopup(false);
-								}, 1250);
+								sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
+									setTimeout(() => {
+										setPopup(false);
+									}, 1250);
+									localStorage.setItem("cart", JSON.stringify([]));
+									setCarrello([]);
+								});
 							}}
 						>
 							<div>Ordina ora!</div>
-						</div>
-						<div
-							className='popup'
-							style={popup ? { display: "flex" } : { display: "none" }}
-						>
-							<p>{messaggioPopup}</p>
 						</div>
 					</>
 				) : (
@@ -151,6 +121,12 @@ function Orders({ hostname }) {
 						Aggiungi prodotti dalla pagina menu...
 					</div>
 				)}
+				<div
+					className='popup'
+					style={popup ? { display: "flex" } : { display: "none" }}
+				>
+					<p>Ordinazione eseguita con successo!</p>
+				</div>
 			</div>
 			<Navbar page='orders' />
 		</div>
@@ -158,3 +134,10 @@ function Orders({ hostname }) {
 }
 
 export default Orders;
+
+/*
+- definizione di organizzazione [52]
+- modello di organizzazione gerarchico (modello di mizenberg) [53]
+- organigramma
+- ...
+*/

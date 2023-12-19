@@ -1,0 +1,89 @@
+.pageLogin {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: 100svw;
+	height: 100svh;
+	background: #f5f5f5;
+}
+#schedaFormLogin {
+	width: 80svw;
+	height: 350px;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border-radius: 28px;
+	background: #f5f5f5;
+	box-shadow: 12px 12px 24px #c5c5c5, -12px -12px 24px #fbfbfb;
+}
+
+.schedaForm #divh1 {
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 20%;
+	margin-top: 15px;
+}
+#formLogin {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 70%;
+}
+
+#formLogin input,
+.errore {
+	margin: 0 0 5px 0;
+}
+
+#formLogin input,
+#formLogin #submit {
+	text-align: center;
+	/* margin: 15px 0; */
+	font-size: 20px;
+	padding: 5px;
+	border-radius: 15px;
+	outline: none;
+	border: 1px solid darkgray;
+	width: 90%;
+	height: 25px;
+}
+#formLogin #submit {
+	background-color: green;
+	color: white;
+	border: 0;
+	width: 50%;
+	height: 50px;
+}
+#formLogin #submit:hover {
+	cursor: pointer;
+}
+
+.errore {
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 90%;
+	margin: 15px 0;
+}
+.messaggioErrore {
+	color: red;
+	font-weight: bold;
+	text-align: center;
+	width: 100%;
+}
+
+#linkLogin {
+	height: 5%;
+	margin-bottom: 10px;
+	font-size: 17px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

@@ -30,7 +30,9 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 
 	const location = new useLocation();
 	const [parametri, setParametri] = useState([]);
-	const [prodotto, setProdotto] = useState({});
+	const [prodotto, setProdotto] = useState({
+		allergeni: "",
+	});
 
 	const [espandi, setEspandi] = useState(false);
 
@@ -39,22 +41,34 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 	useEffect(() => {
 		let tmp = location.search.replace("?", "").split("&");
 
-		let provaArrayAssociativo = [];
+		let parametri = [];
 
 		for (let i = 0; i < tmp.length; i++) {
 			tmp[i] = tmp[i].split("=");
-			provaArrayAssociativo[tmp[i][0]] = tmp[i][1];
+			parametri[tmp[i][0]] = tmp[i][1];
 		}
 
-		setParametri(provaArrayAssociativo);
+		setParametri(parametri);
 
 		elencoProdotti.prodotti.forEach((item) => {
-			if (item.id === parseInt(provaArrayAssociativo["prodotto"])) {
+			if (item.id === parseInt(parametri["prodotto"])) {
 				setProdotto(item);
 			}
 		});
 		//eslint-disable-next-line
 	}, []);
+
+	function prodottoGiaEsistente(id) {
+		let tmp = JSON.parse(localStorage.getItem("cart"));
+
+		for (let i = 0; i < tmp.length; i++) {
+			if (tmp[i].id === id) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
 
 	return (
 		<>
@@ -90,12 +104,14 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 								id='elencoAllergeni'
 								style={espandi ? { display: "block" } : { display: "none" }}
 							>
-								{prodotto.allergeni !== undefined ? (
+								{prodotto.allergeni !== "" ? (
 									<ListaAllergeni
 										arr={prodotto.allergeni.replace(" ", "").split(",")}
 									/>
 								) : (
-									""
+									<p className='elementoAllergeno sfondoGrigietto'>
+										Nessun allergeno presente!
+									</p>
 								)}
 							</div>
 						</div>
@@ -103,13 +119,22 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 					<div
 						className='pulsanteFixatoInBasso'
 						onClick={() => {
+							let tmp;
 							if (!popup) {
-								let tmp = JSON.parse(localStorage.getItem("cart"));
+								const ris = prodottoGiaEsistente(prodotto.id);
 
-								//aggiunto prodotto con quantita
-								let tmp2 = prodotto;
-								tmp2.quantita = 1;
-								tmp.push(tmp2);
+								tmp = JSON.parse(localStorage.getItem("cart"));
+
+								if (ris >= 0) {
+									tmp[ris].quantita += 1;
+								} else {
+									tmp = JSON.parse(localStorage.getItem("cart"));
+
+									tmp.push({
+										...prodotto,
+										quantita: 1,
+									});
+								}
 								localStorage.setItem("cart", JSON.stringify(tmp));
 
 								//popup

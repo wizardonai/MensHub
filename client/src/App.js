@@ -1,12 +1,17 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
-import HomePage from "./pages/Homepage";
-import Menu from "./pages/Menu";
-import Orders from "./pages/Orders";
-import Profile from "./pages/Profile";
-import ProductPage from "./pages/ProductPage";
+import HomePage from "./cliente/pages/Homepage";
+import Menu from "./cliente/pages/Menu";
+import Orders from "./cliente/pages/Orders";
+import Profile from "./cliente/pages/Profile";
+import ProductPage from "./cliente/pages/ProductPage";
 import { useEffect, useState } from "react";
 
-import { getProdotti } from "./scripts/fetch";
+import { getProdotti } from "./cliente/scripts/fetch";
+import LoginPage from "./login/pages/LoginPage";
+import RegisterPage from "./login/pages/RegisterPage";
+
+const hostname =
+	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/image/";
 
 const ReinderizzaHome = () => {
 	const navigate = useNavigate();
@@ -17,24 +22,20 @@ const ReinderizzaHome = () => {
 	}, []);
 };
 
-const App = () => {
-	const hostname =
-		process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/";
+const Cliente = ({ refreshStorage }) => {
+	const [prodottiPresi, setProdottiPresi] = useState(false);
 
-	//tutti i dati
-	const [oggettone, setOggettone] = useState({ prodotti: [] });
-
-	//menu
-	const [antipasti, setAntipasti] = useState(false);
-	const [primi, setPrimi] = useState(false);
-	const [secondi, setSecondi] = useState(false);
-	const [contorni, setContorni] = useState(false);
-	const [panini, setPanini] = useState(false);
-	const [dolci, setDolci] = useState(false);
+	//stati
+	const [elencoProdotti, setElencoProdotti] = useState({ prodotti: [] });
 	const [stringaSearch, setStringaSearch] = useState("");
-
-	//aspetto che arrivino dal server
-	const [pagDaStamp, setPagDaStamp] = useState(false);
+	const [filtri, setFiltri] = useState({
+		antipasti: false,
+		primi: false,
+		secondi: false,
+		contorni: false,
+		panini: false,
+		dolci: false,
+	});
 
 	function aggiungiHostname(prodotti) {
 		let tmp = prodotti;
@@ -48,51 +49,39 @@ const App = () => {
 
 	useEffect(() => {
 		getProdotti().then((res) => {
-			let tmp = {
-				prodotti: aggiungiHostname(res),
-			};
-			setOggettone(tmp);
-			// console.log(tmp);
-			setPagDaStamp(true);
+			setElencoProdotti({ prodotti: aggiungiHostname(res) });
+
+			if (
+				localStorage.getItem("cart") === null ||
+				localStorage.getItem("cart") === ""
+			) {
+				localStorage.setItem("cart", JSON.stringify([]));
+			}
+
+			setProdottiPresi(true);
 		});
-		if (
-			localStorage.getItem("cart") === null ||
-			localStorage.getItem("cart") === ""
-		) {
-			localStorage.setItem("cart", JSON.stringify([]));
-		}
-		//eslint-disable-next-line
 	}, []);
 
 	return (
 		<>
-			{pagDaStamp ? (
+			{prodottiPresi ? (
 				<Routes>
-					<Route path='/' element={<ReinderizzaHome />} />
 					<Route
 						path='/home'
-						element={<HomePage elencoProdotti={JSON.stringify(oggettone)} />}
+						element={
+							<HomePage elencoProdotti={JSON.stringify(elencoProdotti)} />
+						}
 					/>
 					<Route
 						path='/menu'
 						element={
 							<Menu
-								antipasti={antipasti}
-								primi={primi}
-								secondi={secondi}
-								contorni={contorni}
-								panini={panini}
-								dolci={dolci}
-								setAntipasti={setAntipasti}
-								setPrimi={setPrimi}
-								setSecondi={setSecondi}
-								setContorni={setContorni}
-								setPanini={setPanini}
-								setDolci={setDolci}
-								elencoProdotti={JSON.stringify(oggettone)}
+								elencoProdotti={JSON.stringify(elencoProdotti)}
 								stringaSearch={stringaSearch}
 								setStringaSearch={setStringaSearch}
 								hostname={hostname}
+								filtri={filtri}
+								setFiltri={setFiltri}
 							/>
 						}
 					/>
@@ -100,17 +89,104 @@ const App = () => {
 						path='/menu/product'
 						element={
 							<ProductPage
-								elencoProdotti={JSON.stringify(oggettone)}
+								elencoProdotti={JSON.stringify(elencoProdotti)}
 								hostname={hostname}
 							/>
 						}
 					/>
 					<Route path='/orders' element={<Orders hostname={hostname} />} />
-					<Route path='/profile' Component={Profile} />
+					<Route
+						path='/profile'
+						element={<Profile refreshStorage={refreshStorage} />}
+					/>
+					<Route path='*' element={<ReinderizzaHome />} />
 				</Routes>
 			) : (
 				""
 			)}
+		</>
+	);
+};
+
+const NavigateLogin = () => {
+	const navigate = useNavigate();
+	useEffect(() => {
+		navigate("/login");
+	});
+};
+const Login = ({ refreshStorage }) => {
+	return (
+		<Routes>
+			<Route
+				path='/login'
+				element={<LoginPage refreshStorage={refreshStorage} />}
+			/>
+			<Route path='/register' element={<RegisterPage />} />
+			<Route path='*' element={<NavigateLogin />} />
+		</Routes>
+	);
+};
+
+const App = () => {
+	const navigate = useNavigate();
+
+	//aspetto che arrivino dal server
+	const [utente, setUtente] = useState("no");
+
+	const refreshStorage = () => {
+		setUtente(localStorage.getItem("login"));
+		return localStorage.getItem("login");
+	};
+
+	useEffect(() => {
+		if (
+			localStorage.getItem("login") === null ||
+			localStorage.getItem("login") === ""
+		) {
+			localStorage.setItem("login", "no");
+		}
+
+		refreshStorage();
+	}, []);
+
+	useEffect(() => {
+		const utenteTmp = localStorage.getItem("login");
+		if (utenteTmp === "cliente") {
+			//
+		} else if (utenteTmp === "produttore") {
+			//
+		} else {
+			setUtente("no");
+		}
+		//eslint-disable-next-line
+	}, [utente]);
+
+	return (
+		<>
+			{
+				utente === "cliente" ? (
+					<Cliente refreshStorage={refreshStorage} />
+				) : utente === "produttore" ? (
+					<p>Produttore</p>
+				) : (
+					<Login refreshStorage={refreshStorage} />
+				)
+				/*
+			(
+				<div
+					style={{
+						height: "100svh",
+						width: "100%",
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<p>Caricamento...</p>
+				</div>
+			)
+			*/
+			}
 		</>
 	);
 };
