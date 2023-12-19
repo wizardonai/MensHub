@@ -39,9 +39,11 @@ const Lista = ({ filtro, elencoProdotti }) => {
 
 	const list = [];
 
-	prodottiFiltrati.filtrati.forEach((item) => {
-		list.push(<ElementoLista item={item} key={item.id} />);
-	});
+	if (prodottiFiltrati.filtrati !== undefined) {
+		prodottiFiltrati.filtrati.forEach((item) => {
+			list.push(<ElementoLista item={item} key={item.id} />);
+		});
+	}
 
 	return list;
 };
