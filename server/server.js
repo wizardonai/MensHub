@@ -3,6 +3,7 @@ import express from "express";
 //probabilmente da cambiare con express.Router();
 import { validate } from "deep-email-validator";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 import bodyParser from "body-parser";
 const { json, urlencoded } = bodyParser;
 
@@ -64,7 +65,7 @@ server.post("/send/cart", (req, res) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
 	});
-	query+=`","`;
+	query += `","`;
 	data.forEach((item, index) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1)
@@ -147,13 +148,24 @@ server.post("/login/user", async function (req, res) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				console.log("Login effettuato");
 
-				res.send({
+				/*res.send({
 					id: result[0].id,
 					nome: result[0].nome,
 					cognome: result[0].cognome,
 					email: result[0].email,
-				});
+				});*/
+				console.log("Id="+result[0].id);
+				const token = jwt.sign({
+					id: result[0].id,
+					nome: result[0].nome,
+					cognome: result[0].cognome,
+					email: result[0].email,
+				}, 'CaccaPoopShitMierda', { expiresIn: '1h' }); // Sostituisci 'chiaveSegreta' con una chiave segreta sicura
 
+				// Invia il token al client
+				res.json({ token });
+				
+				res.send();
 				res.end();
 			} else {
 				res.send("Utente non trovato");
