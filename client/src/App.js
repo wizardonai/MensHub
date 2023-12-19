@@ -1,14 +1,16 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import HomePage from "./cliente/pages/Homepage";
 import Menu from "./cliente/pages/Menu";
 import Orders from "./cliente/pages/Orders";
 import Profile from "./cliente/pages/Profile";
 import ProductPage from "./cliente/pages/ProductPage";
-import { useEffect, useState } from "react";
-
-import { getProdotti } from "./cliente/scripts/fetch";
 import LoginPage from "./login/pages/LoginPage";
 import RegisterPage from "./login/pages/RegisterPage";
+
+import { getProdotti } from "./cliente/scripts/fetch";
+
+import "./App.css";
 
 const hostname =
 	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/image/";
@@ -128,8 +130,6 @@ const Login = ({ refreshStorage }) => {
 };
 
 const App = () => {
-	const navigate = useNavigate();
-
 	//aspetto che arrivino dal server
 	const [utente, setUtente] = useState("no");
 
@@ -192,3 +192,11 @@ const App = () => {
 };
 
 export default App;
+
+/*cose da implementare
+
+- prezzo che superati i 100€ esce dallo schermo
+- stile dei filtri
+
+
+*/
