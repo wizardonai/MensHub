@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
-// import "./css/ProductPage.css";
+import "./css/ProductPage.css";
 import { useEffect, useState } from "react";
 
 const ListaAllergeni = ({ arr }) => {
@@ -83,7 +83,7 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 	return (
 		<>
 			<div className='page'>
-				<Topbar page='product' daDoveArrivo={parametri["daDoveArrivo"]} />
+				<Topbar titolo='product' daDoveArrivo={parametri["daDoveArrivo"]} />
 				<div className='container' style={css.containerProductPage}>
 					<div style={css.informazioniProdotto}>
 						<img src={prodotto.indirizzoImg} alt='' style={css.imgProdotto} />
@@ -112,8 +112,8 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 									alt=''
 									style={
 										espandi
-											? { rotate: "90deg", ...css.imgEspandi }
-											: { rotate: "-90deg", ...css.imgEspandi }
+											? { ...css.imgEspandi, rotate: "90deg" }
+											: { ...css.imgEspandi, rotate: "-90deg" }
 									}
 								/>
 							</div>
@@ -169,17 +169,26 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 					>
 						<div style={css.pulsanteFixatoInBassoDiv}>Aggiungi al carrello</div>
 					</div>
+				</div>
+				<Navbar page='menu' />
+				<div
+					style={
+						popup
+							? css.divSopraPopUp
+							: { ...css.divSopraPopUp, display: "none" }
+					}
+				>
 					<div
 						style={
 							popup
 								? { ...css.popup, display: "flex" }
 								: { ...css.popup, display: "none" }
 						}
+						className='popup'
 					>
-						<p> Aggiunto al carrello!</p>
+						<p>Aggiunto al carrello!</p>
 					</div>
 				</div>
-				<Navbar page='menu' />
 			</div>
 		</>
 	);
@@ -196,10 +205,9 @@ const css = {
 	containerProductPage: {
 		overflowY: "scroll",
 		overflowX: "hidden",
-		height: "83svh",
 	},
 	informazioniProdotto: {
-		padding: "15px",
+		padding: "0 15px 15px 15px",
 		display: "flex",
 		flexDirection: "column",
 		justifyContent: "space-evenly",
@@ -209,6 +217,8 @@ const css = {
 	imgProdotto: {
 		width: "50svw",
 		height: "50svw",
+		maxWidth: "200px",
+		maxHeight: "200px",
 	},
 	nomeProdotto: {
 		width: "100%",
@@ -227,7 +237,7 @@ const css = {
 		height: "25px",
 	},
 	prezzoProdotto: {
-		width: "35%",
+		width: "100%",
 		fontSize: "20px",
 		fontWeight: "bold",
 	},
@@ -276,6 +286,17 @@ const css = {
 	elementoAllergenoPrimoP: {
 		marginLeft: "5px",
 	},
+	divSopraPopUp: {
+		position: "absolute",
+		width: "100svw",
+		height: "100svh",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "transparent",
+		top: "0",
+		left: "0",
+	},
 	popup: {
 		display: "flex",
 		justifyContent: "center",
@@ -284,13 +305,10 @@ const css = {
 		backgroundColor: "#1a5d1a",
 		height: "35svw",
 		width: "55svw",
-		position: "absolute",
-		top: "50%",
-		left: "50%",
-		margin: "-17.5svw 0 0 -27.5svw",
-		fontSize: "7svw",
 		borderRadius: "15px",
 		textAlign: "center",
+		maxWidth: "200px",
+		maxHeight: "127px",
 	},
 	pulsanteFixatoInBasso: {
 		backgroundColor: "transparent",

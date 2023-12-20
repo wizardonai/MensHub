@@ -172,7 +172,7 @@ const Menu = ({
 
 	return (
 		<div className='page'>
-			<Topbar page='menu' />
+			<Topbar titolo='menu' />
 			<div className='container' style={css.containerMenu}>
 				<SearchBar
 					elencoProdotti={elencoProdotti}
@@ -217,7 +217,7 @@ const css = {
 		flexDirection: "row",
 		alignItems: "center",
 		flexWrap: "nowrap",
-		height: "7%",
+		height: "10%",
 		scrollbarWidth: "none",
 	},
 	filtriDiv: {
@@ -250,6 +250,9 @@ const css = {
 		margin: "10px",
 		width: "35svw",
 		height: "50svw",
+		maxWidth: "140px",
+		maxHeight: "200px",
+
 		display: "flex",
 		flexDirection: "column",
 		borderRadius: "15px",
@@ -258,13 +261,15 @@ const css = {
 	divImmagineElemento: {
 		width: "35svw",
 		height: "35svw",
+		maxHeight: "140px",
+		maxWidth: "140px",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	divImmagineElementoImg: {
-		width: "34svw",
-		height: "34svw",
+		width: "90%",
+		height: "90%",
 		borderRadius: "15px",
 	},
 	divNomeElemento: {

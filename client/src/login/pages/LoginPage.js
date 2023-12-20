@@ -114,8 +114,13 @@ const LoginPage = ({ refreshStorage }) => {
 						Login
 					</button>
 				</div>
-				<div style={css.linkLogin}>
-					<a href='/register'>Non hai un account? Registrati!</a>
+				<div
+					style={css.linkLogin}
+					onClick={() => {
+						navigate("/register");
+					}}
+				>
+					<p>Non hai un account? Registrati!</p>
 				</div>
 			</div>
 		</div>
@@ -190,12 +195,11 @@ const css = {
 		height: "50px",
 	},
 	errore: {
-		margin: "0 0 5px 0",
 		flexDirection: "column",
 		alignItems: "center",
 		justifyContent: "center",
 		width: "90%",
-		margin: "15px 0",
+		margin: "15px 0 5px 0",
 	},
 	messaggioErrore: {
 		color: "red",

@@ -71,9 +71,9 @@ const HomePage = ({ elencoProdotti }) => {
 
 	return (
 		<div className='page'>
-			<Topbar page='home' />
+			<Topbar titolo='nome mensa' />
 			<div className='container' style={css.containerHome}>
-				<p style={css.nomeMensa}>UASARD MENS</p>
+				{/* <p style={css.nomeMensa}>UASARD MENS</p> */}
 				<p style={css.titoloHome}>I più venduti</p>
 				<div style={css.slider}>
 					<Slider piuAcq={piuAcq} />
@@ -105,8 +105,7 @@ const css = {
 	titoloHome: {
 		marginTop: "5px",
 		fontSize: "25px",
-		fontWeight: "600",
-		marginLeft: "25px",
+		marginLeft: "15px",
 	},
 	slider: {
 		overflowX: "auto",
@@ -116,10 +115,13 @@ const css = {
 		flexWrap: "nowrap",
 		flexDirection: "row",
 		alignItems: "center",
+		maxHeight: "240px",
 	},
 	elemento: {
 		margin: "10px",
 		width: "35svw",
+		maxWidth: "140px",
+		maxHeight: "200px",
 		height: "50svw",
 		display: "flex",
 		flexDirection: "column",
@@ -129,13 +131,15 @@ const css = {
 	divImmagineElemento: {
 		width: "35svw",
 		height: "35svw",
+		maxHeight: "140px",
+		maxWidth: "140px",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	divImmagineElementoImg: {
-		width: "34svw",
-		height: "34svw",
+		width: "90%",
+		height: "90%",
 		borderRadius: "15px",
 	},
 	divNomeElemento: {

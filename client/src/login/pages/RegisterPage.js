@@ -138,7 +138,7 @@ const RegisterPage = () => {
 								: { ...css.errore, display: "none" }
 						}
 					>
-						<p className='messaggioErrore'>{errore.messaggio}</p>
+						<p style={css.messaggioErrore}>{errore.messaggio}</p>
 					</div>
 					<button
 						onClick={submitLoginCliccato}
@@ -151,8 +151,13 @@ const RegisterPage = () => {
 						Registrati
 					</button>
 				</div>
-				<div style={css.linkRegister}>
-					<a href='/login'>Hai già un account? Loggati!</a>
+				<div
+					style={css.linkRegister}
+					onClick={() => {
+						navigate("/login");
+					}}
+				>
+					<p>Hai già un account? Accedi!</p>
 				</div>
 			</div>
 		</div>
@@ -226,12 +231,11 @@ const css = {
 		height: "50px",
 	},
 	errore: {
-		margin: "0 0 5px 0",
 		flexDirection: "column",
 		alignItems: "center",
 		justifyContent: "center",
 		width: "90%",
-		margin: "15px 0",
+		margin: "15px 0 5px 0",
 	},
 	messaggioErrore: {
 		color: "red",

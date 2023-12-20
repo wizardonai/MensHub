@@ -122,10 +122,10 @@ const css = {
 		padding: "5px 0",
 		justifyContent: "space-evenly",
 		backgroundColor: "white",
-		width: "calc(100% - 25px)",
 		width: "98svw",
 		margin: "0.5svw 0.5svw",
 		outline: "none",
+		maxHeight: "30px",
 	},
 	searchBar: {
 		fontSize: "20px",
@@ -136,6 +136,7 @@ const css = {
 		width: "80%",
 	},
 	bottoneCerca: {
-		width: "6%",
+		height: "6%",
+		maxHeight: "30px",
 	},
 };
