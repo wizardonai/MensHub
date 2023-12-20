@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Dic 04, 2023 alle 17:08
--- Versione del server: 10.4.28-MariaDB
--- Versione PHP: 8.2.4
+-- Creato il: Dic 21, 2023 alle 00:09
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -73,7 +73,8 @@ CREATE TABLE `ordini` (
   `id_mensa` int(11) NOT NULL,
   `str_prod` varchar(255) NOT NULL,
   `quantita` varchar(255) NOT NULL,
-  `fd` tinyint(1) DEFAULT NULL
+  `fd` tinyint(1) DEFAULT NULL,
+  `id_utente` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -101,13 +102,13 @@ CREATE TABLE `prodotti` (
 --
 
 INSERT INTO `prodotti` (`id`, `nome`, `descrizione`, `allergeni`, `prezzo`, `categoria`, `indirizzo_img`, `disponibile`, `nacq`, `id_mensa`, `fd`) VALUES
-(1, 'paninazzo', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 2.30, 'panino', 'products/paninomortazza.png', 1, 1, 1, 0),
-(2, 'carbonara', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 7.30, 'primo', 'products/carbonara.png', 1, 2, 1, 0),
-(3, 'cotoletta con le patatins', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 6.40, 'secondo', 'products/cotoletta.png', 1, 4, 1, 0),
-(4, 'spaghetti all\'arrabbiata', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 5.90, 'primo', 'products/spaghettiArrabbiata.png', 1, 3, 1, 0),
-(5, 'panna cotta', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 1.30, 'dolce', 'products/pannacotta.png', 1, 5, 1, 0),
-(6, 'insalata alla uasards', 'insalata, salsa yogurt e zingari', 'albanesi', 69.69, 'contorno', 'products/insalata.png', 1, 6, 1, 0),
-(7, 'tar tar di ciola', 'ciola tritata da femministe offese', 'femministe', 4.50, 'antipasto', 'products/insalata.png', 1, 106, 1, 0);
+(1, 'Paninazzo', 'Panino con la mortadella', 'glutine, sesamo', 4.50, 'panino', 'products/paninomortazza.png', 1, 7, 1, 0),
+(2, 'Carbonara', 'Pasta alla carbonara', 'uova, latticini, glutine', 8.90, 'primo', 'products/carbonara.png', 1, 14, 1, 0),
+(3, 'Cotoletta con le patatine', 'Cotoletta di pollo accompagnata da delle patatine fritte', 'uova, glutine, latticini, soia, sesamo', 11.20, 'secondo', 'products/cotoletta.png', 1, 8, 1, 0),
+(4, 'Spaghetti all\'arrabbiata', 'Piatto di spaghetti condito con pomodoro e peperoncino', 'glutine, aglio, peperoncino', 8.90, 'primo', 'products/spaghettiArrabbiata.png', 1, 6, 1, 0),
+(5, 'Panna cotta', 'Panna cotta condita con caramello e granella di nocciola', 'latticini, uova, gelatina, frutta a guscio', 4.50, 'dolce', 'products/pannacotta.png', 1, 11, 1, 0),
+(6, 'Insalata', 'Insalata, salsa yogurt e aceto balsamico', 'glutine, latticini, noci, soia, sedano, uova', 7.30, 'contorno', 'products/insalata.png', 1, 15, 1, 0),
+(7, 'Tar tar di manzo', 'Carne di manzo di alta qualità. 100% Made in Italy', ' glutine, uova, senape, cipolla, latticini', 6.40, 'antipasto', 'products/tartare.png', 1, 10, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -121,9 +122,17 @@ CREATE TABLE `utenti` (
   `cognome` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `id_mensa` int(11) NOT NULL,
+  `id_mensa` int(11) DEFAULT NULL,
+  `cliente` tinyint(1) NOT NULL,
   `fd` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `utenti`
+--
+
+INSERT INTO `utenti` (`id`, `nome`, `cognome`, `email`, `password`, `id_mensa`, `cliente`, `fd`) VALUES
+(1, 'Simone', 'Lapomarda', 'simolapomarda@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', NULL, 0, NULL);
 
 --
 -- Indici per le tabelle scaricate
@@ -147,7 +156,8 @@ ALTER TABLE `menu`
 --
 ALTER TABLE `ordini`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_mensa` (`id_mensa`);
+  ADD KEY `id_mensa` (`id_mensa`),
+  ADD KEY `fk_ordini_utenti` (`id_utente`);
 
 --
 -- Indici per le tabelle `prodotti`
@@ -195,7 +205,7 @@ ALTER TABLE `prodotti`
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Limiti per le tabelle scaricate
@@ -211,6 +221,7 @@ ALTER TABLE `menu`
 -- Limiti per la tabella `ordini`
 --
 ALTER TABLE `ordini`
+  ADD CONSTRAINT `fk_ordini_utenti` FOREIGN KEY (`id_utente`) REFERENCES `utenti` (`id`),
   ADD CONSTRAINT `ordini_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`);
 
 --
