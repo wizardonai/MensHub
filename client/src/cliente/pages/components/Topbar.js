@@ -5,7 +5,7 @@ const Topbar = ({ daDoveArrivo, titolo }) => {
 	const navigate = useNavigate();
 
 	return (
-		<div style={css.topbar}>
+		<div style={css.topbar} className='topbar'>
 			{titolo === "product" ? (
 				<img
 					src={goBack}
@@ -48,8 +48,6 @@ const css = {
 		alignItems: "center",
 		height: "10svh",
 		width: "100%",
-		// backgroundColor: "#1a5d1a",
-		// color: "#fbd85d",
 	},
 	titolo: {
 		fontSize: "45px",
@@ -58,14 +56,11 @@ const css = {
 		fontWeight: "500",
 	},
 	imgTornaIndietro: {
-		// position: "absolute",
-		// top: "1.5svh",
-		// left: "1px",
-		height: "4svh",
-		width: "4svh",
+		height: "25px",
+		width: "25px",
 		marginLeft: "5px",
-		// filter:
-		// 	"invert(77%) sepia(82%) saturate(313%) hue-rotate(354deg)brightness(98%) contrast(102%)",
+		filter:
+			"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
 	},
 	titoloIndietro: {
 		fontSize: "27px",

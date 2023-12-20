@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
-import "./css/ProductPage.css";
+import "./css/Popup.css";
 import { useEffect, useState } from "react";
 
 const ListaAllergeni = ({ arr }) => {
@@ -177,6 +177,9 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 							? css.divSopraPopUp
 							: { ...css.divSopraPopUp, display: "none" }
 					}
+					onClick={() => {
+						setPopup(false);
+					}}
 				>
 					<div
 						style={
@@ -301,8 +304,10 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		color: "#fbd85d",
-		backgroundColor: "#1a5d1a",
+		// color: "#fbd85d",
+		// backgroundColor: "#1a5d1a",
+		backgroundColor: "#222",
+		color: "white",
 		height: "35svw",
 		width: "55svw",
 		borderRadius: "15px",
@@ -312,7 +317,7 @@ const css = {
 	},
 	pulsanteFixatoInBasso: {
 		backgroundColor: "transparent",
-		height: "7svh",
+		height: "40px",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
@@ -327,11 +332,13 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		color: "#fbd85d",
-		backgroundColor: "#1a5d1a",
-		fontSize: "20px",
+		border: "2px solid black",
+		fontWeight: "bold",
+		backgroundColor: "#222",
+		color: "#fff",
+		fontSize: "16px",
 		textTransform: "uppercase",
-		width: "80%",
-		borderRadius: "15px 15px 0 0",
+		width: "60%",
+		borderRadius: "15px",
 	},
 };

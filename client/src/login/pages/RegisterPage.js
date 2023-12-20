@@ -157,7 +157,7 @@ const RegisterPage = () => {
 						navigate("/login");
 					}}
 				>
-					<p>Hai già un account? Accedi!</p>
+					<p style={css.linkLoginP}>Hai già un account? Accedi!</p>
 				</div>
 			</div>
 		</div>
@@ -183,6 +183,7 @@ const css = {
 	schedaFormRegister: {
 		width: "80svw",
 		height: "460px",
+		maxWidth: "350px",
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
@@ -250,5 +251,9 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	linkLoginP: {
+		color: "blue",
+		textDecoration: "underline",
 	},
 };

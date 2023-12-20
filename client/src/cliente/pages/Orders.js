@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
-// import "./css/Orders.css";
+import "./css/Popup.css";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 
@@ -21,7 +21,14 @@ function rimuoviDalCarrello(item, carrello, setCarrello) {
 
 const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 	return (
-		<div style={css.elementoCarrello} key={index}>
+		<div
+			style={
+				index !== carrello.length - 1
+					? css.elementoCarrello
+					: { ...css.elementoCarrello, borderBottom: "none" }
+			}
+			key={index}
+		>
 			<div style={css.divImg}>
 				<img src={item.indirizzoImg} alt='' style={css.divImgImg} />
 			</div>
@@ -113,42 +120,48 @@ function Orders({ hostname }) {
 			<div className='container' style={css.containerOrders}>
 				<p style={css.totalePrezzo}>Totale: {prezzoTot}€</p>
 				<div style={css.lineaIniziale}></div>
-				{carrello.length >= 1 ? (
-					<>
-						<div style={css.elementiCarrello}>
-							<ListaCarrello
-								carrello={carrello}
-								hostname={hostname}
-								setCarrello={setCarrello}
-							/>
+				<div style={css.informazioniCarrello}>
+					{carrello.length >= 1 ? (
+						<>
+							<div style={css.elementiCarrello}>
+								<ListaCarrello
+									carrello={carrello}
+									hostname={hostname}
+									setCarrello={setCarrello}
+								/>
+							</div>
+						</>
+					) : (
+						<div style={css.messaggioFullPage}>
+							Aggiungi prodotti dalla pagina menu...
 						</div>
-						<div
-							style={css.pulsanteFixatoInBasso}
-							onClick={() => {
-								setPopup(true);
-								sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
-									setTimeout(() => {
-										setPopup(false);
-									}, 1250);
-									localStorage.setItem("cart", JSON.stringify([]));
-									setCarrello([]);
-								});
-							}}
-						>
-							<div style={css.pulsanteFixatoInBassoDiv}>Ordina ora!</div>
-						</div>
-					</>
-				) : (
-					<div style={css.messaggioFullPage}>
-						Aggiungi prodotti dalla pagina menu...
+					)}
+					<div
+						style={css.pulsanteFixatoInBasso}
+						onClick={() => {
+							setPopup(true);
+							sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
+								setTimeout(() => {
+									setPopup(false);
+								}, 1250);
+								localStorage.setItem("cart", JSON.stringify([]));
+								setCarrello([]);
+							});
+						}}
+					>
+						<div style={css.pulsanteFixatoInBassoDiv}>Ordina ora</div>
 					</div>
-				)}
+				</div>
 			</div>
 			<Navbar page='orders' />
+
 			<div
 				style={
 					popup ? css.divSopraPopUp : { ...css.divSopraPopUp, display: "none" }
 				}
+				onClick={() => {
+					setPopup(false);
+				}}
 			>
 				<div
 					style={
@@ -156,6 +169,7 @@ function Orders({ hostname }) {
 							? { ...css.popup, display: "flex" }
 							: { ...css.popup, display: "none" }
 					}
+					className='popup'
 				>
 					<p>Ordinazione eseguita con successo!</p>
 				</div>
@@ -172,6 +186,10 @@ export default Orders;
 //
 
 const css = {
+	informazioniCarrello: {
+		overflowY: "scroll",
+		height: "calc(100svh - 10svh - 30px - 10svh - 45px)",
+	},
 	totalePrezzo: {
 		width: "97%",
 		textAlign: "right",
@@ -190,31 +208,33 @@ const css = {
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
+		// justifyContent: "center",
 		borderBottom: "2px solid gray",
 		padding: "5px",
 		height: "80px",
 	},
 	divImg: {
-		width: "22svw",
+		width: "18%",
+		maxWidth: "80px",
 		height: "100%",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	divImgImg: {
-		width: "18svw",
-		height: "18svw",
+		width: "70px",
+		height: "70px",
 		borderRadius: "11px",
 		border: "1px solid black",
 	},
 	nomeElementoCarrello: {
-		width: "29svw",
+		width: "40%",
 		overflowX: "scroll",
-		overflowY: "hidden",
 	},
 	nomeElementoCarrelloP: {
 		fontSize: "22px",
 		textAlign: "center",
+		whiteSpace: "nowrap",
 	},
 	pulsantiCarrello: {
 		display: "flex",
@@ -222,7 +242,7 @@ const css = {
 		justifyContent: "center",
 		alignItems: "center",
 		height: "35px",
-		width: "15svw",
+		width: "13%",
 	},
 	quantitaCarrello: {
 		fontSize: "22px",
@@ -236,6 +256,8 @@ const css = {
 	},
 	divSuEgiuImg: {
 		width: "23px",
+		filter:
+			"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
 	},
 	frecciaSu: {
 		rotate: "90deg",
@@ -244,7 +266,7 @@ const css = {
 		rotate: "-90deg",
 	},
 	divPrezzo: {
-		minWidth: "22svw",
+		width: "21%",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
@@ -276,8 +298,10 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		color: "#fbd85d",
-		backgroundColor: "#1a5d1a",
+		// color: "#fbd85d",
+		// backgroundColor: "#1a5d1a",
+		backgroundColor: "#222",
+		color: "white",
 		height: "35svw",
 		width: "55svw",
 		position: "absolute",
@@ -290,7 +314,7 @@ const css = {
 	},
 	pulsanteFixatoInBasso: {
 		backgroundColor: "transparent",
-		height: "7svh",
+		height: "40px",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
@@ -298,18 +322,23 @@ const css = {
 		width: "100%",
 		borderRadius: "15px",
 		position: "fixed",
-		bottom: "calc(10svh)",
+		bottom: "10svh",
 	},
 	pulsanteFixatoInBassoDiv: {
 		height: "100%",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		color: "#fbd85d",
-		backgroundColor: "#1a5d1a",
-		fontSize: "20px",
+		// color: "#fbd85d",
+		// backgroundColor: "#1a5d1a",
+		border: "2px solid black",
+		fontWeight: "bold",
+		backgroundColor: "#222",
+		color: "#fff",
+		fontSize: "16px",
 		textTransform: "uppercase",
-		width: "80%",
-		borderRadius: "15px 15px 0 0",
+		width: "60%",
+		// borderRadius: "15px 15px 0 0",
+		borderRadius: "15px",
 	},
 };

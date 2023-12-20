@@ -120,7 +120,7 @@ const LoginPage = ({ refreshStorage }) => {
 						navigate("/register");
 					}}
 				>
-					<p>Non hai un account? Registrati!</p>
+					<p style={css.linkLoginP}>Non hai un account? Registrati!</p>
 				</div>
 			</div>
 		</div>
@@ -147,6 +147,7 @@ const css = {
 	schedaFormLogin: {
 		width: "80svw",
 		height: "350px",
+		maxWidth: "350px",
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
@@ -214,5 +215,9 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	linkLoginP: {
+		color: "blue",
+		textDecoration: "underline",
 	},
 };

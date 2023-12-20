@@ -31,22 +31,37 @@ const ElementoLista = ({ item }) => {
 };
 //lista completa
 const Lista = ({ filtro, elencoProdotti }) => {
-	let prodottiFiltrati;
+	// if (filtro !== "") {
+	// 	prodottiFiltrati = Object.groupBy(elencoProdotti, (element) => {
+	// 		return element.categoria === filtro ? "filtrati" : "nonFiltrati";
+	// 	});
+	// } else {
+	// 	prodottiFiltrati = { filtrati: elencoProdotti };
+	// }
+
+	//
+
+	// if (prodottiFiltrati.filtrati !== undefined) {
+	// 	prodottiFiltrati.filtrati.forEach((item) => {
+	// 		list.push(<ElementoLista item={item} key={item.id} />);
+	// 	});
+	// }
+
+	let prodottiFiltrati = [];
 	if (filtro !== "") {
-		prodottiFiltrati = Object.groupBy(elencoProdotti, (element) => {
-			return element.categoria === filtro ? "filtrati" : "nonFiltrati";
+		elencoProdotti.forEach((item) => {
+			if (filtro === item.categoria) {
+				prodottiFiltrati.push(item);
+			}
 		});
 	} else {
-		prodottiFiltrati = { filtrati: elencoProdotti };
+		prodottiFiltrati = elencoProdotti;
 	}
 
-	const list = [];
-
-	if (prodottiFiltrati.filtrati !== undefined) {
-		prodottiFiltrati.filtrati.forEach((item) => {
-			list.push(<ElementoLista item={item} key={item.id} />);
-		});
-	}
+	let list = [];
+	prodottiFiltrati.forEach((item) => {
+		list.push(<ElementoLista item={item} key={item.id} />);
+	});
 
 	return list;
 };
@@ -227,7 +242,7 @@ const css = {
 		fontSize: "20px",
 		padding: "5px 15px",
 		margin: "0.5svw",
-		border: "2px solid black",
+		border: "2px solid #222",
 		borderRadius: "20px",
 		cursor: "pointer",
 	},
@@ -236,11 +251,11 @@ const css = {
 		backgroundColor: "#1a5d1a",
 	},
 	filtroCliccato: {
-		backgroundColor: "black",
+		backgroundColor: "#222",
 		color: "white",
 	},
 	lista: {
-		padding: "15px",
+		padding: "0 15px 15px 15px",
 		display: "flex",
 		flexWrap: "wrap",
 		justifyContent: "center",

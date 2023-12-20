@@ -5,17 +5,23 @@ import Topbar from "./components/Topbar";
 function Profile({ refreshStorage }) {
 	const navigate = useNavigate();
 
-	const dati = JSON.parse(localStorage.getItem("datiUtente"));
+	let dati;
+
+	if (localStorage.getItem("datiUtente") !== undefined) {
+		dati = JSON.parse(localStorage.getItem("datiUtente"));
+	}
 
 	const disconnect = () => {
 		localStorage.setItem("login", "no");
+		localStorage.removeItem("datiUtente");
+		localStorage.removeItem("cart");
 		refreshStorage();
 		navigate("/login");
 	};
 
 	return (
 		<div className='page'>
-			<Topbar titolo='profile' />
+			<Topbar titolo={"Ciao " + dati.nome} />
 			<div className='container'>
 				{dati.nome} {dati.cognome}
 				<div
