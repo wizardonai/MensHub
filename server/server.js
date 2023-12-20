@@ -29,6 +29,7 @@ connection.connect(function (err) {
 });
 
 //deploy react
+server.use("/image", express.static("../client/src/cliente/pages/image"));
  server.use(express.static("../client/build"));
 
 //all methods that return a response to the client
@@ -110,10 +111,11 @@ server.post("/register/user", async function (req, res) {
 		res.end();
 	}
 	//controllo che la mail non sia già presente NON FUNZIONA NON CONCATENA EMAIL
-	query = `SELECT * from utenti where email='${email}'`;
+	let query = `SELECT * FROM utenti WHERE email="${email}";`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
-		if(result.lenght>0) {
+		console.log(result);
+		if(result.length>0) {
 			res.send("email già presente");
 			res.end
 		}
