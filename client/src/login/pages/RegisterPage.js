@@ -132,8 +132,10 @@ const RegisterPage = () => {
 						Registrati
 					</button>
 				</div>
-				<div id='linkRegister'>
-					<a href='/login'>Hai già un account? Loggati!</a>
+				<div id='linkRegister' onClick={() => {
+					navigate("/login");
+				}}>
+					<a>Hai già un account? Loggati!</a>
 				</div>
 			</div>
 		</div>

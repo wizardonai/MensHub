@@ -32,9 +32,9 @@ connection.connect(function (err) {
  server.use(express.static("../client/build"));
 
 //all methods that return a response to the client
-//server.get("/", (req, res) => {
-// 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
-//});
+server.get("/", (req, res) => { //hosto la pagina sullo stesso sito
+ 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
+});
 
 server.post("/request/products", (req, res) => {
   let data = req.body;
@@ -109,6 +109,15 @@ server.post("/register/user", async function (req, res) {
 		res.send("Le password non combaciano!");
 		res.end();
 	}
+	//controllo che la mail non sia già presente NON FUNZIONA NON CONCATENA EMAIL
+	query = `SELECT * from utenti where email='${email}'`;
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+		if(result.lenght>0) {
+			res.send("email già presente");
+			res.end
+		}
+	});
 
 	const { valid, reason, validators } = await validate(email);
 

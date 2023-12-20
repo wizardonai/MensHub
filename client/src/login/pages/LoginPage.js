@@ -103,8 +103,10 @@ const LoginPage = ({ refreshStorage }) => {
 						Login
 					</button>
 				</div>
-				<div id='linkLogin'>
-					<a href='/register'>Non hai un account? Registrati!</a>
+				<div id='linkLogin'  onClick={() => {
+					navigate("/register");
+				}}>
+					<a>Non hai un account? Registrati!</a>
 				</div>
 			</div>
 		</div>
