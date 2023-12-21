@@ -99,7 +99,9 @@ const Cliente = ({ refreshStorage }) => {
 					<Route path='/orders' element={<Orders hostname={hostname} />} />
 					<Route
 						path='/profile'
-						element={<Profile refreshStorage={refreshStorage} />}
+						element={
+							<Profile refreshStorage={refreshStorage} hostname={hostname} />
+						}
 					/>
 					<Route path='*' element={<ReinderizzaHome />} />
 				</Routes>
