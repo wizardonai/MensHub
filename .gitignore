@@ -4,3 +4,6 @@ server/package-lock.json
 server/package.json
 server/yarn.lock
 server/node_modules/.package-lock.json
+client/.env
+client/yarn.lock
+client/.env
