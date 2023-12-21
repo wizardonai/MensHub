@@ -57,7 +57,7 @@ server.post("/send/cart", (req, res) => {
 
 	let data = req.body.carrello;
 	console.log(data);
-	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita, id_utente) VALUES(${data[0].id_mensa},"`;
+	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita, id_utente, stato_ordine) VALUES(${data[0].id_mensa},"`;
 	data.forEach((item, index) => {
 		query += `${item.id}`;
 		if (index !== data.length - 1) query += ",";
@@ -67,7 +67,7 @@ server.post("/send/cart", (req, res) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
 	});
-	query += `",${req.body.id_utente});`; //aggiunto id utente da testare
+	query += `",${req.body.id_utente},"attivo");`; //aggiunto id utente e stato ordine da testare
 	console.log(query);
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
@@ -201,6 +201,24 @@ server.post("/request/profile", (req,res) => {
 			res.end();
 		});
 	}
+});
+
+server.post("/request/orders", (req,res) => {
+	let id_utente = req.body.id_ut;
+	console.log("richiesta ordini per utente ->"+id_utente);
+	console.log("================")
+	let query = `SELECT * FROM utenti WHERE id_utente="${id_utente}" AND stato_ordine="attivo"`;
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+		console.log(result);
+		if(result.length>0) {
+			res.send(result);
+			res.end();
+		}else {
+			res.send("l'utente non ha ordini attivi");
+			res.end();
+		}
+	});
 });
 
 const port = 6969;

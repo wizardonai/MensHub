@@ -74,7 +74,8 @@ CREATE TABLE `ordini` (
   `str_prod` varchar(255) NOT NULL,
   `quantita` varchar(255) NOT NULL,
   `fd` tinyint(1) DEFAULT NULL,
-  `id_utente` int(11) DEFAULT NULL
+  `id_utente` int(11) DEFAULT NULL,
+  `stato_ordine` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
