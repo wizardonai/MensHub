@@ -1,6 +1,4 @@
 //css
-import "../css/SearchBar.css";
-import "../css/Default.css";
 import { useEffect } from "react";
 
 const SearchBar = ({
@@ -83,14 +81,14 @@ const SearchBar = ({
 	}, []);
 
 	return (
-		<div id='divSearchBar'>
-			<img src={hostname + "search.png"} alt='' id='bottoneCerca' />
+		<div style={css.divSearchBar}>
+			<img src={hostname + "search.png"} alt='' style={css.bottoneCerca} />
 			<input
 				type='text'
 				placeholder='Cerca prodotti...'
 				onChange={controlliSearch}
 				value={stringaSearch}
-				id='searchBar'
+				style={css.searchBar}
 				onClick={controlliSearch}
 			/>
 		</div>
@@ -98,3 +96,47 @@ const SearchBar = ({
 };
 
 export default SearchBar;
+
+//
+//
+// stili
+//
+
+const css = {
+	containerSearch: {
+		overflowY: "scroll",
+		overflowX: "hidden",
+	},
+	risultatiRicerca: {
+		display: "flex",
+		flexWrap: "wrap",
+		width: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	divSearchBar: {
+		border: "2px solid black",
+		borderRadius: "20px",
+		display: "flex",
+		alignItems: "center",
+		padding: "5px 0",
+		justifyContent: "space-evenly",
+		backgroundColor: "white",
+		width: "98svw",
+		margin: "0.5svw 0.5svw",
+		outline: "none",
+		maxHeight: "30px",
+	},
+	searchBar: {
+		fontSize: "20px",
+		height: "30px",
+		border: "0",
+		backgroundColor: "transparent",
+		outline: "none",
+		width: "80%",
+	},
+	bottoneCerca: {
+		height: "6%",
+		maxHeight: "30px",
+	},
+};

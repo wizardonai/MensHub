@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import "./css/RegisterPage.css";
-import { registerUser } from "../scripts/fetch";
 import { useNavigate } from "react-router-dom";
+
+import { registerUser } from "../scripts/fetch";
 
 const RegisterPage = () => {
 	const navigate = useNavigate();
@@ -90,52 +90,81 @@ const RegisterPage = () => {
 	};
 
 	return (
-		<div className='pageLogin'>
-			<div id='schedaFormRegister'>
-				<div id='divh1'>
+		<div style={css.pageLogin}>
+			<div style={css.schedaFormRegister}>
+				<div style={css.divh1}>
 					<h1>Registrati</h1>
 				</div>
-				<div id='formRegister' method='get'>
-					<input type='text' placeholder='Nome' name='nome' ref={nome} />
+				<div style={css.formRegister} method='get'>
+					<input
+						type='text'
+						placeholder='Nome'
+						name='nome'
+						ref={nome}
+						style={css.formRegisterInput}
+					/>
 					<input
 						type='text'
 						placeholder='Cognome'
 						name='cognome'
 						ref={cognome}
+						style={css.formRegisterInput}
 					/>
-					<input type='email' placeholder='Email' name='email' ref={email} />
+					<input
+						type='email'
+						placeholder='Email'
+						name='email'
+						ref={email}
+						style={css.formRegisterInput}
+					/>
 					<input
 						type='password'
 						placeholder='Password'
 						name='password'
 						ref={password}
+						style={css.formRegisterInput}
 					/>
 					<input
 						type='password'
 						placeholder='Conferma password'
 						name='password'
 						ref={confermaPassword}
+						style={css.formRegisterInput}
 					/>
 					<div
-						className='errore'
-						style={errore.presente ? { display: "flex" } : { display: "none" }}
+						style={
+							errore.presente
+								? { ...css.errore, display: "flex" }
+								: { ...css.errore, display: "none" }
+						}
 					>
-						<p className='messaggioErrore'>{errore.messaggio}</p>
+						<p style={css.messaggioErrore}>{errore.messaggio}</p>
 					</div>
 					<button
-						id='submit'
 						onClick={submitLoginCliccato}
 						style={
-							!errore.presente ? { marginTop: "15px" } : { marginTop: "0px" }
+							!errore.presente
+								? { ...css.formRegisterSubmit, marginTop: "15px" }
+								: { ...css.formRegisterSubmit, marginTop: "0px" }
 						}
 					>
 						Registrati
 					</button>
 				</div>
+<<<<<<< HEAD
 				<div id='linkRegister' onClick={() => {
 					navigate("/login");
 				}}>
 					<a>Hai già un account? Loggati!</a>
+=======
+				<div
+					style={css.linkRegister}
+					onClick={() => {
+						navigate("/login");
+					}}
+				>
+					<p style={css.linkLoginP}>Hai già un account? Accedi!</p>
+>>>>>>> origin/matteo
 				</div>
 			</div>
 		</div>
@@ -143,3 +172,95 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
+//
+//
+// stili
+//
+
+const css = {
+	pageLogin: {
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		width: "100svw",
+		height: "100svh",
+		background: "#f5f5f5",
+	},
+	schedaFormRegister: {
+		width: "80svw",
+		height: "460px",
+		maxWidth: "350px",
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: "28px",
+		background: "#f5f5f5",
+		boxShadow: "12px 12px 24px #c5c5c5, -12px -12px 24px #fbfbfb",
+	},
+	schedaFormDivh1: {
+		textAlign: "center",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		height: "20%",
+		marginTop: "15px",
+	},
+	formRegister: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
+		width: "100%",
+		height: "70%",
+	},
+	formRegisterInput: {
+		margin: "0 0 5px 0",
+		textAlign: "center",
+		fontSize: "20px",
+		padding: "5px",
+		borderRadius: "15px",
+		outline: "none",
+		border: "1px solid darkgray",
+		width: "90%",
+		height: "25px",
+	},
+	formRegisterSubmit: {
+		textAlign: "center",
+		fontSize: "20px",
+		padding: "5px",
+		borderRadius: "15px",
+		outline: "none",
+		backgroundColor: "green",
+		color: "white",
+		border: "0",
+		width: "50%",
+		height: "50px",
+	},
+	errore: {
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
+		width: "90%",
+		margin: "15px 0 5px 0",
+	},
+	messaggioErrore: {
+		color: "red",
+		fontWeight: "bold",
+		textAlign: "center",
+		width: "100%",
+	},
+	linkRegister: {
+		height: "5%",
+		marginBottom: "10px",
+		fontSize: "17px",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	linkLoginP: {
+		color: "blue",
+		textDecoration: "underline",
+	},
+};

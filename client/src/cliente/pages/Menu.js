@@ -2,7 +2,6 @@ import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import SearchBar from "./components/SearchBar";
 
-import "./css/Menu.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -12,38 +11,57 @@ const ElementoLista = ({ item }) => {
 
 	return (
 		<div
-			className='elemento'
+			style={css.elemento}
 			onClick={() => {
 				navigate("/menu/product?prodotto=" + item.id + "&daDoveArrivo=menu");
 			}}
 		>
-			<div className='divImmagineElemento'>
-				<img src={item.indirizzoImg} alt='' />
+			<div style={css.divImmagineElemento}>
+				<img
+					src={item.indirizzoImg}
+					alt=''
+					style={css.divImmagineElementoImg}
+				/>
 			</div>
-			<div className='divNomeElemento'>
-				<p className='nomeElemento'>{item.nome}</p>
+			<div style={css.divNomeElemento}>
+				<p style={css.nomeElemento}>{item.nome}</p>
 			</div>
 		</div>
 	);
 };
 //lista completa
 const Lista = ({ filtro, elencoProdotti }) => {
-	let prodottiFiltrati;
+	// if (filtro !== "") {
+	// 	prodottiFiltrati = Object.groupBy(elencoProdotti, (element) => {
+	// 		return element.categoria === filtro ? "filtrati" : "nonFiltrati";
+	// 	});
+	// } else {
+	// 	prodottiFiltrati = { filtrati: elencoProdotti };
+	// }
+
+	//
+
+	// if (prodottiFiltrati.filtrati !== undefined) {
+	// 	prodottiFiltrati.filtrati.forEach((item) => {
+	// 		list.push(<ElementoLista item={item} key={item.id} />);
+	// 	});
+	// }
+
+	let prodottiFiltrati = [];
 	if (filtro !== "") {
-		prodottiFiltrati = Object.groupBy(elencoProdotti, (element) => {
-			return element.categoria === filtro ? "filtrati" : "nonFiltrati";
+		elencoProdotti.forEach((item) => {
+			if (filtro === item.categoria) {
+				prodottiFiltrati.push(item);
+			}
 		});
 	} else {
-		prodottiFiltrati = { filtrati: elencoProdotti };
+		prodottiFiltrati = elencoProdotti;
 	}
 
-	const list = [];
-
-	if (prodottiFiltrati.filtrati !== undefined) {
-		prodottiFiltrati.filtrati.forEach((item) => {
-			list.push(<ElementoLista item={item} key={item.id} />);
-		});
-	}
+	let list = [];
+	prodottiFiltrati.forEach((item) => {
+		list.push(<ElementoLista item={item} key={item.id} />);
+	});
 
 	return list;
 };
@@ -99,7 +117,14 @@ const Filtri = ({ filtri, setFiltri }) => {
 			lista.push(
 				<div
 					key={index}
-					className={filtri[nomi[index]] ? "filtroCliccato" : ""}
+					style={
+						filtri[nomi[index]]
+							? {
+									...css.filtriDiv,
+									...css.filtroCliccato,
+							  }
+							: css.filtriDiv
+					}
 					onClick={() => {
 						if (filtri[nomi[index]]) {
 							disattivaAltriFiltri(10);
@@ -116,7 +141,7 @@ const Filtri = ({ filtri, setFiltri }) => {
 		return lista;
 	}
 
-	return <div id='filtri'>{ritornaElementi()}</div>;
+	return <div style={css.filtri}>{ritornaElementi()}</div>;
 };
 
 const Menu = ({
@@ -162,8 +187,8 @@ const Menu = ({
 
 	return (
 		<div className='page'>
-			<Topbar page='menu' />
-			<div className='container' id='containerMenu'>
+			<Topbar titolo='menu' />
+			<div className='container' style={css.containerMenu}>
 				<SearchBar
 					elencoProdotti={elencoProdotti}
 					stringaSearch={stringaSearch}
@@ -172,7 +197,7 @@ const Menu = ({
 					hostname={hostname}
 				/>
 				<Filtri filtri={filtri} setFiltri={setFiltri} />
-				<div id='lista'>
+				<div style={css.lista}>
 					<Lista filtro={filtroAttivo()} elencoProdotti={prodottiDaStampare} />
 				</div>
 			</div>
@@ -182,3 +207,96 @@ const Menu = ({
 };
 
 export default Menu;
+
+//
+//
+// stili
+//trovare come aggiungere questo
+/*
+#fitri::-webkit-scrollbar {
+	display: none;
+}
+*/
+//
+
+const css = {
+	containerMenu: {
+		overflowY: "scroll",
+		overflowX: "hidden",
+	},
+	filtri: {
+		width: "100%",
+		overflowX: "scroll",
+		overflowY: "hidden",
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		flexWrap: "nowrap",
+		height: "10%",
+		scrollbarWidth: "none",
+	},
+	filtriDiv: {
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		fontSize: "20px",
+		padding: "5px 15px",
+		margin: "0.5svw",
+		border: "2px solid #222",
+		borderRadius: "20px",
+		cursor: "pointer",
+	},
+	cliccato: {
+		color: "white",
+		backgroundColor: "#1a5d1a",
+	},
+	filtroCliccato: {
+		backgroundColor: "#222",
+		color: "white",
+	},
+	lista: {
+		padding: "0 15px 15px 15px",
+		display: "flex",
+		flexWrap: "wrap",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	elemento: {
+		margin: "10px",
+		width: "35svw",
+		height: "50svw",
+		maxWidth: "140px",
+		maxHeight: "200px",
+
+		display: "flex",
+		flexDirection: "column",
+		borderRadius: "15px",
+		boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.56)",
+	},
+	divImmagineElemento: {
+		width: "35svw",
+		height: "35svw",
+		maxHeight: "140px",
+		maxWidth: "140px",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	divImmagineElementoImg: {
+		width: "90%",
+		height: "90%",
+		borderRadius: "15px",
+	},
+	divNomeElemento: {
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		width: "100%",
+		height: "15svw",
+	},
+	nomeElemento: {
+		textAlign: "center",
+		fontSize: "18px",
+		fontWeight: "bold",
+	},
+};

@@ -1,14 +1,16 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import HomePage from "./cliente/pages/Homepage";
 import Menu from "./cliente/pages/Menu";
 import Orders from "./cliente/pages/Orders";
 import Profile from "./cliente/pages/Profile";
 import ProductPage from "./cliente/pages/ProductPage";
-import { useEffect, useState } from "react";
-
-import { getProdotti } from "./cliente/scripts/fetch";
 import LoginPage from "./login/pages/LoginPage";
 import RegisterPage from "./login/pages/RegisterPage";
+
+import { getProdotti } from "./cliente/scripts/fetch";
+
+import "./App.css";
 
 const hostname =
 	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/image/";
@@ -97,7 +99,9 @@ const Cliente = ({ refreshStorage }) => {
 					<Route path='/orders' element={<Orders hostname={hostname} />} />
 					<Route
 						path='/profile'
-						element={<Profile refreshStorage={refreshStorage} />}
+						element={
+							<Profile refreshStorage={refreshStorage} hostname={hostname} />
+						}
 					/>
 					<Route path='*' element={<ReinderizzaHome />} />
 				</Routes>
@@ -128,8 +132,6 @@ const Login = ({ refreshStorage }) => {
 };
 
 const App = () => {
-	const navigate = useNavigate();
-
 	//aspetto che arrivino dal server
 	const [utente, setUtente] = useState("no");
 
@@ -192,3 +194,9 @@ const App = () => {
 };
 
 export default App;
+
+/*cose da implementare
+
+- mettere nel carrello la trasparenza dei lati del bottone ordina come nella pagina del prodotto
+
+*/

@@ -58,7 +58,6 @@ export async function loginUser(dati) {
 		.request(config)
 		.then((res) => {
 			response = res.data;
-			console.log("Risposta " + JSON.stringify(response));
 		})
 		.catch((err) => {
 			console.log(err);

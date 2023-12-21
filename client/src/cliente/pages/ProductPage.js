@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
-import "./css/ProductPage.css";
+import "./css/Popup.css";
 import { useEffect, useState } from "react";
 
 const ListaAllergeni = ({ arr }) => {
@@ -9,15 +9,25 @@ const ListaAllergeni = ({ arr }) => {
 	arr.forEach((item, index) => {
 		lista.push(
 			<div
-				className={
+				style={
 					index % 2 === 0
-						? "elementoAllergeno sfondoGrigietto"
-						: "elementoAllergeno"
+						? { ...css.elementoAllergeno, ...css.sfondoGrigietto }
+						: { ...css.elementoAllergeno }
 				}
 				key={index}
 			>
-				<p className='nomeAllergeno'>{item}</p>
-				<p className='allergenoPresente'>Si</p>
+				<p
+					style={{
+						...css.nomeAllergeno,
+						...css.elementoAllergenoP,
+						...css.elementoAllergenoPrimoP,
+					}}
+				>
+					{item}
+				</p>
+				<p style={{ ...css.allergenoPresente, ...css.elementoAllergenoP }}>
+					Si
+				</p>
 			</div>
 		);
 	});
@@ -73,43 +83,55 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 	return (
 		<>
 			<div className='page'>
-				<Topbar page='product' daDoveArrivo={parametri["daDoveArrivo"]} />
-				<div className='container' id='containerProductPage'>
-					<div id='informazioniProdotto'>
-						<img src={prodotto.indirizzoImg} alt='' id='imgProdotto' />
-						<p id='nomeProdotto'>{prodotto.nome}</p>
-						<div id='prezzoAggiungiCarrello'>
-							<p id='prezzoProdotto'>Prezzo: {prodotto.prezzo}€</p>
+				<Topbar titolo='product' daDoveArrivo={parametri["daDoveArrivo"]} />
+				<div className='container' style={css.containerProductPage}>
+					<div style={css.informazioniProdotto}>
+						<img src={prodotto.indirizzoImg} alt='' style={css.imgProdotto} />
+						<p style={css.nomeProdotto}>{prodotto.nome}</p>
+						<div style={css.prezzoAggiungiCarrello}>
+							<p style={css.prezzoProdotto}>Prezzo: {prodotto.prezzo}€</p>
 						</div>
-						<p id='descrizioneProdotto'>{prodotto.descrizione}</p>
-						<div id='allergeni'>
+						<p style={css.descrizioneProdotto}>{prodotto.descrizione}</p>
+						<div style={css.allergeni}>
 							<div
 								onClick={() => {
 									setEspandi(!espandi);
 								}}
-								className={
-									espandi ? "espandiAllergeni espanso" : "espandiAllergeni"
+								style={
+									espandi
+										? { ...css.espandiAllergeni, ...css.espanso }
+										: {
+												...css.espandiAllergeni,
+												borderBottom: "1px solid gray",
+										  }
 								}
 							>
 								<p style={{ fontWeight: "bold" }}>Allergeni</p>
 								<img
 									src={hostname + "goBack.png"}
 									alt=''
-									id='imgEspandi'
-									style={espandi ? { rotate: "90deg" } : { rotate: "-90deg" }}
-									className={espandi ? "sottosopra" : "soprasotto"}
+									style={
+										espandi
+											? { ...css.imgEspandi, rotate: "90deg" }
+											: { ...css.imgEspandi, rotate: "-90deg" }
+									}
 								/>
 							</div>
 							<div
-								id='elencoAllergeni'
-								style={espandi ? { display: "block" } : { display: "none" }}
+								style={
+									espandi
+										? { display: "block", ...css.elencoAllergeni }
+										: { display: "none", ...css.elencoAllergeni }
+								}
 							>
 								{prodotto.allergeni !== "" ? (
 									<ListaAllergeni
 										arr={prodotto.allergeni.replace(" ", "").split(",")}
 									/>
 								) : (
-									<p className='elementoAllergeno sfondoGrigietto'>
+									<p
+										style={{ ...css.elementoAllergeno, ...css.sfondoGrigietto }}
+									>
 										Nessun allergeno presente!
 									</p>
 								)}
@@ -117,7 +139,7 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 						</div>
 					</div>
 					<div
-						className='pulsanteFixatoInBasso'
+						style={css.pulsanteFixatoInBasso}
 						onClick={() => {
 							let tmp;
 							if (!popup) {
@@ -145,19 +167,178 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 							}
 						}}
 					>
-						<div>Aggiungi al carrello</div>
-					</div>
-					<div
-						className='popup'
-						style={popup ? { display: "flex" } : { display: "none" }}
-					>
-						<p> Aggiunto al carrello!</p>
+						<div style={css.pulsanteFixatoInBassoDiv}>Aggiungi al carrello</div>
 					</div>
 				</div>
 				<Navbar page='menu' />
+				<div
+					style={
+						popup
+							? css.divSopraPopUp
+							: { ...css.divSopraPopUp, display: "none" }
+					}
+					onClick={() => {
+						setPopup(false);
+					}}
+				>
+					<div
+						style={
+							popup
+								? { ...css.popup, display: "flex" }
+								: { ...css.popup, display: "none" }
+						}
+						className='popup'
+					>
+						<p>Aggiunto al carrello!</p>
+					</div>
+				</div>
 			</div>
 		</>
 	);
 };
 
 export default ProductPage;
+
+//
+//
+// stili
+//
+
+const css = {
+	containerProductPage: {
+		overflowY: "scroll",
+		overflowX: "hidden",
+	},
+	informazioniProdotto: {
+		padding: "0 15px 15px 15px",
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "space-evenly",
+		alignItems: "center",
+		marginBottom: "calc(7svh)",
+	},
+	imgProdotto: {
+		width: "50svw",
+		height: "50svw",
+		maxWidth: "200px",
+		maxHeight: "200px",
+	},
+	nomeProdotto: {
+		width: "100%",
+		padding: "5px",
+		textAlign: "center",
+		fontSize: "25px",
+		textTransform: "uppercase",
+		fontWeight: "bold",
+	},
+	prezzoAggiungiCarrello: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		width: "100%",
+		height: "25px",
+	},
+	prezzoProdotto: {
+		width: "100%",
+		fontSize: "20px",
+		fontWeight: "bold",
+	},
+	descrizioneProdotto: {
+		width: "100%",
+		padding: "5px",
+		fontSize: "18px",
+		margin: "25px",
+	},
+	allergeni: {
+		width: "100%",
+		marginTop: "25px",
+	},
+	espandiAllergeni: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		border: "1px solid gray",
+		padding: "5px",
+	},
+	espanso: {
+		borderBottom: "none",
+	},
+	imgEspandi: {
+		width: "30px",
+		rotate: "-90deg",
+	},
+	elencoAllergeni: {
+		border: "1px solid rgb(66, 66, 66)",
+		borderTop: "none",
+	},
+	elementoAllergeno: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-evenly",
+		alignItems: "center",
+		height: "40px",
+	},
+	elementoAllergenoP: {
+		width: "100%",
+	},
+	sfondoGrigietto: {
+		backgroundColor: "lightgray",
+	},
+	elementoAllergenoPrimoP: {
+		marginLeft: "5px",
+	},
+	divSopraPopUp: {
+		position: "absolute",
+		width: "100svw",
+		height: "100svh",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "transparent",
+		top: "0",
+		left: "0",
+	},
+	popup: {
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		// color: "#fbd85d",
+		// backgroundColor: "#1a5d1a",
+		backgroundColor: "#222",
+		color: "white",
+		height: "35svw",
+		width: "55svw",
+		borderRadius: "15px",
+		textAlign: "center",
+		maxWidth: "200px",
+		maxHeight: "127px",
+	},
+	pulsanteFixatoInBasso: {
+		backgroundColor: "transparent",
+		height: "40px",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		flexDirection: "row",
+		width: "100%",
+		borderRadius: "15px",
+		position: "fixed",
+		bottom: "calc(10svh)",
+	},
+	pulsanteFixatoInBassoDiv: {
+		height: "100%",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		border: "2px solid black",
+		fontWeight: "bold",
+		backgroundColor: "#222",
+		color: "#fff",
+		fontSize: "16px",
+		textTransform: "uppercase",
+		width: "60%",
+		borderRadius: "15px",
+	},
+};
