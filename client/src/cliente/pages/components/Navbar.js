@@ -52,7 +52,7 @@ const Navbar = ({ page }) => {
 			flexDirection: "row",
 			justifyContent: "center",
 			alignItems: "center",
-			borderTop: "2px solid black",
+			borderTop: "1px solid black",
 		},
 		navbarDiv: {
 			height: "100%",

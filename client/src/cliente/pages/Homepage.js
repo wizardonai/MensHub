@@ -127,6 +127,8 @@ const css = {
 		flexDirection: "column",
 		borderRadius: "15px",
 		boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.56)",
+		// backgroundColor: "#222",
+		// color: "white",
 	},
 	divImmagineElemento: {
 		width: "35svw",

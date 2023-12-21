@@ -50,16 +50,18 @@ const css = {
 		backgroundColor: "#ff0000",
 		color: "white",
 		fontWeight: "bold",
-		width: "150px",
-		padding: "15px",
+		width: "170px",
+		height: "60px",
 		borderRadius: "15px",
 		fontSize: "20px",
 		display: "flex",
-		justifyContent: "space-between",
+		justifyContent: "space-evenly",
+		alignItems: "center",
 	},
 	disconettiImg: {
 		filter:
 			"invert(94%) sepia(100%) saturate(0%) hue-rotate(146deg) brightness(105%) contrast(106%)",
 		width: "20px",
+		height: "20px",
 	},
 };
