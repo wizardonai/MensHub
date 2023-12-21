@@ -151,12 +151,6 @@ const RegisterPage = () => {
 						Registrati
 					</button>
 				</div>
-<<<<<<< HEAD
-				<div id='linkRegister' onClick={() => {
-					navigate("/login");
-				}}>
-					<a>Hai già un account? Loggati!</a>
-=======
 				<div
 					style={css.linkRegister}
 					onClick={() => {
@@ -164,7 +158,6 @@ const RegisterPage = () => {
 					}}
 				>
 					<p style={css.linkLoginP}>Hai già un account? Accedi!</p>
->>>>>>> origin/matteo
 				</div>
 			</div>
 		</div>

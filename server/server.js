@@ -67,12 +67,6 @@ server.post("/send/cart", (req, res) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
 	});
-	/* query += `","`;
-	data.forEach((item, index) => {
-		query += `${item.quantita}`;
-		if (index !== data.length - 1)
-			query += ",";
-	}); questo pezzo di codice è spownato dal branch di opal penso si inutile ma è da verificare */
 	query += `",${req.body.id_utente});`; //aggiunto id utente da testare
 	console.log(query);
 	connection.query(query, (err, result) => {

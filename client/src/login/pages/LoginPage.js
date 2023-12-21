@@ -114,12 +114,6 @@ const LoginPage = ({ refreshStorage }) => {
 						Login
 					</button>
 				</div>
-<<<<<<< HEAD
-				<div id='linkLogin'  onClick={() => {
-					navigate("/register");
-				}}>
-					<a>Non hai un account? Registrati!</a>
-=======
 				<div
 					style={css.linkLogin}
 					onClick={() => {
@@ -127,7 +121,6 @@ const LoginPage = ({ refreshStorage }) => {
 					}}
 				>
 					<p style={css.linkLoginP}>Non hai un account? Registrati!</p>
->>>>>>> origin/matteo
 				</div>
 			</div>
 		</div>
