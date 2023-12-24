@@ -1,4 +1,5 @@
 //components
+import ListElement from "./components/ListElement";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 
@@ -10,28 +11,7 @@ const Slider = ({ piuAcq }) => {
 	let lista = [];
 
 	piuAcq.forEach((item, index) => {
-		lista.push(
-			<div
-				style={css.elemento}
-				onClick={() => {
-					navigate("/menu/product?prodotto=" + item.id + "&daDoveArrivo=home");
-				}}
-				key={index}
-			>
-				<div style={css.divImmagineElemento}>
-					<img
-						src={Object.keys(piuAcq).length > 0 ? item.indirizzoImg : ""}
-						alt=''
-						style={css.divImmagineElementoImg}
-					/>
-				</div>
-				<div style={css.divNomeElemento}>
-					<p style={css.nomeElemento}>
-						{Object.keys(piuAcq).length > 0 ? item.nome : ""}
-					</p>
-				</div>
-			</div>
-		);
+		lista.push(<ListElement item={item} key={item.id} daDoveArrivo='home' />);
 	});
 
 	return lista;
@@ -84,13 +64,6 @@ const HomePage = ({ elencoProdotti }) => {
 	);
 };
 
-export default HomePage;
-
-//
-//
-//stili
-//
-
 const css = {
 	containerHome: {
 		overflowY: "scroll",
@@ -117,43 +90,6 @@ const css = {
 		alignItems: "center",
 		maxHeight: "240px",
 	},
-	elemento: {
-		margin: "10px",
-		width: "35svw",
-		maxWidth: "140px",
-		maxHeight: "200px",
-		height: "50svw",
-		display: "flex",
-		flexDirection: "column",
-		borderRadius: "15px",
-		boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.56)",
-		// backgroundColor: "#222",
-		// color: "white",
-	},
-	divImmagineElemento: {
-		width: "35svw",
-		height: "35svw",
-		maxHeight: "140px",
-		maxWidth: "140px",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	divImmagineElementoImg: {
-		width: "90%",
-		height: "90%",
-		borderRadius: "15px",
-	},
-	divNomeElemento: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		width: "100%",
-		height: "15svw",
-	},
-	nomeElemento: {
-		textAlign: "center",
-		fontSize: "18px",
-		fontWeight: "bold",
-	},
 };
+
+export default HomePage;

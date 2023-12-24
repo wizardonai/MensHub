@@ -215,7 +215,8 @@ const css = {
 		flexDirection: "column",
 		justifyContent: "space-evenly",
 		alignItems: "center",
-		marginBottom: "calc(7svh)",
+		// marginBottom: "calc(7svh)",
+		marginBottom: "50px",
 	},
 	imgProdotto: {
 		width: "50svw",

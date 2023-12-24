@@ -121,7 +121,7 @@ const css = {
 		alignItems: "center",
 		padding: "5px 0",
 		justifyContent: "space-evenly",
-		backgroundColor: "white",
+		backgroundColor: "#f0f0f0",
 		width: "98svw",
 		margin: "0.5svw 0.5svw",
 		outline: "none",

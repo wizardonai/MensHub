@@ -186,9 +186,12 @@ export default Orders;
 //
 
 const css = {
-	informazioniCarrello: {
+	containerOrders: {
 		overflowY: "scroll",
-		height: "calc(100svh - 10svh - 30px - 10svh - 45px)",
+		overflowX: "hidden",
+	},
+	informazioniCarrello: {
+		marginBottom: "50px",
 	},
 	totalePrezzo: {
 		width: "97%",
@@ -281,7 +284,8 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		height: "100%",
+		height: "calc(100svh - 20svh - 80px)",
+		margin: "0",
 	},
 	divSopraPopUp: {
 		position: "absolute",
@@ -298,8 +302,6 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		// color: "#fbd85d",
-		// backgroundColor: "#1a5d1a",
 		backgroundColor: "#222",
 		color: "white",
 		height: "35svw",
@@ -322,15 +324,13 @@ const css = {
 		width: "100%",
 		borderRadius: "15px",
 		position: "fixed",
-		bottom: "10svh",
+		bottom: "calc(10svh)",
 	},
 	pulsanteFixatoInBassoDiv: {
 		height: "100%",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		// color: "#fbd85d",
-		// backgroundColor: "#1a5d1a",
 		border: "2px solid black",
 		fontWeight: "bold",
 		backgroundColor: "#222",
@@ -338,7 +338,6 @@ const css = {
 		fontSize: "16px",
 		textTransform: "uppercase",
 		width: "60%",
-		// borderRadius: "15px 15px 0 0",
 		borderRadius: "15px",
 	},
 };
