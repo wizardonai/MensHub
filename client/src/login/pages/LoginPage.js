@@ -179,7 +179,7 @@ const css = {
 		padding: "5px",
 		borderRadius: "15px",
 		outline: "none",
-		border: "1px solid darkgray",
+		border: "2px solid black",
 		width: "90%",
 		height: "25px",
 	},
@@ -189,11 +189,12 @@ const css = {
 		padding: "5px",
 		borderRadius: "15px",
 		outline: "none",
-		backgroundColor: "green",
-		color: "white",
-		border: "0",
+		color: "black",
+		fontWeight: "bold",
 		width: "50%",
 		height: "50px",
+		border: "2px solid black",
+		background: "rgb(245, 245, 245)",
 	},
 	errore: {
 		flexDirection: "column",
@@ -217,7 +218,7 @@ const css = {
 		alignItems: "center",
 	},
 	linkLoginP: {
-		color: "blue",
+		color: "black",
 		textDecoration: "underline",
 	},
 };

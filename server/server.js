@@ -3,28 +3,45 @@ import express from "express";
 //probabilmente da cambiare con express.Router();
 import { validate } from "deep-email-validator";
 import cors from "cors";
+import { execFile } from "child_process";
 import bodyParser from "body-parser";
 const { json, urlencoded } = bodyParser;
 
 const server = express();
 
+//faccio partire mysql
+const fileMysql = execFile("mysql.bat", [], (err, data) => {
+	if (err) {
+		console.log(err);
+	} else {
+		connetti();
+	}
+});
+const shellMysql = execFile("shell.bat", [], (err, data) => {
+	if (err) {
+		console.log(err);
+	}
+});
+
+let connection;
+function connetti() {
+	connection = createConnection({
+		host: "localhost",
+		user: "root",
+		password: "",
+	});
+	connection.connect(function (err) {
+		if (err) throw new Error(err);
+		console.log("Connected!");
+		connection.changeUser({ database: "mensapp" }, () => {
+			if (err) throw new Error(err);
+		});
+	});
+}
+
 server.use(cors());
 server.use(json());
 server.use(urlencoded({ extended: false }));
-
-//creo connessione con il database
-const connection = createConnection({
-	host: "localhost",
-	user: "root",
-	password: "",
-});
-connection.connect(function (err) {
-	if (err) throw new Error(err);
-	console.log("Connected!");
-	connection.changeUser({ database: "mensapp" }, () => {
-		if (err) throw new Error(err);
-	});
-});
 
 //deploy react
 server.use(express.static("../client/build")); //questa stringa va sostituita con "../client/build" una volta buildato il progetto

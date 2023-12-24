@@ -165,30 +165,13 @@ const App = () => {
 
 	return (
 		<>
-			{
-				utente === "cliente" ? (
-					<Cliente refreshStorage={refreshStorage} />
-				) : utente === "produttore" ? (
-					<p>Produttore</p>
-				) : (
-					<Login refreshStorage={refreshStorage} />
-				)
-				/*
-			(
-				<div
-					style={{
-						height: "100svh",
-						width: "100%",
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<p>Caricamento...</p>
-				</div>
-			)
-			*/
-			}
+			{utente === "cliente" ? (
+				<Cliente refreshStorage={refreshStorage} />
+			) : utente === "produttore" ? (
+				<p>Produttore</p>
+			) : (
+				<Login refreshStorage={refreshStorage} />
+			)}
 		</>
 	);
 };

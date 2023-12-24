@@ -31,22 +31,6 @@ const ElementoLista = ({ item }) => {
 };
 //lista completa
 const Lista = ({ filtro, elencoProdotti }) => {
-	// if (filtro !== "") {
-	// 	prodottiFiltrati = Object.groupBy(elencoProdotti, (element) => {
-	// 		return element.categoria === filtro ? "filtrati" : "nonFiltrati";
-	// 	});
-	// } else {
-	// 	prodottiFiltrati = { filtrati: elencoProdotti };
-	// }
-
-	//
-
-	// if (prodottiFiltrati.filtrati !== undefined) {
-	// 	prodottiFiltrati.filtrati.forEach((item) => {
-	// 		list.push(<ElementoLista item={item} key={item.id} />);
-	// 	});
-	// }
-
 	let prodottiFiltrati = [];
 	if (filtro !== "") {
 		elencoProdotti.forEach((item) => {

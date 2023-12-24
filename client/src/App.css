@@ -1,14 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400&family=Nunito:wght@400&family=Poppins:wght@400&family=Roboto:wght@400&family=Rubik:wght@400&display=swap");
 
+body {
+	font-family: "Rubik", sans-serif;
+	/* font-family: "Inter", sans-serif; */
+	/* font-family: "Nunito", sans-serif; */
+	/* font-family: "Poppins", sans-serif; */
+}
+
 .page {
 	height: 100svh;
 	width: 100%;
 	overflow: hidden;
-	/* font-family: "Inter", sans-serif; */
-
-	/* font-family: "Nunito", sans-serif; */
-	/* font-family: "Poppins", sans-serif; */
-	font-family: "Rubik", sans-serif;
 }
 .container {
 	height: 82svh;
