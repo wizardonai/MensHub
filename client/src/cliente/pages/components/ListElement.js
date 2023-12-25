@@ -7,9 +7,7 @@ const ListElement = ({ item, daDoveArrivo }) => {
 		<div
 			style={css.elemento}
 			onClick={() => {
-				navigate(
-					"/menu/product?prodotto=" + item.id + "&daDoveArrivo=" + daDoveArrivo
-				);
+				navigate("/product/" + item.id + "?daDoveArrivo=" + daDoveArrivo);
 			}}
 		>
 			<div style={css.divImmagineElemento}>
@@ -63,6 +61,7 @@ const css = {
 		textAlign: "center",
 		fontSize: "18px",
 		fontWeight: "bold",
+		textTransform: "capitalize",
 	},
 };
 

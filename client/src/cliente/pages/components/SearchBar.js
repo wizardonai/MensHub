@@ -8,7 +8,7 @@ const SearchBar = ({
 	hostname,
 	setProdottiDaStampare,
 }) => {
-	elencoProdotti = JSON.parse(elencoProdotti);
+	// elencoProdotti = JSON.parse(elencoProdotti);
 
 	useEffect(() => {
 		elencoProdotti.prodotti.sort((a, b) => {

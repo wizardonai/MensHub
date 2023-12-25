@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 const Slider = ({ piuAcq }) => {
 	const navigate = useNavigate();
@@ -19,15 +19,14 @@ const Slider = ({ piuAcq }) => {
 
 const NPIUACQ = 5;
 
-const HomePage = ({ elencoProdotti }) => {
-	elencoProdotti = JSON.parse(elencoProdotti);
-
+const HomePage = () => {
+	const data = useLoaderData();
 	const [piuAcq, setPiuAcq] = useState([]);
 
-	useEffect(() => {
-		trovaPiuAcq();
-		// eslint-disable-next-line
-	}, []);
+	if (!data) return <p>Caricamento</p>;
+
+	const elencoProdotti = data.prodotti;
+	if (piuAcq.length === 0) trovaPiuAcq();
 
 	function trovaPiuAcq() {
 		let tmp = elencoProdotti.prodotti;

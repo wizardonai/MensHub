@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLoaderData, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import "./css/Popup.css";
@@ -35,38 +35,30 @@ const ListaAllergeni = ({ arr }) => {
 	return lista;
 };
 
-const ProductPage = ({ elencoProdotti, hostname }) => {
-	elencoProdotti = JSON.parse(elencoProdotti);
+const ProductPage = (props) => {
+	const data = useLoaderData();
 
-	const location = new useLocation();
+	const daDoveArrivo = new URLSearchParams(window.location.search).get(
+		"daDoveArrivo"
+	);
+
 	const [parametri, setParametri] = useState([]);
-	const [prodotto, setProdotto] = useState({
-		allergeni: "",
-	});
-
+	const [prodotto, setProdotto] = useState({});
 	const [espandi, setEspandi] = useState(false);
-
 	const [popup, setPopup] = useState(false);
 
-	useEffect(() => {
-		let tmp = location.search.replace("?", "").split("&");
+	if (!data) return <p>Caricamento</p>;
 
-		let parametri = [];
+	const elencoProdotti = data.prodotti;
+	const { hostname, id } = data;
 
-		for (let i = 0; i < tmp.length; i++) {
-			tmp[i] = tmp[i].split("=");
-			parametri[tmp[i][0]] = tmp[i][1];
-		}
-
-		setParametri(parametri);
-
-		elencoProdotti.prodotti.forEach((item) => {
-			if (item.id === parseInt(parametri["prodotto"])) {
+	if (Object.keys(prodotto).length === 0) {
+		elencoProdotti.prodotti.forEach((item, index) => {
+			if (item.id === parseInt(id)) {
 				setProdotto(item);
 			}
 		});
-		//eslint-disable-next-line
-	}, []);
+	}
 
 	function prodottoGiaEsistente(id) {
 		let tmp = JSON.parse(localStorage.getItem("cart"));
@@ -83,7 +75,7 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 	return (
 		<>
 			<div className='page'>
-				<Topbar titolo='product' daDoveArrivo={parametri["daDoveArrivo"]} />
+				<Topbar titolo='product' daDoveArrivo={daDoveArrivo} />
 				<div className='container' style={css.containerProductPage}>
 					<div style={css.informazioniProdotto}>
 						<img src={prodotto.indirizzoImg} alt='' style={css.imgProdotto} />
@@ -124,7 +116,8 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 										: { display: "none", ...css.elencoAllergeni }
 								}
 							>
-								{prodotto.allergeni !== "" ? (
+								{prodotto.allergeni !== undefined &&
+								prodotto.allergeni !== "" ? (
 									<ListaAllergeni
 										arr={prodotto.allergeni.replace(" ", "").split(",")}
 									/>
@@ -138,36 +131,38 @@ const ProductPage = ({ elencoProdotti, hostname }) => {
 							</div>
 						</div>
 					</div>
-					<div
-						style={css.pulsanteFixatoInBasso}
-						onClick={() => {
-							let tmp;
-							if (!popup) {
-								const ris = prodottoGiaEsistente(prodotto.id);
+					<div style={css.pulsanteFixatoInBasso}>
+						<div
+							style={css.pulsanteFixatoInBassoDiv}
+							onClick={() => {
+								let tmp;
+								if (!popup) {
+									const ris = prodottoGiaEsistente(prodotto.id);
 
-								tmp = JSON.parse(localStorage.getItem("cart"));
-
-								if (ris >= 0) {
-									tmp[ris].quantita += 1;
-								} else {
 									tmp = JSON.parse(localStorage.getItem("cart"));
 
-									tmp.push({
-										...prodotto,
-										quantita: 1,
-									});
-								}
-								localStorage.setItem("cart", JSON.stringify(tmp));
+									if (ris >= 0) {
+										tmp[ris].quantita += 1;
+									} else {
+										tmp = JSON.parse(localStorage.getItem("cart"));
 
-								//popup
-								setPopup(true);
-								setTimeout(() => {
-									setPopup(false);
-								}, 1250);
-							}
-						}}
-					>
-						<div style={css.pulsanteFixatoInBassoDiv}>Aggiungi al carrello</div>
+										tmp.push({
+											...prodotto,
+											quantita: 1,
+										});
+									}
+									localStorage.setItem("cart", JSON.stringify(tmp));
+
+									//popup
+									setPopup(true);
+									setTimeout(() => {
+										setPopup(false);
+									}, 1250);
+								}
+							}}
+						>
+							Aggiungi al carrello
+						</div>
 					</div>
 				</div>
 				<Navbar page='menu' />

@@ -1,9 +1,14 @@
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 
-function Profile({ refreshStorage, hostname }) {
+function Profile() {
+	const data = useLoaderData();
 	const navigate = useNavigate();
+
+	if (!data) return <p>Caricamento</p>;
+
+	const { hostname, refreshStorage } = data;
 
 	let dati;
 

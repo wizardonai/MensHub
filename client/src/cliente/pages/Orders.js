@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import "./css/Popup.css";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
+import { useLoaderData } from "react-router-dom";
 
 function rimuoviDalCarrello(item, carrello, setCarrello) {
 	let tmp = carrello;
@@ -98,27 +99,32 @@ const ListaCarrello = ({ carrello, hostname, setCarrello }) => {
 	return lista;
 };
 
-function Orders({ hostname }) {
+function Orders() {
+	const data = useLoaderData();
 	const [popup, setPopup] = useState(false);
-
 	const [carrello, setCarrello] = useState(
 		JSON.parse(localStorage.getItem("cart"))
 	);
-	const [prezzoTot, setPrezzoTot] = useState(0.0);
 
-	useEffect(() => {
+	if (!data) return <p>Caricamento</p>;
+	const { hostname } = data;
+
+	let flag = true;
+
+	const calcPrezzoTot = () => {
 		let tot = 0;
 		carrello.forEach((item) => {
 			tot += item.prezzo * item.quantita;
 		});
-		setPrezzoTot(tot.toFixed(2));
-	}, [carrello]);
+
+		return tot.toFixed(2);
+	};
 
 	return (
 		<div className='page'>
 			<Topbar titolo='carrello' />
 			<div className='container' style={css.containerOrders}>
-				<p style={css.totalePrezzo}>Totale: {prezzoTot}€</p>
+				<p style={css.totalePrezzo}>Totale: {calcPrezzoTot()}€</p>
 				<div style={css.lineaIniziale}></div>
 				<div style={css.informazioniCarrello}>
 					{carrello.length >= 1 ? (
@@ -137,19 +143,27 @@ function Orders({ hostname }) {
 						</div>
 					)}
 					<div
-						style={css.pulsanteFixatoInBasso}
-						onClick={() => {
-							setPopup(true);
-							sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
-								setTimeout(() => {
-									setPopup(false);
-								}, 1250);
-								localStorage.setItem("cart", JSON.stringify([]));
-								setCarrello([]);
-							});
-						}}
+						style={
+							carrello.length !== 0
+								? css.pulsanteFixatoInBasso
+								: { ...css.pulsanteFixatoInBasso, display: "none" }
+						}
 					>
-						<div style={css.pulsanteFixatoInBassoDiv}>Ordina ora</div>
+						<div
+							style={css.pulsanteFixatoInBassoDiv}
+							onClick={() => {
+								setPopup(true);
+								sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
+									setTimeout(() => {
+										setPopup(false);
+									}, 1250);
+									localStorage.setItem("cart", JSON.stringify([]));
+									setCarrello([]);
+								});
+							}}
+						>
+							Ordina ora
+						</div>
 					</div>
 				</div>
 			</div>
@@ -284,7 +298,7 @@ const css = {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		height: "calc(100svh - 20svh - 80px)",
+		height: "calc(100svh - 18svh - 30px)",
 		margin: "0",
 	},
 	divSopraPopUp: {

@@ -3,7 +3,7 @@ import Topbar from "./components/Topbar";
 import SearchBar from "./components/SearchBar";
 import ListElement from "./components/ListElement";
 
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 //lista completa
@@ -105,17 +105,16 @@ const Filtri = ({ filtri, setFiltri }) => {
 	return <div style={css.filtri}>{ritornaElementi()}</div>;
 };
 
-const Menu = ({
-	elencoProdotti,
-	stringaSearch,
-	setStringaSearch,
-	hostname,
-	filtri,
-	setFiltri,
-}) => {
-	const [prodottiDaStampare, setProdottiDaStampare] = useState(
-		JSON.parse(elencoProdotti).prodotti
-	);
+const Menu = () => {
+	const data = useLoaderData();
+	const [prodottiDaStampare, setProdottiDaStampare] = useState([]);
+
+	if (!data) return <p>Caricamento</p>;
+
+	const elencoProdotti = data.prodotti;
+	const { stringaSearch, setStringaSearch, hostname, filtri, setFiltri } = data;
+	if (prodottiDaStampare.length === 0)
+		setProdottiDaStampare(elencoProdotti.prodotti);
 
 	function filtroAttivo() {
 		const stati = [

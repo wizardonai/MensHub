@@ -1,18 +1,22 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../scripts/fetch";
 
-const LoginPage = ({ refreshStorage }) => {
+const LoginPage = () => {
+	const data = useLoaderData();
 	const navigate = useNavigate();
 
 	const [errore, setErrore] = useState({
 		presente: false,
 		messaggio: <></>,
 	});
-
 	const email = useRef(null);
 	const password = useRef(null);
+
+	if (!data) return <p>Caricamento</p>;
+
+	const { refreshStorage } = data;
 
 	const submitLoginCliccato = () => {
 		setErrore({
@@ -65,6 +69,7 @@ const LoginPage = ({ refreshStorage }) => {
 				} else {
 					localStorage.setItem("login", "cliente");
 					localStorage.setItem("datiUtente", JSON.stringify(res));
+					localStorage.setItem("cart", JSON.stringify([]));
 					refreshStorage();
 					navigate("/home");
 				}
