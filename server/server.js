@@ -4,6 +4,7 @@ import express from "express";
 import { validate } from "deep-email-validator";
 import cors from "cors";
 import { execFile } from "child_process";
+// import open from "open";
 import bodyParser from "body-parser";
 const { json, urlencoded } = bodyParser;
 
@@ -13,15 +14,17 @@ const server = express();
 const fileMysql = execFile("mysql.bat", [], (err, data) => {
 	if (err) {
 		console.log(err);
-	} else {
-		connetti();
 	}
 });
-const shellMysql = execFile("shell.bat", [], (err, data) => {
+const fileApache = execFile("apache.bat", [], (err, data) => {
 	if (err) {
 		console.log(err);
 	}
 });
+console.log("http://localhost:80/phpmyadmin");
+setTimeout(() => {
+	connetti();
+}, 2500);
 
 let connection;
 function connetti() {
@@ -186,5 +189,5 @@ server.post("/login/user", async function (req, res) {
 
 const port = 6969;
 server.listen(port, () => {
-	console.log("http://localhost:" + port);
+	// console.log("http://localhost:" + port);
 });
