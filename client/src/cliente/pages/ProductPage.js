@@ -3,6 +3,8 @@ import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import "./css/Popup.css";
 import { useEffect, useState } from "react";
+import BottomButton from "./components/BottomButton";
+import Popup from "./components/Popup";
 
 const ListaAllergeni = ({ arr }) => {
 	let lista = [];
@@ -60,7 +62,7 @@ const ProductPage = (props) => {
 		});
 	}
 
-	function prodottoGiaEsistente(id) {
+	const prodottoGiaEsistente = (id) => {
 		let tmp = JSON.parse(localStorage.getItem("cart"));
 
 		for (let i = 0; i < tmp.length; i++) {
@@ -70,7 +72,34 @@ const ProductPage = (props) => {
 		}
 
 		return -1;
-	}
+	};
+
+	const funAddCart = () => {
+		let tmp;
+		if (!popup) {
+			const ris = prodottoGiaEsistente(prodotto.id);
+
+			tmp = JSON.parse(localStorage.getItem("cart"));
+
+			if (ris >= 0) {
+				tmp[ris].quantita += 1;
+			} else {
+				tmp = JSON.parse(localStorage.getItem("cart"));
+
+				tmp.push({
+					...prodotto,
+					quantita: 1,
+				});
+			}
+			localStorage.setItem("cart", JSON.stringify(tmp));
+
+			//popup
+			setPopup(true);
+			setTimeout(() => {
+				setPopup(false);
+			}, 1250);
+		}
+	};
 
 	return (
 		<>
@@ -131,62 +160,10 @@ const ProductPage = (props) => {
 							</div>
 						</div>
 					</div>
-					<div style={css.pulsanteFixatoInBasso}>
-						<div
-							style={css.pulsanteFixatoInBassoDiv}
-							onClick={() => {
-								let tmp;
-								if (!popup) {
-									const ris = prodottoGiaEsistente(prodotto.id);
-
-									tmp = JSON.parse(localStorage.getItem("cart"));
-
-									if (ris >= 0) {
-										tmp[ris].quantita += 1;
-									} else {
-										tmp = JSON.parse(localStorage.getItem("cart"));
-
-										tmp.push({
-											...prodotto,
-											quantita: 1,
-										});
-									}
-									localStorage.setItem("cart", JSON.stringify(tmp));
-
-									//popup
-									setPopup(true);
-									setTimeout(() => {
-										setPopup(false);
-									}, 1250);
-								}
-							}}
-						>
-							Aggiungi al carrello
-						</div>
-					</div>
+					<BottomButton text='Aggiungi al carrello' onClickFun={funAddCart} />
 				</div>
 				<Navbar page='menu' />
-				<div
-					style={
-						popup
-							? css.divSopraPopUp
-							: { ...css.divSopraPopUp, display: "none" }
-					}
-					onClick={() => {
-						setPopup(false);
-					}}
-				>
-					<div
-						style={
-							popup
-								? { ...css.popup, display: "flex" }
-								: { ...css.popup, display: "none" }
-						}
-						className='popup'
-					>
-						<p>Aggiunto al carrello!</p>
-					</div>
-				</div>
+				<Popup text='Aggiunto al carrello!' show={popup} setPopup={setPopup} />
 			</div>
 		</>
 	);
@@ -295,46 +272,5 @@ const css = {
 		backgroundColor: "transparent",
 		top: "0",
 		left: "0",
-	},
-	popup: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		// color: "#fbd85d",
-		// backgroundColor: "#1a5d1a",
-		backgroundColor: "#222",
-		color: "white",
-		height: "35svw",
-		width: "55svw",
-		borderRadius: "15px",
-		textAlign: "center",
-		maxWidth: "200px",
-		maxHeight: "127px",
-	},
-	pulsanteFixatoInBasso: {
-		backgroundColor: "transparent",
-		height: "40px",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		flexDirection: "row",
-		width: "100%",
-		borderRadius: "15px",
-		position: "fixed",
-		bottom: "calc(10svh)",
-	},
-	pulsanteFixatoInBassoDiv: {
-		height: "100%",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		border: "2px solid black",
-		fontWeight: "bold",
-		backgroundColor: "#222",
-		color: "#fff",
-		fontSize: "16px",
-		textTransform: "uppercase",
-		width: "60%",
-		borderRadius: "15px",
 	},
 };

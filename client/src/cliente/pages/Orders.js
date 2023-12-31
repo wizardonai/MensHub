@@ -4,6 +4,8 @@ import "./css/Popup.css";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import { useLoaderData } from "react-router-dom";
+import BottomButton from "./components/BottomButton";
+import Popup from "./components/Popup";
 
 function rimuoviDalCarrello(item, carrello, setCarrello) {
 	let tmp = carrello;
@@ -120,6 +122,17 @@ function Orders() {
 		return tot.toFixed(2);
 	};
 
+	const orderFun = () => {
+		setPopup(true);
+		sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
+			setTimeout(() => {
+				setPopup(false);
+			}, 1250);
+			localStorage.setItem("cart", JSON.stringify([]));
+			setCarrello([]);
+		});
+	};
+
 	return (
 		<div className='page'>
 			<Topbar titolo='carrello' />
@@ -142,52 +155,19 @@ function Orders() {
 							Aggiungi prodotti dalla pagina menu...
 						</div>
 					)}
-					<div
-						style={
-							carrello.length !== 0
-								? css.pulsanteFixatoInBasso
-								: { ...css.pulsanteFixatoInBasso, display: "none" }
-						}
-					>
-						<div
-							style={css.pulsanteFixatoInBassoDiv}
-							onClick={() => {
-								setPopup(true);
-								sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
-									setTimeout(() => {
-										setPopup(false);
-									}, 1250);
-									localStorage.setItem("cart", JSON.stringify([]));
-									setCarrello([]);
-								});
-							}}
-						>
-							Ordina ora
-						</div>
-					</div>
+					<BottomButton
+						text='Ordina ora'
+						onClickFun={orderFun}
+						display={carrello.length !== 0 ? "" : "none"}
+					/>
 				</div>
 			</div>
 			<Navbar page='orders' />
-
-			<div
-				style={
-					popup ? css.divSopraPopUp : { ...css.divSopraPopUp, display: "none" }
-				}
-				onClick={() => {
-					setPopup(false);
-				}}
-			>
-				<div
-					style={
-						popup
-							? { ...css.popup, display: "flex" }
-							: { ...css.popup, display: "none" }
-					}
-					className='popup'
-				>
-					<p>Ordinazione eseguita con successo!</p>
-				</div>
-			</div>
+			<Popup
+				text='Ordinazione eseguita con successo!'
+				show={popup}
+				setPopup={setPopup}
+			/>
 		</div>
 	);
 }
@@ -311,47 +291,5 @@ const css = {
 		backgroundColor: "transparent",
 		top: "0",
 		left: "0",
-	},
-	popup: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "#222",
-		color: "white",
-		height: "35svw",
-		width: "55svw",
-		position: "absolute",
-		top: "50%",
-		left: "50%",
-		margin: "-17.5svw 0 0 -27.5svw",
-		fontSize: "7svw",
-		borderRadius: "15px",
-		textAlign: "center",
-	},
-	pulsanteFixatoInBasso: {
-		backgroundColor: "transparent",
-		height: "40px",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		flexDirection: "row",
-		width: "100%",
-		borderRadius: "15px",
-		position: "fixed",
-		bottom: "calc(10svh)",
-	},
-	pulsanteFixatoInBassoDiv: {
-		height: "100%",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		border: "2px solid black",
-		fontWeight: "bold",
-		backgroundColor: "#222",
-		color: "#fff",
-		fontSize: "16px",
-		textTransform: "uppercase",
-		width: "60%",
-		borderRadius: "15px",
 	},
 };

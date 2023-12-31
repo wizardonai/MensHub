@@ -4,6 +4,7 @@ import imgMenu from "../image/menu.png";
 import imgOrders from "../image/orders.png";
 import imgProfile from "../image/profile.png";
 import { useNavigate } from "react-router-dom";
+import { Colori } from "../../../App";
 
 const Navbar = ({ page }) => {
 	const navigate = useNavigate();
@@ -47,12 +48,11 @@ const Navbar = ({ page }) => {
 		navbar: {
 			height: "8svh",
 			width: "100%",
-			// backgroundColor: "#1a5d1a",
 			display: "flex",
 			flexDirection: "row",
 			justifyContent: "center",
 			alignItems: "center",
-			borderTop: "1px solid black",
+			borderTop: "1px solid " + Colori.primario,
 		},
 		navbarDiv: {
 			height: "100%",
@@ -61,15 +61,11 @@ const Navbar = ({ page }) => {
 			justifyContent: "center",
 			alignItems: "center",
 			flexDirection: "column",
-			// borderRight: "2px solid black",
 		},
 		navbarDivImg: {
 			width: "35px",
 			height: "35px",
-			filter:
-				"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
-			// filter:
-			// 	"invert(83%) sepia(25%) saturate(962%) hue-rotate(353deg)brightness(103%) contrast(97%)",
+			filter: Colori.imgPrimario,
 		},
 		barrettaInBasso: {
 			position: "absolute",
@@ -77,13 +73,7 @@ const Navbar = ({ page }) => {
 			left: spostamento + 3.5 + "%",
 			width: "18%",
 			height: "5px",
-			// borderRadius: "10px",
-			backgroundColor: "black",
-			filter:
-				"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
-			// filter:
-			// 	"invert(83%) sepia(25%) saturate(962%) hue-rotate(353deg)brightness(103%) contrast(97%)",
-			// margin: "3.5px",
+			backgroundColor: Colori.primario,
 		},
 	};
 
@@ -91,15 +81,12 @@ const Navbar = ({ page }) => {
 		<div style={css.navbar} className='navbar'>
 			<div id='navbarHome' onClick={navigateHome} style={css.navbarDiv}>
 				<img src={imgHome} alt='' style={css.navbarDivImg} />
-				{/* {page === "home" ? <BarrettaInBasso /> : ""} */}
 			</div>
 			<div id='navbarMenu' onClick={navigateMenu} style={css.navbarDiv}>
 				<img src={imgMenu} alt='' style={css.navbarDivImg} />
-				{/* {page === "menu" ? <BarrettaInBasso /> : ""} */}
 			</div>
 			<div id='navbarOrders' onClick={navigateOrders} style={css.navbarDiv}>
 				<img src={imgOrders} alt='' style={css.navbarDivImg} />
-				{/* {page === "orders" ? <BarrettaInBasso /> : ""} */}
 			</div>
 			<div
 				id='navbarProfile'
@@ -107,7 +94,6 @@ const Navbar = ({ page }) => {
 				style={{ ...css.navbarDiv, borderRight: "none" }}
 			>
 				<img src={imgProfile} alt='' style={css.navbarDivImg} />
-				{/* {page === "profile" ? <BarrettaInBasso /> : ""} */}
 			</div>
 			<BarrettaInBasso />
 		</div>
