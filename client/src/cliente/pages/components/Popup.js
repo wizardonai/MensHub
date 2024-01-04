@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const Popup = ({ text, show, setPopup }) => {
 	return (
 		<div

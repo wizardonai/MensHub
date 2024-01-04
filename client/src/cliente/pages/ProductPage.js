@@ -1,8 +1,8 @@
-import { useLoaderData, useLocation } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import "./css/Popup.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BottomButton from "./components/BottomButton";
 import Popup from "./components/Popup";
 
@@ -44,7 +44,6 @@ const ProductPage = (props) => {
 		"daDoveArrivo"
 	);
 
-	const [parametri, setParametri] = useState([]);
 	const [prodotto, setProdotto] = useState({});
 	const [espandi, setEspandi] = useState(false);
 	const [popup, setPopup] = useState(false);

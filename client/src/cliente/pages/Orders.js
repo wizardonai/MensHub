@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import "./css/Popup.css";
 import { sendOrder } from "../scripts/fetch";
@@ -110,8 +110,6 @@ function Orders() {
 
 	if (!data) return <p>Caricamento</p>;
 	const { hostname } = data;
-
-	let flag = true;
 
 	const calcPrezzoTot = () => {
 		let tot = 0;

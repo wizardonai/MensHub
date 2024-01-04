@@ -16,11 +16,11 @@ const fileMysql = execFile("mysql.bat", [], (err, data) => {
 		console.log(err);
 	}
 });
-const fileApache = execFile("apache.bat", [], (err, data) => {
-	if (err) {
-		console.log(err);
-	}
-});
+// const fileApache = execFile("apache.bat", [], (err, data) => {
+// 	if (err) {
+// 		console.log(err);
+// 	}
+// });
 console.log("http://localhost:80/phpmyadmin");
 setTimeout(() => {
 	connetti();

@@ -3,11 +3,10 @@ import ListElement from "./components/ListElement";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 
-import { useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLoaderData } from "react-router-dom";
 
 const Slider = ({ piuAcq }) => {
-	const navigate = useNavigate();
 	let lista = [];
 
 	piuAcq.forEach((item, index) => {

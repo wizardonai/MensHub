@@ -3,7 +3,7 @@ import Topbar from "./components/Topbar";
 import SearchBar from "./components/SearchBar";
 import ListElement from "./components/ListElement";
 
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
 
 //lista completa
