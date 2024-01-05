@@ -1,30 +1,45 @@
-import { createConnection } from "mysql";
-import express from "express";
-//probabilmente da cambiare con express.Router();
-import { validate } from "deep-email-validator";
-import cors from "cors";
+//processi da far partire
 import { execFile } from "child_process";
-// import open from "open";
-import bodyParser from "body-parser";
-const { json, urlencoded } = bodyParser;
 
-const server = express();
-
-//faccio partire mysql
 const fileMysql = execFile("mysql.bat", [], (err, data) => {
 	if (err) {
 		console.log(err);
 	}
 });
-// const fileApache = execFile("apache.bat", [], (err, data) => {
-// 	if (err) {
-// 		console.log(err);
-// 	}
-// });
-console.log("http://localhost:80/phpmyadmin");
 setTimeout(() => {
 	connetti();
 }, 2500);
+
+let fileApache;
+let fileShell;
+process.argv.forEach((item) => {
+	if (item === "apache") {
+		fileApache = execFile("apache.bat", [], (err, data) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	} else if (item === "shell") {
+		fileShell = execFile("shell.bat", [], (err, data) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	}
+});
+
+//altro
+
+import { createConnection } from "mysql";
+import express from "express";
+//probabilmente da cambiare con express.Router();
+import { validate } from "deep-email-validator";
+import cors from "cors";
+// import open from "open";
+import bodyParser from "body-parser";
+const { json, urlencoded } = bodyParser;
+
+const server = express();
 
 let connection;
 function connetti() {

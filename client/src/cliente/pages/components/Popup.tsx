@@ -1,4 +1,14 @@
-const Popup = ({ text, show, setPopup }) => {
+import { styleMap } from "../../../App";
+
+const Popup = ({
+	text,
+	show,
+	setPopup,
+}: {
+	text: string;
+	show: boolean;
+	setPopup: Function;
+}) => {
 	return (
 		<div
 			style={
@@ -25,7 +35,7 @@ const Popup = ({ text, show, setPopup }) => {
 
 export default Popup;
 
-const css = {
+const css: styleMap = {
 	popup: {
 		display: "flex",
 		justifyContent: "center",

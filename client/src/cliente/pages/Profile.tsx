@@ -1,9 +1,10 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
+import { styleMap } from "../../App";
 
 function Profile() {
-	const data = useLoaderData();
+	const data: any = useLoaderData();
 	const navigate = useNavigate();
 
 	if (!data) return <p>Caricamento</p>;
@@ -13,7 +14,7 @@ function Profile() {
 	let dati;
 
 	if (localStorage.getItem("datiUtente") !== undefined) {
-		dati = JSON.parse(localStorage.getItem("datiUtente"));
+		dati = JSON.parse(localStorage.getItem("datiUtente") || "{}");
 	}
 
 	const disconnect = () => {
@@ -26,7 +27,7 @@ function Profile() {
 
 	return (
 		<div className='page'>
-			<Topbar titolo={"Ciao " + dati.nome} />
+			<Topbar titolo={"Ciao " + dati.nome} daDoveArrivo='' />
 			<div className='container' style={css.containerProfileTmp}>
 				<div onClick={disconnect} style={css.divDisconnetti}>
 					<img src={hostname + "logout.png"} alt='' style={css.disconettiImg} />
@@ -45,7 +46,7 @@ export default Profile;
 // stili
 //
 
-const css = {
+const css: styleMap = {
 	containerProfileTmp: {
 		display: "flex",
 		alignItems: "center",

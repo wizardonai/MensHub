@@ -6,8 +6,40 @@ import Topbar from "./components/Topbar";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 
-const Slider = ({ piuAcq }) => {
-	let lista = [];
+import { ArrayProdotti, styleMap } from "../../App";
+
+//drawer
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerDescription,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "../../shadcn/Drawer";
+import { Button } from "../../shadcn/Button";
+
+export type prodotto = {
+	allergeni: string;
+	categoria: string;
+	descrizione: string;
+	disponibile: number;
+	fd: number;
+	id: number;
+	id_mensa: number;
+	indirizzo_img: string;
+	nacq: number;
+	nome: string;
+	prezzo: number;
+};
+type parametri = {
+	piuAcq: Array<prodotto>;
+};
+
+const Slider = ({ piuAcq }: parametri) => {
+	let lista: Array<React.JSX.Element> = [];
 
 	piuAcq.forEach((item, index) => {
 		lista.push(<ListElement item={item} key={item.id} daDoveArrivo='home' />);
@@ -19,12 +51,12 @@ const Slider = ({ piuAcq }) => {
 const NPIUACQ = 5;
 
 const HomePage = () => {
-	const data = useLoaderData();
-	const [piuAcq, setPiuAcq] = useState([]);
+	const data: any = useLoaderData();
+	const [piuAcq, setPiuAcq] = useState(new Array<prodotto>());
 
 	if (!data) return <p>Caricamento</p>;
 
-	const elencoProdotti = data.prodotti;
+	const elencoProdotti: ArrayProdotti = data.prodotti;
 	if (piuAcq.length === 0) trovaPiuAcq();
 
 	function trovaPiuAcq() {
@@ -40,7 +72,7 @@ const HomePage = () => {
 			}
 		}
 
-		let tmp2 = [];
+		let tmp2: Array<prodotto> = [];
 		for (let i = 0; i < NPIUACQ; i++) {
 			tmp2.push(tmp[i]);
 		}
@@ -49,20 +81,39 @@ const HomePage = () => {
 
 	return (
 		<div className='page'>
-			<Topbar titolo='nome mensa' />
+			<Topbar titolo='nome mensa' daDoveArrivo='' />
 			<div className='container' style={css.containerHome}>
 				{/* <p style={css.nomeMensa}>UASARD MENS</p> */}
 				<p style={css.titoloHome}>I più venduti</p>
 				<div style={css.slider}>
 					<Slider piuAcq={piuAcq} />
 				</div>
+				<Drawer>
+					<DrawerTrigger>Scopa Opals</DrawerTrigger>
+					<DrawerContent>
+						<DrawerHeader>
+							<DrawerTitle>Are you sure absolutely sure?</DrawerTitle>
+							<DrawerDescription>
+								This action cannot be undone.
+							</DrawerDescription>
+						</DrawerHeader>
+						<DrawerFooter>
+							<DrawerClose>
+								<Button>Si lo bombo</Button>
+							</DrawerClose>
+							<DrawerClose>
+								<Button variant='outline'>Mi piacciono le donne 🤢</Button>
+							</DrawerClose>
+						</DrawerFooter>
+					</DrawerContent>
+				</Drawer>
 			</div>
 			<Navbar page='home' />
 		</div>
 	);
 };
 
-const css = {
+const css: styleMap = {
 	containerHome: {
 		overflowY: "scroll",
 	},

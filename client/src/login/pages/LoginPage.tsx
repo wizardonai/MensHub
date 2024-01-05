@@ -2,9 +2,14 @@ import { useState, useRef } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../scripts/fetch";
+import { styleMap } from "../../App";
+
+type dataLoader = {
+	refreshStorage: Function;
+};
 
 const LoginPage = () => {
-	const data = useLoaderData();
+	const dataIniziale: any = useLoaderData();
 	const navigate = useNavigate();
 
 	const [errore, setErrore] = useState({
@@ -14,8 +19,9 @@ const LoginPage = () => {
 	const email = useRef(null);
 	const password = useRef(null);
 
-	if (!data) return <p>Caricamento</p>;
+	if (!dataIniziale) return <p>Caricamento</p>;
 
+	let data: dataLoader = dataIniziale;
 	const { refreshStorage } = data;
 
 	const submitLoginCliccato = () => {
@@ -24,7 +30,9 @@ const LoginPage = () => {
 			messaggio: <></>,
 		});
 
+		// @ts-ignore
 		const valueEmail = email.current.value;
+		// @ts-ignore
 		const valuePassword = password.current.value;
 
 		let errore = false;
@@ -80,10 +88,10 @@ const LoginPage = () => {
 	return (
 		<div style={css.pageLogin}>
 			<div style={css.schedaFormLogin}>
-				<div style={css.divh1}>
+				<div style={css.schedaFormDivh1}>
 					<h1>Login</h1>
 				</div>
-				<div style={css.formLogin} method='get'>
+				<div style={css.formLogin}>
 					<input
 						type='email'
 						placeholder='Email'
@@ -139,7 +147,7 @@ export default LoginPage;
 // stili
 //
 
-const css = {
+const css: styleMap = {
 	pageLogin: {
 		display: "flex",
 		justifyContent: "center",

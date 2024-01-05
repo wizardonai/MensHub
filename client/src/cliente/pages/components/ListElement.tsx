@@ -1,6 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import { prodotto } from "../Homepage";
+import { styleMap } from "../../../App";
 
-const ListElement = ({ item, daDoveArrivo }) => {
+type parametri = {
+	item: prodotto;
+	daDoveArrivo: string;
+};
+
+const ListElement = ({ item, daDoveArrivo }: parametri) => {
 	const navigate = useNavigate();
 
 	return (
@@ -12,7 +19,7 @@ const ListElement = ({ item, daDoveArrivo }) => {
 		>
 			<div style={css.divImmagineElemento}>
 				<img
-					src={item.indirizzoImg}
+					src={item.indirizzo_img}
 					alt=''
 					style={css.divImmagineElementoImg}
 				/>
@@ -24,7 +31,7 @@ const ListElement = ({ item, daDoveArrivo }) => {
 	);
 };
 
-const css = {
+const css: styleMap = {
 	elemento: {
 		margin: "10px",
 		width: "35svw",

@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import imgHome from "../image/home.png";
-import imgMenu from "../image/menu.png";
-import imgOrders from "../image/orders.png";
-import imgProfile from "../image/profile.png";
 import { useNavigate } from "react-router-dom";
-import { Colori } from "../../../App";
+import { Colori, styleMap } from "../../../App";
+import { hostname } from "../../../App";
 
-const Navbar = ({ page }) => {
+const Navbar = ({ page }: { page: string }) => {
 	const navigate = useNavigate();
 
 	const [spostamento, setSpostamento] = useState(0);
@@ -44,7 +41,7 @@ const Navbar = ({ page }) => {
 	//
 	//stili
 	//
-	const css = {
+	const css: styleMap = {
 		navbar: {
 			height: "8svh",
 			width: "100%",
@@ -80,20 +77,20 @@ const Navbar = ({ page }) => {
 	return (
 		<div style={css.navbar} className='navbar'>
 			<div id='navbarHome' onClick={navigateHome} style={css.navbarDiv}>
-				<img src={imgHome} alt='' style={css.navbarDivImg} />
+				<img src={hostname + "home.png"} alt='' style={css.navbarDivImg} />
 			</div>
 			<div id='navbarMenu' onClick={navigateMenu} style={css.navbarDiv}>
-				<img src={imgMenu} alt='' style={css.navbarDivImg} />
+				<img src={hostname + "menu.png"} alt='' style={css.navbarDivImg} />
 			</div>
 			<div id='navbarOrders' onClick={navigateOrders} style={css.navbarDiv}>
-				<img src={imgOrders} alt='' style={css.navbarDivImg} />
+				<img src={hostname + "orders.png"} alt='' style={css.navbarDivImg} />
 			</div>
 			<div
 				id='navbarProfile'
 				onClick={navigateProfile}
 				style={{ ...css.navbarDiv, borderRight: "none" }}
 			>
-				<img src={imgProfile} alt='' style={css.navbarDivImg} />
+				<img src={hostname + "profile.png"} alt='' style={css.navbarDivImg} />
 			</div>
 			<BarrettaInBasso />
 		</div>

@@ -5,9 +5,11 @@ import "./css/Popup.css";
 import { useState } from "react";
 import BottomButton from "./components/BottomButton";
 import Popup from "./components/Popup";
+import { ArrayProdotti, styleMap, hostname } from "../../App";
+import { prodotto } from "./Homepage";
 
-const ListaAllergeni = ({ arr }) => {
-	let lista = [];
+const ListaAllergeni = ({ arr }: { arr: Array<string> }) => {
+	let lista: Array<React.JSX.Element> = [];
 	arr.forEach((item, index) => {
 		lista.push(
 			<div
@@ -37,32 +39,32 @@ const ListaAllergeni = ({ arr }) => {
 	return lista;
 };
 
-const ProductPage = (props) => {
-	const data = useLoaderData();
+const ProductPage = () => {
+	const data: any = useLoaderData();
 
-	const daDoveArrivo = new URLSearchParams(window.location.search).get(
-		"daDoveArrivo"
-	);
+	const daDoveArrivo =
+		new URLSearchParams(window.location.search).get("daDoveArrivo") || "menu";
 
-	const [prodotto, setProdotto] = useState({});
+	const [prodotto, setProdotto] = useState({} as prodotto);
 	const [espandi, setEspandi] = useState(false);
 	const [popup, setPopup] = useState(false);
 
 	if (!data) return <p>Caricamento</p>;
 
-	const elencoProdotti = data.prodotti;
-	const { hostname, id } = data;
+	const elencoProdotti: ArrayProdotti = data.prodotti;
+
+	const { id }: { id: string } = data;
 
 	if (Object.keys(prodotto).length === 0) {
-		elencoProdotti.prodotti.forEach((item, index) => {
+		elencoProdotti.prodotti.forEach((item: prodotto) => {
 			if (item.id === parseInt(id)) {
 				setProdotto(item);
 			}
 		});
 	}
 
-	const prodottoGiaEsistente = (id) => {
-		let tmp = JSON.parse(localStorage.getItem("cart"));
+	const prodottoGiaEsistente = (id: number) => {
+		let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 
 		for (let i = 0; i < tmp.length; i++) {
 			if (tmp[i].id === id) {
@@ -78,12 +80,12 @@ const ProductPage = (props) => {
 		if (!popup) {
 			const ris = prodottoGiaEsistente(prodotto.id);
 
-			tmp = JSON.parse(localStorage.getItem("cart"));
+			tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 
 			if (ris >= 0) {
 				tmp[ris].quantita += 1;
 			} else {
-				tmp = JSON.parse(localStorage.getItem("cart"));
+				tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 
 				tmp.push({
 					...prodotto,
@@ -106,7 +108,7 @@ const ProductPage = (props) => {
 				<Topbar titolo='product' daDoveArrivo={daDoveArrivo} />
 				<div className='container' style={css.containerProductPage}>
 					<div style={css.informazioniProdotto}>
-						<img src={prodotto.indirizzoImg} alt='' style={css.imgProdotto} />
+						<img src={prodotto.indirizzo_img} alt='' style={css.imgProdotto} />
 						<p style={css.nomeProdotto}>{prodotto.nome}</p>
 						<div style={css.prezzoAggiungiCarrello}>
 							<p style={css.prezzoProdotto}>Prezzo: {prodotto.prezzo}€</p>
@@ -159,7 +161,11 @@ const ProductPage = (props) => {
 							</div>
 						</div>
 					</div>
-					<BottomButton text='Aggiungi al carrello' onClickFun={funAddCart} />
+					<BottomButton
+						text='Aggiungi al carrello'
+						onClickFun={funAddCart}
+						display=''
+					/>
 				</div>
 				<Navbar page='menu' />
 				<Popup text='Aggiunto al carrello!' show={popup} setPopup={setPopup} />
@@ -175,7 +181,7 @@ export default ProductPage;
 // stili
 //
 
-const css = {
+const css: styleMap = {
 	containerProductPage: {
 		overflowY: "scroll",
 		overflowX: "hidden",

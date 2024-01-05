@@ -14,8 +14,35 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./App.css";
 
+export type ArrayProdotti = {
+	prodotti: Array<{
+		allergeni: string;
+		categoria: string;
+		descrizione: string;
+		disponibile: number;
+		fd: number;
+		id: number;
+		id_mensa: number;
+		indirizzo_img: string;
+		nacq: number;
+		nome: string;
+		prezzo: number;
+	}>;
+};
+interface styleThing {
+	[thingName: string]: string;
+}
+export interface styleMap {
+	[thingName: string]: styleThing;
+}
+export interface filtroMap {
+	[thingName: string]: boolean;
+}
+
 export const hostname =
-	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_IMG_PORT + "/image/";
+	(process.env.REACT_APP_HOSTNAME || "") +
+	(process.env.REACT_APP_IMG_PORT || "") +
+	"/image/";
 export var Colori = {
 	primario: "#3897F1",
 	imgPrimario:
@@ -23,19 +50,21 @@ export var Colori = {
 };
 
 const loadProdotti = async () => {
-	function aggiungiHostname(prodotti) {
-		let tmp = prodotti;
+	function aggiungiHostname(prodotti: ArrayProdotti) {
+		let tmp: ArrayProdotti = prodotti;
 
-		tmp.forEach((item) => {
-			item.indirizzoImg = hostname + item.indirizzo_img;
+		tmp.prodotti.forEach((item) => {
+			item.indirizzo_img = hostname + item.indirizzo_img;
 			item.nome = item.nome.toLowerCase();
 		});
 
 		return tmp;
 	}
 
-	let res = await getProdotti();
-	let elencoProdotti = { prodotti: aggiungiHostname(res) };
+	// @ts-ignore
+	let res: ArrayProdotti = { prodotti: await getProdotti() };
+
+	let elencoProdotti: ArrayProdotti = aggiungiHostname(res);
 	return elencoProdotti;
 };
 
@@ -43,7 +72,7 @@ const App = () => {
 	//loggato o no
 	const [utente, setUtente] = useState("no");
 	const refreshStorage = () => {
-		setUtente(localStorage.getItem("login"));
+		setUtente(localStorage.getItem("login") || "no");
 		return localStorage.getItem("login");
 	};
 
@@ -81,7 +110,6 @@ const App = () => {
 						prodotti: await loadProdotti(),
 						stringaSearch: stringaSearch,
 						setStringaSearch: setStringaSearch,
-						hostname: hostname,
 						filtri: filtri,
 						setFiltri: setFiltri,
 					};
@@ -93,7 +121,6 @@ const App = () => {
 				loader: async ({ params }) => {
 					return {
 						prodotti: await loadProdotti(),
-						hostname: hostname,
 						id: params.productId,
 					};
 				},
@@ -101,16 +128,12 @@ const App = () => {
 			{
 				path: "/orders",
 				element: <Orders />,
-				loader: () => ({
-					hostname: hostname,
-				}),
 			},
 			{
 				path: "/profile",
 				element: <Profile />,
 				loader: () => ({
 					refreshStorage: refreshStorage,
-					hostname: hostname,
 				}),
 			},
 			{

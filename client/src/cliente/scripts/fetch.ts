@@ -2,7 +2,8 @@ import axios from "axios";
 const qs = require("qs");
 
 const urlServer =
-	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_FETCH_PORT;
+	(process.env.REACT_APP_HOSTNAME || "") +
+	(process.env.REACT_APP_FETCH_PORT || "");
 
 export async function getProdotti() {
 	let response;
@@ -31,7 +32,7 @@ export async function getProdotti() {
 	return response;
 }
 
-export async function sendOrder(carrello) {
+export async function sendOrder(carrello: Array<object>) {
 	let response;
 	let data = JSON.stringify({ carrello: carrello });
 

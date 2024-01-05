@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { registerUser } from "../scripts/fetch";
+import { styleMap } from "../../App";
 
 const RegisterPage = () => {
 	const navigate = useNavigate();
@@ -23,10 +24,15 @@ const RegisterPage = () => {
 			messaggio: <></>,
 		});
 
+		// @ts-ignore
 		const valueEmail = email.current.value;
+		// @ts-ignore
 		const valuePassword = password.current.value;
+		// @ts-ignore
 		const valueNome = nome.current.value;
+		// @ts-ignore
 		const valueCognome = cognome.current.value;
+		// @ts-ignore
 		const valueConfermaPassowrd = confermaPassword.current.value;
 
 		let errore = false;
@@ -92,10 +98,10 @@ const RegisterPage = () => {
 	return (
 		<div style={css.pageLogin}>
 			<div style={css.schedaFormRegister}>
-				<div style={css.divh1}>
+				<div style={css.schedaFormDivh1}>
 					<h1>Registrati</h1>
 				</div>
-				<div style={css.formRegister} method='get'>
+				<div style={css.formRegister}>
 					<input
 						type='text'
 						placeholder='Nome'
@@ -171,7 +177,7 @@ export default RegisterPage;
 // stili
 //
 
-const css = {
+const css: styleMap = {
 	pageLogin: {
 		display: "flex",
 		justifyContent: "center",

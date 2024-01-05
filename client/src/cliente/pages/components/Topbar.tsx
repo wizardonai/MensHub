@@ -1,14 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import goBack from "../image/goBack.png";
+import { styleMap } from "../../../App";
+import { hostname } from "../../../App";
 
-const Topbar = ({ daDoveArrivo, titolo }) => {
+const Topbar = ({
+	daDoveArrivo,
+	titolo,
+}: {
+	daDoveArrivo: string;
+	titolo: string;
+}) => {
 	const navigate = useNavigate();
 
 	return (
 		<div style={css.topbar} className='topbar'>
 			{titolo === "product" ? (
 				<img
-					src={goBack}
+					src={hostname + "goBack.png"}
 					alt=''
 					style={css.imgTornaIndietro}
 					onClick={() => {
@@ -41,7 +48,7 @@ export default Topbar;
 // stili
 //
 
-const css = {
+const css: styleMap = {
 	topbar: {
 		display: "flex",
 		justifyContent: "flex-start",

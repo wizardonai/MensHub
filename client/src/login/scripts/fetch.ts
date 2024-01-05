@@ -2,9 +2,22 @@ import axios from "axios";
 import { sha256 } from "js-sha256";
 
 const urlServer =
-	process.env.REACT_APP_HOSTNAME + process.env.REACT_APP_FETCH_PORT;
+	(process.env.REACT_APP_HOSTNAME || "") +
+	(process.env.REACT_APP_FETCH_PORT || "");
 
-export async function registerUser(dati) {
+type datiReg = {
+	nome: string;
+	cognome: string;
+	email: string;
+	password: string;
+	confirm_password: string;
+};
+type datiLog = {
+	email: string;
+	password: string;
+};
+
+export async function registerUser(dati: datiReg) {
 	let data = JSON.stringify({
 		...dati,
 		password: sha256.create().update(dati.password).hex(),
@@ -36,7 +49,7 @@ export async function registerUser(dati) {
 	return response;
 }
 
-export async function loginUser(dati) {
+export async function loginUser(dati: datiLog) {
 	let data = JSON.stringify({
 		...dati,
 		password: sha256.create().update(dati.password).hex(),

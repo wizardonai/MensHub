@@ -1,15 +1,20 @@
 //css
 import { useEffect } from "react";
+import { ArrayProdotti } from "../../../App";
+import { hostname } from "../../../App";
+import { prodotto } from "../Homepage";
 
 const SearchBar = ({
 	elencoProdotti,
 	stringaSearch,
 	setStringaSearch,
-	hostname,
 	setProdottiDaStampare,
+}: {
+	elencoProdotti: ArrayProdotti;
+	stringaSearch: string;
+	setStringaSearch: Function;
+	setProdottiDaStampare: Function;
 }) => {
-	// elencoProdotti = JSON.parse(elencoProdotti);
-
 	useEffect(() => {
 		elencoProdotti.prodotti.sort((a, b) => {
 			if (a.nome > b.nome) {
@@ -23,7 +28,7 @@ const SearchBar = ({
 		//eslint-disable-next-line
 	}, []);
 
-	function controlliSearch(e, effect) {
+	function controlliSearch(e: any, effect: boolean) {
 		if (!effect) {
 			let str = e.target.value;
 			setStringaSearch(str);
@@ -39,7 +44,7 @@ const SearchBar = ({
 					if (arr.length === 1) {
 						arr2.push(arr[0]);
 					} else {
-						let tmp = [];
+						let tmp: Array<string> = [];
 						arr.forEach((item) => {
 							let tmp2 = item.split("'");
 							tmp2.forEach((item2) => {
@@ -60,7 +65,7 @@ const SearchBar = ({
 					}
 				}
 
-				let prodotti = [];
+				let prodotti: Array<prodotto> = [];
 
 				indici.forEach((item) => {
 					prodotti.push(elencoProdotti.prodotti[item]);
@@ -86,9 +91,11 @@ const SearchBar = ({
 			<input
 				type='text'
 				placeholder='Cerca prodotti...'
+				// @ts-ignore
 				onChange={controlliSearch}
 				value={stringaSearch}
 				style={css.searchBar}
+				// @ts-ignore
 				onClick={controlliSearch}
 			/>
 		</div>

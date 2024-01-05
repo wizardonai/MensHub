@@ -3,11 +3,21 @@ import Navbar from "./components/Navbar";
 import "./css/Popup.css";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
-import { useLoaderData } from "react-router-dom";
 import BottomButton from "./components/BottomButton";
 import Popup from "./components/Popup";
+import { styleMap, hostname } from "../../App";
+import { prodotto } from "./Homepage";
 
-function rimuoviDalCarrello(item, carrello, setCarrello) {
+type aggiuntaQuantita = {
+	quantita: number;
+};
+type prodottoCarrello = prodotto & aggiuntaQuantita;
+
+function rimuoviDalCarrello(
+	item: prodotto,
+	carrello: Array<prodottoCarrello>,
+	setCarrello: Function
+) {
 	let tmp = carrello;
 
 	let lunghezza = tmp.length;
@@ -19,10 +29,20 @@ function rimuoviDalCarrello(item, carrello, setCarrello) {
 	}
 
 	localStorage.setItem("cart", JSON.stringify(tmp2));
-	setCarrello(JSON.parse(localStorage.getItem("cart")));
+	setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
 }
 
-const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
+const ElementoCarrello = ({
+	index,
+	item,
+	carrello,
+	setCarrello,
+}: {
+	index: number;
+	item: prodottoCarrello;
+	carrello: Array<prodottoCarrello>;
+	setCarrello: Function;
+}) => {
 	return (
 		<div
 			style={
@@ -33,25 +53,25 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 			key={index}
 		>
 			<div style={css.divImg}>
-				<img src={item.indirizzoImg} alt='' style={css.divImgImg} />
+				<img src={item.indirizzo_img} alt='' style={css.divImgImg} />
 			</div>
 			<div style={css.nomeElementoCarrello}>
 				<p style={css.nomeElementoCarrelloP}>{item.nome}</p>
 			</div>
 			<div style={css.pulsantiCarrello}>
 				<p style={css.quantitaCarrello}>
-					{JSON.parse(localStorage.getItem("cart"))[index].quantita}
+					{JSON.parse(localStorage.getItem("cart") || "{}")[index].quantita}
 				</p>
 				<div style={css.divSuEgiu}>
 					<img
 						src={hostname + "goBack.png"}
 						alt=''
 						onClick={() => {
-							let elementi = JSON.parse(localStorage.getItem("cart"));
+							let elementi = JSON.parse(localStorage.getItem("cart") || "{}");
 							elementi[index].quantita += 1;
 							localStorage.setItem("cart", JSON.stringify(elementi));
 
-							setCarrello(JSON.parse(localStorage.getItem("cart")));
+							setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
 						}}
 						style={{ ...css.frecciaSu, ...css.divSuEgiuImg }}
 					/>
@@ -59,7 +79,7 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 						src={hostname + "goBack.png"}
 						alt=''
 						onClick={() => {
-							let elementi = JSON.parse(localStorage.getItem("cart"));
+							let elementi = JSON.parse(localStorage.getItem("cart") || "{}");
 							elementi[index].quantita -= 1;
 							localStorage.setItem("cart", JSON.stringify(elementi));
 
@@ -67,7 +87,7 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 								rimuoviDalCarrello(item, carrello, setCarrello);
 							}
 
-							setCarrello(JSON.parse(localStorage.getItem("cart")));
+							setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
 						}}
 						style={{ ...css.frecciaGiu, ...css.divSuEgiuImg }}
 					/>
@@ -82,15 +102,20 @@ const ElementoCarrello = ({ index, item, hostname, carrello, setCarrello }) => {
 	);
 };
 
-const ListaCarrello = ({ carrello, hostname, setCarrello }) => {
-	let lista = [];
+const ListaCarrello = ({
+	carrello,
+	setCarrello,
+}: {
+	carrello: Array<prodottoCarrello>;
+	setCarrello: Function;
+}) => {
+	let lista: Array<React.JSX.Element> = [];
 
 	carrello.forEach((item, index) => {
 		lista.push(
 			<ElementoCarrello
 				index={index}
 				item={item}
-				hostname={hostname}
 				key={index}
 				carrello={carrello}
 				setCarrello={setCarrello}
@@ -102,18 +127,14 @@ const ListaCarrello = ({ carrello, hostname, setCarrello }) => {
 };
 
 function Orders() {
-	const data = useLoaderData();
 	const [popup, setPopup] = useState(false);
 	const [carrello, setCarrello] = useState(
-		JSON.parse(localStorage.getItem("cart"))
+		JSON.parse(localStorage.getItem("cart") || "{}")
 	);
-
-	if (!data) return <p>Caricamento</p>;
-	const { hostname } = data;
 
 	const calcPrezzoTot = () => {
 		let tot = 0;
-		carrello.forEach((item) => {
+		carrello.forEach((item: prodottoCarrello) => {
 			tot += item.prezzo * item.quantita;
 		});
 
@@ -122,7 +143,7 @@ function Orders() {
 
 	const orderFun = () => {
 		setPopup(true);
-		sendOrder(JSON.parse(localStorage.getItem("cart"))).then(() => {
+		sendOrder(JSON.parse(localStorage.getItem("cart") || "{}")).then(() => {
 			setTimeout(() => {
 				setPopup(false);
 			}, 1250);
@@ -133,7 +154,7 @@ function Orders() {
 
 	return (
 		<div className='page'>
-			<Topbar titolo='carrello' />
+			<Topbar titolo='carrello' daDoveArrivo='' />
 			<div className='container' style={css.containerOrders}>
 				<p style={css.totalePrezzo}>Totale: {calcPrezzoTot()}€</p>
 				<div style={css.lineaIniziale}></div>
@@ -141,11 +162,7 @@ function Orders() {
 					{carrello.length >= 1 ? (
 						<>
 							<div style={css.elementiCarrello}>
-								<ListaCarrello
-									carrello={carrello}
-									hostname={hostname}
-									setCarrello={setCarrello}
-								/>
+								<ListaCarrello carrello={carrello} setCarrello={setCarrello} />
 							</div>
 						</>
 					) : (
@@ -177,7 +194,7 @@ export default Orders;
 // stili
 //
 
-const css = {
+const css: styleMap = {
 	containerOrders: {
 		overflowY: "scroll",
 		overflowX: "hidden",

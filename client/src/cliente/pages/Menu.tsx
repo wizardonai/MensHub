@@ -4,11 +4,19 @@ import SearchBar from "./components/SearchBar";
 import ListElement from "./components/ListElement";
 
 import { useLoaderData } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
+import { ArrayProdotti, filtroMap, styleMap } from "../../App";
+import { prodotto } from "./Homepage";
 
 //lista completa
-const Lista = ({ filtro, elencoProdotti }) => {
-	let prodottiFiltrati = [];
+const Lista = ({
+	filtro,
+	elencoProdotti,
+}: {
+	filtro: string;
+	elencoProdotti: Array<prodotto>;
+}) => {
+	let prodottiFiltrati: Array<prodotto> = [];
 	if (filtro !== "") {
 		elencoProdotti.forEach((item) => {
 			if (filtro === item.categoria) {
@@ -19,7 +27,7 @@ const Lista = ({ filtro, elencoProdotti }) => {
 		prodottiFiltrati = elencoProdotti;
 	}
 
-	let list = [];
+	let list: Array<React.JSX.Element> = [];
 	prodottiFiltrati.forEach((item) => {
 		list.push(<ListElement item={item} key={item.id} daDoveArrivo='menu' />);
 	});
@@ -28,8 +36,14 @@ const Lista = ({ filtro, elencoProdotti }) => {
 };
 
 //filtri
-const Filtri = ({ filtri, setFiltri }) => {
-	function disattivaAltriFiltri(x) {
+const Filtri = ({
+	filtri,
+	setFiltri,
+}: {
+	filtri: filtroMap;
+	setFiltri: Function;
+}) => {
+	function disattivaAltriFiltri(x: number) {
 		const possibiliFiltri = [
 			"antipasti",
 			"primi",
@@ -40,16 +54,16 @@ const Filtri = ({ filtri, setFiltri }) => {
 		];
 
 		if (x > possibiliFiltri.length) {
-			setFiltri((prev) => ({
+			setFiltri({
 				antipasti: false,
 				primi: false,
 				secondi: false,
 				contorni: false,
 				panini: false,
 				dolci: false,
-			}));
+			});
 		} else {
-			let tmp = {
+			let tmp: filtroMap = {
 				antipasti: false,
 				primi: false,
 				secondi: false,
@@ -63,7 +77,7 @@ const Filtri = ({ filtri, setFiltri }) => {
 	}
 
 	function ritornaElementi() {
-		const nomi = [
+		const nomi: Array<string> = [
 			"antipasti",
 			"primi",
 			"secondi",
@@ -72,7 +86,7 @@ const Filtri = ({ filtri, setFiltri }) => {
 			"dolci",
 		];
 
-		let lista = [];
+		let lista: Array<React.JSX.Element> = [];
 
 		nomi.forEach((item, index) => {
 			lista.push(
@@ -106,13 +120,15 @@ const Filtri = ({ filtri, setFiltri }) => {
 };
 
 const Menu = () => {
-	const data = useLoaderData();
-	const [prodottiDaStampare, setProdottiDaStampare] = useState([]);
+	const data: any = useLoaderData();
+	const [prodottiDaStampare, setProdottiDaStampare] = useState(
+		new Array<prodotto>()
+	);
 
 	if (!data) return <p>Caricamento</p>;
 
-	const elencoProdotti = data.prodotti;
-	const { stringaSearch, setStringaSearch, hostname, filtri, setFiltri } = data;
+	const elencoProdotti: ArrayProdotti = data.prodotti;
+	const { stringaSearch, setStringaSearch, filtri, setFiltri } = data;
 	if (prodottiDaStampare.length === 0)
 		setProdottiDaStampare(elencoProdotti.prodotti);
 
@@ -147,14 +163,13 @@ const Menu = () => {
 
 	return (
 		<div className='page'>
-			<Topbar titolo='menu' />
+			<Topbar titolo='menu' daDoveArrivo='' />
 			<div className='container' style={css.containerMenu}>
 				<SearchBar
 					elencoProdotti={elencoProdotti}
 					stringaSearch={stringaSearch}
 					setStringaSearch={setStringaSearch}
 					setProdottiDaStampare={setProdottiDaStampare}
-					hostname={hostname}
 				/>
 				<Filtri filtri={filtri} setFiltri={setFiltri} />
 				<div style={css.lista}>
@@ -166,7 +181,7 @@ const Menu = () => {
 	);
 };
 
-const css = {
+const css: styleMap = {
 	containerMenu: {
 		overflowY: "scroll",
 		overflowX: "hidden",

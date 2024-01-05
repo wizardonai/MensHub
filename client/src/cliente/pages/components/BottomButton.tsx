@@ -1,7 +1,16 @@
 import { Colori } from "../../../App";
+import { styleMap } from "../../../App";
 
-const BottomButton = ({ text, onClickFun, display }) => {
-	const css = {
+const BottomButton = ({
+	text,
+	onClickFun,
+	display,
+}: {
+	text: string;
+	onClickFun: Function;
+	display: string;
+}) => {
+	const css: styleMap = {
 		pulsanteFixatoInBasso: {
 			backgroundColor: "transparent",
 			height: "40px",
@@ -19,9 +28,7 @@ const BottomButton = ({ text, onClickFun, display }) => {
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
-			// border: "2px solid black",
 			fontWeight: "bold",
-			// backgroundColor: "#222",
 			backgroundColor: Colori.primario,
 			color: "#fff",
 			fontSize: "16px",
@@ -39,7 +46,11 @@ const BottomButton = ({ text, onClickFun, display }) => {
 					: css.pulsanteFixatoInBasso
 			}
 		>
-			<div style={css.pulsanteFixatoInBassoDiv} onClick={onClickFun}>
+			<div
+				style={css.pulsanteFixatoInBassoDiv}
+				//@ts-ignore
+				onClick={onClickFun}
+			>
 				{text}
 			</div>
 		</div>
