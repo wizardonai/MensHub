@@ -5,13 +5,21 @@ import ReactDOM from "react-dom/client";
 
 import App from "./App";
 import "./index.css";
+import { ThemeProvider } from "./ThemeProvider";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") || new Element()
 );
 root.render(
 	<React.StrictMode>
-		<App />
+		<ThemeProvider
+			attribute='class'
+			defaultTheme='system'
+			enableSystem
+			disableTransitionOnChange
+		>
+			<App />
+		</ThemeProvider>
 	</React.StrictMode>
 );
 

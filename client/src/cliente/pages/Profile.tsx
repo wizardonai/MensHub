@@ -1,7 +1,8 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
-import { styleMap } from "../../App";
+import { styleMap, hostname } from "../../App";
+import { ModeToggle } from "src/shadcn/Modetoggle";
 
 function Profile() {
 	const data: any = useLoaderData();
@@ -9,7 +10,7 @@ function Profile() {
 
 	if (!data) return <p>Caricamento</p>;
 
-	const { hostname, refreshStorage } = data;
+	const { refreshStorage } = data;
 
 	let dati;
 
@@ -28,10 +29,14 @@ function Profile() {
 	return (
 		<div className='page'>
 			<Topbar titolo={"Ciao " + dati.nome} daDoveArrivo='' />
-			<div className='container' style={css.containerProfileTmp}>
-				<div onClick={disconnect} style={css.divDisconnetti}>
+			<div className='containerPage' style={css.containerProfileTmp}>
+				<div onClick={disconnect} style={css.divDisconnetti} className='ml-4'>
 					<img src={hostname + "logout.png"} alt='' style={css.disconettiImg} />
 					<p>Disconnettiti</p>
+				</div>
+				<div className='w-[100px] flex flex-row items-center justify-evenly mt-8 ml-4'>
+					<p>Tema: </p>
+					<ModeToggle />
 				</div>
 			</div>
 			<Navbar page='profile' />
@@ -49,7 +54,7 @@ export default Profile;
 const css: styleMap = {
 	containerProfileTmp: {
 		display: "flex",
-		alignItems: "center",
+		alignItems: "flex-start",
 		flexDirection: "column",
 	},
 	divDisconnetti: {

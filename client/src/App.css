@@ -5,6 +5,7 @@
 	padding: 0;
 	-ms-overflow-style: none;
 	scrollbar-width: none;
+	/* box-sizing: content-box !important; */
 }
 *::-webkit-scrollbar {
 	display: none;
@@ -22,7 +23,7 @@ body {
 	width: 100%;
 	overflow: hidden;
 }
-.container {
+.containerPage {
 	height: 82svh;
 	width: 100%;
 	/* z-index: -1;

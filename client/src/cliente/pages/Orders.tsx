@@ -4,9 +4,11 @@ import "./css/Popup.css";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
-import Popup from "./components/Popup";
-import { styleMap, hostname } from "../../App";
+import { styleMap, hostname, Colori } from "../../App";
 import { prodotto } from "./Homepage";
+import { useTheme } from "next-themes";
+import { Toaster } from "src/shadcn/Sonner";
+import { toast } from "sonner";
 
 type aggiuntaQuantita = {
 	quantita: number;
@@ -43,6 +45,8 @@ const ElementoCarrello = ({
 	carrello: Array<prodottoCarrello>;
 	setCarrello: Function;
 }) => {
+	const { resolvedTheme } = useTheme();
+
 	return (
 		<div
 			style={
@@ -73,7 +77,15 @@ const ElementoCarrello = ({
 
 							setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
 						}}
-						style={{ ...css.frecciaSu, ...css.divSuEgiuImg }}
+						style={
+							resolvedTheme === "light"
+								? { ...css.frecciaSu, ...css.divSuEgiuImg }
+								: {
+										...css.frecciaSu,
+										...css.divSuEgiuImg,
+										filter: Colori.imgChiara,
+								  }
+						}
 					/>
 					<img
 						src={hostname + "goBack.png"}
@@ -89,7 +101,15 @@ const ElementoCarrello = ({
 
 							setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
 						}}
-						style={{ ...css.frecciaGiu, ...css.divSuEgiuImg }}
+						style={
+							resolvedTheme === "light"
+								? { ...css.frecciaGiu, ...css.divSuEgiuImg }
+								: {
+										...css.frecciaGiu,
+										...css.divSuEgiuImg,
+										filter: Colori.imgChiara,
+								  }
+						}
 					/>
 				</div>
 			</div>
@@ -127,7 +147,6 @@ const ListaCarrello = ({
 };
 
 function Orders() {
-	const [popup, setPopup] = useState(false);
 	const [carrello, setCarrello] = useState(
 		JSON.parse(localStorage.getItem("cart") || "{}")
 	);
@@ -142,11 +161,13 @@ function Orders() {
 	};
 
 	const orderFun = () => {
-		setPopup(true);
 		sendOrder(JSON.parse(localStorage.getItem("cart") || "{}")).then(() => {
-			setTimeout(() => {
-				setPopup(false);
-			}, 1250);
+			toast("Ordinazione effettuata!", {
+				action: {
+					label: "Chiudi",
+					onClick: () => {},
+				},
+			});
 			localStorage.setItem("cart", JSON.stringify([]));
 			setCarrello([]);
 		});
@@ -155,7 +176,7 @@ function Orders() {
 	return (
 		<div className='page'>
 			<Topbar titolo='carrello' daDoveArrivo='' />
-			<div className='container' style={css.containerOrders}>
+			<div className='containerPage' style={css.containerOrders}>
 				<p style={css.totalePrezzo}>Totale: {calcPrezzoTot()}€</p>
 				<div style={css.lineaIniziale}></div>
 				<div style={css.informazioniCarrello}>
@@ -178,11 +199,12 @@ function Orders() {
 				</div>
 			</div>
 			<Navbar page='orders' />
-			<Popup
+			{/* <Popup
 				text='Ordinazione eseguita con successo!'
 				show={popup}
 				setPopup={setPopup}
-			/>
+			/> */}
+			<Toaster />
 		</div>
 	);
 }

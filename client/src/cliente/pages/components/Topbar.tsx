@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { styleMap } from "../../../App";
 import { hostname } from "../../../App";
+import { useTheme } from "next-themes";
 
 const Topbar = ({
 	daDoveArrivo,
@@ -10,6 +11,41 @@ const Topbar = ({
 	titolo: string;
 }) => {
 	const navigate = useNavigate();
+	const { resolvedTheme } = useTheme();
+
+	//
+	//
+	// stili
+	//
+
+	const css: styleMap = {
+		topbar: {
+			display: "flex",
+			justifyContent: "flex-start",
+			alignItems: "center",
+			height: "10svh",
+			width: "100%",
+			background: "var(--background)",
+		},
+		titolo: {
+			fontSize: "45px",
+			textTransform: "capitalize",
+			marginLeft: "20px",
+			fontWeight: "500",
+		},
+		imgTornaIndietro: {
+			height: "25px",
+			width: "25px",
+			marginLeft: "5px",
+			filter:
+				resolvedTheme === "light"
+					? ""
+					: "invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)",
+		},
+		titoloIndietro: {
+			fontSize: "27px",
+		},
+	};
 
 	return (
 		<div style={css.topbar} className='topbar'>
@@ -42,34 +78,3 @@ const Topbar = ({
 };
 
 export default Topbar;
-
-//
-//
-// stili
-//
-
-const css: styleMap = {
-	topbar: {
-		display: "flex",
-		justifyContent: "flex-start",
-		alignItems: "center",
-		height: "10svh",
-		width: "100%",
-	},
-	titolo: {
-		fontSize: "45px",
-		textTransform: "capitalize",
-		marginLeft: "20px",
-		fontWeight: "500",
-	},
-	imgTornaIndietro: {
-		height: "25px",
-		width: "25px",
-		marginLeft: "5px",
-		filter:
-			"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
-	},
-	titoloIndietro: {
-		fontSize: "27px",
-	},
-};

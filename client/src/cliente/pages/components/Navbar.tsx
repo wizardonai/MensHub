@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Colori, styleMap } from "../../../App";
+import { styleMap } from "../../../App";
 import { hostname } from "../../../App";
+import { useTheme } from "next-themes";
 
 const Navbar = ({ page }: { page: string }) => {
 	const navigate = useNavigate();
+	const { resolvedTheme } = useTheme();
 
 	const [spostamento, setSpostamento] = useState(0);
 
@@ -33,10 +35,6 @@ const Navbar = ({ page }: { page: string }) => {
 		}
 	}, [page]);
 
-	const BarrettaInBasso = () => {
-		return <div style={css.barrettaInBasso}></div>;
-	};
-
 	//
 	//
 	//stili
@@ -49,7 +47,9 @@ const Navbar = ({ page }: { page: string }) => {
 			flexDirection: "row",
 			justifyContent: "center",
 			alignItems: "center",
-			borderTop: "1px solid " + Colori.primario,
+			borderTop: "1px solid",
+			borderColor: "var(--foreground)",
+			background: "var(--background)",
 		},
 		navbarDiv: {
 			height: "100%",
@@ -62,7 +62,10 @@ const Navbar = ({ page }: { page: string }) => {
 		navbarDivImg: {
 			width: "35px",
 			height: "35px",
-			filter: Colori.imgPrimario,
+			filter:
+				resolvedTheme === "dark"
+					? "invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)"
+					: "",
 		},
 		barrettaInBasso: {
 			position: "absolute",
@@ -70,8 +73,12 @@ const Navbar = ({ page }: { page: string }) => {
 			left: spostamento + 3.5 + "%",
 			width: "18%",
 			height: "5px",
-			backgroundColor: Colori.primario,
+			background: resolvedTheme === "dark" ? "#fff" : "#000",
 		},
+	};
+
+	const BarrettaInBasso = () => {
+		return <div style={css.barrettaInBasso}></div>;
 	};
 
 	return (

@@ -4,6 +4,19 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { loginUser } from "../scripts/fetch";
 import { styleMap } from "../../App";
 
+//shadcn
+import { Button } from "../../shadcn/Button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "../../shadcn/Card";
+import { Input } from "../../shadcn/Input";
+import { Label } from "../../shadcn/Label";
+
 type dataLoader = {
 	refreshStorage: Function;
 };
@@ -87,9 +100,10 @@ const LoginPage = () => {
 
 	return (
 		<div style={css.pageLogin}>
+			{/*
 			<div style={css.schedaFormLogin}>
 				<div style={css.schedaFormDivh1}>
-					<h1>Login</h1>
+					<p style={css.titoloForm}>Login</p>
 				</div>
 				<div style={css.formLogin}>
 					<input
@@ -136,6 +150,50 @@ const LoginPage = () => {
 					<p style={css.linkLoginP}>Non hai un account? Registrati!</p>
 				</div>
 			</div>
+				*/}
+			<div className='flex flex-col justify-between items-center'>
+				<Card className='w-[350px]'>
+					<CardHeader>
+						<CardTitle>Login</CardTitle>
+						<CardDescription>Inserire i dati di accesso.</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className='grid w-full items-center gap-4'>
+							<div className='flex flex-col space-y-1.5'>
+								<Label htmlFor='email'>Email</Label>
+								<Input
+									id='email'
+									placeholder='Email'
+									type='email'
+									defaultValue=''
+									ref={email}
+								/>
+							</div>
+							<div className='flex flex-col space-y-1.5'>
+								<Label htmlFor='password'>Password</Label>
+								<Input
+									id='password'
+									placeholder='Password'
+									type='password'
+									defaultValue=''
+									ref={password}
+								/>
+							</div>
+							<div className='flex flex-col space-y-1.5'>
+								<p className='text-center text-white'>{errore.messaggio}</p>
+							</div>
+						</div>
+					</CardContent>
+					<CardFooter className='flex justify-between'>
+						<Button variant='outline' asChild>
+							<div onClick={() => navigate("/register")}>Registrati</div>
+						</Button>
+						<Button asChild>
+							<div onClick={submitLoginCliccato}>Login</div>
+						</Button>
+					</CardFooter>
+				</Card>
+			</div>
 		</div>
 	);
 };
@@ -176,6 +234,10 @@ const css: styleMap = {
 		alignItems: "center",
 		height: "20%",
 		marginTop: "15px",
+	},
+	titoloForm: {
+		fontSize: "34px",
+		fontWeight: "bold",
 	},
 	formLogin: {
 		display: "flex",

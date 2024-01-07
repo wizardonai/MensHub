@@ -164,7 +164,7 @@ const Menu = () => {
 	return (
 		<div className='page'>
 			<Topbar titolo='menu' daDoveArrivo='' />
-			<div className='container' style={css.containerMenu}>
+			<div className='containerPage' style={css.containerMenu}>
 				<SearchBar
 					elencoProdotti={elencoProdotti}
 					stringaSearch={stringaSearch}

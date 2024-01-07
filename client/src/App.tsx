@@ -44,9 +44,13 @@ export const hostname =
 	(process.env.REACT_APP_IMG_PORT || "") +
 	"/image/";
 export var Colori = {
-	primario: "#3897F1",
-	imgPrimario:
-		"invert(49%) sepia(82%) saturate(1958%) hue-rotate(187deg) brightness(99%) contrast(91%)",
+	// primario: "#3897F1",
+	// imgPrimario:
+	// 	"invert(49%) sepia(82%) saturate(1958%) hue-rotate(187deg) brightness(99%) contrast(91%)",
+	scuro: "rgb(3,7,17)",
+	chiaro: "#fff",
+	imgChiara:
+		"invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)",
 };
 
 const loadProdotti = async () => {

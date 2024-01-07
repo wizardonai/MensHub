@@ -8,19 +8,6 @@ import { useLoaderData } from "react-router-dom";
 
 import { ArrayProdotti, styleMap } from "../../App";
 
-//drawer
-import {
-	Drawer,
-	DrawerClose,
-	DrawerContent,
-	DrawerDescription,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from "../../shadcn/Drawer";
-import { Button } from "../../shadcn/Button";
-
 export type prodotto = {
 	allergeni: string;
 	categoria: string;
@@ -82,31 +69,12 @@ const HomePage = () => {
 	return (
 		<div className='page'>
 			<Topbar titolo='nome mensa' daDoveArrivo='' />
-			<div className='container' style={css.containerHome}>
+			<div className='containerPage' style={css.containerHome}>
 				{/* <p style={css.nomeMensa}>UASARD MENS</p> */}
 				<p style={css.titoloHome}>I più venduti</p>
 				<div style={css.slider}>
 					<Slider piuAcq={piuAcq} />
 				</div>
-				<Drawer>
-					<DrawerTrigger>Scopa Opals</DrawerTrigger>
-					<DrawerContent>
-						<DrawerHeader>
-							<DrawerTitle>Are you sure absolutely sure?</DrawerTitle>
-							<DrawerDescription>
-								This action cannot be undone.
-							</DrawerDescription>
-						</DrawerHeader>
-						<DrawerFooter>
-							<DrawerClose>
-								<Button>Si lo bombo</Button>
-							</DrawerClose>
-							<DrawerClose>
-								<Button variant='outline'>Mi piacciono le donne 🤢</Button>
-							</DrawerClose>
-						</DrawerFooter>
-					</DrawerContent>
-				</Drawer>
 			</div>
 			<Navbar page='home' />
 		</div>
