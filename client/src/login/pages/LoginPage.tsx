@@ -16,6 +16,7 @@ import {
 } from "../../shadcn/Card";
 import { Input } from "../../shadcn/Input";
 import { Label } from "../../shadcn/Label";
+import { useTheme } from "next-themes";
 
 type dataLoader = {
 	refreshStorage: Function;
@@ -24,6 +25,7 @@ type dataLoader = {
 const LoginPage = () => {
 	const dataIniziale: any = useLoaderData();
 	const navigate = useNavigate();
+	const { resolvedTheme } = useTheme();
 
 	const [errore, setErrore] = useState({
 		presente: false,
@@ -98,60 +100,25 @@ const LoginPage = () => {
 		}
 	};
 
+	const css: styleMap = {
+		pageLogin: {
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+
+			width: "100svw",
+			height: "100svh",
+			// background: "#f5f5f5",
+			margin: "0",
+			padding: "0",
+			backgroundColor: "var(--background)",
+			background: 'transparent url("http://172.20.10.7:6969/image/sfondo.png")',
+		},
+	};
+
 	return (
 		<div style={css.pageLogin}>
-			{/*
-			<div style={css.schedaFormLogin}>
-				<div style={css.schedaFormDivh1}>
-					<p style={css.titoloForm}>Login</p>
-				</div>
-				<div style={css.formLogin}>
-					<input
-						type='email'
-						placeholder='Email'
-						name='email'
-						ref={email}
-						style={css.formLoginInput}
-					/>
-					<input
-						type='password'
-						placeholder='Password'
-						name='password'
-						ref={password}
-						style={css.formLoginInput}
-					/>
-					<div
-						style={
-							errore.presente
-								? { ...css.errore, display: "flex" }
-								: { ...css.errore, display: "none" }
-						}
-					>
-						<p style={css.messaggioErrore}>{errore.messaggio}</p>
-					</div>
-					<button
-						id='submit'
-						onClick={submitLoginCliccato}
-						style={
-							!errore.presente
-								? { ...css.formLoginSubmit, marginTop: "15px" }
-								: { ...css.formLoginSubmit, marginTop: "0px" }
-						}
-					>
-						Login
-					</button>
-				</div>
-				<div
-					style={css.linkLogin}
-					onClick={() => {
-						navigate("/register");
-					}}
-				>
-					<p style={css.linkLoginP}>Non hai un account? Registrati!</p>
-				</div>
-			</div>
-				*/}
-			<div className='flex flex-col justify-between items-center'>
+			<div className='flex flex-col justify-center items-center'>
 				<Card className='w-[350px]'>
 					<CardHeader>
 						<CardTitle>Login</CardTitle>
@@ -160,7 +127,7 @@ const LoginPage = () => {
 					<CardContent>
 						<div className='grid w-full items-center gap-4'>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='email'>Email</Label>
+								{/* <Label htmlFor='email'>Email</Label> */}
 								<Input
 									id='email'
 									placeholder='Email'
@@ -170,7 +137,7 @@ const LoginPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='password'>Password</Label>
+								{/* <Label htmlFor='password'>Password</Label> */}
 								<Input
 									id='password'
 									placeholder='Password'
@@ -180,7 +147,15 @@ const LoginPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<p className='text-center text-white'>{errore.messaggio}</p>
+								<p
+									className={
+										"text-center" + resolvedTheme === "dark"
+											? "text-white"
+											: "text-black"
+									}
+								>
+									{errore.messaggio}
+								</p>
 							</div>
 						</div>
 					</CardContent>
@@ -205,95 +180,85 @@ export default LoginPage;
 // stili
 //
 
-const css: styleMap = {
-	pageLogin: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-
-		width: "100svw",
-		height: "100svh",
-		background: "#f5f5f5",
-	},
-	schedaFormLogin: {
-		width: "80svw",
-		height: "350px",
-		maxWidth: "350px",
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: "28px",
-		background: "#f5f5f5",
-		boxShadow: "12px 12px 24px #c5c5c5, -12px -12px 24px #fbfbfb",
-	},
-	schedaFormDivh1: {
-		textAlign: "center",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		height: "20%",
-		marginTop: "15px",
-	},
-	titoloForm: {
-		fontSize: "34px",
-		fontWeight: "bold",
-	},
-	formLogin: {
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-		justifyContent: "center",
-		width: "100%",
-		height: "70%",
-	},
-	formLoginInput: {
-		margin: "0 0 5px 0",
-		textAlign: "center",
-		fontSize: "20px",
-		padding: "5px",
-		borderRadius: "15px",
-		outline: "none",
-		border: "2px solid black",
-		width: "90%",
-		height: "25px",
-	},
-	formLoginSubmit: {
-		textAlign: "center",
-		fontSize: "20px",
-		padding: "5px",
-		borderRadius: "15px",
-		outline: "none",
-		color: "black",
-		fontWeight: "bold",
-		width: "50%",
-		height: "50px",
-		border: "2px solid black",
-		background: "rgb(245, 245, 245)",
-	},
-	errore: {
-		flexDirection: "column",
-		alignItems: "center",
-		justifyContent: "center",
-		width: "90%",
-		margin: "15px 0 5px 0",
-	},
-	messaggioErrore: {
-		color: "red",
-		fontWeight: "bold",
-		textAlign: "center",
-		width: "100%",
-	},
-	linkLogin: {
-		height: "5%",
-		marginBottom: "10px",
-		fontSize: "17px",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	linkLoginP: {
-		color: "black",
-		textDecoration: "underline",
-	},
-};
+// schedaFormLogin: {
+// 	width: "80svw",
+// 	height: "350px",
+// 	maxWidth: "350px",
+// 	display: "flex",
+// 	flexDirection: "column",
+// 	alignItems: "center",
+// 	justifyContent: "center",
+// 	borderRadius: "28px",
+// 	background: "#f5f5f5",
+// 	boxShadow: "12px 12px 24px #c5c5c5, -12px -12px 24px #fbfbfb",
+// },
+// schedaFormDivh1: {
+// 	textAlign: "center",
+// 	display: "flex",
+// 	justifyContent: "center",
+// 	alignItems: "center",
+// 	height: "20%",
+// 	marginTop: "15px",
+// },
+// titoloForm: {
+// 	fontSize: "34px",
+// 	fontWeight: "bold",
+// },
+// formLogin: {
+// 	display: "flex",
+// 	flexDirection: "column",
+// 	alignItems: "center",
+// 	justifyContent: "center",
+// 	width: "100%",
+// 	height: "70%",
+// },
+// formLoginInput: {
+// 	margin: "0 0 5px 0",
+// 	textAlign: "center",
+// 	fontSize: "20px",
+// 	padding: "5px",
+// 	borderRadius: "15px",
+// 	outline: "none",
+// 	border: "2px solid black",
+// 	width: "90%",
+// 	height: "25px",
+// },
+// formLoginSubmit: {
+// 	textAlign: "center",
+// 	fontSize: "20px",
+// 	padding: "5px",
+// 	borderRadius: "15px",
+// 	outline: "none",
+// 	color: "black",
+// 	fontWeight: "bold",
+// 	width: "50%",
+// 	height: "50px",
+// 	border: "2px solid black",
+// 	background: "rgb(245, 245, 245)",
+// },
+// errore: {
+// 	flexDirection: "column",
+// 	alignItems: "center",
+// 	justifyContent: "center",
+// 	width: "90%",
+// 	margin: "15px 0 5px 0",
+// },
+// messaggioErrore: {
+// 	color: "red",
+// 	fontWeight: "bold",
+// 	textAlign: "center",
+// 	width: "100%",
+// },
+// linkLogin: {
+// 	height: "5%",
+// 	marginBottom: "10px",
+// 	fontSize: "17px",
+// 	display: "flex",
+// 	justifyContent: "center",
+// 	alignItems: "center",
+// },
+// linkLoginP: {
+// 	color: "black",
+// 	textDecoration: "underline",
+// },
+// };

@@ -51,6 +51,7 @@ const BottomButton = ({
 			fontSize: "16px",
 			textTransform: "uppercase",
 			width: "60%",
+			maxWidth: "350px",
 			borderRadius: "15px",
 			color: resolvedTheme === "light" ? Colori.chiaro : Colori.scuro,
 			background: resolvedTheme === "light" ? Colori.scuro : Colori.chiaro,
@@ -72,7 +73,7 @@ const BottomButton = ({
 					// onClick={onClickFun}
 				>
 					<Drawer>
-						<DrawerTrigger>{text}</DrawerTrigger>
+						<DrawerTrigger className='w-[100%] h-[100%]'>{text}</DrawerTrigger>
 						<DrawerContent>
 							<DrawerHeader>
 								<DrawerTitle>Quantità</DrawerTitle>
@@ -91,7 +92,6 @@ const BottomButton = ({
 									disabled={quantita === 1}
 								>
 									<Minus className='h-4 w-4' />
-									{/* <span className='sr-only'>Decrease</span> */}
 								</Button>
 								<p>{quantita}</p>
 								<Button
@@ -103,7 +103,6 @@ const BottomButton = ({
 									}}
 								>
 									<Plus className='h-4 w-4' />
-									{/* <span className='sr-only'>Increase</span> */}
 								</Button>
 							</div>
 							<DrawerFooter>

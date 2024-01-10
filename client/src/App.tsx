@@ -92,7 +92,10 @@ const App = () => {
 	});
 
 	useEffect(() => {
-		refreshStorage();
+		// refreshStorage();
+		window.addEventListener("storage", () => {
+			setUtente(localStorage.getItem("login") || "no");
+		});
 	}, []);
 
 	let router;

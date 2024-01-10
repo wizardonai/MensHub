@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../scripts/fetch";
 import { styleMap } from "../../App";
 
+import { useTheme } from "next-themes";
+
 import { Button } from "../../shadcn/Button";
 import {
 	Card,
@@ -26,6 +28,7 @@ import {
 
 const RegisterPage = () => {
 	const navigate = useNavigate();
+	const { resolvedTheme } = useTheme();
 
 	const [errore, setErrore] = useState({
 		presente: false,
@@ -117,77 +120,6 @@ const RegisterPage = () => {
 
 	return (
 		<div style={css.pageLogin}>
-			{/*
-			<div style={css.schedaFormRegister}>
-				<div style={css.schedaFormDivh1}>
-					<h1>Registrati</h1>
-				</div>
-				<div style={css.formRegister}>
-					<input
-						type='text'
-						placeholder='Nome'
-						name='nome'
-						ref={nome}
-						style={css.formRegisterInput}
-					/>
-					<input
-						type='text'
-						placeholder='Cognome'
-						name='cognome'
-						ref={cognome}
-						style={css.formRegisterInput}
-					/>
-					<input
-						type='email'
-						placeholder='Email'
-						name='email'
-						ref={email}
-						style={css.formRegisterInput}
-					/>
-					<input
-						type='password'
-						placeholder='Password'
-						name='password'
-						ref={password}
-						style={css.formRegisterInput}
-					/>
-					<input
-						type='password'
-						placeholder='Conferma password'
-						name='password'
-						ref={confermaPassword}
-						style={css.formRegisterInput}
-					/>
-					<div
-						style={
-							errore.presente
-								? { ...css.errore, display: "flex" }
-								: { ...css.errore, display: "none" }
-						}
-					>
-						<p style={css.messaggioErrore}>{errore.messaggio}</p>
-					</div>
-					<button
-						onClick={submitLoginCliccato}
-						style={
-							!errore.presente
-								? { ...css.formRegisterSubmit, marginTop: "15px" }
-								: { ...css.formRegisterSubmit, marginTop: "0px" }
-						}
-					>
-						Registrati
-					</button>
-				</div>
-				<div
-					style={css.linkRegister}
-					onClick={() => {
-						navigate("/login");
-					}}
-				>
-					<p style={css.linkLoginP}>Hai già un account? Accedi!</p>
-				</div>
-			</div>
-				*/}
 			<div className='flex flex-col justify-between items-center my-5'>
 				<Card className='w-[350px]'>
 					<CardHeader>
@@ -199,7 +131,7 @@ const RegisterPage = () => {
 					<CardContent>
 						<div className='grid w-full items-center gap-4'>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='nome'>Nome</Label>
+								{/* <Label htmlFor='nome'>Nome</Label> */}
 								<Input
 									id='nome'
 									placeholder='Nome'
@@ -209,7 +141,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='cognome'>Cognome</Label>
+								{/* <Label htmlFor='cognome'>Cognome</Label> */}
 								<Input
 									id='cognome'
 									placeholder='Cognome'
@@ -219,7 +151,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='email'>Email</Label>
+								{/* <Label htmlFor='email'>Email</Label> */}
 								<Input
 									id='email'
 									placeholder='Email'
@@ -229,7 +161,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='password'>Password</Label>
+								{/* <Label htmlFor='password'>Password</Label> */}
 								<Input
 									id='password'
 									placeholder='Password'
@@ -239,7 +171,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='confermaPassword'>Conferma password</Label>
+								{/* <Label htmlFor='confermaPassword'>Conferma password</Label> */}
 								<Input
 									id='confermaPassword'
 									placeholder='Conferma password'
@@ -249,7 +181,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='selectRuolo'>Ruolo</Label>
+								{/* <Label htmlFor='selectRuolo'>Ruolo</Label> */}
 								<Select>
 									<SelectTrigger className='w-[180px]' id='selectRuolo'>
 										<SelectValue placeholder='Ruolo' />
@@ -263,7 +195,15 @@ const RegisterPage = () => {
 								</Select>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<p className='text-center text-white'>{errore.messaggio}</p>
+								<p
+									className={
+										"text-center" + resolvedTheme === "dark"
+											? "text-white"
+											: "text-black"
+									}
+								>
+									{errore.messaggio}
+								</p>
 							</div>
 						</div>
 					</CardContent>

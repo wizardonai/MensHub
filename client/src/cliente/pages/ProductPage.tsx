@@ -115,7 +115,7 @@ const ProductPage = () => {
 		}
 		localStorage.setItem("cart", JSON.stringify(tmp));
 
-		toast("Aggiunto " + prodotto.nome + " (" + x + ") al carrello!", {
+		toast.success("Aggiunto " + prodotto.nome + " (" + x + ") al carrello!", {
 			action: {
 				label: "Vai al carrello",
 				onClick: () => {
@@ -291,7 +291,7 @@ const ProductPage = () => {
 					/>
 				</div>
 				<Navbar page='menu' />
-				<Toaster />
+				<Toaster position='top-right' />
 			</div>
 		</>
 	);

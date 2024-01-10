@@ -7,16 +7,13 @@ import { ModeToggle } from "src/shadcn/Modetoggle";
 function Profile() {
 	const data: any = useLoaderData();
 	const navigate = useNavigate();
+	const dati = JSON.parse(
+		localStorage.getItem("datiUtente") || '{"nome":"uasard"}'
+	);
 
 	if (!data) return <p>Caricamento</p>;
 
 	const { refreshStorage } = data;
-
-	let dati;
-
-	if (localStorage.getItem("datiUtente") !== undefined) {
-		dati = JSON.parse(localStorage.getItem("datiUtente") || "{}");
-	}
 
 	const disconnect = () => {
 		localStorage.setItem("login", "no");
