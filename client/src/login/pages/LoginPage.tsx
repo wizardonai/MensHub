@@ -100,57 +100,6 @@ const LoginPage = () => {
 
 	return (
 		<div style={css.pageLogin}>
-			{/*
-			<div style={css.schedaFormLogin}>
-				<div style={css.schedaFormDivh1}>
-					<p style={css.titoloForm}>Login</p>
-				</div>
-				<div style={css.formLogin}>
-					<input
-						type='email'
-						placeholder='Email'
-						name='email'
-						ref={email}
-						style={css.formLoginInput}
-					/>
-					<input
-						type='password'
-						placeholder='Password'
-						name='password'
-						ref={password}
-						style={css.formLoginInput}
-					/>
-					<div
-						style={
-							errore.presente
-								? { ...css.errore, display: "flex" }
-								: { ...css.errore, display: "none" }
-						}
-					>
-						<p style={css.messaggioErrore}>{errore.messaggio}</p>
-					</div>
-					<button
-						id='submit'
-						onClick={submitLoginCliccato}
-						style={
-							!errore.presente
-								? { ...css.formLoginSubmit, marginTop: "15px" }
-								: { ...css.formLoginSubmit, marginTop: "0px" }
-						}
-					>
-						Login
-					</button>
-				</div>
-				<div
-					style={css.linkLogin}
-					onClick={() => {
-						navigate("/register");
-					}}
-				>
-					<p style={css.linkLoginP}>Non hai un account? Registrati!</p>
-				</div>
-			</div>
-				*/}
 			<div className='flex flex-col justify-between items-center'>
 				<Card className='w-[350px]'>
 					<CardHeader>
