@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
-import "./css/Popup.css";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
@@ -246,7 +245,7 @@ function Orders() {
 
 	const orderFun = () => {
 		sendOrder(JSON.parse(localStorage.getItem("cart") || "{}")).then(() => {
-			toast("Ordinazione effettuata!", {
+			toast.success("Ordinazione effettuata!", {
 				action: {
 					label: "Chiudi",
 					onClick: () => {},
@@ -326,7 +325,7 @@ function Orders() {
 				</div>
 			</div>
 			<Navbar page='orders' />
-			<Toaster />
+			<Toaster position='top-right' />
 		</div>
 	);
 }

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../scripts/fetch";
 import { styleMap } from "../../App";
 
+import { useTheme } from "next-themes";
+
 import { Button } from "../../shadcn/Button";
 import {
 	Card,
@@ -26,6 +28,7 @@ import {
 
 const RegisterPage = () => {
 	const navigate = useNavigate();
+	const { resolvedTheme } = useTheme();
 
 	const [errore, setErrore] = useState({
 		presente: false,
@@ -128,7 +131,7 @@ const RegisterPage = () => {
 					<CardContent>
 						<div className='grid w-full items-center gap-4'>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='nome'>Nome</Label>
+								{/* <Label htmlFor='nome'>Nome</Label> */}
 								<Input
 									id='nome'
 									placeholder='Nome'
@@ -138,7 +141,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='cognome'>Cognome</Label>
+								{/* <Label htmlFor='cognome'>Cognome</Label> */}
 								<Input
 									id='cognome'
 									placeholder='Cognome'
@@ -148,7 +151,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='email'>Email</Label>
+								{/* <Label htmlFor='email'>Email</Label> */}
 								<Input
 									id='email'
 									placeholder='Email'
@@ -158,7 +161,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='password'>Password</Label>
+								{/* <Label htmlFor='password'>Password</Label> */}
 								<Input
 									id='password'
 									placeholder='Password'
@@ -168,7 +171,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='confermaPassword'>Conferma password</Label>
+								{/* <Label htmlFor='confermaPassword'>Conferma password</Label> */}
 								<Input
 									id='confermaPassword'
 									placeholder='Conferma password'
@@ -178,7 +181,7 @@ const RegisterPage = () => {
 								/>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='selectRuolo'>Ruolo</Label>
+								{/* <Label htmlFor='selectRuolo'>Ruolo</Label> */}
 								<Select>
 									<SelectTrigger className='w-[180px]' id='selectRuolo'>
 										<SelectValue placeholder='Ruolo' />
@@ -192,7 +195,15 @@ const RegisterPage = () => {
 								</Select>
 							</div>
 							<div className='flex flex-col space-y-1.5'>
-								<p className='text-center text-white'>{errore.messaggio}</p>
+								<p
+									className={
+										"text-center" + resolvedTheme === "dark"
+											? "text-white"
+											: "text-black"
+									}
+								>
+									{errore.messaggio}
+								</p>
 							</div>
 						</div>
 					</CardContent>
