@@ -39,6 +39,10 @@ export interface filtroMap {
 	[thingName: string]: boolean;
 }
 
+// export const hostname =
+// 	(process.env.REACT_APP_HOSTNAME || "") +
+// 	(process.env.REACT_APP_IMG_PORT || "") +
+// 	"/image/";
 export const hostname =
 	(process.env.REACT_APP_HOSTNAME || "") +
 	(process.env.REACT_APP_IMG_PORT || "") +
@@ -75,8 +79,9 @@ const loadProdotti = async () => {
 const App = () => {
 	//loggato o no
 	const [utente, setUtente] = useState("no");
+
 	const refreshStorage = () => {
-		setUtente(localStorage.getItem("login") || "no");
+		setUtente(localStorage.getItem("login") || "");
 		return localStorage.getItem("login");
 	};
 
@@ -92,9 +97,10 @@ const App = () => {
 	});
 
 	useEffect(() => {
-		// refreshStorage();
+		refreshStorage();
 		window.addEventListener("storage", () => {
-			setUtente(localStorage.getItem("login") || "no");
+			setUtente(localStorage.getItem("login") || "");
+			console.log(localStorage.getItem("login"));
 		});
 	}, []);
 
@@ -175,6 +181,5 @@ export default App;
 
 /*cose da implementare
 
-- mettere nel carrello la trasparenza dei lati del bottone ordina come nella pagina del prodotto
-
+- implementare il pulsante aggiungi al carrello con la dark mode
 */

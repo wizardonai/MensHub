@@ -101,13 +101,13 @@ CREATE TABLE `prodotti` (
 --
 
 INSERT INTO `prodotti` (`id`, `nome`, `descrizione`, `allergeni`, `prezzo`, `categoria`, `indirizzo_img`, `disponibile`, `nacq`, `id_mensa`, `fd`) VALUES
-(1, 'paninazzo', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 2.30, 'panino', 'products/paninomortazza.png', 1, 1, 1, 0),
-(2, 'carbonara', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 7.30, 'primo', 'products/carbonara.png', 1, 2, 1, 0),
-(3, 'cotoletta con le patatins', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 6.40, 'secondo', 'products/cotoletta.png', 1, 4, 1, 0),
-(4, 'spaghetti all\'arrabbiata', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 5.90, 'primo', 'products/spaghettiArrabbiata.png', 1, 3, 1, 0),
-(5, 'panna cotta', 'panino con la mortadella casareccia', 'uova, molluschi, pipi di scapi', 1.30, 'dolce', 'products/pannacotta.png', 1, 5, 1, 0),
-(6, 'insalata alla uasards', 'insalata, salsa yogurt e zingari', 'albanesi', 69.69, 'contorno', 'products/insalata.png', 1, 6, 1, 0),
-(7, 'tar tar di ciola', 'ciola tritata da femministe offese', 'femministe', 4.50, 'antipasto', 'products/insalata.png', 1, 106, 1, 0);
+(1, 'Paninazzo', 'Panino con la mortadella', 'glutine, sesamo', 4.50, 'panino', 'products/paninomortazza.png', 1, 7, 1, 0),
+(2, 'Carbonara', 'Pasta alla carbonara', 'uova, latticini, glutine', 8.90, 'primo', 'products/carbonara.png', 1, 14, 1, 0),
+(3, 'Cotoletta con le patatine', 'Cotoletta di pollo accompagnata da delle patatine fritte', 'uova, glutine, latticini, soia, sesamo', 11.20, 'secondo', 'products/cotoletta.png', 1, 8, 1, 0),
+(4, 'Spaghetti all\'arrabbiata', 'Piatto di spaghetti condito con pomodoro e peperoncino', 'glutine, aglio, peperoncino', 8.90, 'primo', 'products/spaghettiArrabbiata.png', 1, 6, 1, 0),
+(5, 'Panna cotta', 'Panna cotta condita con caramello e granella di nocciola', 'latticini, uova, gelatina, frutta a guscio', 4.50, 'dolce', 'products/pannacotta.png', 1, 11, 1, 0),
+(6, 'Insalata', 'Insalata, salsa yogurt e aceto balsamico', 'glutine, latticini, noci, soia, sedano, uova', 7.30, 'contorno', 'products/insalata.png', 1, 15, 1, 0),
+(7, 'Tar tar di manzo', 'Carne di manzo di alta qualità. 100% Made in Italy', ' glutine, uova, senape, cipolla, latticini', 6.40, 'antipasto', 'products/tartare.png', 1, 10, 1, 0);
 
 -- --------------------------------------------------------
 

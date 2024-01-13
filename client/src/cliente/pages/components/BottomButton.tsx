@@ -73,7 +73,9 @@ const BottomButton = ({
 					// onClick={onClickFun}
 				>
 					<Drawer>
-						<DrawerTrigger className='w-[100%] h-[100%]'>{text}</DrawerTrigger>
+						<DrawerTrigger className='w-[100%] h-[100%]'>
+							Aggiungi al carrello
+						</DrawerTrigger>
 						<DrawerContent>
 							<DrawerHeader>
 								<DrawerTitle>Quantità</DrawerTitle>
@@ -105,15 +107,14 @@ const BottomButton = ({
 									<Plus className='h-4 w-4' />
 								</Button>
 							</div>
-							<DrawerFooter>
-								<DrawerClose>
-									<Button
-										onClick={() => {
-											onClickFun(quantita);
-										}}
-									>
-										Aggiungi al carrello
-									</Button>
+							<DrawerFooter className='flex items-center justify-center'>
+								<DrawerClose
+									onClick={() => {
+										onClickFun(quantita);
+									}}
+									className='border border-black w-[50%] h-[40px] rounded-[10px]'
+								>
+									Aggiungi al carrello
 								</DrawerClose>
 							</DrawerFooter>
 						</DrawerContent>

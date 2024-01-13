@@ -112,7 +112,7 @@ const LoginPage = () => {
 			margin: "0",
 			padding: "0",
 			backgroundColor: "var(--background)",
-			background: 'transparent url("http://172.20.10.7:6969/image/sfondo.png")',
+			// background: 'transparent url("http://172.20.10.7:6969/image/sfondo.png")',
 		},
 	};
 
@@ -174,91 +174,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-//
-//
-// stili
-//
-
-// schedaFormLogin: {
-// 	width: "80svw",
-// 	height: "350px",
-// 	maxWidth: "350px",
-// 	display: "flex",
-// 	flexDirection: "column",
-// 	alignItems: "center",
-// 	justifyContent: "center",
-// 	borderRadius: "28px",
-// 	background: "#f5f5f5",
-// 	boxShadow: "12px 12px 24px #c5c5c5, -12px -12px 24px #fbfbfb",
-// },
-// schedaFormDivh1: {
-// 	textAlign: "center",
-// 	display: "flex",
-// 	justifyContent: "center",
-// 	alignItems: "center",
-// 	height: "20%",
-// 	marginTop: "15px",
-// },
-// titoloForm: {
-// 	fontSize: "34px",
-// 	fontWeight: "bold",
-// },
-// formLogin: {
-// 	display: "flex",
-// 	flexDirection: "column",
-// 	alignItems: "center",
-// 	justifyContent: "center",
-// 	width: "100%",
-// 	height: "70%",
-// },
-// formLoginInput: {
-// 	margin: "0 0 5px 0",
-// 	textAlign: "center",
-// 	fontSize: "20px",
-// 	padding: "5px",
-// 	borderRadius: "15px",
-// 	outline: "none",
-// 	border: "2px solid black",
-// 	width: "90%",
-// 	height: "25px",
-// },
-// formLoginSubmit: {
-// 	textAlign: "center",
-// 	fontSize: "20px",
-// 	padding: "5px",
-// 	borderRadius: "15px",
-// 	outline: "none",
-// 	color: "black",
-// 	fontWeight: "bold",
-// 	width: "50%",
-// 	height: "50px",
-// 	border: "2px solid black",
-// 	background: "rgb(245, 245, 245)",
-// },
-// errore: {
-// 	flexDirection: "column",
-// 	alignItems: "center",
-// 	justifyContent: "center",
-// 	width: "90%",
-// 	margin: "15px 0 5px 0",
-// },
-// messaggioErrore: {
-// 	color: "red",
-// 	fontWeight: "bold",
-// 	textAlign: "center",
-// 	width: "100%",
-// },
-// linkLogin: {
-// 	height: "5%",
-// 	marginBottom: "10px",
-// 	fontSize: "17px",
-// 	display: "flex",
-// 	justifyContent: "center",
-// 	alignItems: "center",
-// },
-// linkLoginP: {
-// 	color: "black",
-// 	textDecoration: "underline",
-// },
-// };

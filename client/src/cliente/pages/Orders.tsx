@@ -3,11 +3,13 @@ import Navbar from "./components/Navbar";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
-import { styleMap, hostname, Colori } from "../../App";
+import { styleMap } from "../../App";
 import { prodotto } from "./Homepage";
 import { useTheme } from "next-themes";
 import { Toaster } from "src/shadcn/Sonner";
 import { toast } from "sonner";
+import { Minus, Plus } from "lucide-react";
+import { Button } from "src/shadcn/Button";
 
 type aggiuntaQuantita = {
 	quantita: number;
@@ -45,6 +47,37 @@ const ElementoCarrello = ({
 	setCarrello: Function;
 }) => {
 	const { resolvedTheme } = useTheme();
+	const [touchStart, setTouchStart] = useState(null);
+	const [touchEnd, setTouchEnd] = useState(null);
+
+	const minSwipeDistance = 50;
+
+	const onTouchStart = (e: any) => {
+		setTouchEnd(null); // otherwise the swipe is fired even with usual touch events
+		setTouchStart(e.targetTouches[0].clientX);
+	};
+
+	const onTouchMove = (e: any) => setTouchEnd(e.targetTouches[0].clientX);
+
+	const onTouchEnd = (e: any) => {
+		if (!touchStart || !touchEnd) return;
+		const distance = touchStart - touchEnd;
+		const isLeftSwipe = distance > minSwipeDistance;
+		const isRightSwipe = distance < -minSwipeDistance;
+		if (isLeftSwipe || isRightSwipe)
+			console.log("swipe", isLeftSwipe ? "left" : "right");
+		// add your conditional logic here
+
+		let tmp = e.target;
+		while (tmp.attributes.class?.value !== "divElemento") {
+			tmp = tmp.parentNode;
+		}
+		if (isLeftSwipe) {
+			tmp.style.marginLeft = "-150px";
+		} else {
+			tmp.style.marginLeft = "0";
+		}
+	};
 
 	const css: styleMap = {
 		elementoCarrello: {
@@ -53,154 +86,89 @@ const ElementoCarrello = ({
 			alignItems: "center",
 			justifyContent: "space-between",
 			padding: "5px",
-			height: "110px",
+			height: "120px",
 			borderRadius: "11px",
-			width: "80%",
-			marginTop: "15px",
+			width: "350px",
+			marginTop: "calc((100svw - 350px) / 2 )",
 			boxShadow:
 				resolvedTheme === "light"
 					? "3px 3px 17px -3px rgba(0, 0, 0, 0.56)"
 					: "3px 3px 17px -3px rgba(255, 255, 255, 0.1)",
 		},
-		divImg: {
-			width: "18%",
-			maxWidth: "80px",
+		divImgElemento: {
+			width: "100px",
+			height: "100px",
+		},
+		infoElemento: {
+			width: "calc(100% - 100px)",
 			height: "100%",
 			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-		},
-		divImgImg: {
-			width: "70px",
-			height: "70px",
-			borderRadius: "11px",
-			border: "1px solid black",
-		},
-		nomeElementoCarrello: {
-			width: "40%",
-			overflowX: "scroll",
-		},
-		nomeElementoCarrelloP: {
-			fontSize: "22px",
-			textAlign: "center",
-			whiteSpace: "nowrap",
-		},
-		pulsantiCarrello: {
-			display: "flex",
-			flexDirection: "row",
-			justifyContent: "center",
-			alignItems: "center",
-			height: "35px",
-			width: "13%",
-		},
-		quantitaCarrello: {
-			fontSize: "22px",
-			marginRight: "10px",
-		},
-		divSuEgiu: {
-			display: "flex",
 			flexDirection: "column",
-			justifyContent: "center",
-			alignItems: "center",
-		},
-		divSuEgiuImg: {
-			width: "23px",
-			filter:
-				"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
-		},
-		frecciaSu: {
-			rotate: "90deg",
-		},
-		frecciaGiu: {
-			rotate: "-90deg",
-		},
-		divPrezzo: {
-			width: "21%",
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-		},
-		prezzoSingolo: {
-			fontSize: "22px",
-			textAlign: "center",
-			marginLeft: "2px",
 		},
 	};
 
 	return (
-		// <div
-		// 	style={
-		// 		index !== carrello.length - 1
-		// 			? css.elementoCarrello
-		// 			: { ...css.elementoCarrello, borderBottom: "none" }
-		// 	}
-		// 	key={index}
-		// >
-		// 	<div style={css.divImg}>
-		// 		<img src={item.indirizzo_img} alt='' style={css.divImgImg} />
-		// 	</div>
-		// 	<div style={css.nomeElementoCarrello}>
-		// 		<p style={css.nomeElementoCarrelloP}>{item.nome}</p>
-		// 	</div>
-		// 	<div style={css.pulsantiCarrello}>
-		// 		<p style={css.quantitaCarrello}>
-		// 			{JSON.parse(localStorage.getItem("cart") || "{}")[index].quantita}
-		// 		</p>
-		// 		<div style={css.divSuEgiu}>
-		// 			<img
-		// 				src={hostname + "goBack.png"}
-		// 				alt=''
-		// 				onClick={() => {
-		// 					let elementi = JSON.parse(localStorage.getItem("cart") || "{}");
-		// 					elementi[index].quantita += 1;
-		// 					localStorage.setItem("cart", JSON.stringify(elementi));
+		<div
+			style={css.elementoCarrello}
+			key={index}
+			onTouchStart={onTouchStart}
+			onTouchMove={onTouchMove}
+			onTouchEnd={onTouchEnd}
+			className='divElemento'
+		>
+			<div style={css.divImgElemento}>
+				<img
+					src={item.indirizzo_img}
+					alt=''
+					className='w-[100%] h-[100%] rounded-[11px]'
+				/>
+			</div>
+			<div style={css.infoElemento}>
+				<div className='h-[50%] flex justify-center items-center'>
+					<p className='w-[90%] text-lg capitalize'>{item.nome}</p>
+				</div>
+				<div className='h-[50%] w-[100%] flex flex-row'>
+					<div className='w-[50%] h-[100%] flex items-center justify-center text-lg'>
+						{item.prezzo}€
+					</div>
+					<div className='w-[50%] h-[100%] flex flex-row items-center justify-evenly'>
+						<Button
+							variant='outline'
+							size='icon'
+							className='rounded-full h-7 w-7'
+							onClick={() => {
+								let elementi = JSON.parse(localStorage.getItem("cart") || "{}");
+								elementi[index].quantita -= 1;
+								localStorage.setItem("cart", JSON.stringify(elementi));
 
-		// 					setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
-		// 				}}
-		// 				style={
-		// 					resolvedTheme === "light"
-		// 						? { ...css.frecciaSu, ...css.divSuEgiuImg }
-		// 						: {
-		// 								...css.frecciaSu,
-		// 								...css.divSuEgiuImg,
-		// 								filter: Colori.imgChiara,
-		// 						  }
-		// 				}
-		// 			/>
-		// 			<img
-		// 				src={hostname + "goBack.png"}
-		// 				alt=''
-		// 				onClick={() => {
-		// 					let elementi = JSON.parse(localStorage.getItem("cart") || "{}");
-		// 					elementi[index].quantita -= 1;
-		// 					localStorage.setItem("cart", JSON.stringify(elementi));
+								if (elementi[index].quantita === 0) {
+									rimuoviDalCarrello(item, carrello, setCarrello);
+								}
 
-		// 					if (elementi[index].quantita === 0) {
-		// 						rimuoviDalCarrello(item, carrello, setCarrello);
-		// 					}
+								setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
+							}}
+							disabled={item.quantita === 1 ? true : false}
+						>
+							<Minus className='h-[26px] w-[26px]' />
+						</Button>
+						<p>{item.quantita}</p>
+						<Button
+							variant='outline'
+							size='icon'
+							className='rounded-full h-7 w-7'
+							onClick={() => {
+								let elementi = JSON.parse(localStorage.getItem("cart") || "{}");
+								elementi[index].quantita += 1;
+								localStorage.setItem("cart", JSON.stringify(elementi));
 
-		// 					setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
-		// 				}}
-		// 				style={
-		// 					resolvedTheme === "light"
-		// 						? { ...css.frecciaGiu, ...css.divSuEgiuImg }
-		// 						: {
-		// 								...css.frecciaGiu,
-		// 								...css.divSuEgiuImg,
-		// 								filter: Colori.imgChiara,
-		// 						  }
-		// 				}
-		// 			/>
-		// 		</div>
-		// 	</div>
-		// 	<div style={css.divPrezzo}>
-		// 		<p style={css.prezzoSingolo}>
-		// 			{(item.prezzo * item.quantita).toFixed(2)}€
-		// 		</p>
-		// 	</div>
-		// </div>
-		<div style={css.elementoCarrello} key={index}>
-			<div></div>
+								setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
+							}}
+						>
+							<Plus className='h-[26px] w-[26px]' />
+						</Button>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 };
@@ -331,3 +299,69 @@ function Orders() {
 }
 
 export default Orders;
+
+/*
+		// divImg: {
+		// 	width: "18%",
+		// 	maxWidth: "80px",
+		// 	height: "100%",
+		// 	display: "flex",
+		// 	justifyContent: "center",
+		// 	alignItems: "center",
+		// },
+		// divImgImg: {
+		// 	width: "70px",
+		// 	height: "70px",
+		// 	borderRadius: "11px",
+		// 	border: "1px solid black",
+		// },
+		// nomeElementoCarrello: {
+		// 	width: "40%",
+		// 	overflowX: "scroll",
+		// },
+		// nomeElementoCarrelloP: {
+		// 	fontSize: "22px",
+		// 	textAlign: "center",
+		// 	whiteSpace: "nowrap",
+		// },
+		// pulsantiCarrello: {
+		// 	display: "flex",
+		// 	flexDirection: "row",
+		// 	justifyContent: "center",
+		// 	alignItems: "center",
+		// 	height: "35px",
+		// 	width: "13%",
+		// },
+		// quantitaCarrello: {
+		// 	fontSize: "22px",
+		// 	marginRight: "10px",
+		// },
+		// divSuEgiu: {
+		// 	display: "flex",
+		// 	flexDirection: "column",
+		// 	justifyContent: "center",
+		// 	alignItems: "center",
+		// },
+		// divSuEgiuImg: {
+		// 	width: "23px",
+		// 	filter:
+		// 		"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
+		// },
+		// frecciaSu: {
+		// 	rotate: "90deg",
+		// },
+		// frecciaGiu: {
+		// 	rotate: "-90deg",
+		// },
+		// divPrezzo: {
+		// 	width: "21%",
+		// 	display: "flex",
+		// 	justifyContent: "center",
+		// 	alignItems: "center",
+		// },
+		// prezzoSingolo: {
+		// 	fontSize: "22px",
+		// 	textAlign: "center",
+		// 	marginLeft: "2px",
+		// },
+		*/
