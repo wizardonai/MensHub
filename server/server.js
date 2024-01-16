@@ -1,39 +1,75 @@
+//processi da far partire
+import { execFile } from "child_process";
+
+const fileMysql = execFile("mysql.bat", [], (err, data) => {
+	if (err) {
+		console.log(err);
+	}
+});
+setTimeout(() => {
+	connetti();
+}, 2500);
+
+let fileApache;
+let fileShell;
+process.argv.forEach((item) => {
+	if (item === "apache") {
+		fileApache = execFile("apache.bat", [], (err, data) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	} else if (item === "shell") {
+		fileShell = execFile("shell.bat", [], (err, data) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	}
+});
+
+//altro
+
 import { createConnection } from "mysql";
 import express from "express";
 //probabilmente da cambiare con express.Router();
 import { validate } from "deep-email-validator";
 import cors from "cors";
-import jwt from "jsonwebtoken";
+// import open from "open";
 import bodyParser from "body-parser";
 const { json, urlencoded } = bodyParser;
 
 const server = express();
 
+let connection;
+function connetti() {
+	connection = createConnection({
+		host: "localhost",
+		user: "root",
+		password: "",
+	});
+	connection.connect(function (err) {
+		if (err) throw new Error(err);
+		console.log("Connected!");
+		connection.changeUser({ database: "mensapp" }, () => {
+			if (err) throw new Error(err);
+		});
+	});
+}
+
 server.use(cors());
 server.use(json());
 server.use(urlencoded({ extended: false }));
 
-//creo connessione con il database
-const connection = createConnection({
-	host: "localhost",
-	user: "root",
-	password: "",
-});
-connection.connect(function (err) {
-	if (err) throw new Error(err);
-	console.log("Connected!");
-	connection.changeUser({ database: "mensapp" }, () => {
-		if (err) throw new Error(err);
-	});
-});
-
 //deploy react
-// server.use(express.static("../client/build")); //questa stringa va sostituita con "../client/build" una volta buildato il progetto
+server.use(express.static("../client/build")); //questa stringa va sostituita con "../client/build" una volta buildato il progetto
 
 //all methods that return a response to the client
-// server.get("/", (req, res) => {
-// 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
-// });
+server.get("/", (req, res) => {
+	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
+});
+
+server.use("/image", express.static("../client/src/cliente/pages/image"));
 
 server.post("/request/products", (req, res) => {
 	let data = req.body;
@@ -64,12 +100,6 @@ server.post("/send/cart", (req, res) => {
 	data.forEach((item, index) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
-	});
-	query += `","`;
-	data.forEach((item, index) => {
-		query += `${item.quantita}`;
-		if (index !== data.length - 1)
-			query += ",";
 	});
 	query += `");`;
 	console.log(query);
@@ -148,24 +178,13 @@ server.post("/login/user", async function (req, res) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				console.log("Login effettuato");
 
-				/*res.send({
+				res.send({
 					id: result[0].id,
 					nome: result[0].nome,
 					cognome: result[0].cognome,
 					email: result[0].email,
-				});*/
-				console.log("Id="+result[0].id);
-				const token = jwt.sign({
-					id: result[0].id,
-					nome: result[0].nome,
-					cognome: result[0].cognome,
-					email: result[0].email,
-				}, 'CaccaPoopShitMierda', { expiresIn: '1h' }); // Sostituisci 'chiaveSegreta' con una chiave segreta sicura
+				});
 
-				// Invia il token al client
-				res.json({ token });
-				
-				res.send();
 				res.end();
 			} else {
 				res.send("Utente non trovato");
@@ -185,5 +204,5 @@ server.post("/login/user", async function (req, res) {
 
 const port = 6969;
 server.listen(port, () => {
-	console.log("http://localhost:" + port);
+	// console.log("http://localhost:" + port);
 });
