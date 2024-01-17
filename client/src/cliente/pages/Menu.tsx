@@ -28,8 +28,8 @@ const Lista = ({
 	}
 
 	let list: Array<React.JSX.Element> = [];
-	prodottiFiltrati.forEach((item) => {
-		list.push(<ListElement item={item} key={item.id} daDoveArrivo='menu' />);
+	prodottiFiltrati.forEach((item, index) => {
+		list.push(<ListElement item={item} key={item.id} index={index} daDoveArrivo='menu' />);
 	});
 
 	return list;

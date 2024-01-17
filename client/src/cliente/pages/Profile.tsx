@@ -21,7 +21,7 @@ function Profile() {
 	const [dati, setDati] = useState({ nome: "caricamento" } as typeProfilo);
 
 	useEffect(() => {
-		getProfilo(JSON.parse(localStorage.getItem("token") as string).token).then(
+		getProfilo(JSON.parse(localStorage.getItem("token") || "{}").token).then(
 			(res: typeProfilo) => {
 				setDati(res);
 			}

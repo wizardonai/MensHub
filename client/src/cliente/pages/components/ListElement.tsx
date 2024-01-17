@@ -6,9 +6,10 @@ import { useTheme } from "next-themes";
 type parametri = {
 	item: prodotto;
 	daDoveArrivo: string;
+	index: number;
 };
 
-const ListElement = ({ item, daDoveArrivo }: parametri) => {
+const ListElement = ({ item, daDoveArrivo, index }: parametri) => {
 	const navigate = useNavigate();
 	const { resolvedTheme } = useTheme();
 
@@ -62,6 +63,7 @@ const ListElement = ({ item, daDoveArrivo }: parametri) => {
 			onClick={() => {
 				navigate("/product/" + item.id + "?daDoveArrivo=" + daDoveArrivo);
 			}}
+			key={index}
 		>
 			<div style={css.divImmagineElemento}>
 				<img

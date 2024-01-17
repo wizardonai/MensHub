@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
-import { styleMap } from "../../App";
+import { hostname, styleMap } from "../../App";
 import { prodotto } from "./Homepage";
 import { useTheme } from "next-themes";
 import { Toaster } from "src/shadcn/Sonner";
@@ -33,6 +33,14 @@ function rimuoviDalCarrello(
 
 	localStorage.setItem("cart", JSON.stringify(tmp2));
 	setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
+
+	
+	const elementi: any = document.getElementsByClassName('divElemento');
+	
+	for (let i = 0; i < elementi.length; i++) {
+		elementi[i].style.marginLeft = "0px";
+		elementi[i].children[2].style.display = "none";
+	}
 }
 
 const ElementoCarrello = ({
@@ -64,18 +72,18 @@ const ElementoCarrello = ({
 		const distance = touchStart - touchEnd;
 		const isLeftSwipe = distance > minSwipeDistance;
 		const isRightSwipe = distance < -minSwipeDistance;
-		if (isLeftSwipe || isRightSwipe)
-			console.log("swipe", isLeftSwipe ? "left" : "right");
-		// add your conditional logic here
 
 		let tmp = e.target;
 		while (tmp.attributes.class?.value !== "divElemento") {
 			tmp = tmp.parentNode;
 		}
 		if (isLeftSwipe) {
-			tmp.style.marginLeft = "-150px";
+			tmp.style.marginLeft = "-190px";
+			tmp.children[2].style.display = "flex";
+			
 		} else {
 			tmp.style.marginLeft = "0";
+			tmp.children[2].style.display = "none";
 		}
 	};
 
@@ -89,7 +97,7 @@ const ElementoCarrello = ({
 			height: "120px",
 			borderRadius: "11px",
 			width: "350px",
-			marginTop: "calc((100svw - 350px) / 2 )",
+			marginTop: "20px",
 			boxShadow:
 				resolvedTheme === "light"
 					? "3px 3px 17px -3px rgba(0, 0, 0, 0.56)"
@@ -105,6 +113,22 @@ const ElementoCarrello = ({
 			display: "flex",
 			flexDirection: "column",
 		},
+		divCancella: {
+			width: "70px",
+			height: "70px",
+			background: "red",
+			position: "absolute",
+			right: "calc((100svw - 350px) / 2 + 10px)",
+			borderRadius: "11px",
+			display: "none",
+			justifyContent: "center",
+			alignItems: "center",
+		},
+		divCancellaImg: {
+			width: "35px",
+			height: "35px",
+			filter: "invert(100%) sepia(47%) saturate(0%) hue-rotate(32deg) brightness(116%) contrast(100%)"
+		}
 	};
 
 	return (
@@ -141,10 +165,6 @@ const ElementoCarrello = ({
 								elementi[index].quantita -= 1;
 								localStorage.setItem("cart", JSON.stringify(elementi));
 
-								if (elementi[index].quantita === 0) {
-									rimuoviDalCarrello(item, carrello, setCarrello);
-								}
-
 								setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
 							}}
 							disabled={item.quantita === 1 ? true : false}
@@ -169,6 +189,9 @@ const ElementoCarrello = ({
 					</div>
 				</div>
 			</div>
+			<div style={css.divCancella} onClick={() => {
+				rimuoviDalCarrello(item, carrello, setCarrello);
+			}}><img src={hostname + "bin.png"} alt="" style={css.divCancellaImg} /></div>
 		</div>
 	);
 };
@@ -276,7 +299,7 @@ function Orders() {
 				<div style={css.informazioniCarrello}>
 					{carrello.length >= 1 ? (
 						<>
-							<div style={css.elementiCarrello}>
+							<div style={css.elementiCarrello} id="listaCarrello">
 								<ListaCarrello carrello={carrello} setCarrello={setCarrello} />
 							</div>
 						</>

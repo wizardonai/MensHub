@@ -199,10 +199,9 @@ server.post("/login/user", async function (req, res) {
 				);
 
 				// Invia il token al client
-				res.json({ token });
+				res.json({ token: token });
 
 				res.send();
-
 				res.end();
 			} else {
 				res.send("Utente non trovato");
@@ -225,13 +224,13 @@ server.post("/request/profile", (req, res) => {
 	let token = req.headers.authorization;
 	if (!token) res.send("Token non trovato");
 	else {
-		console.log(token);
+		// console.log(token);
 		jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 			if (err) {
 				console.log(err);
 				res.send(err);
 			} else {
-				console.log(decoded);
+				// console.log(decoded);
 				res.send(decoded);
 			}
 			res.end();

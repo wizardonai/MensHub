@@ -30,8 +30,8 @@ const Slider = ({ piuAcq }: parametri) => {
 
 	piuAcq.forEach((item, index) => {
 		lista.push(
-			<div className='m-[10px]'>
-				<ListElement item={item} key={item.id} daDoveArrivo='home' />
+			<div className='m-[10px]' key={index}>
+				<ListElement item={item}  index={index} daDoveArrivo='home' />
 			</div>
 		);
 	});
@@ -78,8 +78,8 @@ const HomePage = () => {
 				<p style={css.titoloHome}>I più venduti</p>
 				<div style={css.slider} className='pr-[10px]'>
 					<Slider piuAcq={piuAcq} />
-					<div style={css.barrettaSinistra}></div>
-					<div style={css.barrettaDestra}></div>
+					{/* <div style={css.barrettaSinistra}></div>
+					<div style={css.barrettaDestra}></div> */}
 				</div>
 			</div>
 			<Navbar page='home' />
@@ -115,26 +115,26 @@ const css: styleMap = {
 		borderRadius: "8px",
 		// boxShadow: "inset 10px 0px 5px 0prgba(0,0,0,0.1)",
 	},
-	barrettaSinistra: {
-		position: "absolute",
-		top: "calc(10svh + 37.5px + 5px + 27px)",
-		left: "0",
-		background: "rgba(0,0,0,0.4)",
-		height: "180px",
-		width: "4px",
-		borderRadius: "0 80% 80% 0",
-		boxShadow: "11px 0px 17px 0px rgba(0,0,0,0.4)",
-	},
-	barrettaDestra: {
-		position: "absolute",
-		top: "calc(10svh + 37.5px + 5px + 27px)",
-		right: "0",
-		background: "rgba(0,0,0,0.4)",
-		height: "180px",
-		width: "4px",
-		borderRadius: "80% 0 0 80%",
-		boxShadow: "11px 0px 17px 0px rgba(0,0,0,0.4)",
-	},
+	// barrettaSinistra: {
+	// 	position: "absolute",
+	// 	top: "calc(10svh + 37.5px + 5px + 27px)",
+	// 	left: "0",
+	// 	background: "rgba(0,0,0,0.4)",
+	// 	height: "180px",
+	// 	width: "4px",
+	// 	borderRadius: "0 80% 80% 0",
+	// 	boxShadow: "11px 0px 17px 0px rgba(0,0,0,0.4)",
+	// },
+	// barrettaDestra: {
+	// 	position: "absolute",
+	// 	top: "calc(10svh + 37.5px + 5px + 27px)",
+	// 	right: "0",
+	// 	background: "rgba(0,0,0,0.4)",
+	// 	height: "180px",
+	// 	width: "4px",
+	// 	borderRadius: "80% 0 0 80%",
+	// 	boxShadow: "11px 0px 17px 0px rgba(0,0,0,0.4)",
+	// },
 };
 
 export default HomePage;

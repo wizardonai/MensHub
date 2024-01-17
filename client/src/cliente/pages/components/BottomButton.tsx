@@ -69,8 +69,6 @@ const BottomButton = ({
 			{text === "Aggiungi al carrello" ? (
 				<div
 					style={css.pulsanteFixatoInBassoDiv}
-					//@ts-ignore
-					// onClick={onClickFun}
 				>
 					<Drawer>
 						<DrawerTrigger className='w-[100%] h-[100%]'>
@@ -126,7 +124,7 @@ const BottomButton = ({
 					// onClick={onClickFun}
 				>
 					<Drawer>
-						<DrawerTrigger>{text}</DrawerTrigger>
+						<DrawerTrigger className='w-[100%] h-[100%]'>{text}</DrawerTrigger>
 						<DrawerContent>
 							<DrawerHeader>
 								<DrawerTitle>Ordinare?</DrawerTitle>

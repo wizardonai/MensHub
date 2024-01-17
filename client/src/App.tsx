@@ -96,7 +96,7 @@ const App = () => {
 		refreshStorage();
 		window.addEventListener("storage", () => {
 			setUtente(localStorage.getItem("login") || "");
-			console.log(localStorage.getItem("login"));
+			// console.log(localStorage.getItem("login"));
 		});
 	}, []);
 
