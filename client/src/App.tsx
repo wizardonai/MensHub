@@ -39,10 +39,6 @@ export interface filtroMap {
 	[thingName: string]: boolean;
 }
 
-// export const hostname =
-// 	(process.env.REACT_APP_HOSTNAME || "") +
-// 	(process.env.REACT_APP_IMG_PORT || "") +
-// 	"/image/";
 export const hostname =
 	(process.env.REACT_APP_HOSTNAME || "") +
 	(process.env.REACT_APP_IMG_PORT || "") +

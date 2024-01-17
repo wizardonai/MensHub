@@ -3,13 +3,30 @@ import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import { styleMap, hostname } from "../../App";
 import { ModeToggle } from "src/shadcn/Modetoggle";
+import { useEffect, useState } from "react";
+import { getProfilo } from "../scripts/fetch";
+
+export type typeProfilo = {
+	cognome: string;
+	email: string;
+	exp: number;
+	iat: number;
+	id: number;
+	nome: string;
+};
 
 function Profile() {
 	const data: any = useLoaderData();
 	const navigate = useNavigate();
-	const dati = JSON.parse(
-		localStorage.getItem("datiUtente") || '{"nome":"uasard"}'
-	);
+	const [dati, setDati] = useState({ nome: "caricamento" } as typeProfilo);
+
+	useEffect(() => {
+		getProfilo(JSON.parse(localStorage.getItem("token") as string).token).then(
+			(res: typeProfilo) => {
+				setDati(res);
+			}
+		);
+	}, []);
 
 	if (!data) return <p>Caricamento</p>;
 

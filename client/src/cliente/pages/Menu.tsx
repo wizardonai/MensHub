@@ -116,7 +116,11 @@ const Filtri = ({
 		return lista;
 	}
 
-	return <div style={css.filtri}>{ritornaElementi()}</div>;
+	return (
+		<div style={css.filtri} className='px-[]'>
+			{ritornaElementi()}
+		</div>
+	);
 };
 
 const Menu = () => {
@@ -217,10 +221,10 @@ const css: styleMap = {
 		color: "white",
 	},
 	lista: {
-		padding: "0 15px 15px 15px",
+		// padding: "0 15px 15px 15px",
 		display: "flex",
 		flexWrap: "wrap",
-		justifyContent: "center",
+		justifyContent: "space-evenly",
 		alignItems: "center",
 	},
 };

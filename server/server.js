@@ -38,6 +38,8 @@ import cors from "cors";
 // import open from "open";
 import bodyParser from "body-parser";
 const { json, urlencoded } = bodyParser;
+import jwt from "jsonwebtoken";
+const secretKey = "CaccaPoopShitMierda";
 
 const server = express();
 
@@ -178,12 +180,28 @@ server.post("/login/user", async function (req, res) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				console.log("Login effettuato");
 
-				res.send({
-					id: result[0].id,
-					nome: result[0].nome,
-					cognome: result[0].cognome,
-					email: result[0].email,
-				});
+				// res.send({
+				// 	id: result[0].id,
+				// 	nome: result[0].nome,
+				// 	cognome: result[0].cognome,
+				// 	email: result[0].email,
+				// });
+
+				const token = jwt.sign(
+					{
+						id: result[0].id,
+						nome: result[0].nome,
+						cognome: result[0].cognome,
+						email: result[0].email,
+					},
+					secretKey,
+					{ expiresIn: "1h" }
+				);
+
+				// Invia il token al client
+				res.json({ token });
+
+				res.send();
 
 				res.end();
 			} else {
@@ -199,6 +217,25 @@ server.post("/login/user", async function (req, res) {
 		// });
 		res.send("Email non valida!");
 		res.end();
+	}
+});
+
+server.post("/request/profile", (req, res) => {
+	//controllo che il token di sessione sia valido
+	let token = req.headers.authorization;
+	if (!token) res.send("Token non trovato");
+	else {
+		console.log(token);
+		jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+			if (err) {
+				console.log(err);
+				res.send(err);
+			} else {
+				console.log(decoded);
+				res.send(decoded);
+			}
+			res.end();
+		});
 	}
 });
 

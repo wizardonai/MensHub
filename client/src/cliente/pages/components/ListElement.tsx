@@ -14,11 +14,10 @@ const ListElement = ({ item, daDoveArrivo }: parametri) => {
 
 	const css: styleMap = {
 		elemento: {
-			margin: "10px",
-			width: "35svw",
-			height: "50svw",
-			maxWidth: "140px",
-			maxHeight: "200px",
+			margin: "10px 0",
+			height: "180px",
+			width: "180px",
+			minWidth: "180px",
 			display: "flex",
 			flexDirection: "column",
 			borderRadius: "15px",
@@ -30,17 +29,16 @@ const ListElement = ({ item, daDoveArrivo }: parametri) => {
 				resolvedTheme === "light" ? "0" : "1px solid rgba(255, 255, 255, 0.1)",
 		},
 		divImmagineElemento: {
-			width: "35svw",
 			height: "35svw",
 			maxHeight: "140px",
-			maxWidth: "140px",
+			width: "100%",
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
 		},
 		divImmagineElementoImg: {
-			width: "90%",
-			height: "90%",
+			width: "126px",
+			height: "126px",
 			borderRadius: "15px",
 		},
 		divNomeElemento: {
@@ -48,7 +46,7 @@ const ListElement = ({ item, daDoveArrivo }: parametri) => {
 			justifyContent: "center",
 			alignItems: "center",
 			width: "100%",
-			height: "15svw",
+			height: "25px",
 		},
 		nomeElemento: {
 			textAlign: "center",

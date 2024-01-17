@@ -1,4 +1,5 @@
 import axios from "axios";
+import { typeProfilo } from "../pages/Profile";
 const qs = require("qs");
 
 const urlServer =
@@ -56,4 +57,24 @@ export async function sendOrder(carrello: Array<object>) {
 		});
 
 	return response;
+}
+
+export async function getProfilo(token: string): Promise<typeProfilo> {
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${urlServer}/request/profile`,
+		headers: {
+			Authorization: "Bearer " + token,
+		},
+	};
+
+	return await axios
+		.request(config)
+		.then((res) => {
+			return res.data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 }
