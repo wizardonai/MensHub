@@ -54,7 +54,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 const secretKey = 'CaccaPoopShitMierda';
 
-let connection;
+
 function connetti() {
 	connection = createConnection({
 		host: "localhost",
@@ -74,8 +74,6 @@ server.use(cors());
 server.use(json());
 server.use(urlencoded({ extended: false }));
 
-<<<<<<< HEAD
-=======
 //creo connessione con il database
 const connection = createConnection({
   host: "localhost",
@@ -90,7 +88,6 @@ connection.connect(function (err) {
   });
 });
 
->>>>>>> luca
 //deploy react
 server.use("/image", express.static("../client/src/cliente/pages/image"));
  server.use(express.static("../client/build"));
@@ -130,11 +127,7 @@ server.post("/send/cart", (req, res) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
 	});
-<<<<<<< HEAD
-	query += `");`;
-=======
 	query += `",${req.body.id_utente},"attivo");`; //aggiunto id utente e stato ordine da testare
->>>>>>> luca
 	console.log(query);
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
@@ -222,22 +215,13 @@ server.post("/login/user", async function (req, res) {
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				console.log("Login effettuato");
-<<<<<<< HEAD
-
-				res.send({
-=======
 				console.log("Id="+result[0].id);
 				const token = jwt.sign({
->>>>>>> luca
 					id: result[0].id,
 					nome: result[0].nome,
 					cognome: result[0].cognome,
 					email: result[0].email,
-<<<<<<< HEAD
-				});
-=======
 				}, secretKey, { expiresIn: '1h' });
->>>>>>> luca
 
 				res.end();
 			} else {
@@ -314,14 +298,19 @@ server.post("/producer/add/products",(req,res)=> {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.send("Prodotto aggiunto")
 	});
+
+	if (req.file) {
+		console.log('Immagine ricevuta con successo:', req.file);
+		res.status(200).json({ message: 'Immagine salvata con successo' });
+	  } else {
+		console.error('Errore nel caricamento dell\'immagine');
+		res.status(500).json({ error: 'Errore nel caricamento dell\'immagine' });
+	  }
+	
 	upload.single('image');
 }); 
 
 const port = 6969;
 server.listen(port, () => {
-<<<<<<< HEAD
-	// console.log("http://localhost:" + port);
-=======
   console.log("http://localhost:" + port);
->>>>>>> luca
 });
