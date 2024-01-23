@@ -283,7 +283,7 @@ server.post("/request/orders", (req, res) => {
 	});
 });
 
-server.post("/producer/get/products", upload.single('image'), (req, res) => {
+server.post("/producer/get/products", (req, res) => {
 	const {id_utente} = req.body;
 
 	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
@@ -295,6 +295,29 @@ server.post("/producer/get/products", upload.single('image'), (req, res) => {
 
 			connection.query(
 				"SELECT * FROM prodotti where id_mensa=" + id_mensa,
+				(err, result) => {
+					if (err) throw new Error(err);
+					res.header("Access-Control-Allow-Origin", "*");
+					res.send(result);
+					res.end();
+				}
+			);
+		});
+
+});
+
+server.post("/producer/get/orders", (req, res) => {
+	const {id_utente} = req.body;
+
+	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+
+		connection.query(query, (err, result) => {
+			if (err) throw new Error(err);
+
+			const id_mensa = result[0].id_mensa;
+
+			connection.query(
+				"SELECT * FROM ordini where id_mensa=" + id_mensa,
 				(err, result) => {
 					if (err) throw new Error(err);
 					res.header("Access-Control-Allow-Origin", "*");
