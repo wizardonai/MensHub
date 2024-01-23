@@ -1,14 +1,16 @@
 //processi da far partire
 import { execFile } from "child_process";
-
 const fileMysql = execFile("mysql.bat", [], (err, data) => {
 	if (err) {
 		console.log(err);
 	}
 });
-setTimeout(() => {
-	connetti();
-}, 2500);
+
+
+
+// setTimeout(() => {
+// 	connetti();
+// }, 500);
 
 let fileApache;
 let fileShell;
@@ -28,32 +30,39 @@ process.argv.forEach((item) => {
 	}
 });
 
+let connection = "";
 //altro
 
 import { createConnection } from "mysql";
 import express from "express";
 import multer from "multer";
-//probabilmente da cambiare con express.Router();
+import jwt from 'jsonwebtoken';
 import { validate } from "deep-email-validator";
 import cors from "cors";
-// import open from "open";
 import bodyParser from "body-parser";
+
+
 const { json, urlencoded } = bodyParser;
 const server = express();
-const multer = require('multer');
+import path from 'path';
+import { Console } from "console";
+
 // Configura multer per salvare i file caricati nella cartella 'images'
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-	  cb(null, '../client/src/cliente/pages/image')
+		cb(null, '../client/src/cliente/pages/image')
 	},
 	filename: function (req, file, cb) {
-	  cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+		const nome = req.body.nome; // Assicurati che la tua richiesta contenga un campo 'id'
+		const id_utente = req.body.id_utente;
+		cb(null, 'products/' + nome + '_' + id_utente + path.extname(file.originalname));
 	}
-  })
-  
+})
+
 const upload = multer({ storage: storage })
 const secretKey = 'CaccaPoopShitMierda';
 
+connetti();
 
 function connetti() {
 	connection = createConnection({
@@ -72,52 +81,48 @@ function connetti() {
 
 server.use(cors());
 server.use(json());
+server.use(express.json());
 server.use(urlencoded({ extended: false }));
-
-//creo connessione con il database
-const connection = createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-});
-connection.connect(function (err) {
-  if (err) throw new Error(err);
-  console.log("Connected!");
-  connection.changeUser({ database: "mensapp" }, () => {
-    if (err) throw new Error(err);
-  });
-});
 
 //deploy react
 server.use("/image", express.static("../client/src/cliente/pages/image"));
- server.use(express.static("../client/build"));
+server.use(express.static("../client/build"));
 
 //all methods that return a response to the client
 server.get("/", (req, res) => { //hosto la pagina sullo stesso sito
- 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
+	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
 });
 
-server.post("/request/products", (req, res) => {
-  let data = req.body;
+//RI\CEZIONE DATI CON MULLER (form-data) ESEMPIO
 
-  connection.query(
-    "SELECT * FROM prodotti where id_mensa=" + data.idm,
-    (err, result) => {
-      if (err) throw new Error(err);
-      res.header("Access-Control-Allow-Origin", "*");
-      res.send(result);
-      res.end();
-    }
-  );
+/*server.post('/upload', upload.fields([]), (req, res) => {
+	// req.body conterrà i dati del form
+	console.log(req.body);
+
+	res.send('Dati di testo ricevuti con successo!');
+});*/
+
+server.post("/request/products", (req, res) => {
+	let data = req.body;
+
+	connection.query(
+		"SELECT * FROM prodotti where id_mensa=" + data.idm,
+		(err, result) => {
+			if (err) throw new Error(err);
+			res.header("Access-Control-Allow-Origin", "*");
+			res.send(result);
+			res.end();
+		}
+	);
 });
 
 server.post("/send/cart", (req, res) => {
-  console.log("-----------------");
-  console.log("carrello");
-
+	console.log("-----------------");
+	console.log("carrello");
 	let data = req.body.carrello;
 	console.log(data);
-	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita, id_utente, stato_ordine) VALUES(${data[0].id_mensa},"`;
+
+	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita, stato_ordine) VALUES(${data[0].id_mensa},"`;
 	data.forEach((item, index) => {
 		query += `${item.id}`;
 		if (index !== data.length - 1) query += ",";
@@ -127,7 +132,8 @@ server.post("/send/cart", (req, res) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
 	});
-	query += `",${req.body.id_utente},"attivo");`; //aggiunto id utente e stato ordine da testare
+
+	query += `","attivo");`; //da aggiungere id_utente
 	console.log(query);
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
@@ -135,20 +141,14 @@ server.post("/send/cart", (req, res) => {
 		res.send("Ordine aggiunto");
 		res.end();
 	});
-	// connection.query("SELECT * FROM prodotti where id_mensa="+data.idm, (err, result) => {
-	// 	if (err) throw new Error(err);
-	// 	console.log(result);
-	// 	res.header("Access-Control-Allow-Origin", "*");
-	// 	res.send(result);
-	// 	res.end();
-	// });
+
 });
 
 server.post("/register/user", async function (req, res) {
 	console.log("-----------------");
 	console.log("registrazione utente");
 
-	const { nome, cognome, email, password, confirm_password, is_produttore ,id_mensa} = req.body;
+	const { nome, cognome, email, password, confirm_password, is_produttore, id_mensa } = req.body;
 	if (!email || !password) {
 		// return res.status(400).send({
 		// 	message: "email o password mancante.",
@@ -168,7 +168,7 @@ server.post("/register/user", async function (req, res) {
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		console.log(result);
-		if(result.length>0) {
+		if (result.length > 0) {
 			res.send("email già presente");
 			res.end
 		}
@@ -177,9 +177,9 @@ server.post("/register/user", async function (req, res) {
 	const { valid, reason, validators } = await validate(email);
 
 	if (valid) {
-		if(is_produttore) {
-			let query = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa}','${is_produttore}');`;	
-		}else {
+		if (is_produttore) {
+			let query = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa}','${is_produttore}');`;
+		} else {
 			let query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
 		}
 		// console.log(query);
@@ -201,21 +201,22 @@ server.post("/register/user", async function (req, res) {
 });
 
 server.post("/login/user", async function (req, res) {
-  console.log("-----------------");
-  console.log("login");
-  let email = req.body.email;
-  let password = req.body.password;
+	console.log("-----------------");
+	console.log("login");
+
+	let email = req.body.email;
+	let password = req.body.password;
 
 	const { valid, reason, validators } = await validate(email);
 	if (valid) {
 		let query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
-			res.header("Access-Control-Allow-Origin", "*");
+			//res.header("Access-Control-Allow-Origin", "*");
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				console.log("Login effettuato");
-				console.log("Id="+result[0].id);
+				console.log("Id=" + result[0].id);
 				const token = jwt.sign({
 					id: result[0].id,
 					nome: result[0].nome,
@@ -223,6 +224,9 @@ server.post("/login/user", async function (req, res) {
 					email: result[0].email,
 				}, secretKey, { expiresIn: '1h' });
 
+				res.json({ token: token })
+
+				res.send();
 				res.end();
 			} else {
 				res.send("Utente non trovato");
@@ -241,19 +245,19 @@ server.post("/login/user", async function (req, res) {
 });
 
 
-server.post("/request/profile", (req,res) => {
+server.post("/request/profile", upload.fields([]), (req, res) => {
 	//controllo che il token di sessione sia valido
 	let token = req.headers.authorization;
-	if(!token)
+	if (!token)
 		res.send("Token non trovato");
 	else {
 		console.log(token);
-		jwt.verify(token.replace('Bearer ', ''),secretKey,(err,decoded)=> {
-			if(err) {
+		jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+			if (err) {
 				console.log(err);
 				res.send(err);
-			}else {
-				console.log(decoded);	
+			} else {
+				console.log(decoded);
 				res.send(decoded);
 			}
 			res.end();
@@ -261,56 +265,126 @@ server.post("/request/profile", (req,res) => {
 	}
 });
 
-server.post("/request/orders", (req,res) => {
+server.post("/request/orders", (req, res) => {
 	let id_utente = req.body.id_ut;
-	console.log("richiesta ordini per utente ->"+id_utente);
+	console.log("richiesta ordini per utente ->" + id_utente);
 	console.log("================")
 	let query = `SELECT * FROM utenti WHERE id_utente="${id_utente}" AND stato_ordine="attivo"`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		console.log(result);
-		if(result.length>0) {
+		if (result.length > 0) {
 			res.send(result);
 			res.end();
-		}else {
+		} else {
 			res.send("l'utente non ha ordini attivi");
 			res.end();
 		}
 	});
 });
 
-server.post("/producer/add/products",(req,res)=> {
-	const { id_utente, nome, descrizione, allergeni, prezzo, categoria, disponibile, nacq } = req.body;
+server.post("/producer/add/products", upload.single('image'), (req, res) => {
+	const { id_utente, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
 	let id_mensa = "";
-	let query = `select id_mensa from utenti WHERE id_utente="${id_utente};"`;
-	connection.query(query, (err, result) => {
-		if (err) throw new Error(err);
-		res.header("Access-Control-Allow-Origin", "*");
-		if(result.length>0) {
-			id_mensa = result;
-		}else {
-			res.send("ERRORE utente non trovato");
-		}
-	});
-	query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES('${nome}','${descrizione}','${allergeni}','${prezzo}','${categoria}','','${disponibile}','${nacq}','${id_mensa}');`;
-	connection.query(query, (err, result) => {
-		if (err) throw new Error(err);
-		res.header("Access-Control-Allow-Origin", "*");
-		res.send("Prodotto aggiunto")
+
+	const queryPromise = new Promise((resolve, reject) => {
+		let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+
+		connection.query(query, (err, results) => {
+			if (err) {
+				console.error(err);
+				reject(err);
+			} else {
+				resolve(results);
+			}
+		});
 	});
 
-	if (req.file) {
-		console.log('Immagine ricevuta con successo:', req.file);
-		res.status(200).json({ message: 'Immagine salvata con successo' });
-	  } else {
-		console.error('Errore nel caricamento dell\'immagine');
-		res.status(500).json({ error: 'Errore nel caricamento dell\'immagine' });
-	  }
-	
-	upload.single('image');
-}); 
+	queryPromise
+		.then((results) => {
+			let id_prodotto = "";
+			const id_mensa = results[0].id_mensa;
+			console.log("ID Mensa:", id_mensa);
+
+
+			const queryPromise2 = new Promise((resolve, reject) => {
+				let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES('${nome}','${descrizione}','${allergeni}','${prezzo}','${categoria}','','${disponibile}','0','${id_mensa}');`;
+				console.log('\nQUERY INSERT' + query);
+				connection.query(query, (err, result) => {
+					if (err) {
+						console.error(err);
+						reject(err);
+					} else {
+						id_prodotto = result.insertId;
+						resolve(results);
+					}
+				});
+			});
+
+			queryPromise2
+				.then((results) => {
+					let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
+					console.log('\nQUERY MODIFICA:' + query);
+					connection.query(query, (err, result) => {
+						if (err) throw new Error(err);
+
+						console.log("Prodotto modificato");
+
+						renameImage(); //rinominare immagine con id_prodotto
+					});
+
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+
+
+
+	res.send("Prodotto aggiunto al DB");
+});
+
+//da fare
+function renameImage() {
+	const fs = require('fs');
+	const path = require('path');
+
+	const cartella = 'percorso/alla/tua/cartella';
+	const nomeFileSenzaEstensione = 'nome_attuale_del_file';
+
+	// Leggi tutti i file nella cartella
+	fs.readdir(cartella, (err, files) => {
+		if (err) {
+			console.error('Errore durante la lettura della cartella:', err);
+			return;
+		}
+
+		// Cerca il file senza estensione nella lista dei file
+		const fileDaRinominare = files.find(file => file.startsWith(nomeFileSenzaEstensione));
+
+		if (fileDaRinominare) {
+			const percorsoCompletoAttuale = path.join(cartella, fileDaRinominare);
+			const nuovoNomeFileConEstensione = 'nuovo_nome_del_file.txt'; // Sostituisci con il nuovo nome e l'estensione desiderati
+			const percorsoCompletoNuovo = path.join(cartella, nuovoNomeFileConEstensione);
+
+			// Rinomina il file
+			fs.rename(percorsoCompletoAttuale, percorsoCompletoNuovo, (err) => {
+				if (err) {
+					console.error('Errore durante il cambio nome del file:', err);
+				} else {
+					console.log('File rinominato con successo.');
+				}
+			});
+		} else {
+			console.log('File non trovato.');
+		}
+	});
+}
 
 const port = 6969;
 server.listen(port, () => {
-  console.log("http://localhost:" + port);
+	console.log("http://localhost:" + port);
 });
