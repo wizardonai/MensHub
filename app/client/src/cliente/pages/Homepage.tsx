@@ -76,7 +76,7 @@ const HomePage = () => {
 			<div className='containerPage' style={css.containerHome}>
 				{/* <p style={css.nomeMensa}>UASARD MENS</p> */}
 				<p style={css.titoloHome}>I più venduti</p>
-				<div style={css.slider} className='pr-[10px]'>
+				<div style={css.slider}>
 					<Slider piuAcq={piuAcq} />
 					{/* <div style={css.barrettaSinistra}></div>
 					<div style={css.barrettaDestra}></div> */}

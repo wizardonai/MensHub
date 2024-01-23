@@ -260,10 +260,6 @@ function Orders() {
 			textAlign: "right",
 			fontSize: "25px",
 		},
-		lineaIniziale: {
-			width: "100%",
-			borderBottom: "2px solid gray",
-		},
 		elementiCarrello: {
 			display: "flex",
 			flexDirection: "column",
@@ -295,7 +291,6 @@ function Orders() {
 			<Topbar titolo='carrello' daDoveArrivo='' />
 			<div className='containerPage' style={css.containerOrders}>
 				<p style={css.totalePrezzo}>Totale: {calcPrezzoTot()}€</p>
-				<div style={css.lineaIniziale}></div>
 				<div style={css.informazioniCarrello}>
 					{carrello.length >= 1 ? (
 						<>

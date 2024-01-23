@@ -105,9 +105,11 @@ const SearchBar = ({
 			alignItems: "center",
 		},
 		divSearchBar: {
+			/*
 			border: "1px solid",
 			borderColor: "var(--foreground)",
 			borderRadius: "20px",
+			*/
 			display: "flex",
 			alignItems: "center",
 			padding: "5px 0",

@@ -15,7 +15,7 @@ const ListElement = ({ item, daDoveArrivo, index }: parametri) => {
 
 	const css: styleMap = {
 		elemento: {
-			margin: "10px 0",
+			//margin: "10px 0",
 			height: "180px",
 			width: "180px",
 			minWidth: "180px",
@@ -30,16 +30,17 @@ const ListElement = ({ item, daDoveArrivo, index }: parametri) => {
 				resolvedTheme === "light" ? "0" : "1px solid rgba(255, 255, 255, 0.1)",
 		},
 		divImmagineElemento: {
-			height: "35svw",
-			maxHeight: "140px",
+			height: "145px",
+			//height: "40svw",
+			//maxHeight: "140px",
 			width: "100%",
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
 		},
 		divImmagineElementoImg: {
-			width: "126px",
-			height: "126px",
+			width: "145px",
+			height: "145px",
 			borderRadius: "15px",
 		},
 		divNomeElemento: {
