@@ -91,7 +91,7 @@ const LoginPage = () => {
 					errore = true;
 				} else {
 					localStorage.setItem("login", "cliente");
-					localStorage.setItem("datiUtente", JSON.stringify(res));
+					localStorage.setItem("token", JSON.stringify(res));
 					localStorage.setItem("cart", JSON.stringify([]));
 					refreshStorage();
 					navigate("/home");

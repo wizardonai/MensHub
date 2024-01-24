@@ -1,7 +1,6 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
-import "./css/Popup.css";
 import { useState } from "react";
 import BottomButton from "./components/BottomButton";
 import { ArrayProdotti, styleMap, hostname } from "../../App";
@@ -97,7 +96,6 @@ const ProductPage = () => {
 	};
 
 	const funAddCart = (x: number) => {
-		console.log(x);
 		let tmp;
 		const ris = prodottoGiaEsistente(prodotto.id);
 
@@ -145,10 +143,10 @@ const ProductPage = () => {
 			marginBottom: "50px",
 		},
 		imgProdotto: {
-			width: "50svw",
-			height: "50svw",
-			maxWidth: "200px",
-			maxHeight: "200px",
+			width: "80svw",
+			height: "80svw",
+			maxWidth: "500px",
+			maxHeight: "500px",
 		},
 		nomeProdotto: {
 			width: "100%",

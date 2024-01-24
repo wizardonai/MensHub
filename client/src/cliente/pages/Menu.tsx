@@ -28,8 +28,8 @@ const Lista = ({
 	}
 
 	let list: Array<React.JSX.Element> = [];
-	prodottiFiltrati.forEach((item) => {
-		list.push(<ListElement item={item} key={item.id} daDoveArrivo='menu' />);
+	prodottiFiltrati.forEach((item, index) => {
+		list.push(<ListElement item={item} key={item.id} index={index} daDoveArrivo='menu' />);
 	});
 
 	return list;
@@ -116,7 +116,11 @@ const Filtri = ({
 		return lista;
 	}
 
-	return <div style={css.filtri}>{ritornaElementi()}</div>;
+	return (
+		<div style={css.filtri} className='px-[]'>
+			{ritornaElementi()}
+		</div>
+	);
 };
 
 const Menu = () => {
@@ -194,7 +198,8 @@ const css: styleMap = {
 		flexDirection: "row",
 		alignItems: "center",
 		flexWrap: "nowrap",
-		height: "10%",
+		height: "8%",
+		padding: "0svw 1svw",
 		scrollbarWidth: "none",
 	},
 	filtriDiv: {
@@ -202,7 +207,8 @@ const css: styleMap = {
 		justifyContent: "center",
 		alignItems: "center",
 		fontSize: "20px",
-		padding: "5px 15px",
+		height: "60%",
+		padding: "5px 12px",
 		margin: "0.5svw",
 		border: "2px solid #222",
 		borderRadius: "20px",
@@ -217,10 +223,10 @@ const css: styleMap = {
 		color: "white",
 	},
 	lista: {
-		padding: "0 15px 15px 15px",
+		// padding: "0 15px 15px 15px",
 		display: "flex",
 		flexWrap: "wrap",
-		justifyContent: "center",
+		justifyContent: "space-evenly",
 		alignItems: "center",
 	},
 };

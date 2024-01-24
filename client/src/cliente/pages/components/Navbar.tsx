@@ -47,9 +47,14 @@ const Navbar = ({ page }: { page: string }) => {
 			flexDirection: "row",
 			justifyContent: "center",
 			alignItems: "center",
-			borderTop: "1px solid",
 			borderColor: "var(--foreground)",
 			background: "var(--background)",
+			boxShadow:
+				resolvedTheme === "light"
+					? "3px 3px 17px -3px rgba(0, 0, 0, 0.30)"
+					: "3px 3px 17px -3px rgba(255, 255, 255, 0.1)",
+			border:
+				resolvedTheme === "light" ? "0" : "1px solid rgba(255, 255, 255, 0.1)",
 		},
 		navbarDiv: {
 			height: "100%",
@@ -68,6 +73,7 @@ const Navbar = ({ page }: { page: string }) => {
 					: "",
 		},
 		barrettaInBasso: {
+			borderRadius: "2px",
 			position: "absolute",
 			bottom: "calc(8svh - 5px)",
 			left: spostamento + 3.5 + "%",

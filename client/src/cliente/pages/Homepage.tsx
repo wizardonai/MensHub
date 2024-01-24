@@ -29,7 +29,11 @@ const Slider = ({ piuAcq }: parametri) => {
 	let lista: Array<React.JSX.Element> = [];
 
 	piuAcq.forEach((item, index) => {
-		lista.push(<ListElement item={item} key={item.id} daDoveArrivo='home' />);
+		lista.push(
+			<div className='m-[10px]' key={index}>
+				<ListElement item={item} index={index} daDoveArrivo='home' />
+			</div>
+		);
 	});
 
 	return lista;
@@ -74,6 +78,8 @@ const HomePage = () => {
 				<p style={css.titoloHome}>I più venduti</p>
 				<div style={css.slider}>
 					<Slider piuAcq={piuAcq} />
+					{/* <div style={css.barrettaSinistra}></div>
+					<div style={css.barrettaDestra}></div> */}
 				</div>
 			</div>
 			<Navbar page='home' />
@@ -98,7 +104,7 @@ const css: styleMap = {
 		marginLeft: "15px",
 	},
 	slider: {
-		overflowX: "auto",
+		overflowX: "scroll",
 		height: "60svw",
 		width: "100%",
 		display: "flex",
