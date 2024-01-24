@@ -118,12 +118,25 @@ server.post("/request/products", (req, res) => {
 });
 
 server.post("/send/cart", (req, res) => {
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			id_utente = decoded.id;
+		}
+	});
+
 	console.log("-----------------");
 	console.log("carrello");
 	let data = req.body.carrello;
 	console.log(data);
 
-	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita, stato_ordine) VALUES(${data[0].id_mensa},"`;
+	let query = `INSERT INTO ordini (id_mensa,id_utente, str_prod, quantita, stato_ordine) VALUES(${data[0].id_mensa},${id_utente},"`;
 	data.forEach((item, index) => {
 		query += `${item.id}`;
 		if (index !== data.length - 1) query += ",";
@@ -134,8 +147,7 @@ server.post("/send/cart", (req, res) => {
 		if (index !== data.length - 1) query += ",";
 	});
 
-	query += `","attivo");`; //da aggiungere id_utente
-	console.log(query);
+	query += `","attivo");`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		res.header("Access-Control-Allow-Origin", "*");
