@@ -284,49 +284,73 @@ server.post("/request/orders", (req, res) => {
 	});
 });
 
+//da aggiungere token negli header da uasard
 server.post("/producer/get/products", (req, res) => {
-	const {id_utente} = req.body;
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			id_utente = decoded.id;
+		}
+	});
 
 	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
 
-		connection.query(query, (err, result) => {
-			if (err) throw new Error(err);
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
 
-			const id_mensa = result[0].id_mensa;
+		const id_mensa = result[0].id_mensa;
 
-			connection.query(
-				"SELECT * FROM prodotti where id_mensa=" + id_mensa,
-				(err, result) => {
-					if (err) throw new Error(err);
-					res.header("Access-Control-Allow-Origin", "*");
-					res.send(result);
-					res.end();
-				}
-			);
-		});
+		connection.query(
+			"SELECT * FROM prodotti where id_mensa=" + id_mensa,
+			(err, result) => {
+				if (err) throw new Error(err);
+				res.header("Access-Control-Allow-Origin", "*");
+				res.send(result);
+				res.end();
+			}
+		);
+	});
 
 });
 
+//da aggiungere token negli header da uasard
 server.post("/producer/get/orders", (req, res) => {
-	const {id_utente} = req.body;
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			id_utente = decoded.id;
+		}
+	});
 
 	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
 
-		connection.query(query, (err, result) => {
-			if (err) throw new Error(err);
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
 
-			const id_mensa = result[0].id_mensa;
+		const id_mensa = result[0].id_mensa;
 
-			connection.query(
-				"SELECT * FROM ordini where id_mensa=" + id_mensa,
-				(err, result) => {
-					if (err) throw new Error(err);
-					res.header("Access-Control-Allow-Origin", "*");
-					res.send(result);
-					res.end();
-				}
-			);
-		});
+		connection.query(
+			"SELECT * FROM ordini where id_mensa=" + id_mensa,
+			(err, result) => {
+				if (err) throw new Error(err);
+				res.header("Access-Control-Allow-Origin", "*");
+				res.send(result);
+				res.end();
+			}
+		);
+	});
 
 });
 
@@ -336,7 +360,7 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 
 
 	const estensioneFile = req.file.filename.split('.').pop();
-	console.log("\n\nFile: "+estensioneFile+"\n\n");
+	console.log("\n\nFile: " + estensioneFile + "\n\n");
 
 	const queryPromise = new Promise((resolve, reject) => {
 		let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
@@ -381,7 +405,7 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 
 						console.log("Prodotto modificato");
 
-						renameImage(nome + '_' + id_utente,id_prodotto); //rinominare immagine con id_prodotto
+						renameImage(nome + '_' + id_utente, id_prodotto); //rinominare immagine con id_prodotto
 					});
 
 				})
@@ -399,12 +423,12 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 });
 
 
-function renameImage(nome_file,id_prodotto) {
-	
+function renameImage(nome_file, id_prodotto) {
+
 
 	const cartella = '../client/src/cliente/pages/image/products';
 	const nomeFileSenzaEstensione = nome_file;
-	console.log("\nNome_file = "+nome_file);
+	console.log("\nNome_file = " + nome_file);
 
 	// Leggi tutti i file nella cartella
 	fs.readdir(cartella, (err, files) => {
@@ -419,7 +443,7 @@ function renameImage(nome_file,id_prodotto) {
 
 		if (fileDaRinominare) {
 			const percorsoCompletoAttuale = path.join(cartella, fileDaRinominare);
-			const nuovoNomeFileConEstensione = id_prodotto+estensioneFile; // Sostituisci con il nuovo nome e l'estensione desiderati
+			const nuovoNomeFileConEstensione = id_prodotto + estensioneFile; // Sostituisci con il nuovo nome e l'estensione desiderati
 			const percorsoCompletoNuovo = path.join(cartella, nuovoNomeFileConEstensione);
 
 			// Rinomina il file
