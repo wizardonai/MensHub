@@ -40,6 +40,7 @@ import jwt from 'jsonwebtoken';
 import { validate } from "deep-email-validator";
 import cors from "cors";
 import bodyParser from "body-parser";
+import fs from "fs";
 
 
 const { json, urlencoded } = bodyParser;
@@ -333,6 +334,10 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 	const { id_utente, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
 	let id_mensa = "";
 
+
+	const estensioneFile = req.file.filename.split('.').pop();
+	console.log("\n\nFile: "+estensioneFile+"\n\n");
+
 	const queryPromise = new Promise((resolve, reject) => {
 		let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
 
@@ -369,14 +374,14 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 
 			queryPromise2
 				.then((results) => {
-					let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
+					let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
 					console.log('\nQUERY MODIFICA:' + query);
 					connection.query(query, (err, result) => {
 						if (err) throw new Error(err);
 
 						console.log("Prodotto modificato");
 
-						renameImage(); //rinominare immagine con id_prodotto
+						renameImage(nome + '_' + id_utente,id_prodotto); //rinominare immagine con id_prodotto
 					});
 
 				})
@@ -393,13 +398,13 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 	res.send("Prodotto aggiunto al DB");
 });
 
-//da fare
-function renameImage() {
-	const fs = require('fs');
-	const path = require('path');
 
-	const cartella = 'percorso/alla/tua/cartella';
-	const nomeFileSenzaEstensione = 'nome_attuale_del_file';
+function renameImage(nome_file,id_prodotto) {
+	
+
+	const cartella = '../client/src/cliente/pages/image/products';
+	const nomeFileSenzaEstensione = nome_file;
+	console.log("\nNome_file = "+nome_file);
 
 	// Leggi tutti i file nella cartella
 	fs.readdir(cartella, (err, files) => {
@@ -410,10 +415,11 @@ function renameImage() {
 
 		// Cerca il file senza estensione nella lista dei file
 		const fileDaRinominare = files.find(file => file.startsWith(nomeFileSenzaEstensione));
+		const estensioneFile = path.extname(fileDaRinominare);
 
 		if (fileDaRinominare) {
 			const percorsoCompletoAttuale = path.join(cartella, fileDaRinominare);
-			const nuovoNomeFileConEstensione = 'nuovo_nome_del_file.txt'; // Sostituisci con il nuovo nome e l'estensione desiderati
+			const nuovoNomeFileConEstensione = id_prodotto+estensioneFile; // Sostituisci con il nuovo nome e l'estensione desiderati
 			const percorsoCompletoNuovo = path.join(cartella, nuovoNomeFileConEstensione);
 
 			// Rinomina il file
