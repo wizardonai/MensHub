@@ -34,9 +34,8 @@ function rimuoviDalCarrello(
 	localStorage.setItem("cart", JSON.stringify(tmp2));
 	setCarrello(JSON.parse(localStorage.getItem("cart") || "{}"));
 
-	
-	const elementi: any = document.getElementsByClassName('divElemento');
-	
+	const elementi: any = document.getElementsByClassName("divElemento");
+
 	for (let i = 0; i < elementi.length; i++) {
 		elementi[i].style.marginLeft = "0px";
 		elementi[i].children[2].style.display = "none";
@@ -80,7 +79,6 @@ const ElementoCarrello = ({
 		if (isLeftSwipe) {
 			tmp.style.marginLeft = "-190px";
 			tmp.children[2].style.display = "flex";
-			
 		} else {
 			tmp.style.marginLeft = "0";
 			tmp.children[2].style.display = "none";
@@ -127,8 +125,9 @@ const ElementoCarrello = ({
 		divCancellaImg: {
 			width: "35px",
 			height: "35px",
-			filter: "invert(100%) sepia(47%) saturate(0%) hue-rotate(32deg) brightness(116%) contrast(100%)"
-		}
+			filter:
+				"invert(100%) sepia(47%) saturate(0%) hue-rotate(32deg) brightness(116%) contrast(100%)",
+		},
 	};
 
 	return (
@@ -189,9 +188,14 @@ const ElementoCarrello = ({
 					</div>
 				</div>
 			</div>
-			<div style={css.divCancella} onClick={() => {
-				rimuoviDalCarrello(item, carrello, setCarrello);
-			}}><img src={hostname + "bin.png"} alt="" style={css.divCancellaImg} /></div>
+			<div
+				style={css.divCancella}
+				onClick={() => {
+					rimuoviDalCarrello(item, carrello, setCarrello);
+				}}
+			>
+				<img src={hostname + "bin.png"} alt='' style={css.divCancellaImg} />
+			</div>
 		</div>
 	);
 };
@@ -294,7 +298,7 @@ function Orders() {
 				<div style={css.informazioniCarrello}>
 					{carrello.length >= 1 ? (
 						<>
-							<div style={css.elementiCarrello} id="listaCarrello">
+							<div style={css.elementiCarrello} id='listaCarrello'>
 								<ListaCarrello carrello={carrello} setCarrello={setCarrello} />
 							</div>
 						</>

@@ -15,7 +15,7 @@ const ListElement = ({ item, daDoveArrivo, index }: parametri) => {
 
 	const css: styleMap = {
 		elemento: {
-			//margin: "10px 0",
+			margin: "10px 0",
 			height: "180px",
 			width: "180px",
 			minWidth: "180px",
