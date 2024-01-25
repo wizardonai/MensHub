@@ -7,11 +7,6 @@ const fileMysql = execFile("mysql.bat", [], (err, data) => {
 });
 
 
-
-// setTimeout(() => {
-// 	connetti();
-// }, 500);
-
 let fileApache;
 let fileShell;
 process.argv.forEach((item) => {
@@ -31,7 +26,6 @@ process.argv.forEach((item) => {
 });
 
 let connection = "";
-//altro
 
 import { createConnection } from "mysql";
 import express from "express";
@@ -41,12 +35,12 @@ import { validate } from "deep-email-validator";
 import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
+import path from 'path';
 
 
 const { json, urlencoded } = bodyParser;
 const server = express();
-import path from 'path';
-import { Console } from "console";
+const secretKey = 'CaccaPoopShitMierda';
 
 // Configura multer per salvare i file caricati nella cartella 'images'
 const storage = multer.diskStorage({
@@ -54,14 +48,25 @@ const storage = multer.diskStorage({
 		cb(null, '../client/src/cliente/pages/image')
 	},
 	filename: function (req, file, cb) {
-		const nome = req.body.nome; // Assicurati che la tua richiesta contenga un campo 'id'
-		const id_utente = req.body.id_utente;
-		cb(null, 'products/' + nome + '_' + id_utente + path.extname(file.originalname));
+		const nome = req.body.nome;
+		const prezzo = req.body.prezzo;
+		cb(null, 'products/' + nome + '_' + prezzo + path.extname(file.originalname));
 	}
 })
 
-const upload = multer({ storage: storage })
-const secretKey = 'CaccaPoopShitMierda';
+const storage2 = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, '../client/src/cliente/pages/image')
+	},
+	filename: function (req, file, cb) {
+		const id = req.body.id;
+		cb(null, 'products/' + id + path.extname(file.originalname));
+	}
+})
+
+const upload = multer({ storage: storage });
+
+const upload2 = multer({ storage: storage2 });
 
 connetti();
 
@@ -94,14 +99,6 @@ server.get("/", (req, res) => { //hosto la pagina sullo stesso sito
 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
 });
 
-//RI\CEZIONE DATI CON MULLER (form-data) ESEMPIO
-
-/*server.post('/upload', upload.fields([]), (req, res) => {
-	// req.body conterrà i dati del form
-	console.log(req.body);
-
-	res.send('Dati di testo ricevuti con successo!');
-});*/
 
 server.post("/request/products", (req, res) => {
 	let data = req.body;
@@ -136,7 +133,7 @@ server.post("/send/cart", (req, res) => {
 	let data = req.body.carrello;
 	console.log(data);
 
-	let query = `INSERT INTO ordini (id_mensa,id_utente, str_prod, quantita, stato_ordine) VALUES(${data[0].id_mensa},${id_utente},"`;
+	let query = `INSERT INTO ordini (id_mensa,id_utente, str_prod, quantita, stato_ordine, data) VALUES(${data[0].id_mensa},${id_utente},"`;
 	data.forEach((item, index) => {
 		query += `${item.id}`;
 		if (index !== data.length - 1) query += ",";
@@ -147,7 +144,15 @@ server.post("/send/cart", (req, res) => {
 		if (index !== data.length - 1) query += ",";
 	});
 
-	query += `","attivo");`;
+	let now = new Date();
+	let nowFormatted = now.toISOString().replace('T', ' ').slice(0, -1);
+	console.log(nowFormatted);
+
+	query += `","attivo","` + nowFormatted + `");`;
+
+
+	//console.log("\nQUERY CARRELLO: "+query);
+
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		res.header("Access-Control-Allow-Origin", "*");
@@ -258,7 +263,7 @@ server.post("/login/user", async function (req, res) {
 });
 
 
-server.post("/request/profile", upload.fields([]), (req, res) => {
+server.post("/request/profile", (req, res) => {
 	//controllo che il token di sessione sia valido
 	let token = req.headers.authorization;
 	if (!token)
@@ -366,9 +371,134 @@ server.post("/producer/get/orders", (req, res) => {
 
 });
 
+server.post("/producer/edit/product", (req, res) => {
+	const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+
+	let query = `
+				UPDATE prodotti
+				SET nome = '${nome}',
+					descrizione = '${descrizione}',
+					allergeni = '${allergeni}',
+					prezzo = '${prezzo}',
+					categoria = '${categoria}',
+					disponibile = '${disponibile}'
+				WHERE id = '${id}';`;
+
+	console.log('\nQUERY EDIT' + query);
+	connection.query(query, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			res.send("Prodotto modificato");
+			res.end()
+		}
+	});
+
+});
+
+//serve id del prodotto nella req per caricare immagine
+//richiesta da fare con form-data
+server.post("/producer/editWithImg/product", upload2.single('image'), (req, res) => {
+	const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+
+	let cartella = '../client/src/cliente/pages/image/products';
+	let fileDaEliminare = "";
+	const estensioneFile = req.file.filename.split('.').pop();
+
+
+	const queryPromise = new Promise((resolve, reject) => {
+		fs.readdir(cartella, (err, files) => {
+			if (err) {
+				console.error('Errore durante la lettura della cartella:', err);
+				return;
+			}
+
+			fileDaEliminare = files.find(file => file.startsWith(id + "."));
+
+			if (fileDaEliminare) {
+				console.log("File da rinominare:" + fileDaEliminare);
+				resolve(fileDaEliminare)
+			} else {
+				reject('File non trovato.');
+				console.log('File non trovato.');
+			}
+		});
+	});
+
+	queryPromise
+		.then((fileDaEliminare) => {
+
+			console.log("\n\nFile nuovo: " + req.file.filename)
+
+			const estensioneFileVecchio = fileDaEliminare.split('.').pop();
+
+			if (estensioneFileVecchio != estensioneFile) {
+				const pathImg = cartella + "/" + fileDaEliminare;
+
+				fs.unlink(pathImg, (err) => {
+					if (err) {
+						console.error(`Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`);
+						// Gestisci l'errore come preferisci
+					} else {
+						console.log(`Il file ${fileDaEliminare} è stato eliminato con successo`);
+					}
+				});
+
+				let query = `
+				UPDATE prodotti
+				SET nome = '${nome}',
+					descrizione = '${descrizione}',
+					allergeni = '${allergeni}',
+					prezzo = '${prezzo}',
+					categoria = '${categoria}',
+					disponibile = '${disponibile}',
+					indirizzo_img= 'products/${id}.${estensioneFile}'
+				WHERE id = '${id}';`;
+
+				console.log('\nQUERY EDIT' + query);
+				connection.query(query, (err, result) => {
+					if (err) {
+						console.log(err);
+						res.send(err);
+						res.end();
+					} else {
+						res.send("Prodotto modificato");
+						res.end()
+					}
+				});
+			} else {
+				res.send("Prodotto modificato");
+				res.end()
+			}
+
+		})
+		.catch((error) => {
+			console.log(error);
+			res.send("Errore modifica");
+			res.end();
+		});
+
+});
+
+//richiesta da fare con form-data
 server.post("/producer/add/products", upload.single('image'), (req, res) => {
-	const { id_utente, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
-	let id_mensa = "";
+	const { nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+
+			id_utente = decoded.id;
+		}
+	});
 
 
 	const estensioneFile = req.file.filename.split('.').pop();
@@ -417,7 +547,7 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 
 						console.log("Prodotto modificato");
 
-						renameImage(nome + '_' + id_utente, id_prodotto); //rinominare immagine con id_prodotto
+						renameImage(nome + '_' + prezzo, id_prodotto); //rinominare immagine con id_prodotto
 					});
 
 				})
@@ -430,12 +560,15 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 		});
 
 
-
+	res.header("Access-Control-Allow-Origin", "*");
 	res.send("Prodotto aggiunto al DB");
+	res.end();
 });
 
 
 function renameImage(nome_file, id_prodotto) {
+
+	console.log(`RENAME: ${nome_file} ${id_prodotto} `);
 
 
 	const cartella = '../client/src/cliente/pages/image/products';
@@ -451,9 +584,10 @@ function renameImage(nome_file, id_prodotto) {
 
 		// Cerca il file senza estensione nella lista dei file
 		const fileDaRinominare = files.find(file => file.startsWith(nomeFileSenzaEstensione));
-		const estensioneFile = path.extname(fileDaRinominare);
+
 
 		if (fileDaRinominare) {
+			const estensioneFile = path.extname(fileDaRinominare);
 			const percorsoCompletoAttuale = path.join(cartella, fileDaRinominare);
 			const nuovoNomeFileConEstensione = id_prodotto + estensioneFile; // Sostituisci con il nuovo nome e l'estensione desiderati
 			const percorsoCompletoNuovo = path.join(cartella, nuovoNomeFileConEstensione);

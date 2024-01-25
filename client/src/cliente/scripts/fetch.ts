@@ -42,7 +42,8 @@ export async function sendOrder(carrello: Array<object>) {
 		url: `${urlServer}/send/cart`,
 		headers: {
 			"Content-Type": "application/json",
-			'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tZSI6IlNpbW9uZSIsImNvZ25vbWUiOiJMYXBvbWFyZGEiLCJlbWFpbCI6InNpbW9sYXBvbWFyZGFAZ21haWwuY29tIiwiaWF0IjoxNzA2MTMyNDI0LCJleHAiOjE3MDYxMzYwMjR9.eqyBblANxpvhd47GLx90Khkvm4vtTHn_lKXQIGPAge0'
+			//DA PRENDERE IL TOKEN  DA LOCAL STORAGE
+			'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tZSI6IlNpbW9uZSIsImNvZ25vbWUiOiJMYXBvbWFyZGEiLCJlbWFpbCI6InNpbW9sYXBvbWFyZGFAZ21haWwuY29tIiwiaWF0IjoxNzA2MjA1MjM0LCJleHAiOjE3MDYyMDg4MzR9.ZCv36S33_ndqMCVLkdF3Lkw0Ag4mEBEjiVLTlGclOuw'
 		},
 		data: data,
 	};
