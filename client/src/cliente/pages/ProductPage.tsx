@@ -145,8 +145,8 @@ const ProductPage = () => {
 		imgProdotto: {
 			width: "80svw",
 			height: "80svw",
-			maxWidth: "500px",
-			maxHeight: "500px",
+			maxWidth: "350px",
+			maxHeight: "350px",
 		},
 		nomeProdotto: {
 			width: "100%",

@@ -67,9 +67,7 @@ const BottomButton = ({
 			}
 		>
 			{text === "Aggiungi al carrello" ? (
-				<div
-					style={css.pulsanteFixatoInBassoDiv}
-				>
+				<div style={css.pulsanteFixatoInBassoDiv}>
 					<Drawer>
 						<DrawerTrigger className='w-[100%] h-[100%]'>
 							Aggiungi al carrello
@@ -119,10 +117,7 @@ const BottomButton = ({
 					</Drawer>
 				</div>
 			) : (
-				<div
-					style={css.pulsanteFixatoInBassoDiv}
-					// onClick={onClickFun}
-				>
+				<div style={css.pulsanteFixatoInBassoDiv}>
 					<Drawer>
 						<DrawerTrigger className='w-[100%] h-[100%]'>{text}</DrawerTrigger>
 						<DrawerContent>
@@ -131,18 +126,19 @@ const BottomButton = ({
 								<DrawerDescription>Sicuro di voler ordinare?</DrawerDescription>
 							</DrawerHeader>
 							<DrawerFooter>
-								<DrawerClose>
-									<div className='flex items-center justify-evenly'>
-										<Button variant='outline'>Indietro</Button>
-										<Button
-											onClick={() => {
-												onClickFun(quantita);
-											}}
-										>
-											Ordina
-										</Button>
-									</div>
-								</DrawerClose>
+								<div className='flex items-center justify-evenly w-[100%]'>
+									<DrawerClose className='border border-black w-[30%] h-[40px] rounded-[10px]'>
+										Indietro
+									</DrawerClose>
+									<DrawerClose
+										className='border border-black w-[30%] h-[40px] rounded-[10px]'
+										onClick={() => {
+											onClickFun(quantita);
+										}}
+									>
+										Ordina
+									</DrawerClose>
+								</div>
 							</DrawerFooter>
 						</DrawerContent>
 					</Drawer>

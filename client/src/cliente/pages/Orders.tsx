@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
-import { hostname, styleMap } from "../../App";
+import { hostname, sleep, styleMap } from "../../App";
 import { prodotto } from "./Homepage";
 import { useTheme } from "next-themes";
 import { Toaster } from "src/shadcn/Sonner";
@@ -66,7 +66,7 @@ const ElementoCarrello = ({
 
 	const onTouchMove = (e: any) => setTouchEnd(e.targetTouches[0].clientX);
 
-	const onTouchEnd = (e: any) => {
+	const onTouchEnd = async (e: any) => {
 		if (!touchStart || !touchEnd) return;
 		const distance = touchStart - touchEnd;
 		const isLeftSwipe = distance > minSwipeDistance;
@@ -77,11 +77,27 @@ const ElementoCarrello = ({
 			tmp = tmp.parentNode;
 		}
 		if (isLeftSwipe) {
-			tmp.style.marginLeft = "-190px";
+			tmp.style.marginLeft = "-10px";
 			tmp.children[2].style.display = "flex";
+
+			for (let i = 0; i < 190; i += 7) {
+				tmp.style.marginLeft = (-i).toString() + "px";
+				if (i < 70) {
+					tmp.children[2].style.width = i.toString() + "px";
+				}
+				await sleep(5);
+			}
+
+			tmp.style.marginLeft = "-190px";
 		} else {
-			tmp.style.marginLeft = "0";
 			tmp.children[2].style.display = "none";
+
+			for (let i = 190; i > 0; i -= 7) {
+				tmp.style.marginLeft = (-i).toString() + "px";
+				await sleep(5);
+			}
+
+			tmp.style.marginLeft = "0";
 		}
 	};
 
@@ -94,7 +110,10 @@ const ElementoCarrello = ({
 			padding: "5px",
 			height: "120px",
 			borderRadius: "11px",
-			width: "350px",
+			// width: "350px",
+			minWidth: "350px",
+			width: "50%",
+			//
 			marginTop: "20px",
 			boxShadow:
 				resolvedTheme === "light"
@@ -112,7 +131,6 @@ const ElementoCarrello = ({
 			flexDirection: "column",
 		},
 		divCancella: {
-			width: "70px",
 			height: "120px",
 			background: "red",
 			position: "absolute",
@@ -152,7 +170,7 @@ const ElementoCarrello = ({
 				</div>
 				<div className='h-[50%] w-[100%] flex flex-row'>
 					<div className='w-[50%] h-[100%] flex items-center justify-center text-lg'>
-						{item.prezzo}€
+						{item.prezzo.toFixed(2)}€
 					</div>
 					<div className='w-[50%] h-[100%] flex flex-row items-center justify-evenly'>
 						<Button
@@ -256,9 +274,6 @@ function Orders() {
 			overflowY: "scroll",
 			overflowX: "hidden",
 		},
-		informazioniCarrello: {
-			marginBottom: "50px",
-		},
 		totalePrezzo: {
 			width: "97%",
 			textAlign: "right",
@@ -268,13 +283,15 @@ function Orders() {
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
+			marginBottom: "75px",
 		},
 		messaggioFullPage: {
 			color: "gray",
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
-			height: "calc(100svh - 18svh - 30px)",
+			// height: "calc(100svh - 18svh - 30px)",
+			height: "80%",
 			margin: "0",
 		},
 		divSopraPopUp: {
@@ -295,24 +312,22 @@ function Orders() {
 			<Topbar titolo='carrello' daDoveArrivo='' />
 			<div className='containerPage' style={css.containerOrders}>
 				<p style={css.totalePrezzo}>Totale: {calcPrezzoTot()}€</p>
-				<div style={css.informazioniCarrello}>
-					{carrello.length >= 1 ? (
-						<>
-							<div style={css.elementiCarrello} id='listaCarrello'>
-								<ListaCarrello carrello={carrello} setCarrello={setCarrello} />
-							</div>
-						</>
-					) : (
-						<div style={css.messaggioFullPage}>
-							Aggiungi prodotti dalla pagina menu...
+				{carrello.length >= 1 ? (
+					<>
+						<div style={css.elementiCarrello} id='listaCarrello'>
+							<ListaCarrello carrello={carrello} setCarrello={setCarrello} />
 						</div>
-					)}
-					<BottomButton
-						text='Ordina ora'
-						onClickFun={orderFun}
-						display={carrello.length !== 0 ? "" : "none"}
-					/>
-				</div>
+					</>
+				) : (
+					<div style={css.messaggioFullPage}>
+						Aggiungi prodotti dalla pagina menu...
+					</div>
+				)}
+				<BottomButton
+					text='Ordina ora'
+					onClickFun={orderFun}
+					display={carrello.length !== 0 ? "" : "none"}
+				/>
 			</div>
 			<Navbar page='orders' />
 			<Toaster position='top-right' />

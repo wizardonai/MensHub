@@ -5,8 +5,10 @@ import ListElement from "./components/ListElement";
 
 import { useLoaderData } from "react-router-dom";
 import React, { useState } from "react";
-import { ArrayProdotti, filtroMap, styleMap } from "../../App";
+import { ArrayProdotti, filtroMap, sleep, styleMap } from "../../App";
 import { prodotto } from "./Homepage";
+
+import "./css/animazioniFiltri.css";
 
 //lista completa
 const Lista = ({
@@ -29,7 +31,14 @@ const Lista = ({
 
 	let list: Array<React.JSX.Element> = [];
 	prodottiFiltrati.forEach((item, index) => {
-		list.push(<ListElement item={item} key={item.id} index={index} daDoveArrivo='menu' />);
+		list.push(
+			<ListElement
+				item={item}
+				key={item.id}
+				index={index}
+				daDoveArrivo='menu'
+			/>
+		);
 	});
 
 	return list;
@@ -86,34 +95,99 @@ const Filtri = ({
 			"dolci",
 		];
 
-		let lista: Array<React.JSX.Element> = [];
-
+		let cliccato: string = "";
 		nomi.forEach((item, index) => {
-			lista.push(
-				<div
-					key={index}
-					style={
-						filtri[nomi[index]]
-							? {
-									...css.filtriDiv,
-									...css.filtroCliccato,
-							  }
-							: css.filtriDiv
-					}
-					onClick={() => {
-						if (filtri[nomi[index]]) {
-							disattivaAltriFiltri(10);
-						} else {
-							disattivaAltriFiltri(index);
-						}
-					}}
-				>
-					{item}
-				</div>
-			);
+			if (filtri[item]) {
+				cliccato = item;
+			}
 		});
 
-		return lista;
+		if (cliccato == "") {
+			let lista: Array<React.JSX.Element> = [];
+
+			nomi.forEach((item, index) => {
+				lista.push(
+					<div
+						key={index}
+						style={css.filtriDiv}
+						onClick={async () => {
+							const filtri = document.getElementsByClassName("riquadroFiltro");
+
+							await sleep(150);
+
+							// for (let i = 1; i > 0; i -= 0.25) {
+							// 	//@ts-ignore
+							// 	filtri[0].style.opacity = i.toString();
+							// 	//@ts-ignore
+							// 	filtri[1].style.opacity = i.toString();
+							// 	//@ts-ignore
+							// 	filtri[2].style.opacity = i.toString();
+							// 	//@ts-ignore
+							// 	filtri[3].style.opacity = i.toString();
+							// 	//@ts-ignore
+							// 	filtri[4].style.opacity = i.toString();
+							// 	//@ts-ignore
+							// 	filtri[5].style.opacity = i.toString();
+							// 	await sleep(50);
+							// }
+							disattivaAltriFiltri(index);
+						}}
+						className='riquadroFiltro'
+					>
+						{item}
+					</div>
+				);
+			});
+
+			return lista;
+		} else {
+			async function onclickFun(e: any) {
+				const filtri = document.getElementsByClassName("togliFiltri");
+
+				//@ts-ignore
+				filtri[0].attributes.class.value += " esciX";
+				//@ts-ignore
+				filtri[1].attributes.class.value += " esci";
+
+				await sleep(500);
+
+				setFiltri({
+					antipasti: false,
+					primi: false,
+					secondi: false,
+					contorni: false,
+					panini: false,
+					dolci: false,
+				});
+			}
+
+			return (
+				<>
+					<div
+						style={{
+							...css.filtriDiv,
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+						onClick={onclickFun}
+						className='togliFiltri entraX'
+					>
+						<p>X</p>
+					</div>
+					<div
+						style={{
+							...css.filtriDiv,
+							...css.filtroCliccato,
+						}}
+						onClick={onclickFun}
+						className='togliFiltri entra'
+					>
+						{cliccato}
+					</div>
+				</>
+			);
+		}
 	}
 
 	return (

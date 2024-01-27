@@ -22,8 +22,9 @@ function Profile() {
 
 	useEffect(() => {
 		getProfilo(JSON.parse(localStorage.getItem("token") || "{}").token).then(
-			(res: typeProfilo) => {
-				setDati(res);
+			(res: any) => {
+				if (res.name === "TokenExpiredError") disconnect();
+				else setDati(res);
 			}
 		);
 	}, []);
@@ -34,7 +35,7 @@ function Profile() {
 
 	const disconnect = () => {
 		localStorage.setItem("login", "no");
-		localStorage.removeItem("datiUtente");
+		localStorage.removeItem("token");
 		localStorage.removeItem("cart");
 		refreshStorage();
 		navigate("/login");
@@ -43,7 +44,10 @@ function Profile() {
 	return (
 		<div className='page'>
 			<Topbar titolo={"Ciao " + dati.nome} daDoveArrivo='' />
-			<div className='containerPage  overflow-y-scroll' style={css.containerProfileTmp}>
+			<div
+				className='containerPage  overflow-y-scroll'
+				style={css.containerProfileTmp}
+			>
 				<div style={css.divElemento}>
 					<p>Dati personali</p>
 				</div>
@@ -93,7 +97,7 @@ const css: styleMap = {
 		height: "20px",
 	},
 	divElemento: {
-		display:"flex",
+		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
 		padding: "5px",
@@ -103,8 +107,8 @@ const css: styleMap = {
 		marginTop: "20px",
 		boxShadow:
 			//resolvedTheme === "light"
-				//? 
-				"3px 3px 17px -3px rgba(0, 0, 0, 0.30)"
-				//: "3px 3px 17px -3px rgba(255, 255, 255, 0.1)",
+			//?
+			"3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+		//: "3px 3px 17px -3px rgba(255, 255, 255, 0.1)",
 	},
 };

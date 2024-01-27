@@ -52,6 +52,8 @@ export var Colori = {
 	imgChiara:
 		"invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)",
 };
+export const sleep = (delay: number) =>
+	new Promise((resolve) => setTimeout(resolve, delay));
 
 const loadProdotti = async () => {
 	function aggiungiHostname(prodotti: ArrayProdotti) {
@@ -105,6 +107,10 @@ const App = () => {
 	if (utente === "cliente") {
 		router = createBrowserRouter([
 			{
+				path: "/",
+				loader: () => redirect("/home"),
+			},
+			{
 				path: "/home",
 				element: <HomePage />,
 				loader: async () => {
@@ -152,6 +158,10 @@ const App = () => {
 		]);
 	} else {
 		router = createBrowserRouter([
+			{
+				path: "/",
+				loader: () => redirect("/login"),
+			},
 			{
 				path: "/login",
 				element: <LoginPage />,
