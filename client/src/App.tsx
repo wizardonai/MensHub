@@ -68,7 +68,7 @@ const loadProdotti = async () => {
 	}
 
 	// @ts-ignore
-	let res: ArrayProdotti = { prodotti: await getProdotti() };
+	let res: ArrayProdotti = { prodotti: await getProdotti(JSON.parse(localStorage.getItem('token') || '{"token": "abc"}')) };
 
 	let elencoProdotti: ArrayProdotti = aggiungiHostname(res);
 	return elencoProdotti;

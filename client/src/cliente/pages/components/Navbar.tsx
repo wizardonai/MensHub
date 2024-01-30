@@ -70,7 +70,7 @@ const Navbar = ({ page }: { page: string }) => {
 			filter:
 				resolvedTheme === "dark"
 					? "invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)"
-					: "",
+					: "invert(34%) sepia(22%) saturate(1453%) hue-rotate(166deg) brightness(91%) contrast(84%)",
 		},
 		barrettaInBasso: {
 			borderRadius: "2px",
@@ -79,7 +79,7 @@ const Navbar = ({ page }: { page: string }) => {
 			left: spostamento + 3.5 + "%",
 			width: "18%",
 			height: "5px",
-			background: resolvedTheme === "dark" ? "#fff" : "#000",
+			background: resolvedTheme === "dark" ? "#fff" : "#30618c",
 		},
 	};
 

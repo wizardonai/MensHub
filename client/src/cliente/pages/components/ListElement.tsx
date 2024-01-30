@@ -55,6 +55,11 @@ const ListElement = ({ item, daDoveArrivo, index }: parametri) => {
 			fontSize: "18px",
 			fontWeight: "bold",
 			textTransform: "capitalize",
+			textOverflow: "ellipsis",
+			width: "85%",
+			height: "100%",
+			whiteSpace: "nowrap",
+			overflow: "hidden",
 		},
 	};
 

@@ -135,10 +135,12 @@ const ElementoCarrello = ({
 			background: "red",
 			position: "absolute",
 			right: "calc((100svw - 350px) / 2 + 10px)",
+			// right: "0",
 			borderRadius: "11px",
 			display: "none",
 			justifyContent: "center",
 			alignItems: "center",
+			width: "70px"
 		},
 		divCancellaImg: {
 			width: "35px",
@@ -257,7 +259,7 @@ function Orders() {
 	};
 
 	const orderFun = () => {
-		sendOrder(JSON.parse(localStorage.getItem("cart") || "{}")).then(() => {
+		sendOrder(JSON.parse(localStorage.getItem("cart") || "{}"), JSON.parse(localStorage.getItem('token') || '{"token": "abc"}')).then(() => {
 			toast.success("Ordinazione effettuata!", {
 				action: {
 					label: "Chiudi",
@@ -336,69 +338,3 @@ function Orders() {
 }
 
 export default Orders;
-
-/*
-		// divImg: {
-		// 	width: "18%",
-		// 	maxWidth: "80px",
-		// 	height: "100%",
-		// 	display: "flex",
-		// 	justifyContent: "center",
-		// 	alignItems: "center",
-		// },
-		// divImgImg: {
-		// 	width: "70px",
-		// 	height: "70px",
-		// 	borderRadius: "11px",
-		// 	border: "1px solid black",
-		// },
-		// nomeElementoCarrello: {
-		// 	width: "40%",
-		// 	overflowX: "scroll",
-		// },
-		// nomeElementoCarrelloP: {
-		// 	fontSize: "22px",
-		// 	textAlign: "center",
-		// 	whiteSpace: "nowrap",
-		// },
-		// pulsantiCarrello: {
-		// 	display: "flex",
-		// 	flexDirection: "row",
-		// 	justifyContent: "center",
-		// 	alignItems: "center",
-		// 	height: "35px",
-		// 	width: "13%",
-		// },
-		// quantitaCarrello: {
-		// 	fontSize: "22px",
-		// 	marginRight: "10px",
-		// },
-		// divSuEgiu: {
-		// 	display: "flex",
-		// 	flexDirection: "column",
-		// 	justifyContent: "center",
-		// 	alignItems: "center",
-		// },
-		// divSuEgiuImg: {
-		// 	width: "23px",
-		// 	filter:
-		// 		"invert(8%) sepia(19%) saturate(0%) hue-rotate(264deg) brightness(92%) contrast(86%)",
-		// },
-		// frecciaSu: {
-		// 	rotate: "90deg",
-		// },
-		// frecciaGiu: {
-		// 	rotate: "-90deg",
-		// },
-		// divPrezzo: {
-		// 	width: "21%",
-		// 	display: "flex",
-		// 	justifyContent: "center",
-		// 	alignItems: "center",
-		// },
-		// prezzoSingolo: {
-		// 	fontSize: "22px",
-		// 	textAlign: "center",
-		// 	marginLeft: "2px",
-		// },
-		*/

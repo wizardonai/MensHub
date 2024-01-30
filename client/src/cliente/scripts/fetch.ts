@@ -6,19 +6,19 @@ const urlServer =
 	(process.env.REACT_APP_HOSTNAME || "") +
 	(process.env.REACT_APP_FETCH_PORT || "");
 
-export async function getProdotti() {
+export async function getProdotti(token: {token: string}) {
 	let response;
 
-	let data = qs.stringify({
-		idm: 1,
-	});
+	console.log(token.token);
+	
 
 	let config = {
 		method: "post",
 		maxBodyLength: Infinity,
 		url: `${urlServer}/request/products`,
-		headers: {},
-		data: data,
+		headers: {
+			Authorization: "Bearer " + token.token,
+		},
 	};
 
 	await axios
@@ -33,7 +33,7 @@ export async function getProdotti() {
 	return response;
 }
 
-export async function sendOrder(carrello: Array<object>) {
+export async function sendOrder(carrello: Array<object>, token: {token: string}) {
 	let response;
 	let data = JSON.stringify({ carrello: carrello });
 
@@ -43,6 +43,7 @@ export async function sendOrder(carrello: Array<object>) {
 		url: `${urlServer}/send/cart`,
 		headers: {
 			"Content-Type": "application/json",
+			Authorization: "Bearer " + token.token,
 		},
 		data: data,
 	};

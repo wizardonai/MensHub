@@ -115,21 +115,6 @@ const Filtri = ({
 
 							await sleep(150);
 
-							// for (let i = 1; i > 0; i -= 0.25) {
-							// 	//@ts-ignore
-							// 	filtri[0].style.opacity = i.toString();
-							// 	//@ts-ignore
-							// 	filtri[1].style.opacity = i.toString();
-							// 	//@ts-ignore
-							// 	filtri[2].style.opacity = i.toString();
-							// 	//@ts-ignore
-							// 	filtri[3].style.opacity = i.toString();
-							// 	//@ts-ignore
-							// 	filtri[4].style.opacity = i.toString();
-							// 	//@ts-ignore
-							// 	filtri[5].style.opacity = i.toString();
-							// 	await sleep(50);
-							// }
 							disattivaAltriFiltri(index);
 						}}
 						className='riquadroFiltro'
@@ -281,7 +266,7 @@ const css: styleMap = {
 		justifyContent: "center",
 		alignItems: "center",
 		fontSize: "20px",
-		height: "60%",
+		height: "90%",
 		padding: "5px 12px",
 		margin: "0.5svw",
 		border: "2px solid #222",

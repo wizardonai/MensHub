@@ -33,7 +33,7 @@ const SearchBar = ({
 
 	function controlliSearch(e: any, effect: boolean) {
 		if (!effect) {
-			let str = e.target.value;
+			let str = (e.target.value).toLowerCase();
 			setStringaSearch(str);
 
 			const nChar = str.length;
