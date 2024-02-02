@@ -483,7 +483,7 @@ server.post("/producer/editWithImg/product", upload2.single('image'), (req, res)
 });
 
 //richiesta da fare con form-data
-server.post("/producer/add/products", upload.single('image'), (req, res) => {
+server.post("/producer/add/product", upload.single('image'), (req, res) => {
 	const { nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
 
 	let token = req.headers.authorization;
@@ -564,6 +564,24 @@ server.post("/producer/add/products", upload.single('image'), (req, res) => {
 	res.send("Prodotto aggiunto al DB");
 	res.end();
 });
+
+server.post("producer/delete/product"),(req,res) => {
+	const {id} = req.body;
+	
+	let query = `DELETE from prodotti WHERE id = '${id}';`;
+
+				console.log('\nQUERY DELETE' + query);
+				connection.query(query, (err, result) => {
+					if (err) {
+						console.log(err);
+						res.send(err);
+						res.end();
+					} else {
+						res.send("Prodotto modificato");
+						res.end()
+					}
+				});
+}
 
 
 function renameImage(nome_file, id_prodotto) {
