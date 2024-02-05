@@ -39,10 +39,6 @@ export interface filtroMap {
 	[thingName: string]: boolean;
 }
 
-// export const hostname =
-// 	(process.env.REACT_APP_HOSTNAME || "") +
-// 	(process.env.REACT_APP_IMG_PORT || "") +
-// 	"/image/";
 export const hostname =
 	(process.env.REACT_APP_HOSTNAME || "") +
 	(process.env.REACT_APP_IMG_PORT || "") +
@@ -56,6 +52,8 @@ export var Colori = {
 	imgChiara:
 		"invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)",
 };
+export const sleep = (delay: number) =>
+	new Promise((resolve) => setTimeout(resolve, delay));
 
 const loadProdotti = async () => {
 	function aggiungiHostname(prodotti: ArrayProdotti) {
@@ -70,7 +68,7 @@ const loadProdotti = async () => {
 	}
 
 	// @ts-ignore
-	let res: ArrayProdotti = { prodotti: await getProdotti() };
+	let res: ArrayProdotti = { prodotti: await getProdotti(JSON.parse(localStorage.getItem('token') || '{"token": "abc"}')) };
 
 	let elencoProdotti: ArrayProdotti = aggiungiHostname(res);
 	return elencoProdotti;
@@ -100,7 +98,7 @@ const App = () => {
 		refreshStorage();
 		window.addEventListener("storage", () => {
 			setUtente(localStorage.getItem("login") || "");
-			console.log(localStorage.getItem("login"));
+			// console.log(localStorage.getItem("login"));
 		});
 	}, []);
 
@@ -108,6 +106,10 @@ const App = () => {
 
 	if (utente === "cliente") {
 		router = createBrowserRouter([
+			{
+				path: "/",
+				loader: () => redirect("/home"),
+			},
 			{
 				path: "/home",
 				element: <HomePage />,
@@ -156,6 +158,10 @@ const App = () => {
 		]);
 	} else {
 		router = createBrowserRouter([
+			{
+				path: "/",
+				loader: () => redirect("/login"),
+			},
 			{
 				path: "/login",
 				element: <LoginPage />,

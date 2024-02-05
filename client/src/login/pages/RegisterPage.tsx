@@ -16,7 +16,6 @@ import {
 	CardTitle,
 } from "../../shadcn/Card";
 import { Input } from "../../shadcn/Input";
-import { Label } from "../../shadcn/Label";
 import {
 	Select,
 	SelectContent,

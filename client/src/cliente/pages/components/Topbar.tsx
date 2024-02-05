@@ -21,7 +21,7 @@ const Topbar = ({
 	const css: styleMap = {
 		topbar: {
 			display: "flex",
-			justifyContent: "flex-start",
+			//justifyContent: "flex-start",
 			alignItems: "center",
 			height: "10svh",
 			width: "100%",

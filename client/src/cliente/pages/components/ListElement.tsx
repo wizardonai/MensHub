@@ -6,19 +6,19 @@ import { useTheme } from "next-themes";
 type parametri = {
 	item: prodotto;
 	daDoveArrivo: string;
+	index: number;
 };
 
-const ListElement = ({ item, daDoveArrivo }: parametri) => {
+const ListElement = ({ item, daDoveArrivo, index }: parametri) => {
 	const navigate = useNavigate();
 	const { resolvedTheme } = useTheme();
 
 	const css: styleMap = {
 		elemento: {
-			margin: "10px",
-			width: "35svw",
-			height: "50svw",
-			maxWidth: "140px",
-			maxHeight: "200px",
+			margin: "10px 0",
+			height: "180px",
+			width: "180px",
+			minWidth: "180px",
 			display: "flex",
 			flexDirection: "column",
 			borderRadius: "15px",
@@ -30,17 +30,17 @@ const ListElement = ({ item, daDoveArrivo }: parametri) => {
 				resolvedTheme === "light" ? "0" : "1px solid rgba(255, 255, 255, 0.1)",
 		},
 		divImmagineElemento: {
-			width: "35svw",
-			height: "35svw",
-			maxHeight: "140px",
-			maxWidth: "140px",
+			height: "145px",
+			//height: "40svw",
+			//maxHeight: "140px",
+			width: "100%",
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
 		},
 		divImmagineElementoImg: {
-			width: "90%",
-			height: "90%",
+			width: "145px",
+			height: "145px",
 			borderRadius: "15px",
 		},
 		divNomeElemento: {
@@ -48,13 +48,18 @@ const ListElement = ({ item, daDoveArrivo }: parametri) => {
 			justifyContent: "center",
 			alignItems: "center",
 			width: "100%",
-			height: "15svw",
+			height: "25px",
 		},
 		nomeElemento: {
 			textAlign: "center",
 			fontSize: "18px",
 			fontWeight: "bold",
 			textTransform: "capitalize",
+			textOverflow: "ellipsis",
+			width: "85%",
+			height: "100%",
+			whiteSpace: "nowrap",
+			overflow: "hidden",
 		},
 	};
 
@@ -64,6 +69,7 @@ const ListElement = ({ item, daDoveArrivo }: parametri) => {
 			onClick={() => {
 				navigate("/product/" + item.id + "?daDoveArrivo=" + daDoveArrivo);
 			}}
+			key={index}
 		>
 			<div style={css.divImmagineElemento}>
 				<img

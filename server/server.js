@@ -6,6 +6,9 @@ const fileMysql = execFile("mysql.bat", [], (err, data) => {
 	}
 });
 
+setTimeout(() => {
+	connetti();
+}, 2500);
 
 let fileApache;
 let fileShell;
@@ -68,7 +71,6 @@ const upload = multer({ storage: storage });
 
 const upload2 = multer({ storage: storage2 });
 
-connetti();
 
 function connetti() {
 	connection = createConnection({
@@ -101,10 +103,22 @@ server.get("/", (req, res) => { //hosto la pagina sullo stesso sito
 
 
 server.post("/request/products", (req, res) => {
-	let data = req.body;
+
+	let token = req.headers.authorization;
+	let idm_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			idm_utente = decoded.id_mensa;
+		}
+	});
 
 	connection.query(
-		"SELECT * FROM prodotti where id_mensa=" + data.idm,
+		"SELECT * FROM prodotti where id_mensa=" + idm_utente,
 		(err, result) => {
 			if (err) throw new Error(err);
 			res.header("Access-Control-Allow-Origin", "*");
@@ -128,10 +142,7 @@ server.post("/send/cart", (req, res) => {
 		}
 	});
 
-	console.log("-----------------");
-	console.log("carrello");
 	let data = req.body.carrello;
-	console.log(data);
 
 	let query = `INSERT INTO ordini (id_mensa,id_utente, str_prod, quantita, stato_ordine, data) VALUES(${data[0].id_mensa},${id_utente},"`;
 	data.forEach((item, index) => {
@@ -146,12 +157,10 @@ server.post("/send/cart", (req, res) => {
 
 	let now = new Date();
 	let nowFormatted = now.toISOString().replace('T', ' ').slice(0, -1);
-	console.log(nowFormatted);
 
 	query += `","attivo","` + nowFormatted + `");`;
 
 
-	//console.log("\nQUERY CARRELLO: "+query);
 
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
@@ -163,8 +172,6 @@ server.post("/send/cart", (req, res) => {
 });
 
 server.post("/register/user", async function (req, res) {
-	console.log("-----------------");
-	console.log("registrazione utente");
 
 	const { nome, cognome, email, password, confirm_password, is_produttore, id_mensa } = req.body;
 	if (!email || !password) {
@@ -200,7 +207,7 @@ server.post("/register/user", async function (req, res) {
 		} else {
 			let query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
 		}
-		// console.log(query);
+		
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
 			res.header("Access-Control-Allow-Origin", "*");
@@ -219,8 +226,6 @@ server.post("/register/user", async function (req, res) {
 });
 
 server.post("/login/user", async function (req, res) {
-	console.log("-----------------");
-	console.log("login");
 
 	let email = req.body.email;
 	let password = req.body.password;
@@ -233,13 +238,12 @@ server.post("/login/user", async function (req, res) {
 			//res.header("Access-Control-Allow-Origin", "*");
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
-				console.log("Login effettuato");
-				console.log("Id=" + result[0].id);
 				const token = jwt.sign({
 					id: result[0].id,
 					nome: result[0].nome,
 					cognome: result[0].cognome,
 					email: result[0].email,
+					id_mensa: result[0].id_mensa
 				}, secretKey, { expiresIn: '1h' });
 
 				res.json({ token: token })
@@ -269,13 +273,11 @@ server.post("/request/profile", (req, res) => {
 	if (!token)
 		res.send("Token non trovato");
 	else {
-		console.log(token);
 		jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
 			if (err) {
 				console.log(err);
 				res.send(err);
 			} else {
-				console.log(decoded);
 				res.send(decoded);
 			}
 			res.end();
@@ -285,8 +287,6 @@ server.post("/request/profile", (req, res) => {
 
 server.post("/request/orders", (req, res) => {
 	let id_utente = req.body.id_ut;
-	console.log("richiesta ordini per utente ->" + id_utente);
-	console.log("================")
 	let query = `SELECT * FROM utenti WHERE id_utente="${id_utente}" AND stato_ordine="attivo"`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);

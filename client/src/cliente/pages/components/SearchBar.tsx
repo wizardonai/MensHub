@@ -33,7 +33,7 @@ const SearchBar = ({
 
 	function controlliSearch(e: any, effect: boolean) {
 		if (!effect) {
-			let str = e.target.value;
+			let str = (e.target.value).toLowerCase();
 			setStringaSearch(str);
 
 			const nChar = str.length;
@@ -105,9 +105,11 @@ const SearchBar = ({
 			alignItems: "center",
 		},
 		divSearchBar: {
+			/*
 			border: "1px solid",
 			borderColor: "var(--foreground)",
 			borderRadius: "20px",
+			*/
 			display: "flex",
 			alignItems: "center",
 			padding: "5px 0",
