@@ -207,7 +207,7 @@ server.post("/register/user", async function (req, res) {
 		} else {
 			let query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
 		}
-		
+
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
 			res.header("Access-Control-Allow-Origin", "*");
@@ -565,23 +565,67 @@ server.post("/producer/add/product", upload.single('image'), (req, res) => {
 	res.end();
 });
 
-server.post("producer/delete/product"),(req,res) => {
-	const {id} = req.body;
-	
-	let query = `DELETE from prodotti WHERE id = '${id}';`;
+server.post("/producer/delete/product", (req, res) => {
+	const { id } = req.body;
 
-				console.log('\nQUERY DELETE' + query);
-				connection.query(query, (err, result) => {
+	let query = `DELETE from prodotti WHERE id = '${id}';`;
+	let fileDaEliminare = "";
+
+	console.log('\nQUERY DELETE' + query);
+	connection.query(query, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			let cartella = '../client/src/cliente/pages/image/products';
+
+			const queryPromise = new Promise((resolve, reject) => {
+				fs.readdir(cartella, (err, files) => {
 					if (err) {
-						console.log(err);
-						res.send(err);
-						res.end();
+						console.error('Errore durante la lettura della cartella:', err);
+						return;
+					}
+
+					fileDaEliminare = files.find(file => file.startsWith(id + "."));
+
+					if (fileDaEliminare) {
+						console.log("File da eliminare:" + fileDaEliminare);
+						resolve(fileDaEliminare)
 					} else {
-						res.send("Prodotto modificato");
-						res.end()
+						reject('File non trovato.');
+						console.log('File non trovato.');
 					}
 				});
-}
+			});
+
+			queryPromise
+				.then((fileDaEliminare) => {
+
+					const pathImg = cartella + "/" + fileDaEliminare;
+
+					fs.unlink(pathImg, (err) => {
+						if (err) {
+							console.error(`Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`);
+							// Gestisci l'errore come preferisci
+						} else {
+							console.log(`Il file ${fileDaEliminare} è stato eliminato con successo`);
+						}
+					});
+
+					res.send("Prodotto eliminato");
+					res.end()
+				})
+				.catch((error) => {
+					console.log(error);
+					res.send("Errore eliminazione");
+					res.end();
+				});
+
+
+		}
+	});
+});
 
 
 function renameImage(nome_file, id_prodotto) {
