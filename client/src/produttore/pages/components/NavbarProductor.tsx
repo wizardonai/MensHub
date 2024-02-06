@@ -49,10 +49,6 @@ const NavbarProductor = ({ page }: { page: string }) => {
     navbarDivImg: {
       width: "40px",
       height: "40px",
-      //   filter:
-      //     resolvedTheme === "dark"
-      //       ? "invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)"
-      //       : "",
     },
   };
 

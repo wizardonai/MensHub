@@ -10,7 +10,10 @@ const HomePageProductor = () => {
         <NavbarProductor page="productorHome" />
       </div>
       <div style={css.centerPage}>
-        <OrdersTable />
+        <div style={css.containerList}>
+          <p style={css.titolo}>Da fare</p>
+          <OrdersTable />
+        </div>
       </div>
     </div>
   );
@@ -23,13 +26,26 @@ const css: styleMap = {
     display: "flex",
     alignItems: "center",
   },
-  centerPage: { width: "90%", height: "100%" },
+  centerPage: {
+    width: "90%",
+    height: "100%",
+    flexDirection: "column",
+    display: "flex",
+    alignItems: "center",
+  },
   sidebar: {
     display: "flex",
     width: "10%",
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  titolo: { fontSize: "130%", color: "black" },
+  containerList: {
+    display: "flex",
+    flexDirection: "column",
+    width: "60%",
+    height: "50%",
   },
 };
 
