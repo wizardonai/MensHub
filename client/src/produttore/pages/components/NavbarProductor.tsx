@@ -26,7 +26,7 @@ const NavbarProductor = ({ page }: { page: string }) => {
   //
   const css: styleMap = {
     navbar: {
-      height: "80%",
+      height: "80svh",
       width: "80%",
       display: "flex",
       flexDirection: "column",
