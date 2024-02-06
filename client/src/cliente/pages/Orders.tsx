@@ -3,13 +3,14 @@ import Navbar from "./components/Navbar";
 import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
-import { hostname, sleep, styleMap } from "../../App";
+import { styleMap } from "../../App";
 import { prodotto } from "./Homepage";
 import { useTheme } from "next-themes";
 import { Toaster } from "src/shadcn/Sonner";
 import { toast } from "sonner";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "src/shadcn/Button";
+import { hostnameImg, sleep } from "../utils";
 
 type aggiuntaQuantita = {
 	quantita: number;
@@ -140,7 +141,7 @@ const ElementoCarrello = ({
 			display: "none",
 			justifyContent: "center",
 			alignItems: "center",
-			width: "70px"
+			width: "70px",
 		},
 		divCancellaImg: {
 			width: "35px",
@@ -214,7 +215,7 @@ const ElementoCarrello = ({
 					rimuoviDalCarrello(item, carrello, setCarrello);
 				}}
 			>
-				<img src={hostname + "bin.png"} alt='' style={css.divCancellaImg} />
+				<img src={hostnameImg + "bin.png"} alt='' style={css.divCancellaImg} />
 			</div>
 		</div>
 	);
@@ -259,7 +260,10 @@ function Orders() {
 	};
 
 	const orderFun = () => {
-		sendOrder(JSON.parse(localStorage.getItem("cart") || "{}"), JSON.parse(localStorage.getItem('token') || '{"token": "abc"}')).then(() => {
+		sendOrder(
+			JSON.parse(localStorage.getItem("cart") || "{}"),
+			JSON.parse(localStorage.getItem("token") || '{"token": "abc"}')
+		).then(() => {
 			toast.success("Ordinazione effettuata!", {
 				action: {
 					label: "Chiudi",

@@ -23,6 +23,7 @@ body {
 	height: 100svh;
 	width: 100%;
 	overflow: hidden;
+	background-color: #fee9d8;
 }
 .containerPage {
 	height: 82svh;
@@ -33,9 +34,3 @@ body {
 /* .container * {
 	z-index: 100;
 } */
-
-.container,
-.navbar,
-.topbar {
-	background-color: #f0f0f0;
-}

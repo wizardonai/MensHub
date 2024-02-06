@@ -5,10 +5,11 @@ import ListElement from "./components/ListElement";
 
 import { useLoaderData } from "react-router-dom";
 import React, { useState } from "react";
-import { ArrayProdotti, filtroMap, sleep, styleMap } from "../../App";
+import { ArrayProdotti, filtroMap, styleMap } from "../../App";
 import { prodotto } from "./Homepage";
 
 import "./css/animazioniFiltri.css";
+import { hostnameImg, sleep } from "../utils";
 
 //lista completa
 const Lista = ({
@@ -156,9 +157,9 @@ const Filtri = ({
 							justifyContent: "center",
 						}}
 						onClick={onclickFun}
-						className='togliFiltri entraX'
+						className='togliFiltri entraX togliFiltriX'
 					>
-						<p>X</p>
+						<img src={hostnameImg + "x.png"} />
 					</div>
 					<div
 						style={{
@@ -257,7 +258,7 @@ const css: styleMap = {
 		flexDirection: "row",
 		alignItems: "center",
 		flexWrap: "nowrap",
-		height: "8%",
+		height: "50px",
 		padding: "0svw 1svw",
 		scrollbarWidth: "none",
 	},

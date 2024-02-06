@@ -28,6 +28,7 @@ const ListElement = ({ item, daDoveArrivo, index }: parametri) => {
 					: "3px 3px 17px -3px rgba(255, 255, 255, 0.1)",
 			border:
 				resolvedTheme === "light" ? "0" : "1px solid rgba(255, 255, 255, 0.1)",
+			backgroundColor: "#feefe2",
 		},
 		divImmagineElemento: {
 			height: "145px",

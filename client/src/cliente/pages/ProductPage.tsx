@@ -3,11 +3,12 @@ import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
 import { useState } from "react";
 import BottomButton from "./components/BottomButton";
-import { ArrayProdotti, styleMap, hostname } from "../../App";
+import { ArrayProdotti, styleMap } from "../../App";
 import { prodotto } from "./Homepage";
 import { useTheme } from "next-themes";
 import { Toaster } from "src/shadcn/Sonner";
 import { toast } from "sonner";
+import { hostnameImg } from "../utils";
 
 const ListaAllergeni = ({ arr }: { arr: Array<string> }) => {
 	const css: styleMap = {
@@ -251,7 +252,7 @@ const ProductPage = () => {
 							>
 								<p style={{ fontWeight: "bold" }}>Allergeni</p>
 								<img
-									src={hostname + "goBack.png"}
+									src={hostnameImg + "goBack.png"}
 									alt=''
 									style={
 										espandi

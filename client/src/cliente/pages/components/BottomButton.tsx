@@ -1,5 +1,4 @@
 import { useTheme } from "next-themes";
-import { Colori } from "../../../App";
 import { styleMap } from "../../../App";
 
 import {
@@ -53,8 +52,8 @@ const BottomButton = ({
 			width: "60%",
 			maxWidth: "350px",
 			borderRadius: "15px",
-			color: resolvedTheme === "light" ? Colori.chiaro : Colori.scuro,
-			background: resolvedTheme === "light" ? Colori.scuro : Colori.chiaro,
+			color: resolvedTheme === "light" ? "#fff" : "rgb(3,7,17)",
+			background: resolvedTheme === "light" ? "rgb(3,7,17)" : "#fff",
 		},
 	};
 

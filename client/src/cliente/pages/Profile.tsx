@@ -1,10 +1,11 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
-import { styleMap, hostname } from "../../App";
+import { styleMap } from "../../App";
 import { ModeToggle } from "src/shadcn/Modetoggle";
 import { useEffect, useState } from "react";
 import { getProfilo } from "../scripts/fetch";
+import { hostnameImg } from "../utils";
 
 export type typeProfilo = {
 	cognome: string;
@@ -65,7 +66,11 @@ function Profile() {
 					<ModeToggle />
 				</div>
 				<div onClick={disconnect} style={css.divElemento}>
-					<img src={hostname + "logout.png"} alt='' style={css.disconettiImg} />
+					<img
+						src={hostnameImg + "logout.png"}
+						alt=''
+						style={css.disconettiImg}
+					/>
 					<p>Logout</p>
 				</div>
 				<div style={css.divElemento} className='mb-5'>

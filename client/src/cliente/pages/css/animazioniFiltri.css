@@ -56,3 +56,7 @@
 .esciX {
 	animation: esciX 1s forwards;
 }
+
+.togliFiltriX {
+	width: 45px;
+}

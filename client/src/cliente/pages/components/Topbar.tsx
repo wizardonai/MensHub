@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { styleMap } from "../../../App";
-import { hostname } from "../../../App";
 import { useTheme } from "next-themes";
+import { coloreBlu, hostnameImg } from "src/cliente/utils";
 
 const Topbar = ({
 	daDoveArrivo,
@@ -32,6 +32,7 @@ const Topbar = ({
 			textTransform: "capitalize",
 			marginLeft: "20px",
 			fontWeight: "500",
+			color: coloreBlu,
 		},
 		imgTornaIndietro: {
 			height: "25px",
@@ -51,7 +52,7 @@ const Topbar = ({
 		<div style={css.topbar} className='topbar'>
 			{titolo === "product" ? (
 				<img
-					src={hostname + "goBack.png"}
+					src={hostnameImg + "goBack.png"}
 					alt=''
 					style={css.imgTornaIndietro}
 					onClick={() => {
