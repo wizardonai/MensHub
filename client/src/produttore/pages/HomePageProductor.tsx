@@ -55,9 +55,10 @@ const css: styleMap = {
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    height: "80svh",
+    height: "84svh",
     margin: "0% 2%",
-    overflow: "auto",
+    position: "relative",
+    top: "-2svh ",
   },
 };
 

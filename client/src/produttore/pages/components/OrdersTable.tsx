@@ -13,6 +13,7 @@ const OrdersTable = ({ colore }: { colore: string }) => {
         alignItems: "center",
         overflow: "auto",
         scrollbarWidth: "none",
+        border: "1rem solid " + colore,
       }}
     >
       <div style={css.ordine}></div>
@@ -60,11 +61,11 @@ const OrdersTable = ({ colore }: { colore: string }) => {
 const css: styleMap = {
   ordine: {
     backgroundColor: "#ffede1",
-    width: "85%",
+    width: "87%",
     height: "23svh",
     borderRadius: "25px",
     margin: "auto",
-    marginTop: "3svh",
+    marginTop: "2svh",
     marginBottom: "2svh",
   },
 };

@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styleMap } from "../../../App";
@@ -5,6 +6,10 @@ import { hostnameProductor } from "../../../App";
 import { useTheme } from "next-themes";
 
 const NavbarProductor = ({ page }: { page: string }) => {
+  const [isHoveredHome, setIsHoveredHome] = React.useState(false);
+  const [isHoveredMenu, setIsHoveredMenu] = React.useState(false);
+  const [isHoveredBalance, setIsHoveredBalance] = React.useState(false);
+  const [isHoveredProfile, setIsHoveredProfile] = React.useState(false);
   const navigate = useNavigate();
   const { resolvedTheme } = useTheme();
   function navigateProductorHome() {
@@ -49,6 +54,15 @@ const NavbarProductor = ({ page }: { page: string }) => {
     navbarDivImg: {
       width: "40px",
       height: "40px",
+      cursor: "default",
+      backgroundColor: "transparent",
+    },
+    navbarDivImgHover: {
+      width: "55px",
+      height: "55px",
+      cursor: "pointer",
+      padding: "5px 5px",
+      borderRadius: "5px",
     },
   };
 
@@ -62,7 +76,9 @@ const NavbarProductor = ({ page }: { page: string }) => {
         <img
           src={hostnameProductor + "productorHome.png"}
           alt=""
-          style={css.navbarDivImg}
+          style={isHoveredHome ? css.navbarDivImgHover : css.navbarDivImg}
+          onMouseEnter={() => setIsHoveredHome(true)}
+          onMouseLeave={() => setIsHoveredHome(false)}
         />
       </div>
       <div
@@ -73,14 +89,18 @@ const NavbarProductor = ({ page }: { page: string }) => {
         <img
           src={hostnameProductor + "productorMenu.png"}
           alt=""
-          style={css.navbarDivImg}
+          style={isHoveredMenu ? css.navbarDivImgHover : css.navbarDivImg}
+          onMouseEnter={() => setIsHoveredMenu(true)}
+          onMouseLeave={() => setIsHoveredMenu(false)}
         />
       </div>
       <div id="navbarBalance" onClick={navigateBalance} style={css.navbarDiv}>
         <img
           src={hostnameProductor + "balance.png"}
           alt=""
-          style={css.navbarDivImg}
+          style={isHoveredBalance ? css.navbarDivImgHover : css.navbarDivImg}
+          onMouseEnter={() => setIsHoveredBalance(true)}
+          onMouseLeave={() => setIsHoveredBalance(false)}
         />
       </div>
       <div
@@ -91,7 +111,9 @@ const NavbarProductor = ({ page }: { page: string }) => {
         <img
           src={hostnameProductor + "productorProfile.png"}
           alt=""
-          style={css.navbarDivImg}
+          style={isHoveredProfile ? css.navbarDivImgHover : css.navbarDivImg}
+          onMouseEnter={() => setIsHoveredProfile(true)}
+          onMouseLeave={() => setIsHoveredProfile(false)}
         />
       </div>
     </div>
