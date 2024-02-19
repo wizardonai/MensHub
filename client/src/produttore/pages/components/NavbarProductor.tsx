@@ -61,7 +61,7 @@ const NavbarProductor = ({ page }: { page: string }) => {
       width: "55px",
       height: "55px",
       cursor: "pointer",
-      padding: "5px 5px",
+      margin: "-7.5px 0px",
       borderRadius: "5px",
     },
   };

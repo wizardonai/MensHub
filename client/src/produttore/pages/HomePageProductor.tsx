@@ -18,10 +18,6 @@ const HomePageProductor = () => {
           <p style={css.titolo}>In corso</p>
           <OrdersTable colore="#f3d657" />
         </div>
-        <div style={css.containerList}>
-          <p style={css.titolo}>Completate</p>
-          <OrdersTable colore="#90a272" />
-        </div>
       </div>
     </div>
   );

@@ -14,6 +14,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./App.css";
 import HomePageProductor from "./produttore/pages/HomePageProductor";
+import MenuPageProductor from "./produttore/pages/MenuPageProductor";
+import Balance from "./produttore/pages/Balance";
+import ProfileProductor from "./produttore/pages/ProfileProductor";
 
 export type ArrayProdotti = {
   prodotti: Array<{
@@ -43,9 +46,9 @@ export interface filtroMap {
 export const hostname =
   (process.env.REACT_APP_HOSTNAME || "") +
   (process.env.REACT_APP_IMG_PORT || "") +
-  "/produttore/pages/components/image/";
+  "/image/";
 
-export const hostnameProductor = "http://localhost:80/";
+export const hostnameProductor = "http://localhost:3000/image/";
 
 export var Colori = {
   // primario: "#3897F1",
@@ -107,7 +110,7 @@ const App = () => {
   }, []);
 
   let router;
-
+  console.log(utente);
   if (utente === "cliente") {
     router = createBrowserRouter([
       {
@@ -160,6 +163,53 @@ const App = () => {
         loader: () => redirect("/home"),
       },
     ]);
+  } else if (utente === "produttore") {
+    router = createBrowserRouter([
+      {
+        path: "/",
+        loader: () => redirect("/productorHome"),
+      },
+      {
+        path: "/productorHome",
+        element: <HomePageProductor />,
+        loader: async () => {
+          return { prodotti: await loadProdotti() };
+        },
+      },
+      {
+        path: "/",
+        loader: () => redirect("/productorMenu"),
+      },
+      {
+        path: "/productorMenu",
+        element: <MenuPageProductor />,
+        loader: async () => {
+          return { prodotti: await loadProdotti() };
+        },
+      },
+      {
+        path: "/",
+        loader: () => redirect("/balance"),
+      },
+      {
+        path: "/balance",
+        element: <Balance />,
+        loader: async () => {
+          return { prodotti: await loadProdotti() };
+        },
+      },
+      {
+        path: "/",
+        loader: () => redirect("/productorProfile"),
+      },
+      {
+        path: "/productorProfile",
+        element: <ProfileProductor />,
+        loader: async () => {
+          return { prodotti: await loadProdotti() };
+        },
+      },
+    ]);
   } else {
     router = createBrowserRouter([
       {
@@ -184,23 +234,6 @@ const App = () => {
     ]);
   }
 
-  router = createBrowserRouter([
-    {
-      path: "/",
-      loader: () => redirect("/productorHome"),
-    },
-    {
-      path: "/productorHome",
-      element: <HomePageProductor />,
-      loader: () => ({
-        refreshStorage: refreshStorage,
-      }),
-    },
-    {
-      path: "*",
-      loader: () => redirect("/productorHome"),
-    },
-  ]);
   return <RouterProvider router={router} />;
 };
 

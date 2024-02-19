@@ -6,14 +6,13 @@ const OrdersTable = ({ colore }: { colore: string }) => {
   return (
     <div
       style={{
-        backgroundColor: colore,
         borderRadius: "25px",
         height: "100%",
         width: "100%",
         alignItems: "center",
         overflow: "auto",
         scrollbarWidth: "none",
-        border: "1rem solid " + colore,
+        border: "10px solid " + colore,
       }}
     >
       <div style={css.ordine}></div>
@@ -60,13 +59,14 @@ const OrdersTable = ({ colore }: { colore: string }) => {
 
 const css: styleMap = {
   ordine: {
-    backgroundColor: "#ffede1",
-    width: "87%",
-    height: "23svh",
+    backgroundColor: "#fceeed",
+    width: "90%",
+    height: "10svh",
     borderRadius: "25px",
     margin: "auto",
-    marginTop: "2svh",
-    marginBottom: "2svh",
+    marginTop: "10px",
+    marginBottom: "10px",
+    boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
   },
 };
 
