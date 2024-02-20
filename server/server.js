@@ -1,75 +1,150 @@
+//processi da far partire
+import { execFile } from "child_process";
+const fileMysql = execFile("mysql.bat", [], (err, data) => {
+	if (err) {
+		console.log(err);
+	}
+});
+
+setTimeout(() => {
+	connetti();
+}, 2500);
+
+let fileApache;
+let fileShell;
+process.argv.forEach((item) => {
+	if (item === "apache") {
+		fileApache = execFile("apache.bat", [], (err, data) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	} else if (item === "shell") {
+		fileShell = execFile("shell.bat", [], (err, data) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	}
+});
+
+let connection = "";
+
 import { createConnection } from "mysql";
 import express from "express";
 import multer from "multer";
-//probabilmente da cambiare con express.Router();
+import jwt from 'jsonwebtoken';
 import { validate } from "deep-email-validator";
 import cors from "cors";
-import jwt from "jsonwebtoken";
 import bodyParser from "body-parser";
+import fs from "fs";
+import path from 'path';
+
+
 const { json, urlencoded } = bodyParser;
 const server = express();
-const multer = require('multer');
+const secretKey = 'CaccaPoopShitMierda';
+
 // Configura multer per salvare i file caricati nella cartella 'images'
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-	  cb(null, '../client/src/cliente/pages/image')
+		cb(null, '../client/src/cliente/pages/image')
 	},
 	filename: function (req, file, cb) {
-	  cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+		const nome = req.body.nome;
+		const prezzo = req.body.prezzo;
+		cb(null, 'products/' + nome + '_' + prezzo + path.extname(file.originalname));
 	}
-  })
-  
-const upload = multer({ storage: storage })
-const secretKey = 'CaccaPoopShitMierda';
+})
+
+const storage2 = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, '../client/src/cliente/pages/image')
+	},
+	filename: function (req, file, cb) {
+		const id = req.body.id;
+		cb(null, 'products/' + id + path.extname(file.originalname));
+	}
+})
+
+const upload = multer({ storage: storage });
+
+const upload2 = multer({ storage: storage2 });
+
+
+function connetti() {
+	connection = createConnection({
+		host: "localhost",
+		user: "root",
+		password: "",
+	});
+	connection.connect(function (err) {
+		if (err) throw new Error(err);
+		console.log("Connected!");
+		connection.changeUser({ database: "mensapp" }, () => {
+			if (err) throw new Error(err);
+		});
+	});
+}
 
 server.use(cors());
 server.use(json());
+server.use(express.json());
 server.use(urlencoded({ extended: false }));
-
-//creo connessione con il database
-const connection = createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-});
-connection.connect(function (err) {
-  if (err) throw new Error(err);
-  console.log("Connected!");
-  connection.changeUser({ database: "mensapp" }, () => {
-    if (err) throw new Error(err);
-  });
-});
 
 //deploy react
 server.use("/image", express.static("../client/src/cliente/pages/image"));
- server.use(express.static("../client/build"));
+server.use(express.static("../client/build"));
 
 //all methods that return a response to the client
 server.get("/", (req, res) => { //hosto la pagina sullo stesso sito
- 	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
+	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
 });
 
-server.post("/request/products", (req, res) => {
-  let data = req.body;
 
-  connection.query(
-    "SELECT * FROM prodotti where id_mensa=" + data.idm,
-    (err, result) => {
-      if (err) throw new Error(err);
-      res.header("Access-Control-Allow-Origin", "*");
-      res.send(result);
-      res.end();
-    }
-  );
+server.post("/request/products", (req, res) => {
+
+	let token = req.headers.authorization;
+	let idm_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			idm_utente = decoded.id_mensa;
+		}
+	});
+
+	connection.query(
+		"SELECT * FROM prodotti where id_mensa=" + idm_utente,
+		(err, result) => {
+			if (err) throw new Error(err);
+			res.header("Access-Control-Allow-Origin", "*");
+			res.send(result);
+			res.end();
+		}
+	);
 });
 
 server.post("/send/cart", (req, res) => {
-  console.log("-----------------");
-  console.log("carrello");
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			id_utente = decoded.id;
+		}
+	});
 
 	let data = req.body.carrello;
-	console.log(data);
-	let query = `INSERT INTO ordini (id_mensa, str_prod, quantita, id_utente, stato_ordine) VALUES(${data[0].id_mensa},"`;
+
+	let query = `INSERT INTO ordini (id_mensa,id_utente, str_prod, quantita, stato_ordine, data) VALUES(${data[0].id_mensa},${id_utente},"`;
 	data.forEach((item, index) => {
 		query += `${item.id}`;
 		if (index !== data.length - 1) query += ",";
@@ -79,28 +154,26 @@ server.post("/send/cart", (req, res) => {
 		query += `${item.quantita}`;
 		if (index !== data.length - 1) query += ",";
 	});
-	query += `",${req.body.id_utente},"attivo");`; //aggiunto id utente e stato ordine da testare
-	console.log(query);
+
+	let now = new Date();
+	let nowFormatted = now.toISOString().replace('T', ' ').slice(0, -1);
+
+	query += `","attivo","` + nowFormatted + `");`;
+
+
+
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		res.header("Access-Control-Allow-Origin", "*");
 		res.send("Ordine aggiunto");
 		res.end();
 	});
-	// connection.query("SELECT * FROM prodotti where id_mensa="+data.idm, (err, result) => {
-	// 	if (err) throw new Error(err);
-	// 	console.log(result);
-	// 	res.header("Access-Control-Allow-Origin", "*");
-	// 	res.send(result);
-	// 	res.end();
-	// });
+
 });
 
 server.post("/register/user", async function (req, res) {
-	console.log("-----------------");
-	console.log("registrazione utente");
 
-	const { nome, cognome, email, password, confirm_password, is_produttore ,id_mensa} = req.body;
+	const { nome, cognome, email, password, confirm_password, is_produttore,nome_mensa, indirizzo_mensa,email_mensa,telefono_mensa} = req.body;
 	if (!email || !password) {
 		// return res.status(400).send({
 		// 	message: "email o password mancante.",
@@ -120,7 +193,7 @@ server.post("/register/user", async function (req, res) {
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		console.log(result);
-		if(result.length>0) {
+		if (result.length > 0) {
 			res.send("email già presente");
 			res.end
 		}
@@ -129,12 +202,28 @@ server.post("/register/user", async function (req, res) {
 	const { valid, reason, validators } = await validate(email);
 
 	if (valid) {
-		if(is_produttore) {
-			let query = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa}','${is_produttore}');`;	
-		}else {
+		if (is_produttore) {
+			var id_mensa_new = -1;
+			let query = `insert into mense (nome,indirizzo,email,telefono) VALUES('${nome_mensa}','${indirizzo_mensa}','${email_mensa}',${telefono_mensa});`;
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+				if(result) {
+					console.log(`inserimento della mensa ${nome_mensa} avvenuto`);
+					query = `SELECT * from mense where nome='${nome_mensa}' and indirizzo='${indirizzo_mensa}' and email='${email_mensa}' and telefono=${telefono_mensa};`;
+					connection.query(query, (err, result) => {
+						if (err) throw new Error(err);
+						console.log(result);
+						if(result.length>0) {
+							id_mensa_new = result[0].id;
+						}
+					});
+					query = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa_new}','${is_produttore}');`;
+				}
+			});
+		} else {
 			let query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
 		}
-		// console.log(query);
+
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
 			res.header("Access-Control-Allow-Origin", "*");
@@ -153,31 +242,28 @@ server.post("/register/user", async function (req, res) {
 });
 
 server.post("/login/user", async function (req, res) {
-  console.log("-----------------");
-  console.log("login");
-  let email = req.body.email;
-  let password = req.body.password;
+
+	let email = req.body.email;
+	let password = req.body.password;
 
 	const { valid, reason, validators } = await validate(email);
 	if (valid) {
 		let query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
-			res.header("Access-Control-Allow-Origin", "*");
+			//res.header("Access-Control-Allow-Origin", "*");
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
-				console.log("Login effettuato");
-				console.log("Id="+result[0].id);
 				const token = jwt.sign({
 					id: result[0].id,
 					nome: result[0].nome,
 					cognome: result[0].cognome,
 					email: result[0].email,
+					id_mensa: result[0].id_mensa
 				}, secretKey, { expiresIn: '1h' });
 
-				// Invia il token al client
-				res.json({ token });
-				
+				res.json({ token: token })
+
 				res.send();
 				res.end();
 			} else {
@@ -197,19 +283,17 @@ server.post("/login/user", async function (req, res) {
 });
 
 
-server.post("/request/profile", (req,res) => {
+server.post("/request/profile", (req, res) => {
 	//controllo che il token di sessione sia valido
 	let token = req.headers.authorization;
-	if(!token)
+	if (!token)
 		res.send("Token non trovato");
 	else {
-		console.log(token);
-		jwt.verify(token.replace('Bearer ', ''),secretKey,(err,decoded)=> {
-			if(err) {
+		jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+			if (err) {
 				console.log(err);
 				res.send(err);
-			}else {
-				console.log(decoded);	
+			} else {
 				res.send(decoded);
 			}
 			res.end();
@@ -217,47 +301,390 @@ server.post("/request/profile", (req,res) => {
 	}
 });
 
-server.post("/request/orders", (req,res) => {
+server.post("/request/orders", (req, res) => {
 	let id_utente = req.body.id_ut;
-	console.log("richiesta ordini per utente ->"+id_utente);
-	console.log("================")
 	let query = `SELECT * FROM utenti WHERE id_utente="${id_utente}" AND stato_ordine="attivo"`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		console.log(result);
-		if(result.length>0) {
+		if (result.length > 0) {
 			res.send(result);
 			res.end();
-		}else {
+		} else {
 			res.send("l'utente non ha ordini attivi");
 			res.end();
 		}
 	});
 });
 
-server.post("/producer/add/products",(req,res)=> {
-	const { id_utente, nome, descrizione, allergeni, prezzo, categoria, disponibile, nacq } = req.body;
-	let id_mensa = "";
-	let query = `select id_mensa from utenti WHERE id_utente="${id_utente};"`;
-	connection.query(query, (err, result) => {
-		if (err) throw new Error(err);
-		res.header("Access-Control-Allow-Origin", "*");
-		if(result.length>0) {
-			id_mensa = result;
-		}else {
-			res.send("ERRORE utente non trovato");
+//da aggiungere token negli header da uasard
+server.post("/producer/get/products", (req, res) => {
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			id_utente = decoded.id;
 		}
 	});
-	query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES('${nome}','${descrizione}','${allergeni}','${prezzo}','${categoria}','','${disponibile}','${nacq}','${id_mensa}');`;
+
+	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
-		res.header("Access-Control-Allow-Origin", "*");
-		res.send("Prodotto aggiunto")
+
+		const id_mensa = result[0].id_mensa;
+
+		connection.query(
+			"SELECT * FROM prodotti where id_mensa=" + id_mensa,
+			(err, result) => {
+				if (err) throw new Error(err);
+				res.header("Access-Control-Allow-Origin", "*");
+				res.send(result);
+				res.end();
+			}
+		);
 	});
-	upload.single('image');
-}); 
+
+});
+
+//da aggiungere token negli header da uasard
+server.post("/producer/get/orders", (req, res) => {
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			id_utente = decoded.id;
+		}
+	});
+
+	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+
+		const id_mensa = result[0].id_mensa;
+
+		connection.query(
+			"SELECT * FROM ordini where id_mensa=" + id_mensa,
+			(err, result) => {
+				if (err) throw new Error(err);
+				res.header("Access-Control-Allow-Origin", "*");
+				res.send(result);
+				res.end();
+			}
+		);
+	});
+
+});
+
+server.post("/producer/edit/product", (req, res) => {
+	const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+
+	let query = `
+				UPDATE prodotti
+				SET nome = '${nome}',
+					descrizione = '${descrizione}',
+					allergeni = '${allergeni}',
+					prezzo = '${prezzo}',
+					categoria = '${categoria}',
+					disponibile = '${disponibile}'
+				WHERE id = '${id}';`;
+
+	console.log('\nQUERY EDIT' + query);
+	connection.query(query, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			res.send("Prodotto modificato");
+			res.end()
+		}
+	});
+
+});
+
+//serve id del prodotto nella req per caricare immagine
+//richiesta da fare con form-data
+server.post("/producer/editWithImg/product", upload2.single('image'), (req, res) => {
+	const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+
+	let cartella = '../client/src/cliente/pages/image/products';
+	let fileDaEliminare = "";
+	const estensioneFile = req.file.filename.split('.').pop();
+
+
+	const queryPromise = new Promise((resolve, reject) => {
+		fs.readdir(cartella, (err, files) => {
+			if (err) {
+				console.error('Errore durante la lettura della cartella:', err);
+				return;
+			}
+
+			fileDaEliminare = files.find(file => file.startsWith(id + "."));
+
+			if (fileDaEliminare) {
+				console.log("File da rinominare:" + fileDaEliminare);
+				resolve(fileDaEliminare)
+			} else {
+				reject('File non trovato.');
+				console.log('File non trovato.');
+			}
+		});
+	});
+
+	queryPromise
+		.then((fileDaEliminare) => {
+
+			console.log("\n\nFile nuovo: " + req.file.filename)
+
+			const estensioneFileVecchio = fileDaEliminare.split('.').pop();
+
+			if (estensioneFileVecchio != estensioneFile) {
+				const pathImg = cartella + "/" + fileDaEliminare;
+
+				fs.unlink(pathImg, (err) => {
+					if (err) {
+						console.error(`Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`);
+						// Gestisci l'errore come preferisci
+					} else {
+						console.log(`Il file ${fileDaEliminare} è stato eliminato con successo`);
+					}
+				});
+
+				let query = `
+				UPDATE prodotti
+				SET nome = '${nome}',
+					descrizione = '${descrizione}',
+					allergeni = '${allergeni}',
+					prezzo = '${prezzo}',
+					categoria = '${categoria}',
+					disponibile = '${disponibile}',
+					indirizzo_img= 'products/${id}.${estensioneFile}'
+				WHERE id = '${id}';`;
+
+				console.log('\nQUERY EDIT' + query);
+				connection.query(query, (err, result) => {
+					if (err) {
+						console.log(err);
+						res.send(err);
+						res.end();
+					} else {
+						res.send("Prodotto modificato");
+						res.end()
+					}
+				});
+			} else {
+				res.send("Prodotto modificato");
+				res.end()
+			}
+
+		})
+		.catch((error) => {
+			console.log(error);
+			res.send("Errore modifica");
+			res.end();
+		});
+
+});
+
+//richiesta da fare con form-data
+server.post("/producer/add/product", upload.single('image'), (req, res) => {
+	const { nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+
+	let token = req.headers.authorization;
+	let id_utente = "";
+
+	jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+
+			id_utente = decoded.id;
+		}
+	});
+
+
+	const estensioneFile = req.file.filename.split('.').pop();
+	console.log("\n\nFile: " + estensioneFile + "\n\n");
+
+	const queryPromise = new Promise((resolve, reject) => {
+		let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+
+		connection.query(query, (err, results) => {
+			if (err) {
+				console.error(err);
+				reject(err);
+			} else {
+				resolve(results);
+			}
+		});
+	});
+
+	queryPromise
+		.then((results) => {
+			let id_prodotto = "";
+			const id_mensa = results[0].id_mensa;
+			console.log("ID Mensa:", id_mensa);
+
+
+			const queryPromise2 = new Promise((resolve, reject) => {
+				let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES('${nome}','${descrizione}','${allergeni}','${prezzo}','${categoria}','','${disponibile}','0','${id_mensa}');`;
+				console.log('\nQUERY INSERT' + query);
+				connection.query(query, (err, result) => {
+					if (err) {
+						console.error(err);
+						reject(err);
+					} else {
+						id_prodotto = result.insertId;
+						resolve(results);
+					}
+				});
+			});
+
+			queryPromise2
+				.then((results) => {
+					let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
+					console.log('\nQUERY MODIFICA:' + query);
+					connection.query(query, (err, result) => {
+						if (err) throw new Error(err);
+
+						console.log("Prodotto modificato");
+
+						renameImage(nome + '_' + prezzo, id_prodotto); //rinominare immagine con id_prodotto
+					});
+
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+
+
+	res.header("Access-Control-Allow-Origin", "*");
+	res.send("Prodotto aggiunto al DB");
+	res.end();
+});
+
+server.post("/producer/delete/product", (req, res) => {
+	const { id } = req.body;
+
+	let query = `DELETE from prodotti WHERE id = '${id}';`;
+	let fileDaEliminare = "";
+
+	console.log('\nQUERY DELETE' + query);
+	connection.query(query, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.end();
+		} else {
+			let cartella = '../client/src/cliente/pages/image/products';
+
+			const queryPromise = new Promise((resolve, reject) => {
+				fs.readdir(cartella, (err, files) => {
+					if (err) {
+						console.error('Errore durante la lettura della cartella:', err);
+						return;
+					}
+
+					fileDaEliminare = files.find(file => file.startsWith(id + "."));
+
+					if (fileDaEliminare) {
+						console.log("File da eliminare:" + fileDaEliminare);
+						resolve(fileDaEliminare)
+					} else {
+						reject('File non trovato.');
+						console.log('File non trovato.');
+					}
+				});
+			});
+
+			queryPromise
+				.then((fileDaEliminare) => {
+
+					const pathImg = cartella + "/" + fileDaEliminare;
+
+					fs.unlink(pathImg, (err) => {
+						if (err) {
+							console.error(`Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`);
+							// Gestisci l'errore come preferisci
+						} else {
+							console.log(`Il file ${fileDaEliminare} è stato eliminato con successo`);
+						}
+					});
+
+					res.send("Prodotto eliminato");
+					res.end()
+				})
+				.catch((error) => {
+					console.log(error);
+					res.send("Errore eliminazione");
+					res.end();
+				});
+
+
+		}
+	});
+});
+
+
+function renameImage(nome_file, id_prodotto) {
+
+	console.log(`RENAME: ${nome_file} ${id_prodotto} `);
+
+
+	const cartella = '../client/src/cliente/pages/image/products';
+	const nomeFileSenzaEstensione = nome_file;
+	console.log("\nNome_file = " + nome_file);
+
+	// Leggi tutti i file nella cartella
+	fs.readdir(cartella, (err, files) => {
+		if (err) {
+			console.error('Errore durante la lettura della cartella:', err);
+			return;
+		}
+
+		// Cerca il file senza estensione nella lista dei file
+		const fileDaRinominare = files.find(file => file.startsWith(nomeFileSenzaEstensione));
+
+
+		if (fileDaRinominare) {
+			const estensioneFile = path.extname(fileDaRinominare);
+			const percorsoCompletoAttuale = path.join(cartella, fileDaRinominare);
+			const nuovoNomeFileConEstensione = id_prodotto + estensioneFile; // Sostituisci con il nuovo nome e l'estensione desiderati
+			const percorsoCompletoNuovo = path.join(cartella, nuovoNomeFileConEstensione);
+
+			// Rinomina il file
+			fs.rename(percorsoCompletoAttuale, percorsoCompletoNuovo, (err) => {
+				if (err) {
+					console.error('Errore durante il cambio nome del file:', err);
+				} else {
+					console.log('File rinominato con successo.');
+				}
+			});
+		} else {
+			console.log('File non trovato.');
+		}
+	});
+}
 
 const port = 6969;
 server.listen(port, () => {
-  console.log("http://localhost:" + port);
+	console.log("http://localhost:" + port);
 });
