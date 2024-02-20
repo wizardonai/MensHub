@@ -41,8 +41,8 @@ const NavbarProductor = ({ page }: { page: string }) => {
       borderRadius: "25px",
       boxShadow:
         resolvedTheme === "dark"
-          ? "3px 3px 17px -3px rgba(0, 0, 0, 0.30)"
-          : "3px 3px 17px -3px rgba(255, 255, 255, 0.1)",
+          ? "3px 3px 17px -3px rgba(255, 255, 255, 0.1)"
+          : "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
     },
     navbarDiv: {
       display: "flex",
