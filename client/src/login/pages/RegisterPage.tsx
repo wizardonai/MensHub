@@ -61,14 +61,6 @@ const RegisterPage = () => {
     const valueCognome = cognome.current.value;
     // @ts-ignore
     const valueConfermaPassowrd = confermaPassword.current.value;
-    // @ts-ignore
-    const valueNomeMensa = nomeMensa.current.value;
-    // @ts-ignore
-    const valueIndirizzo = indirizzo.current.value;
-    // @ts-ignore
-    const valueEmailMensa = emailMensa.current.value;
-    // @ts-ignore
-    const valueTelefono = telefono.current.value;
 
     let errore = false;
 
@@ -77,10 +69,7 @@ const RegisterPage = () => {
       valueNome === "" ||
       valueCognome === "" ||
       valuePassword === "" ||
-      valueConfermaPassowrd === "" ||
-      ruolo === "" ||
-      (ruolo === "produttore" &&
-        (valueNomeMensa === "" || valueIndirizzo === ""))
+      valueConfermaPassowrd === ""
     ) {
       setErrore((prev) => ({
         presente: true,
@@ -150,14 +139,11 @@ const RegisterPage = () => {
     },
     card: {
       margin: "5%",
-      width: "150px",
-      height: "150px",
+      width: "14svh",
+      height: "14svh",
       background: resolvedTheme === "dark" ? "black" : "white",
       borderRadius: "10%",
-      boxShadow:
-        resolvedTheme === "dark"
-          ? "3px 3px 17px -3px rgba(255, 255, 255, 0.1)"
-          : "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+      border: "1px solid lightgrey",
     },
   };
 
@@ -165,27 +151,40 @@ const RegisterPage = () => {
     <div style={css.pageLogin}>
       {ruolo === "" ? (
         <>
-          <div
-            style={css.card}
-            onClick={() => {
-              setRuolo("consumatore");
-              setMostraReg(true);
-            }}
-          >
-            <p>Cliente</p>
-          </div>
-          <div style={css.card} onClick={() => setRuolo("produttore")}>
-            <p>Produttore</p>
-          </div>
+          <Card className=" w-[350px]">
+            <CardHeader>
+              <CardTitle>Come vuoi usare MensApp?</CardTitle>
+              <CardDescription>Scegliere il tipo di accont.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <div
+                  style={css.card}
+                  onClick={() => {
+                    setRuolo("consumatore");
+                    setMostraReg(true);
+                  }}
+                >
+                  <p>Cliente</p>
+                </div>
+                <div style={css.card} onClick={() => setRuolo("produttore")}>
+                  <p>Produttore</p>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button variant="outline" asChild>
+                <div onClick={() => navigate("/login")}>Login</div>
+              </Button>
+            </CardFooter>
+          </Card>
         </>
-      ) : ruolo === "produttore" ? (
+      ) : ruolo === "produttore" && !mostraReg ? (
         <div className="flex flex-col justify-between items-center my-5">
           <Card className="w-[350px]">
             <CardHeader>
-              <CardTitle>Registra Mensa</CardTitle>
-              <CardDescription>
-                Inserire i dati per la registrazione.
-              </CardDescription>
+              <CardTitle>Registrazione Mensa</CardTitle>
+              <CardDescription>Inserire i dati della mensa.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid w-full items-center gap-4">
@@ -202,7 +201,7 @@ const RegisterPage = () => {
                   <Input
                     id="indirizzo"
                     placeholder="Indirizzo"
-                    type="address"
+                    type="text"
                     defaultValue=""
                     ref={indirizzo}
                   />
@@ -218,9 +217,9 @@ const RegisterPage = () => {
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Input
-                    id="indirizzo"
-                    placeholder="Indirizzo"
-                    type="address"
+                    id="telefono"
+                    placeholder="Telefono"
+                    type="number"
                     defaultValue=""
                     ref={telefono}
                   />
@@ -237,15 +236,56 @@ const RegisterPage = () => {
                   {errore.messaggio}
                 </p>
               </div>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" asChild>
-                  <div onClick={() => navigate("/login")}>Login</div>
-                </Button>
-                <Button asChild>
-                  <div onClick={submitRegisterCliccato}>Registrati</div>
-                </Button>
-              </CardFooter>
             </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button variant="outline" asChild>
+                <div
+                  onClick={() => {
+                    setRuolo("");
+                  }}
+                >
+                  Indietro
+                </div>
+              </Button>
+              <Button asChild>
+                <div
+                  onClick={() => {
+                    // @ts-ignore
+                    const valueNomeMensa = nomeMensa.current.value;
+                    // @ts-ignore
+                    const valueIndirizzo = indirizzo.current.value;
+                    // @ts-ignore
+                    const valueEmailMensa = emailMensa.current.value;
+                    // @ts-ignore
+                    const valueTelefono = telefono.current.value;
+                    if (
+                      valueNomeMensa === "" ||
+                      valueIndirizzo === "" ||
+                      valueEmailMensa === "" ||
+                      valueTelefono === ""
+                    ) {
+                      setErrore((prev) => ({
+                        presente: true,
+                        messaggio: (
+                          <>
+                            <>Compilare tutti i campi!</>
+                            <br />
+                          </>
+                        ),
+                      }));
+                    } else {
+                      setErrore((prev) => ({
+                        presente: false,
+                        messaggio: <></>,
+                      }));
+                      setMostraReg(true);
+                    }
+                  }}
+                >
+                  Continua
+                </div>
+              </Button>
+            </CardFooter>
           </Card>
         </div>
       ) : null}
@@ -312,46 +352,6 @@ const RegisterPage = () => {
                   />
                 </div>
 
-                {/* <div className="flex flex-col space-y-1.5">
-                  <Select
-                    onValueChange={(e) => {
-                      setRuolo(e);
-                    }}
-                    defaultValue={""}
-                  >
-                    <SelectTrigger className="w-[180px]" id="selectRuolo">
-                      <SelectValue placeholder="Ruolo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="cliente">Consumatore</SelectItem>
-                        <SelectItem value="produttore">Produttore</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {ruolo === "produttore" ? (
-                  <>
-                    <div className="flex flex-col space-y-1.5">
-                      <Input
-                        id="nomeMensa"
-                        placeholder="Nome mensa"
-                        type="text"
-                        defaultValue=""
-                        ref={nomeMensa}
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Input
-                        id="indirizzo"
-                        placeholder="Indirizzo"
-                        type="address"
-                        defaultValue=""
-                        ref={indirizzo}
-                      />
-                    </div>
-                  </>
-                ) : null} */}
                 <div className="flex flex-col space-y-1.5">
                   <p
                     className={
