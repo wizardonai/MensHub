@@ -4,7 +4,7 @@ import { sendOrder } from "../scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
 import { styleMap } from "../../App";
-import { prodotto } from "./Homepage";
+import { prodotto } from "../utils";
 import { useTheme } from "next-themes";
 import { Toaster } from "src/shadcn/Sonner";
 import { toast } from "sonner";

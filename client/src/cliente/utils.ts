@@ -1,6 +1,6 @@
 export const hostnameImg =
 	(process.env.REACT_APP_HOSTNAME || "") +
-	(process.env.REACT_APP_IMG_PORT || "") +
+	(process.env.REACT_APP_PORT || "") +
 	"/image/";
 
 //cose blu
@@ -13,3 +13,25 @@ export const coloreRosa = "#fee9d8";
 
 export const sleep = (delay: number) =>
 	new Promise((resolve) => setTimeout(resolve, delay));
+
+export type prodotto = {
+	allergeni: string;
+	categoria: string;
+	descrizione: string;
+	disponibile: number;
+	fd: number;
+	id: number;
+	id_mensa: number;
+	indirizzo_img: string;
+	nacq: number;
+	nome: string;
+	prezzo: number;
+};
+export type typeProfilo = {
+	cognome: string;
+	email: string;
+	exp: number;
+	iat: number;
+	id: number;
+	nome: string;
+};

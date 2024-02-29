@@ -5,16 +5,7 @@ import { styleMap } from "../../App";
 import { ModeToggle } from "src/shadcn/Modetoggle";
 import { useEffect, useState } from "react";
 import { getProfilo } from "../scripts/fetch";
-import { hostnameImg } from "../utils";
-
-export type typeProfilo = {
-	cognome: string;
-	email: string;
-	exp: number;
-	iat: number;
-	id: number;
-	nome: string;
-};
+import { hostnameImg, typeProfilo } from "../utils";
 
 function Profile() {
 	const data: any = useLoaderData();

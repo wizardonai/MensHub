@@ -6,7 +6,7 @@ import ListElement from "./components/ListElement";
 import { useLoaderData } from "react-router-dom";
 import React, { useState } from "react";
 import { ArrayProdotti, filtroMap, styleMap } from "../../App";
-import { prodotto } from "./Homepage";
+import { prodotto } from "../utils";
 
 import "./css/animazioniFiltri.css";
 import { hostnameImg, sleep } from "../utils";
