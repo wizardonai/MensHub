@@ -40,6 +40,8 @@ const RegisterPage = () => {
 	const cognome = useRef(null);
 	const confermaPassword = useRef(null);
 
+	const [ruolo, setRuolo] = useState("");
+
 	const submitRegisterCliccato = () => {
 		setErrore({
 			presente: false,
@@ -181,14 +183,18 @@ const RegisterPage = () => {
 							</div>
 							<div className='flex flex-col space-y-1.5'>
 								{/* <Label htmlFor='selectRuolo'>Ruolo</Label> */}
-								<Select>
+								<Select
+									onValueChange={(e) => {
+										setRuolo(e);
+									}}
+								>
 									<SelectTrigger className='w-[180px]' id='selectRuolo'>
 										<SelectValue placeholder='Ruolo' />
 									</SelectTrigger>
 									<SelectContent>
 										<SelectGroup>
-											<SelectItem value='apple'>Consumatore</SelectItem>
-											<SelectItem value='banana'>Produttore</SelectItem>
+											<SelectItem value='consumatore'>Consumatore</SelectItem>
+											<SelectItem value='produttore'>Produttore</SelectItem>
 										</SelectGroup>
 									</SelectContent>
 								</Select>
