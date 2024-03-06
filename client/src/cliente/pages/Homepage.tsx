@@ -7,20 +7,8 @@ import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 
 import { ArrayProdotti, styleMap } from "../../App";
+import { prodotto } from "../utils";
 
-export type prodotto = {
-	allergeni: string;
-	categoria: string;
-	descrizione: string;
-	disponibile: number;
-	fd: number;
-	id: number;
-	id_mensa: number;
-	indirizzo_img: string;
-	nacq: number;
-	nome: string;
-	prezzo: number;
-};
 type parametri = {
 	piuAcq: Array<prodotto>;
 };

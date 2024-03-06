@@ -3,14 +3,10 @@ import { typeProfilo } from "../pages/Profile";
 const qs = require("qs");
 
 const urlServer =
-	(process.env.REACT_APP_HOSTNAME || "") +
-	(process.env.REACT_APP_FETCH_PORT || "");
+	(process.env.REACT_APP_HOSTNAME || "") + (process.env.REACT_APP_PORT || "");
 
-export async function getProdotti(token: {token: string}) {
+export async function getProdotti(token: { token: string }) {
 	let response;
-
-	console.log(token.token);
-	
 
 	let config = {
 		method: "post",
@@ -33,7 +29,10 @@ export async function getProdotti(token: {token: string}) {
 	return response;
 }
 
-export async function sendOrder(carrello: Array<object>, token: {token: string}) {
+export async function sendOrder(
+	carrello: Array<object>,
+	token: { token: string }
+) {
 	let response;
 	let data = JSON.stringify({ carrello: carrello });
 

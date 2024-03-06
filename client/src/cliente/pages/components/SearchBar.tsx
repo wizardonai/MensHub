@@ -1,9 +1,9 @@
 //css
 import { useEffect } from "react";
 import { ArrayProdotti, styleMap } from "../../../App";
-import { hostname } from "../../../App";
 import { prodotto } from "../Homepage";
 import { useTheme } from "next-themes";
+import { hostnameImg } from "src/cliente/utils";
 
 const SearchBar = ({
 	elencoProdotti,
@@ -33,7 +33,7 @@ const SearchBar = ({
 
 	function controlliSearch(e: any, effect: boolean) {
 		if (!effect) {
-			let str = (e.target.value).toLowerCase();
+			let str = e.target.value.toLowerCase();
 			setStringaSearch(str);
 
 			const nChar = str.length;
@@ -141,7 +141,7 @@ const SearchBar = ({
 
 	return (
 		<div style={css.divSearchBar}>
-			<img src={hostname + "search.png"} alt='' style={css.bottoneCerca} />
+			<img src={hostnameImg + "search.png"} alt='' style={css.bottoneCerca} />
 			<input
 				type='text'
 				placeholder='Cerca prodotti...'

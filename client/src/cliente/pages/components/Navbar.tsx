@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styleMap } from "../../../App";
-import { hostname } from "../../../App";
 import { useTheme } from "next-themes";
+import { coloreBlu, filterBlu, hostnameImg } from "src/cliente/utils";
 
 const Navbar = ({ page }: { page: string }) => {
 	const navigate = useNavigate();
@@ -70,7 +70,7 @@ const Navbar = ({ page }: { page: string }) => {
 			filter:
 				resolvedTheme === "dark"
 					? "invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)"
-					: "invert(34%) sepia(22%) saturate(1453%) hue-rotate(166deg) brightness(91%) contrast(84%)",
+					: filterBlu,
 		},
 		barrettaInBasso: {
 			borderRadius: "2px",
@@ -79,7 +79,7 @@ const Navbar = ({ page }: { page: string }) => {
 			left: spostamento + 3.5 + "%",
 			width: "18%",
 			height: "5px",
-			background: resolvedTheme === "dark" ? "#fff" : "#30618c",
+			background: resolvedTheme === "dark" ? "#fff" : coloreBlu,
 		},
 	};
 
@@ -90,20 +90,24 @@ const Navbar = ({ page }: { page: string }) => {
 	return (
 		<div style={css.navbar} className='navbar'>
 			<div id='navbarHome' onClick={navigateHome} style={css.navbarDiv}>
-				<img src={hostname + "home.png"} alt='' style={css.navbarDivImg} />
+				<img src={hostnameImg + "home.png"} alt='' style={css.navbarDivImg} />
 			</div>
 			<div id='navbarMenu' onClick={navigateMenu} style={css.navbarDiv}>
-				<img src={hostname + "menu.png"} alt='' style={css.navbarDivImg} />
+				<img src={hostnameImg + "menu.png"} alt='' style={css.navbarDivImg} />
 			</div>
 			<div id='navbarOrders' onClick={navigateOrders} style={css.navbarDiv}>
-				<img src={hostname + "orders.png"} alt='' style={css.navbarDivImg} />
+				<img src={hostnameImg + "orders.png"} alt='' style={css.navbarDivImg} />
 			</div>
 			<div
 				id='navbarProfile'
 				onClick={navigateProfile}
 				style={{ ...css.navbarDiv, borderRight: "none" }}
 			>
-				<img src={hostname + "profile.png"} alt='' style={css.navbarDivImg} />
+				<img
+					src={hostnameImg + "profile.png"}
+					alt=''
+					style={css.navbarDivImg}
+				/>
 			</div>
 			<BarrettaInBasso />
 		</div>

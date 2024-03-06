@@ -3,8 +3,7 @@ import { log } from "console";
 import { sha256 } from "js-sha256";
 
 const urlServer =
-	(process.env.REACT_APP_HOSTNAME || "") +
-	(process.env.REACT_APP_FETCH_PORT || "");
+	(process.env.REACT_APP_HOSTNAME || "") + (process.env.REACT_APP_PORT || "");
 
 type datiReg = {
 	nome: string;
