@@ -23,7 +23,7 @@ body {
 	height: 100svh;
 	width: 100%;
 	overflow: hidden;
-	background-color: #fee9d8;
+	/* background-color: #fee9d8; */
 }
 .containerPage {
 	height: 82svh;

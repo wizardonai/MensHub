@@ -6,7 +6,7 @@ import ListElement from "./components/ListElement";
 import { useLoaderData } from "react-router-dom";
 import React, { useState } from "react";
 import { ArrayProdotti, filtroMap, styleMap } from "../../App";
-import { prodotto } from "../utils";
+import { colori, prodotto } from "../utils";
 
 import "./css/animazioniFiltri.css";
 import { hostnameImg, sleep } from "../utils";
@@ -267,12 +267,14 @@ const css: styleMap = {
 		justifyContent: "center",
 		alignItems: "center",
 		fontSize: "20px",
-		height: "90%",
+		height: "40px",
 		padding: "5px 12px",
 		margin: "0.5svw",
 		border: "2px solid #222",
 		borderRadius: "20px",
 		cursor: "pointer",
+		borderWidth: "1px",
+		borderColor: colori.border
 	},
 	cliccato: {
 		color: "white",
