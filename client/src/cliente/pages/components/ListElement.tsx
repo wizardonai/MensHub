@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { prodotto } from "../Homepage";
+import { prodotto } from "src/cliente/utils";
 import { styleMap } from "../../../App";
 import { useTheme } from "next-themes";
 

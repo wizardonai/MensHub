@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styleMap } from "../../../App";
 import { useTheme } from "next-themes";
-import { coloreBlu, filterBlu, hostnameImg } from "src/cliente/utils";
+import {  colori, getFilter, hostnameImg } from "src/cliente/utils";
 
 const Navbar = ({ page }: { page: string }) => {
 	const navigate = useNavigate();
@@ -67,10 +67,7 @@ const Navbar = ({ page }: { page: string }) => {
 		navbarDivImg: {
 			width: "35px",
 			height: "35px",
-			filter:
-				resolvedTheme === "dark"
-					? "invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%)"
-					: filterBlu,
+			filter: getFilter(resolvedTheme || "", null)
 		},
 		barrettaInBasso: {
 			borderRadius: "2px",
@@ -79,7 +76,7 @@ const Navbar = ({ page }: { page: string }) => {
 			left: spostamento + 3.5 + "%",
 			width: "18%",
 			height: "5px",
-			background: resolvedTheme === "dark" ? "#fff" : coloreBlu,
+			background: resolvedTheme === "dark" ? colori.foreground : "#fff",
 		},
 	};
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { typeProfilo } from "../pages/Profile";
+import { typeProfilo } from "../utils";
 const qs = require("qs");
 
 const urlServer =

@@ -13,7 +13,7 @@ import { getProdotti } from "./cliente/scripts/fetch";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./App.css";
-import { hostnameImg } from "./cliente/utils";
+import { getFilter, hostnameImg } from "./cliente/utils";
 
 export type ArrayProdotti = {
 	prodotti: Array<{
@@ -68,6 +68,7 @@ const App = () => {
 	//loggato o no
 	const [utente, setUtente] = useState("no");
 
+
 	const refreshStorage = () => {
 		setUtente(localStorage.getItem("login") || "");
 		return localStorage.getItem("login");
@@ -93,6 +94,8 @@ const App = () => {
 	}, []);
 
 	let router;
+
+	
 
 	if (utente === "cliente") {
 		router = createBrowserRouter([
