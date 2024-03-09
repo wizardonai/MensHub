@@ -230,8 +230,12 @@ server.post("/register/user", async function (req, res) {
 });
 
 server.post("/login/user", async function (req, res) {
+	console.log("login!!");
+
 	let email = req.body.email;
 	let password = req.body.password;
+
+	console.log(email + "   " + password);
 
 	const { valid, reason, validators } = await validate(email);
 	if (valid) {
