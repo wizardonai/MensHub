@@ -178,17 +178,12 @@ server.post("/register/user", async function (req, res) {
 		is_produttore,
 		id_mensa,
 	} = req.body;
+
 	if (!email || !password) {
-		// return res.status(400).send({
-		// 	message: "email o password mancante.",
-		// });
 		res.send("Email o password mancante!");
 		res.end();
 	}
 	if (password !== confirm_password) {
-		// return res.status(400).send({
-		// 	message: "le password non combaciano.",
-		// });
 		res.send("Le password non combaciano!");
 		res.end();
 	}
@@ -207,10 +202,12 @@ server.post("/register/user", async function (req, res) {
 
 	if (valid) {
 		if (is_produttore) {
-			let query = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa}','${is_produttore}');`;
+			query = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa}',0);`;
 		} else {
-			let query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
+			query = `INSERT INTO utenti (nome,cognome,email,password, cliente) VALUES('${nome}','${cognome}','${email}','${password}', 1);`;
 		}
+
+		console.log(query);
 
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
@@ -220,29 +217,23 @@ server.post("/register/user", async function (req, res) {
 		});
 	} else {
 		console.log("EMAIL NON VALIDA");
-		// return res.status(400).send({
-		// 	message: "Please provide a valid email address.",
-		// 	reason: validators[reason].reason,
-		// });
 		res.send("Email non valida!");
 		res.end();
 	}
 });
 
 server.post("/login/user", async function (req, res) {
-	console.log("login!!");
-
 	let email = req.body.email;
 	let password = req.body.password;
 
-	console.log(email + "   " + password);
-
 	const { valid, reason, validators } = await validate(email);
+
 	if (valid) {
 		let query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
+
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
-			//res.header("Access-Control-Allow-Origin", "*");
+
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
 				const token = jwt.sign(

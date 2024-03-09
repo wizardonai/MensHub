@@ -2,9 +2,8 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
 	darkMode: ["class"],
-	content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+	content: ["src/**/*.{ts,tsx}"],
 	theme: {
 		container: {
 			center: true,
@@ -15,14 +14,14 @@ module.exports = {
 		},
 		extend: {
 			colors: {
-				border: "var(--border)",
+				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
 				background: "var(--background)",
-				foreground: "var(--foreground)",
+				foreground: "hsl(var(--foreground))",
 				primary: {
-					DEFAULT: "var(--primary)",
-					foreground: "var(--primary-foreground)",
+					DEFAULT: "hsl(var(--primary))",
+					foreground: "hsl(var(--primary-foreground))",
 				},
 				secondary: {
 					DEFAULT: "hsl(var(--secondary))",
@@ -33,8 +32,8 @@ module.exports = {
 					foreground: "hsl(var(--destructive-foreground))",
 				},
 				muted: {
-					DEFAULT: "var(--muted)",
-					foreground: "var(--muted-foreground)",
+					DEFAULT: "hsl(var(--muted))",
+					foreground: "hsl(var(--muted-foreground))",
 				},
 				accent: {
 					DEFAULT: "hsl(var(--accent))",
@@ -48,6 +47,10 @@ module.exports = {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",
 				},
+				marrone: "var(--marrone)",
+				arancioneScuro: "var(--arancioneScuro)",
+				arancioneChiaro: "var(--arancioneChiaro)",
+				marroncino: "var(--marroncino)",
 			},
 			borderRadius: {
 				lg: `var(--radius)`,
@@ -70,6 +73,11 @@ module.exports = {
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
+			},
+			height: {
+				navbar: "var(--navbarH)",
+				topbar: "var(--topbarH)",
+				container: "var(--containerH)",
 			},
 		},
 	},

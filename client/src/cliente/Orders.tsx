@@ -1,16 +1,15 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
-import { sendOrder } from "../scripts/fetch";
+import { sendOrder } from "./scripts/fetch";
 import Topbar from "./components/Topbar";
 import BottomButton from "./components/BottomButton";
-import { styleMap } from "../../App";
-import { prodotto } from "../utils";
+import { styleMap } from "../App";
 import { useTheme } from "next-themes";
 import { Toaster } from "src/shadcn/Sonner";
 import { toast } from "sonner";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "src/shadcn/Button";
-import { hostnameImg, sleep } from "../utils";
+import { hostnameImg, sleep, prodotto } from "./utils";
 
 type aggiuntaQuantita = {
 	quantita: number;

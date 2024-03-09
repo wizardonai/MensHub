@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { styleMap } from "../../../App";
+import { styleMap } from "../../App";
 import { useTheme } from "next-themes";
-import {  colori, getFilter, hostnameImg } from "src/cliente/utils";
+import { colori, getFilter, hostnameImg } from "src/cliente/utils";
 
 const Topbar = ({
 	daDoveArrivo,
@@ -12,8 +12,6 @@ const Topbar = ({
 }) => {
 	const navigate = useNavigate();
 	const { resolvedTheme } = useTheme();
-
-	
 
 	const css: styleMap = {
 		topbar: {
@@ -35,9 +33,7 @@ const Topbar = ({
 			width: "25px",
 			marginLeft: "5px",
 			filter:
-				resolvedTheme === "light"
-					? ""
-					: getFilter(resolvedTheme || "", null),
+				resolvedTheme === "light" ? "" : getFilter(resolvedTheme || "", null),
 		},
 		titoloIndietro: {
 			fontSize: "27px",

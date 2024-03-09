@@ -1,11 +1,11 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Topbar from "./components/Topbar";
-import { styleMap } from "../../App";
+import { styleMap } from "../App";
 import { ModeToggle } from "src/shadcn/Modetoggle";
 import { useEffect, useState } from "react";
-import { getProfilo } from "../scripts/fetch";
-import { hostnameImg, typeProfilo } from "../utils";
+import { getProfilo } from "./scripts/fetch";
+import { hostnameImg, typeProfilo } from "./utils";
 
 function Profile() {
 	const data: any = useLoaderData();

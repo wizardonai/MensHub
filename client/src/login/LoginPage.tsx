@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
-import { loginUser } from "../scripts/fetch";
-import { styleMap } from "../../App";
+import { loginUser } from "./scripts/fetch";
+import { styleMap } from "../App";
 
 //shadcn
-import { Button } from "../../shadcn/Button";
+import { Button } from "../shadcn/Button";
 import {
 	Card,
 	CardContent,
@@ -13,9 +13,9 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "../../shadcn/Card";
-import { Input } from "../../shadcn/Input";
-import { Label } from "../../shadcn/Label";
+} from "../shadcn/Card";
+import { Input } from "../shadcn/Input";
+import { Label } from "../shadcn/Label";
 import { useTheme } from "next-themes";
 
 type dataLoader = {

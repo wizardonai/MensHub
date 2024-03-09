@@ -6,8 +6,8 @@ import Topbar from "./components/Topbar";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 
-import { ArrayProdotti, styleMap } from "../../App";
-import { prodotto } from "../utils";
+import { ArrayProdotti, styleMap } from "../App";
+import { prodotto } from "./utils";
 
 type parametri = {
 	piuAcq: Array<prodotto>;

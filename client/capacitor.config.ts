@@ -4,8 +4,9 @@ const config: CapacitorConfig = {
 	appId: "com.menshub.app",
 	appName: "MensHub",
 	webDir: "build",
+	bundledWebRuntime: false,
 	server: {
-		url: "http://172.20.10.7:3000",
+		url: "http://192.168.1.147:3000",
 		cleartext: true,
 	},
 };

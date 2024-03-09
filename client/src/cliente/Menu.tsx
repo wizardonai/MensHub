@@ -5,11 +5,10 @@ import ListElement from "./components/ListElement";
 
 import { useLoaderData } from "react-router-dom";
 import React, { useState } from "react";
-import { ArrayProdotti, filtroMap, styleMap } from "../../App";
-import { colori, prodotto } from "../utils";
+import { ArrayProdotti, filtroMap, styleMap } from "../App";
 
 import "./css/animazioniFiltri.css";
-import { hostnameImg, sleep } from "../utils";
+import { hostnameImg, sleep, colori, prodotto } from "./utils";
 
 //lista completa
 const Lista = ({
@@ -274,7 +273,7 @@ const css: styleMap = {
 		borderRadius: "20px",
 		cursor: "pointer",
 		borderWidth: "1px",
-		borderColor: colori.border
+		borderColor: colori.border,
 	},
 	cliccato: {
 		color: "white",

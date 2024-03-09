@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { prodotto } from "src/cliente/utils";
-import { styleMap } from "../../../App";
+import { styleMap } from "../../App";
 import { useTheme } from "next-themes";
 
 type parametri = {

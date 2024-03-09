@@ -1,12 +1,12 @@
 import { redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
-import HomePage from "./cliente/pages/Homepage";
-import Menu from "./cliente/pages/Menu";
-import Orders from "./cliente/pages/Orders";
-import Profile from "./cliente/pages/Profile";
-import ProductPage from "./cliente/pages/ProductPage";
-import LoginPage from "./login/pages/LoginPage";
-import RegisterPage from "./login/pages/RegisterPage";
+import HomePage from "./cliente/Homepage";
+import Menu from "./cliente/Menu";
+import Orders from "./cliente/Orders";
+import Profile from "./cliente/Profile";
+import ProductPage from "./cliente/ProductPage";
+import LoginPage from "./login/LoginPage";
+import RegisterPage from "./login/RegisterPage";
 
 import { getProdotti } from "./cliente/scripts/fetch";
 
@@ -68,7 +68,6 @@ const App = () => {
 	//loggato o no
 	const [utente, setUtente] = useState("no");
 
-
 	const refreshStorage = () => {
 		setUtente(localStorage.getItem("login") || "");
 		return localStorage.getItem("login");
@@ -94,8 +93,6 @@ const App = () => {
 	}, []);
 
 	let router;
-
-	
 
 	if (utente === "cliente") {
 		router = createBrowserRouter([

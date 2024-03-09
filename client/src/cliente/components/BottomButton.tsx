@@ -1,5 +1,5 @@
 import { useTheme } from "next-themes";
-import { styleMap } from "../../../App";
+import { styleMap } from "../../App";
 
 import {
 	Drawer,
@@ -28,18 +28,6 @@ const BottomButton = ({
 	const [quantita, setQuantita] = useState(1);
 
 	const css: styleMap = {
-		pulsanteFixatoInBasso: {
-			backgroundColor: "transparent",
-			height: "40px",
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-			flexDirection: "row",
-			width: "100%",
-			borderRadius: "15px",
-			position: "absolute",
-			bottom: "calc(10svh)",
-		},
 		pulsanteFixatoInBassoDiv: {
 			height: "100%",
 			display: "flex",
@@ -58,18 +46,14 @@ const BottomButton = ({
 	};
 
 	return (
-		<div
-			style={
-				display === "none"
-					? { ...css.pulsanteFixatoInBasso, display: "none" }
-					: css.pulsanteFixatoInBasso
-			}
-		>
+		<div className='bg-transparent h-[40px] flex justify-center items-center flex-row w-full absolute bottom-[10svh]'>
 			{text === "Aggiungi al carrello" ? (
-				<div style={css.pulsanteFixatoInBassoDiv}>
+				<div className='h-full flex justify-center items-center font-bold text-[16px] uppercase w-[60%] max-w-[350px] rounded-[15px]'>
 					<Drawer>
-						<DrawerTrigger className='w-[100%] h-[100%]'>
-							Aggiungi al carrello
+						<DrawerTrigger className='w-full'>
+							<Button variant='default' className='text-[18px] w-full'>
+								Aggiungi al carrello
+							</Button>
 						</DrawerTrigger>
 						<DrawerContent>
 							<DrawerHeader>
@@ -107,7 +91,7 @@ const BottomButton = ({
 									onClick={() => {
 										onClickFun(quantita);
 									}}
-									className='border border-black w-[50%] h-[40px] rounded-[10px]'
+									className='border w-[50%] h-[40px] rounded-[10px]'
 								>
 									Aggiungi al carrello
 								</DrawerClose>
@@ -116,9 +100,11 @@ const BottomButton = ({
 					</Drawer>
 				</div>
 			) : (
-				<div style={css.pulsanteFixatoInBassoDiv}>
+				<div className='h-full flex justify-center items-center font-bold text-[16px] uppercase w-[60%] max-w-[350px] rounded-[15px]'>
 					<Drawer>
-						<DrawerTrigger className='w-[100%] h-[100%]'>{text}</DrawerTrigger>
+						<DrawerTrigger className='w-full'>
+							<Button className='text-[18px] w-full'>{text}</Button>
+						</DrawerTrigger>
 						<DrawerContent>
 							<DrawerHeader>
 								<DrawerTitle>Ordinare?</DrawerTitle>
@@ -126,11 +112,11 @@ const BottomButton = ({
 							</DrawerHeader>
 							<DrawerFooter>
 								<div className='flex items-center justify-evenly w-[100%]'>
-									<DrawerClose className='border border-black w-[30%] h-[40px] rounded-[10px]'>
+									<DrawerClose className='border w-[30%] h-[40px] rounded-[10px]'>
 										Indietro
 									</DrawerClose>
 									<DrawerClose
-										className='border border-black w-[30%] h-[40px] rounded-[10px]'
+										className='border w-[30%] h-[40px] rounded-[10px]'
 										onClick={() => {
 											onClickFun(quantita);
 										}}

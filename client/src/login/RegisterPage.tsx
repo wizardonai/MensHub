@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { registerUser } from "../scripts/fetch";
-import { styleMap } from "../../App";
+import { registerUser } from "./scripts/fetch";
+import { styleMap } from "../App";
 
 import { useTheme } from "next-themes";
 
-import { Button } from "../../shadcn/Button";
+import { Button } from "../shadcn/Button";
 import {
 	Card,
 	CardContent,
@@ -14,8 +14,8 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "../../shadcn/Card";
-import { Input } from "../../shadcn/Input";
+} from "../shadcn/Card";
+import { Input } from "../shadcn/Input";
 import {
 	Select,
 	SelectContent,
@@ -23,7 +23,7 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../shadcn/Select";
+} from "../shadcn/Select";
 
 const RegisterPage = () => {
 	const navigate = useNavigate();

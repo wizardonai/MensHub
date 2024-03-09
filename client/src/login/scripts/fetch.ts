@@ -1,5 +1,4 @@
 import axios from "axios";
-import { log } from "console";
 import { sha256 } from "js-sha256";
 
 const urlServer =

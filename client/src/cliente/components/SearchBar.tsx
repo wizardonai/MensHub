@@ -1,6 +1,6 @@
 //css
 import { useEffect } from "react";
-import { ArrayProdotti, styleMap } from "../../../App";
+import { ArrayProdotti, styleMap } from "../../App";
 import { prodotto } from "src/cliente/utils";
 import { useTheme } from "next-themes";
 import { hostnameImg } from "src/cliente/utils";

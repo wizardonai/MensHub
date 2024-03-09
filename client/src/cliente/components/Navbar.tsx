@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { styleMap } from "../../../App";
+import { styleMap } from "../../App";
 import { useTheme } from "next-themes";
-import {  colori, getFilter, hostnameImg } from "src/cliente/utils";
+import { colori, getFilter, hostnameImg } from "src/cliente/utils";
 
 const Navbar = ({ page }: { page: string }) => {
 	const navigate = useNavigate();
@@ -67,7 +67,7 @@ const Navbar = ({ page }: { page: string }) => {
 		navbarDivImg: {
 			width: "35px",
 			height: "35px",
-			filter: getFilter(resolvedTheme || "", null)
+			filter: getFilter(resolvedTheme || "", null),
 		},
 		barrettaInBasso: {
 			borderRadius: "2px",
