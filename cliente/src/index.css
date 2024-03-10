@@ -96,8 +96,10 @@
 }
 @layer utilities {
 	.clip-searchbar {
-		-webkit-clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%);
 		clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%);
+	}
+	.clip-searchbtn {
+		clip-path: polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%);
 	}
 }
 

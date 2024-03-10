@@ -1,6 +1,6 @@
 import axios from "axios";
 import { sha256 } from "js-sha256";
-import { dataLog, dataReg, typeProfilo } from "../utils";
+import { dataLog, dataReg } from "../utils";
 
 const url =
 	(process.env.REACT_APP_HOSTNAME || "") + (process.env.REACT_APP_PORT || "");

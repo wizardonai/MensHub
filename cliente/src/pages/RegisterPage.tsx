@@ -1,9 +1,7 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { registerUser } from "../scripts/fetch";
-
-import { useTheme } from "next-themes";
 
 import { Button } from "../components/shadcn/Button";
 import {
@@ -15,14 +13,6 @@ import {
 	CardTitle,
 } from "../components/shadcn/Card";
 import { Input } from "../components/shadcn/Input";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../components/shadcn/Select";
 import { dataReg } from "../utils";
 
 const RegisterPage = () => {

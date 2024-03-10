@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
 	RouterProvider,
 	createBrowserRouter,
@@ -11,7 +11,8 @@ import Homepage from "./pages/Homepage";
 import Cart from "./pages/Cart";
 import { useLocalStorage } from "usehooks-ts";
 import Profile from "./pages/Profile";
-import { getProfilo } from "./scripts/fetch";
+import { getProdotti, getProfilo } from "./scripts/fetch";
+import { sleep } from "./utils";
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", false);
@@ -22,6 +23,11 @@ function App() {
 		getProfilo(
 			JSON.parse(localStorage.getItem("token") || "{}").token || ""
 		).then((res: any) => {
+			if (res === "Token non valido") {
+				localStorage.removeItem("cart");
+				localStorage.removeItem("token");
+				localStorage.setItem("loggato", "false");
+			}
 			setUsername(res.nome);
 		});
 
@@ -33,6 +39,13 @@ function App() {
 			{
 				path: "/home",
 				element: <Homepage username={username} />,
+				loader: async () => {
+					if (username === "") {
+						return "";
+					}
+
+					return getProdotti(JSON.parse(localStorage.getItem("token") || ""));
+				},
 			},
 			{
 				path: "/cart",

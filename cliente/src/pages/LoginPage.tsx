@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { loginUser } from "../scripts/fetch";
 
@@ -15,10 +15,6 @@ import {
 } from "../components/shadcn/Card";
 import { Input } from "../components/shadcn/Input";
 import { dataLog } from "../utils";
-
-type dataLoader = {
-	refreshStorage: Function;
-};
 
 const LoginPage = ({ setLoggato }: { setLoggato: Function }) => {
 	const navigate = useNavigate();

@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
-import { Input } from "./shadcn/Input";
 
 export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	if (page === "home") {
@@ -15,14 +14,16 @@ export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	}
 
 	return (
-		<div className='w-full h-topbar'>
-			<p className=''>{page}</p>
+		<div className='w-full h-topbar flex flex-col items-center justify-center'>
+			<p className='text-4xl text-marrone w-[93%] font-bold capitalize'>
+				{page}
+			</p>
 		</div>
 	);
 };
 
 export const Container = ({ children }: { children: React.ReactNode }) => (
-	<div className='w-full h-container'>{children}</div>
+	<div className='w-full h-container overflow-x-scroll'>{children}</div>
 );
 
 export const Navbar = ({ page }: { page: string }) => {
@@ -71,20 +72,6 @@ export const Navbar = ({ page }: { page: string }) => {
 					PROFILE
 				</div>
 			</div>
-		</div>
-	);
-};
-
-export const Searchbar = () => {
-	const onChangeSearch = (e: any) => {};
-
-	return (
-		<div className='flex justify-center items-center'>
-			<Input
-				type='text'
-				onChange={onChangeSearch}
-				className='bg-biancoLatte w-[95%] h-14 rounded-l-[40px] clip-searchbar border-arancioneScuro border-[3px] pr-8'
-			/>
 		</div>
 	);
 };

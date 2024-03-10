@@ -1,3 +1,5 @@
+import { Color, Solver, hexToRgb } from "./scripts/filterGenerator";
+
 export type dataLog = {
 	email: string;
 	password: string;
@@ -20,3 +22,49 @@ export type typeProfilo = {
 	nome: string;
 };
 export type Nullable<T> = T | null;
+export type prodotto = {
+	allergeni: string;
+	categoria: string;
+	descrizione: string;
+	disponibile: number;
+	fd: number;
+	id: number;
+	id_mensa: number;
+	indirizzo_img: string;
+	nacq: number;
+	nome: string;
+	prezzo: number;
+};
+
+export function getFilter(resolvedTheme: string, hex: Nullable<string>) {
+	let rgb: number[] = [];
+	if (hex !== null) {
+		rgb = hexToRgb(hex) || [255, 255, 255];
+	} else {
+		rgb =
+			resolvedTheme === "dark"
+				? hexToRgb("#fff") || [255, 255, 255]
+				: hexToRgb("#000") || [255, 255, 255];
+	}
+
+	let result: {
+		values: any;
+		loss: number;
+		filter: string;
+	} = {
+		loss: 100,
+		values: "a",
+		filter: "a",
+	};
+
+	while (result.loss >= 1) {
+		const color = new Color(rgb[0], rgb[1], rgb[2]);
+		const solver = new Solver(color);
+		result = solver.solve();
+	}
+
+	return result.filter.replace("filter: ", "").replace(";", "");
+}
+
+export const sleep = (delay: any) =>
+	new Promise((resolve) => setTimeout(resolve, delay));

@@ -110,7 +110,7 @@ server.post("/request/products", (req, res) => {
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			res.send("Token non valido");
 			res.end();
 		} else {
 			idm_utente = decoded.id_mensa;
@@ -276,7 +276,7 @@ server.post("/request/profile", (req, res) => {
 		jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 			if (err) {
 				console.log(err);
-				res.send(err);
+				res.send("Token non valido");
 			} else {
 				res.send(decoded);
 			}
