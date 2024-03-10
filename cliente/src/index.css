@@ -44,6 +44,7 @@
 		--arancioneScuro: #e39423;
 		--arancioneChiaro: #e6a854;
 		--marroncino: #a28245;
+		--biancolatte: #fffae7;
 	}
 
 	.dark {
@@ -91,6 +92,12 @@
 	body {
 		@apply bg-background text-foreground;
 		font-feature-settings: "rlig" 1, "calt" 1;
+	}
+}
+@layer utilities {
+	.clip-searchbar {
+		-webkit-clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%);
+		clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%);
 	}
 }
 

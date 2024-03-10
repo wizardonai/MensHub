@@ -51,6 +51,7 @@ module.exports = {
 				arancioneScuro: "var(--arancioneScuro)",
 				arancioneChiaro: "var(--arancioneChiaro)",
 				marroncino: "var(--marroncino)",
+				biancoLatte: "var(--biancolatte)",
 			},
 			borderRadius: {
 				lg: `var(--radius)`,

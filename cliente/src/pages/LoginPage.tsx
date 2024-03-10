@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../scripts/fetch";
@@ -14,8 +14,6 @@ import {
 	CardTitle,
 } from "../components/shadcn/Card";
 import { Input } from "../components/shadcn/Input";
-import { Label } from "../components/shadcn/Label";
-import { useTheme } from "next-themes";
 import { dataLog } from "../utils";
 
 type dataLoader = {

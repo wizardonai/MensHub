@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { topbarH } from "../utils";
 import { useRef } from "react";
+import { Input } from "./shadcn/Input";
 
 export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	if (page === "home") {
@@ -71,6 +71,20 @@ export const Navbar = ({ page }: { page: string }) => {
 					PROFILE
 				</div>
 			</div>
+		</div>
+	);
+};
+
+export const Searchbar = () => {
+	const onChangeSearch = (e: any) => {};
+
+	return (
+		<div className='flex justify-center items-center'>
+			<Input
+				type='text'
+				onChange={onChangeSearch}
+				className='bg-biancoLatte w-[95%] h-14 rounded-l-[40px] clip-searchbar border-arancioneScuro border-[3px] pr-8'
+			/>
 		</div>
 	);
 };

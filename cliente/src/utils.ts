@@ -1,6 +1,3 @@
-export const topbarH = 10;
-export const navbarH = 10;
-
 export type dataLog = {
 	email: string;
 	password: string;
