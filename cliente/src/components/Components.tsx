@@ -23,7 +23,7 @@ export const Topbar = ({ page, name }: { page: string; name: string }) => {
 };
 
 export const Container = ({ children }: { children: React.ReactNode }) => (
-	<div className='w-full h-container overflow-x-scroll'>{children}</div>
+	<div className='w-full h-container overflow-y-scroll'>{children}</div>
 );
 
 export const Navbar = ({ page }: { page: string }) => {
@@ -47,7 +47,7 @@ export const Navbar = ({ page }: { page: string }) => {
 						if (page !== "home") navigate("/home");
 					}}
 				>
-					HOME
+					<p className='text-white text-xl'>HOME</p>
 				</div>
 				<div
 					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center ${
@@ -58,7 +58,7 @@ export const Navbar = ({ page }: { page: string }) => {
 						if (page !== "cart") navigate("/cart");
 					}}
 				>
-					CART
+					<p className='text-white text-xl'>CART</p>
 				</div>
 				<div
 					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center ${
@@ -69,7 +69,7 @@ export const Navbar = ({ page }: { page: string }) => {
 						if (page !== "profile") navigate("/profile");
 					}}
 				>
-					PROFILE
+					<p className='text-white text-xl'>PROF</p>
 				</div>
 			</div>
 		</div>

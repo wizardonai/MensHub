@@ -1,5 +1,10 @@
 import { Color, Solver, hexToRgb } from "./scripts/filterGenerator";
 
+export const urlImg =
+	(process.env.REACT_APP_HOSTNAME || "") +
+	(process.env.REACT_APP_PORT || "") +
+	"/image/";
+
 export type dataLog = {
 	email: string;
 	password: string;

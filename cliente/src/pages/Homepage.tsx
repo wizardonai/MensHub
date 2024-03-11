@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { Container, Navbar, Topbar } from "../components/Components";
-import { ReactNode, useState } from "react";
-import { prodotto } from "../utils";
+import { useState } from "react";
+import { prodotto, urlImg } from "../utils";
 import { Input } from "../components/shadcn/Input";
 
 import searchImg from "../img/search.png";
@@ -14,18 +14,55 @@ import bibitaImg from "../img/bibita.png";
 
 const Listone = ({
 	filteredProducts,
+	filtro,
 }: {
 	filteredProducts: Array<prodotto>;
+	filtro: string;
 }) => {
+	// eslint-disable-next-line
 	return filteredProducts.map((item, index) => {
-		return (
-			<div className='h-[50px] w-full text-center' key={index}>
-				{item.nome}
-			</div>
-		);
+		if (filtro === "" || item.categoria === filtro) {
+			return (
+				<div
+					className='w-[42%] text-center flex flex-col justify-end items-center mb-3'
+					key={index}
+				>
+					<div className='h-[90%] w-full bg-arancioneScuro flex flex-col justify-end items-center'>
+						<div className='rounded-[50%] bg-[#eaeaea] w-[102px] h-[102px] flex justify-center items-center relative'>
+							<img
+								src={urlImg + item.indirizzo_img}
+								alt=''
+								className='w-[100px] h-[100px]'
+							/>
+						</div>
+						<div className='h-[85%] w-full flex items-center flex-col'>
+							<div className='w-full h-[50px] flex justify-center items-center'>
+								<p className='text-[16px]'>{item.nome}</p>
+							</div>
+							<div className='flex flex-row h-[35px] w-full justify-center items-center'>
+								<div className='w-[50%] h-full flex justify-center items-center'>
+									<p className='text-[15px]'>{item.prezzo.toFixed(2)}€</p>
+								</div>
+								<div className='w-[50%] h-full flex justify-center items-center'>
+									<div className='rounded-[50%] border border-marrone w-6 h-6 flex justify-center items-center'>
+										<p className='text-[18px]'>+</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		}
 	});
 };
-const Filtri = ({ setFiltro }: { setFiltro: Function }) => {
+const Filtri = ({
+	filtro,
+	setFiltro,
+}: {
+	filtro: string;
+	setFiltro: Function;
+}) => {
 	const filtri = [
 		["antipasto", antipastoImg],
 		["primo", primoImg],
@@ -35,71 +72,139 @@ const Filtri = ({ setFiltro }: { setFiltro: Function }) => {
 		["bibita", bibitaImg],
 	];
 
-	const filtroCliccato = (e: any) => {
-		let filtroDivCliccato = e.target;
-		let tuttiFiltri = e.target;
-
-		while (tuttiFiltri.id !== "tuttiFiltri") {
-			tuttiFiltri = tuttiFiltri.parentNode;
-		}
-		while (filtroDivCliccato.id !== "divFiltro") {
-			filtroDivCliccato = filtroDivCliccato.parentNode;
-		}
-
-		//se non c'è il cliccatoFiltro nell'elemento faccio questo e aggiungo il cliccato all'elemento
-
-		for (let i = 0; i < tuttiFiltri.children.length; i++) {
-			if (tuttiFiltri.children[i] !== filtroDivCliccato) {
-				tuttiFiltri.children[i].className = tuttiFiltri.children[
-					i
-				].className.replace(" cliccatoFiltro", "");
+	const findIndex = (x: string) => {
+		for (let i = 0; i < filtri.length; i++) {
+			if (filtri[i][0] === x) {
+				return i;
 			}
 		}
 
-		//se il filtro cliccato c'è già nell'elemento, lo tolgo
+		return -1;
+	};
+
+	const filtroCliccato = (e: any) => {
+		let filtroDivCliccato = e.target;
+
+		// VECCHIA VERSIONE
+		// while (tuttiFiltri.id !== "tuttiFiltri") {
+		// 	tuttiFiltri = tuttiFiltri.parentNode;
+		// }
+		//
+		//
+		//
 
 		while (filtroDivCliccato.id !== "divFiltro") {
 			filtroDivCliccato = filtroDivCliccato.parentNode;
 		}
 
-		filtroDivCliccato.className += " cliccatoFiltro";
+		// VECCHIA VERSIONE
+		//se non c'è il cliccatoFiltro nell'elemento faccio questo e aggiungo il cliccato all'elemento
+		// const classi = filtroDivCliccato.className.split(" ");
+		// let giaCliccato = false;
+		// for (let i = 0; i < classi.length && !giaCliccato; i++) {
+		// 	if (classi[i] === "cliccatoFiltro") {
+		// 		giaCliccato = true;
+		// 	}
+		// }
 
-		setFiltro(filtroDivCliccato.children[1].innerHTML);
+		// VECCHIA VERSIONE
+		//if (!giaCliccato) {
+		// for (let i = 0; i < tuttiFiltri.children.length; i++) {
+		// 	if (tuttiFiltri.children[i] !== filtroDivCliccato) {
+		// 		tuttiFiltri.children[i].className = tuttiFiltri.children[
+		// 			i
+		// 		].className.replace(" cliccatoFiltro", "");
+		// 	}
+		// filtroDivCliccato.className += " cliccatoFiltro";
+		// setFiltro(filtroDivCliccato.children[1].innerHTML);
+		// }
+
+		if (filtro === "") {
+			console.log(filtroDivCliccato.className);
+
+			filtroDivCliccato.className += " cliccatoFiltro";
+
+			setFiltro(filtroDivCliccato.children["filtroDaApplicare"].innerHTML);
+		} else {
+			filtroDivCliccato.className = filtroDivCliccato.className.replace(
+				" cliccatoFiltro",
+				""
+			);
+			setFiltro("");
+		}
+
+		//
+		//
+		//
+		// VECCHIA VERSIONE
+		// } else {
+		// 	filtroDivCliccato.className = filtroDivCliccato.className.replace(
+		// 		" cliccatoFiltro",
+		// 		""
+		// 	);
+
+		// 	setFiltro("");
+		// }
 	};
 
-	return filtri.map((item, index) => {
+	if (filtro === "") {
+		return filtri.map((item, index) => {
+			return (
+				<div
+					className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[15px] bg-arancioneChiaro'
+					key={index}
+					onClick={filtroCliccato}
+					id='divFiltro'
+				>
+					<div
+						className='rounded-[50%] bg-[#fbfcfe] h-[40px] w-[40px] flex justify-center items-center mr-1'
+						id=''
+					>
+						<img src={item[1]} alt='' className='h-[32px] w-[32px]' id='' />
+					</div>
+					<p
+						className='text-white capitalize text-[16px]'
+						id='filtroDaApplicare'
+					>
+						{item[0]}
+					</p>
+				</div>
+			);
+		});
+	} else {
 		return (
 			<div
 				className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[15px] bg-arancioneChiaro'
-				key={index}
+				key={findIndex(filtro)}
 				onClick={filtroCliccato}
 				id='divFiltro'
 			>
 				<div
-					className='rounded-[50%] bg-white h-[40px] w-[40px] flex justify-center items-center mr-1'
+					className='rounded-[50%] bg-[#fbfcfe] h-[40px] w-[40px] flex justify-center items-center mr-1'
 					id=''
 				>
-					<img src={item[1]} alt='' className='h-[32px] w-[32px]' id='' />
+					<img
+						src={filtri[findIndex(filtro)][1]}
+						alt=''
+						className='h-[32px] w-[32px]'
+						id=''
+					/>
 				</div>
 				<p className='text-white capitalize text-[16px]' id='filtroDaApplicare'>
-					{item[0]}
+					{filtro}
 				</p>
 			</div>
 		);
-	});
+	}
 };
 
 const Searchbar = ({
 	products,
-	filteredProducts,
 	setFilteredProducts,
 }: {
 	products: Array<prodotto>;
-	filteredProducts: Array<prodotto>;
 	setFilteredProducts: Function;
 }) => {
-	const filteredProductsDef = filteredProducts;
-
 	const onChangeSearch = (e: any) => {
 		const strSrc = e.target.value.toLowerCase();
 
@@ -172,26 +277,23 @@ const Homepage = ({ username }: { username: string }) => {
 		setAssegnato(true);
 	}
 
-	console.log(filtro);
-
 	return (
 		<>
 			<Topbar page='home' name={username} />
 			<Container>
 				<Searchbar
 					products={produtcs}
-					filteredProducts={filteredProducts}
 					setFilteredProducts={setFilteredProducts}
 				/>
 				<div
 					className='h-[50px] w-[100%] overflow-x-scroll overflow-y-hidden flex flex-row items-center flex-nowrap p-[1svw] scrollbar-0 my-[10px]'
 					id='tuttiFiltri'
 				>
-					<Filtri setFiltro={setFiltro} />
+					<Filtri filtro={filtro} setFiltro={setFiltro} />
 				</div>
-				{/*@ts-ignore*/}
-
-				<Listone filteredProducts={filteredProducts} />
+				<div className='w-full flex justify-evenly flex-row flex-wrap'>
+					<Listone filteredProducts={filteredProducts} filtro={filtro} />
+				</div>
 			</Container>
 			<Navbar page='home' />
 		</>

@@ -109,8 +109,6 @@
 	}
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400&family=Nunito:wght@400&family=Poppins:wght@400&family=Roboto:wght@400&family=Rubik:wght@400&display=swap");
-
 * {
 	margin: 0;
 	padding: 0;
@@ -123,4 +121,5 @@ body {
 #root {
 	width: 100svw;
 	height: 100svh;
+	overflow-x: hidden;
 }
