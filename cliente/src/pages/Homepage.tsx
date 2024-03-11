@@ -2,38 +2,91 @@ import { useLoaderData } from "react-router-dom";
 import { Container, Navbar, Topbar } from "../components/Components";
 import { ReactNode, useState } from "react";
 import { prodotto } from "../utils";
-import { useLocalStorage } from "usehooks-ts";
 import { Input } from "../components/shadcn/Input";
 
 import searchImg from "../img/search.png";
+import antipastoImg from "../img/antipasto.png";
+import primoImg from "../img/primo.png";
+import secondoImg from "../img/secondo.png";
+import contornoImg from "../img/contorno.png";
+import dolceImg from "../img/dolce.png";
+import bibitaImg from "../img/bibita.png";
 
 const Listone = ({
 	filteredProducts,
 }: {
 	filteredProducts: Array<prodotto>;
 }) => {
-	return filteredProducts.map((item) => {
-		return <div className='h-[50px] w-full text-center'>{item.nome}</div>;
+	return filteredProducts.map((item, index) => {
+		return (
+			<div className='h-[50px] w-full text-center' key={index}>
+				{item.nome}
+			</div>
+		);
 	});
 };
-const Filtri = ({
-	products,
-	filteredProducts,
-	setFilteredProducts,
-}: {
-	products: Array<prodotto>;
-	filteredProducts: Array<prodotto>;
-	setFilteredProducts: Function;
-}) => {
-	return (
-		<div className='h-[50px] overflow-x-scroll flex flex-row items-center flex-nowrap p-[1svw]'>
-			<div className='w-[140px] h-[40px] rounded-xl'>Pizza</div>
-			<div className='w-[140px] h-[40px] rounded-xl'>Pizza</div>
-			<div className='w-[140px] h-[40px] rounded-xl'>Pizza</div>
-			<div className='w-[140px] h-[40px] rounded-xl'>Pizza</div>
-			<div className='w-[140px] h-[40px] rounded-xl'>Pizza</div>
-		</div>
-	);
+const Filtri = ({ setFiltro }: { setFiltro: Function }) => {
+	const filtri = [
+		["antipasto", antipastoImg],
+		["primo", primoImg],
+		["secondo", secondoImg],
+		["contorno", contornoImg],
+		["dolce", dolceImg],
+		["bibita", bibitaImg],
+	];
+
+	const filtroCliccato = (e: any) => {
+		let filtroDivCliccato = e.target;
+		let tuttiFiltri = e.target;
+
+		while (tuttiFiltri.id !== "tuttiFiltri") {
+			tuttiFiltri = tuttiFiltri.parentNode;
+		}
+		while (filtroDivCliccato.id !== "divFiltro") {
+			filtroDivCliccato = filtroDivCliccato.parentNode;
+		}
+
+		//se non c'è il cliccatoFiltro nell'elemento faccio questo e aggiungo il cliccato all'elemento
+
+		for (let i = 0; i < tuttiFiltri.children.length; i++) {
+			if (tuttiFiltri.children[i] !== filtroDivCliccato) {
+				tuttiFiltri.children[i].className = tuttiFiltri.children[
+					i
+				].className.replace(" cliccatoFiltro", "");
+			}
+		}
+
+		//se il filtro cliccato c'è già nell'elemento, lo tolgo
+
+		while (filtroDivCliccato.id !== "divFiltro") {
+			filtroDivCliccato = filtroDivCliccato.parentNode;
+		}
+
+		filtroDivCliccato.className += " cliccatoFiltro";
+
+		setFiltro(filtroDivCliccato.children[1].innerHTML);
+	};
+
+	return filtri.map((item, index) => {
+		return (
+			<div
+				className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[15px] bg-arancioneChiaro'
+				key={index}
+				onClick={filtroCliccato}
+				id='divFiltro'
+			>
+				<div
+					className='rounded-[50%] bg-white h-[40px] w-[40px] flex justify-center items-center mr-1'
+					id=''
+				>
+					<img src={item[1]} alt='' className='h-[32px] w-[32px]' id='' />
+				</div>
+				<p className='text-white capitalize text-[16px]' id='filtroDaApplicare'>
+					{item[0]}
+				</p>
+			</div>
+		);
+	});
 };
 
 const Searchbar = ({
@@ -58,13 +111,13 @@ const Searchbar = ({
 
 				let trovato = false;
 
-				arr.forEach((item) => {
-					if (item.toLowerCase().slice(0, strSrc.length) === strSrc) {
+				for (let i = 0; i < arr.length && !trovato; i++) {
+					if (arr[i].slice(0, strSrc.length) === strSrc) {
 						trovato = true;
 					} else {
 						trovato = false;
 					}
-				});
+				}
 
 				if (trovato) {
 					lista.push(item);
@@ -108,6 +161,7 @@ const Homepage = ({ username }: { username: string }) => {
 	const [filteredProducts, setFilteredProducts] = useState(
 		[] as Array<prodotto>
 	);
+	const [filtro, setFiltro] = useState("");
 
 	if (!produtcs) {
 		return <p>CARICAMENTO</p>;
@@ -118,6 +172,8 @@ const Homepage = ({ username }: { username: string }) => {
 		setAssegnato(true);
 	}
 
+	console.log(filtro);
+
 	return (
 		<>
 			<Topbar page='home' name={username} />
@@ -127,12 +183,14 @@ const Homepage = ({ username }: { username: string }) => {
 					filteredProducts={filteredProducts}
 					setFilteredProducts={setFilteredProducts}
 				/>
-				<Filtri
-					products={produtcs}
-					filteredProducts={filteredProducts}
-					setFilteredProducts={setFilteredProducts}
-				/>
+				<div
+					className='h-[50px] w-[100%] overflow-x-scroll overflow-y-hidden flex flex-row items-center flex-nowrap p-[1svw] scrollbar-0 my-[10px]'
+					id='tuttiFiltri'
+				>
+					<Filtri setFiltro={setFiltro} />
+				</div>
 				{/*@ts-ignore*/}
+
 				<Listone filteredProducts={filteredProducts} />
 			</Container>
 			<Navbar page='home' />

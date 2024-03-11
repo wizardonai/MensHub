@@ -3,7 +3,6 @@ import {
 	RouterProvider,
 	createBrowserRouter,
 	redirect,
-	useNavigate,
 } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -12,7 +11,6 @@ import Cart from "./pages/Cart";
 import { useLocalStorage } from "usehooks-ts";
 import Profile from "./pages/Profile";
 import { getProdotti, getProfilo } from "./scripts/fetch";
-import { sleep } from "./utils";
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", false);

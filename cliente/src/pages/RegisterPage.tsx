@@ -26,7 +26,7 @@ const RegisterPage = () => {
 		email: "",
 		password: "",
 		confirm_password: "",
-		id_mensa: null,
+		id_mensa: 1,
 		is_produttore: false,
 	} as dataReg);
 

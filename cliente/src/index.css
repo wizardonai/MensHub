@@ -101,6 +101,12 @@
 	.clip-searchbtn {
 		clip-path: polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%);
 	}
+	.scrollbar-0 {
+		scrollbar-width: none;
+	}
+	.cliccatoFiltro {
+		background-color: var(--arancioneScuro);
+	}
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400&family=Nunito:wght@400&family=Poppins:wght@400&family=Roboto:wght@400&family=Rubik:wght@400&display=swap");

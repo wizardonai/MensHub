@@ -211,7 +211,6 @@ server.post("/register/user", async function (req, res) {
 
 		connection.query(query, (err, result) => {
 			if (err) throw new Error(err);
-			res.header("Access-Control-Allow-Origin", "*");
 			res.send("Registrazione avvenuta con successo");
 			res.end();
 		});
