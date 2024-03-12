@@ -70,10 +70,25 @@ module.exports = {
 					from: { height: "var(--radix-accordion-content-height)" },
 					to: { height: "0" },
 				},
+				elementoNelCarrello: {
+					"0%": {
+						transform: "rotate(-3deg)",
+					},
+					"25%": {
+						transform: "rotate(3deg)",
+					},
+					"50%": {
+						transform: "rotate(-3deg)",
+					},
+					"75%": {
+						transform: "rotate(3deg)",
+					},
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
+				elementoNelCarrello: "elementoNelCarrello 0.2s",
 			},
 			height: {
 				navbar: "var(--navbarH)",

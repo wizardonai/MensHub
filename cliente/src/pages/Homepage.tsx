@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { Container, Navbar, Topbar } from "../components/Components";
 import { useState } from "react";
-import { prodotto, urlImg } from "../utils";
+import { prodotto, sleep, urlImg } from "../utils";
 import { Input } from "../components/shadcn/Input";
 
 import searchImg from "../img/search.png";
@@ -11,6 +11,8 @@ import secondoImg from "../img/secondo.png";
 import contornoImg from "../img/contorno.png";
 import dolceImg from "../img/dolce.png";
 import bibitaImg from "../img/bibita.png";
+import { Toaster } from "../components/shadcn/Sonner";
+import { toast } from "sonner";
 
 const Listone = ({
 	filteredProducts,
@@ -20,31 +22,105 @@ const Listone = ({
 	filtro: string;
 }) => {
 	// eslint-disable-next-line
-	return filteredProducts.map((item, index) => {
+	return filteredProducts.map((item) => {
 		if (filtro === "" || item.categoria === filtro) {
 			return (
 				<div
-					className='w-[42%] text-center flex flex-col justify-end items-center mb-3'
-					key={index}
+					className='w-[42%] text-center flex flex-col justify-end items-center mb-3 ombraLista'
+					key={item.id}
+					id='elementoCompleto'
 				>
-					<div className='h-[90%] w-full bg-arancioneScuro flex flex-col justify-end items-center'>
-						<div className='rounded-[50%] bg-[#eaeaea] w-[102px] h-[102px] flex justify-center items-center relative'>
+					<p id='idProdotto' className='hidden'>
+						{item.id}
+					</p>
+					<div
+						className='h-[90%] w-full bg-arancioneScuro flex flex-col justify-end items-center'
+						id=''
+					>
+						<div
+							className='rounded-[50%] bg-[#eaeaea] w-[102px] h-[102px] flex justify-center items-center relative'
+							id=''
+						>
 							<img
 								src={urlImg + item.indirizzo_img}
 								alt=''
 								className='w-[100px] h-[100px]'
 							/>
 						</div>
-						<div className='h-[85%] w-full flex items-center flex-col'>
-							<div className='w-full h-[50px] flex justify-center items-center'>
+						<div className='h-[85%] w-full flex items-center flex-col' id=''>
+							<div
+								className='w-full h-[50px] flex justify-center items-center'
+								id=''
+							>
 								<p className='text-[16px]'>{item.nome}</p>
 							</div>
-							<div className='flex flex-row h-[35px] w-full justify-center items-center'>
-								<div className='w-[50%] h-full flex justify-center items-center'>
+							<div
+								className='flex flex-row h-[35px] w-full justify-center items-center'
+								id=''
+							>
+								<div
+									className='w-[50%] h-full flex justify-center items-center'
+									id=''
+								>
 									<p className='text-[15px]'>{item.prezzo.toFixed(2)}€</p>
 								</div>
-								<div className='w-[50%] h-full flex justify-center items-center'>
-									<div className='rounded-[50%] border border-marrone w-6 h-6 flex justify-center items-center'>
+								<div
+									className='w-[50%] h-full flex justify-center items-center'
+									id=''
+								>
+									<div
+										className='rounded-[50%] border border-marrone w-6 h-6 flex justify-center items-center'
+										onClick={(e: any) => {
+											let elementoCompleto = e.target;
+
+											while (elementoCompleto.id !== "elementoCompleto") {
+												elementoCompleto = elementoCompleto.parentNode;
+											}
+
+											elementoCompleto.className +=
+												" animate-elementoNelCarrello";
+											sleep(200).then(() => {
+												elementoCompleto.className =
+													elementoCompleto.className.replace(
+														" animate-elementoNelCarrello",
+														""
+													);
+											});
+
+											const id =
+												elementoCompleto.children["idProdotto"].innerHTML;
+											let carrello = JSON.parse(
+												localStorage.getItem("cart") || "[]"
+											);
+											let presente = false;
+											for (let i = 0; i < carrello.length; i++) {
+												if (carrello[i].id === parseInt(id)) {
+													presente = true;
+													break;
+												}
+											}
+											if (presente) {
+												const nuovoCarrello = carrello.map((item: any) => {
+													if (item.id === parseInt(id)) {
+														let nuovoItem = item;
+														nuovoItem.quantita += 1;
+														return nuovoItem;
+													} else {
+														return item;
+													}
+												});
+												localStorage.setItem(
+													"cart",
+													JSON.stringify(nuovoCarrello)
+												);
+											} else {
+												carrello.push({ ...item, quantita: 1 });
+												localStorage.setItem("cart", JSON.stringify(carrello));
+											}
+
+											toast("Aggiunto al carrello!");
+										}}
+									>
 										<p className='text-[18px]'>+</p>
 									</div>
 								</div>
@@ -85,39 +161,9 @@ const Filtri = ({
 	const filtroCliccato = (e: any) => {
 		let filtroDivCliccato = e.target;
 
-		// VECCHIA VERSIONE
-		// while (tuttiFiltri.id !== "tuttiFiltri") {
-		// 	tuttiFiltri = tuttiFiltri.parentNode;
-		// }
-		//
-		//
-		//
-
 		while (filtroDivCliccato.id !== "divFiltro") {
 			filtroDivCliccato = filtroDivCliccato.parentNode;
 		}
-
-		// VECCHIA VERSIONE
-		//se non c'è il cliccatoFiltro nell'elemento faccio questo e aggiungo il cliccato all'elemento
-		// const classi = filtroDivCliccato.className.split(" ");
-		// let giaCliccato = false;
-		// for (let i = 0; i < classi.length && !giaCliccato; i++) {
-		// 	if (classi[i] === "cliccatoFiltro") {
-		// 		giaCliccato = true;
-		// 	}
-		// }
-
-		// VECCHIA VERSIONE
-		//if (!giaCliccato) {
-		// for (let i = 0; i < tuttiFiltri.children.length; i++) {
-		// 	if (tuttiFiltri.children[i] !== filtroDivCliccato) {
-		// 		tuttiFiltri.children[i].className = tuttiFiltri.children[
-		// 			i
-		// 		].className.replace(" cliccatoFiltro", "");
-		// 	}
-		// filtroDivCliccato.className += " cliccatoFiltro";
-		// setFiltro(filtroDivCliccato.children[1].innerHTML);
-		// }
 
 		if (filtro === "") {
 			console.log(filtroDivCliccato.className);
@@ -132,19 +178,6 @@ const Filtri = ({
 			);
 			setFiltro("");
 		}
-
-		//
-		//
-		//
-		// VECCHIA VERSIONE
-		// } else {
-		// 	filtroDivCliccato.className = filtroDivCliccato.className.replace(
-		// 		" cliccatoFiltro",
-		// 		""
-		// 	);
-
-		// 	setFiltro("");
-		// }
 	};
 
 	if (filtro === "") {
@@ -291,11 +324,15 @@ const Homepage = ({ username }: { username: string }) => {
 				>
 					<Filtri filtro={filtro} setFiltro={setFiltro} />
 				</div>
-				<div className='w-full flex justify-evenly flex-row flex-wrap'>
+				<div
+					className='w-full flex justify-evenly flex-row flex-wrap'
+					id='divListone'
+				>
 					<Listone filteredProducts={filteredProducts} filtro={filtro} />
 				</div>
 			</Container>
 			<Navbar page='home' />
+			<Toaster position='top-center' />
 		</>
 	);
 };

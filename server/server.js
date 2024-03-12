@@ -118,7 +118,7 @@ server.post("/request/products", (req, res) => {
 	});
 
 	connection.query(
-		"SELECT * FROM prodotti where id_mensa=" + idm_utente,
+		"SELECT * FROM prodotti where id_mensa=" + idm_utente + " ORDER BY nome",
 		(err, result) => {
 			if (err) throw new Error(err);
 			res.header("Access-Control-Allow-Origin", "*");

@@ -15,7 +15,7 @@
 		--popover: 0 0% 100%;
 		--popover-foreground: 222.2 47.4% 11.2%;
 
-		--border: 214.3 31.8% 91.4%;
+		--border: #4f2929;
 		--input: 214.3 31.8% 91.4%;
 
 		--card: 0 0% 100%;
@@ -106,6 +106,9 @@
 	}
 	.cliccatoFiltro {
 		background-color: var(--arancioneScuro);
+	}
+	.ombraLista {
+		box-shadow: -33px 33px 15px -22px rgba(0, 0, 0, 0.1);
 	}
 }
 
