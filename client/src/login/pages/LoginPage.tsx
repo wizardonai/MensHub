@@ -90,11 +90,11 @@ const LoginPage = () => {
           }));
           errore = true;
         } else {
-          localStorage.setItem("login", "cliente");
+          localStorage.setItem("login", "produttore");
           localStorage.setItem("token", JSON.stringify(res));
           localStorage.setItem("cart", JSON.stringify([]));
           refreshStorage();
-          navigate("/home");
+          navigate("/productorHome");
         }
       });
     }

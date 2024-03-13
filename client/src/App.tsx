@@ -110,60 +110,9 @@ const App = () => {
   }, []);
 
   let router;
+
   console.log(utente);
-  if (utente === "cliente") {
-    router = createBrowserRouter([
-      {
-        path: "/",
-        loader: () => redirect("/home"),
-      },
-      {
-        path: "/home",
-        element: <HomePage />,
-        loader: async () => {
-          return { prodotti: await loadProdotti() };
-        },
-      },
-      {
-        path: "/menu",
-        element: <Menu />,
-        loader: async () => {
-          return {
-            prodotti: await loadProdotti(),
-            stringaSearch: stringaSearch,
-            setStringaSearch: setStringaSearch,
-            filtri: filtri,
-            setFiltri: setFiltri,
-          };
-        },
-      },
-      {
-        path: "/product/:productId",
-        element: <ProductPage />,
-        loader: async ({ params }) => {
-          return {
-            prodotti: await loadProdotti(),
-            id: params.productId,
-          };
-        },
-      },
-      {
-        path: "/orders",
-        element: <Orders />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-        loader: () => ({
-          refreshStorage: refreshStorage,
-        }),
-      },
-      {
-        path: "*",
-        loader: () => redirect("/home"),
-      },
-    ]);
-  } else if (utente === "produttore") {
+  if (utente === "produttore" || utente === "cliente") {
     router = createBrowserRouter([
       {
         path: "/",
@@ -177,19 +126,11 @@ const App = () => {
         },
       },
       {
-        path: "/",
-        loader: () => redirect("/productorMenu"),
-      },
-      {
         path: "/productorMenu",
         element: <MenuPageProductor />,
         loader: async () => {
           return { prodotti: await loadProdotti() };
         },
-      },
-      {
-        path: "/",
-        loader: () => redirect("/balance"),
       },
       {
         path: "/balance",
@@ -199,15 +140,15 @@ const App = () => {
         },
       },
       {
-        path: "/",
-        loader: () => redirect("/productorProfile"),
-      },
-      {
         path: "/productorProfile",
         element: <ProfileProductor />,
         loader: async () => {
           return { prodotti: await loadProdotti() };
         },
+      },
+      {
+        path: "*",
+        loader: () => redirect("/productorHome"),
       },
     ]);
   } else {

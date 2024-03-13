@@ -121,11 +121,19 @@ server.post("/send/cart", (req, res) => {
 });
 
 server.post("/register/user", async function (req, res) {
-  console.log("-----------------");
-  console.log("registrazione utente");
-
-  const { nome, cognome, email, password, confirm_password } = req.body;
-
+  console.log("merdona schifosa");
+  const {
+    nome,
+    cognome,
+    email,
+    password,
+    confirm_password,
+    is_produttore,
+    nome_mensa,
+    indirizzo_mensa,
+    email_mensa,
+    telefono_mensa,
+  } = req.body;
   if (!email || !password) {
     // return res.status(400).send({
     // 	message: "email o password mancante.",
@@ -140,19 +148,54 @@ server.post("/register/user", async function (req, res) {
     res.send("Le password non combaciano!");
     res.end();
   }
+  //controllo che la mail non sia già presente NON FUNZIONA NON CONCATENA EMAIL
+  let query = `SELECT * FROM utenti WHERE email="${email}";`;
+  connection.query(query, (err, result) => {
+    if (err) throw new Error(err);
+    if (result.length > 0) {
+      res.send("email già presente");
+      res.end;
+    }
+  });
 
   const { valid, reason, validators } = await validate(email);
-
+  let himcook;
   if (valid) {
-    //inserisci dati nel database
-    let query = `INSERT INTO utenti (nome,cognome,email,password) VALUES('${nome}','${cognome}','${email}','${password}');`;
-    // console.log(query);
-    connection.query(query, (err, result) => {
-      if (err) throw new Error(err);
-      res.header("Access-Control-Allow-Origin", "*");
-      res.send("Registrazione avvenuta con successo");
-      res.end();
-    });
+    if (is_produttore === 1) {
+      var id_mensa_new = -1;
+      query = `insert into mense (nome,indirizzo,email,telefono) VALUES('${nome_mensa}','${indirizzo_mensa}','${email_mensa}',${telefono_mensa});`;
+      connection.query(query, (err, result) => {
+        if (err) throw new Error(err);
+        if (result) {
+          console.log(`inserimento della mensa ${nome_mensa} avvenuto`);
+          query = `SELECT * from mense where nome='${nome_mensa}' and indirizzo='${indirizzo_mensa}' and email='${email_mensa}' and telefono=${telefono_mensa};`;
+          connection.query(query, (err, result) => {
+            if (err) throw new Error(err);
+            console.log(result);
+            if (result.length > 0) {
+              console.log("abbracciami");
+              id_mensa_new = result[0].id;
+              console.log("id mensa nuovo" + id_mensa_new);
+              himcook = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa_new}','${is_produttore}');`;
+              connection.query(himcook, (err, result) => {
+                if (err) throw new Error(err);
+                res.send("Registrazione avvenuta con successo");
+                res.end();
+              });
+            }
+          });
+        }
+      });
+    } else {
+      himcook = `INSERT INTO utenti (nome,cognome,email,password,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${is_produttore});`;
+      connection.query(himcook, (err, result) => {
+        if (err) throw new Error(err);
+        res.send("Registrazione avvenuta con successo");
+        res.end();
+      });
+    }
+
+    console.log(himcook);
   } else {
     console.log("EMAIL NON VALIDA");
     // return res.status(400).send({
