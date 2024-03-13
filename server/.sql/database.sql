@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 20, 2024 alle 17:59
+-- Creato il: Gen 25, 2024 alle 18:59
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -34,17 +34,15 @@ USE mensapp;
 CREATE TABLE `mense` (
   `id` int(11) NOT NULL,
   `nome` varchar(50) NOT NULL,
-  `indirizzo` varchar(100) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `telefono` int(20) DEFAULT NULL
+  `indirizzo` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `mense`
 --
 
-INSERT INTO `mense` (`id`, `nome`, `indirizzo`, `email`, `telefono`) VALUES
-(1, 'Mensa Planck', 'Via Franchini, 2', NULL, 0);
+INSERT INTO `mense` (`id`, `nome`, `indirizzo`) VALUES
+(1, 'Mensa Planck', 'Via Franchini, 2');
 
 -- --------------------------------------------------------
 
@@ -77,13 +75,6 @@ CREATE TABLE `ordini` (
   `stato_ordine` varchar(255) DEFAULT NULL,
   `id_utente` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dump dei dati per la tabella `ordini`
---
-
-INSERT INTO `ordini` (`id`, `id_mensa`, `str_prod`, `quantita`, `data`, `stato_ordine`, `id_utente`) VALUES
-(9, 1, '2', '1', '2024-01-25 18:01:21', 'attivo', 1);
 
 -- --------------------------------------------------------
 
@@ -199,7 +190,7 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT per la tabella `ordini`
 --
 ALTER TABLE `ordini`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT per la tabella `prodotti`
