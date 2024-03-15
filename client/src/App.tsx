@@ -48,7 +48,10 @@ export const hostname =
   (process.env.REACT_APP_IMG_PORT || "") +
   "/image/";
 
-export const hostnameProductor = "http://localhost:3000/image/";
+export const hostnameProductor =
+  (process.env.REACT_APP_HOSTNAME || "") +
+  (process.env.REACT_APP_IMG_PORT || "") +
+  "/image/";
 
 export var Colori = {
   // primario: "#3897F1",
@@ -111,7 +114,6 @@ const App = () => {
 
   let router;
 
-  console.log(utente);
   if (utente === "produttore" || utente === "cliente") {
     router = createBrowserRouter([
       {

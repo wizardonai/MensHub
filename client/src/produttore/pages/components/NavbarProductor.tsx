@@ -33,6 +33,7 @@ const NavbarProductor = ({ page }: { page: string }) => {
     navbar: {
       height: "80svh",
       width: "80%",
+      backgroundColor: "#503431",
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-evenly",
@@ -56,6 +57,8 @@ const NavbarProductor = ({ page }: { page: string }) => {
       height: "40px",
       cursor: "default",
       backgroundColor: "transparent",
+      filter:
+        "invert(96%) sepia(6%) saturate(1440%) hue-rotate(314deg) brightness(106%) contrast(75%)",
     },
     navbarDivImgHover: {
       width: "55px",
@@ -63,6 +66,9 @@ const NavbarProductor = ({ page }: { page: string }) => {
       cursor: "pointer",
       margin: "-7.5px 0px",
       borderRadius: "5px",
+      filter:
+        "invert(96%) sepia(6%) saturate(1440%) hue-rotate(314deg) brightness(106%) contrast(75%)",
+      // transition: "width 0.3s ease, height 0.3s ease",
     },
   };
 
