@@ -84,11 +84,51 @@ module.exports = {
 						transform: "rotate(3deg)",
 					},
 				},
+				swipeLeftCarrello: {
+					from: { width: "100%" },
+					to: {
+						width: "75%",
+						clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
+						borderTopRightRadius: "0",
+					},
+				},
+				swipeLeftCarrelloEl: {
+					from: { width: "0%", display: "none" },
+					to: {
+						width: "25%",
+						display: "flex",
+						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
+						borderBottomLeftRadius: "0",
+					},
+				},
+				swipeRightCarrello: {
+					from: {
+						width: "75%",
+						clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
+					},
+					to: {
+						width: "100%",
+						clipPath: "none",
+					},
+				},
+				swipeRightCarrelloEl: {
+					from: {
+						width: "25%",
+						display: "flex",
+						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
+						borderBottomLeftRadius: "0",
+					},
+					to: { width: "0%", display: "none" },
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
 				elementoNelCarrello: "elementoNelCarrello 0.2s",
+				swipeLeftCarrello: "swipeLeftCarrello 0.5s forwards",
+				swipeLeftCarrelloEl: "swipeLeftCarrelloEl 0.5s forwards",
+				swipeRightCarrello: "swipeRightCarrello 0.5s forwards",
+				swipeRightCarrelloEl: "swipeRightCarrelloEl 0.5s forwards",
 			},
 			height: {
 				navbar: "var(--navbarH)",
