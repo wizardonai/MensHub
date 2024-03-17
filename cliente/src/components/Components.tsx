@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	if (page === "home") {
@@ -35,41 +35,59 @@ export const Navbar = ({ page }: { page: string }) => {
 		profile: useRef(null),
 	};
 
+	const [height, setHeight] = useState(0);
+
+	useEffect(() => {
+		let h = window.screen.height - 20;
+		setHeight(h / 10 - 20);
+	});
+
+	const [width, setWidth] = useState(0);
+
 	return (
 		<div className='w-full h-navbar flex flex-row justify-evenly items-center'>
-			<div className='w-[85%] h-full flex flex-row justify-evenly items-center'>
+			<div className='w-[90%] h-full flex flex-row justify-evenly items-center'>
 				<div
-					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center ${
-						page === "home" ? "w-[45%]" : "w-[22.5%]"
-					}`}
+					className={`bg-marrone flex justify-center items-center`}
+					style={{
+						width: page === "home" ? height * 3 + "px" : height + "px",
+						borderRadius: page === "home" ? "28px" : "50%",
+						height: height + "px",
+					}}
 					ref={buttons.home}
 					onClick={(e) => {
 						if (page !== "home") navigate("/home");
 					}}
 				>
-					<p className='text-white text-xl'>HOME</p>
+					{page === "home" ? <p className='text-white text-xl'>HOME</p> : ""}
 				</div>
 				<div
-					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center ${
-						page === "cart" ? "w-[45%]" : "w-[22.5%]"
-					}`}
+					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center`}
+					style={{
+						width: page === "cart" ? height * 3 + "px" : height + "px",
+						borderRadius: page === "cart" ? "28px" : "50%",
+						height: height + "px",
+					}}
 					ref={buttons.cart}
 					onClick={(e) => {
 						if (page !== "cart") navigate("/cart");
 					}}
 				>
-					<p className='text-white text-xl'>CART</p>
+					{page === "cart" ? <p className='text-white text-xl'>CART</p> : ""}
 				</div>
 				<div
-					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center ${
-						page === "profile" ? "w-[45%]" : "w-[22.5%]"
-					}`}
+					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center`}
+					style={{
+						width: page === "profile" ? height * 3 + "px" : height + "px",
+						borderRadius: page === "profile" ? "28px" : "50%",
+						height: height + "px",
+					}}
 					ref={buttons.profile}
 					onClick={(e) => {
 						if (page !== "profile") navigate("/profile");
 					}}
 				>
-					<p className='text-white text-xl'>PROF</p>
+					{page === "profile" ? <p className='text-white text-xl'>PROF</p> : ""}
 				</div>
 			</div>
 		</div>

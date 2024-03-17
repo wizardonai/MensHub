@@ -1,15 +1,25 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Container, Navbar, Topbar } from "../components/Components";
 import { Nullable, prodottoCarrello, urlImg } from "../utils";
 
 import deleteImg from "../img/delete.png";
 
-const Elemento = ({ item }: { item: prodottoCarrello }) => {
+const Elemento = ({
+	item,
+	setCarrello,
+}: {
+	item: prodottoCarrello;
+	setCarrello: Function;
+}) => {
 	const [start, setStart] = useState(null as Nullable<number>);
 	const [end, setEnd] = useState(null as Nullable<number>);
 
-	const minSwipeDistance = 50;
+	const divtot = useRef(null as Nullable<HTMLDivElement>);
+	const bottoneElimina = useRef(null as Nullable<HTMLDivElement>);
 
+	const [quantita, setQuantita] = useState(item.quantita);
+
+	const minSwipeDistance = 50;
 	const onTouchEndFn = (e: React.TouchEvent<HTMLDivElement>) => {
 		if (start && end) {
 			const distance = end - start;
@@ -78,7 +88,7 @@ const Elemento = ({ item }: { item: prodottoCarrello }) => {
 	return (
 		<div className='flex flex-row justify-start items-center'>
 			<div
-				className='w-full h-24 flex flex-row justify-evenly items-center rounded-2xl bg-arancioneScuro mb-3'
+				className='w-full h-24 flex flex-row justify-start items-center rounded-2xl bg-arancioneScuro mb-3'
 				onTouchStart={(e) => {
 					setEnd(null);
 					setStart(e.targetTouches[0].clientX);
@@ -88,6 +98,7 @@ const Elemento = ({ item }: { item: prodottoCarrello }) => {
 				}}
 				onTouchEnd={onTouchEndFn}
 				id='divTot'
+				ref={divtot}
 			>
 				<img
 					src={urlImg + item.indirizzo_img}
@@ -109,26 +120,90 @@ const Elemento = ({ item }: { item: prodottoCarrello }) => {
 						className='flex flex-row justify-evenly items-center w-full'
 						id=''
 					>
-						<p id='' className='text-white'>
+						<p
+							id=''
+							className='text-white'
+							onClick={() => {
+								if (quantita === 1) return;
+								let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
+
+								tmp.forEach((item2: prodottoCarrello) => {
+									if (item2.id === item.id) {
+										item2.quantita--;
+										setQuantita(quantita - 1);
+									}
+								});
+
+								localStorage.setItem("cart", JSON.stringify(tmp));
+							}}
+						>
 							-
 						</p>
 						<p id='' className='text-white'>
-							{item.quantita}
+							{quantita}
 						</p>
-						<p id='' className='text-white'>
+						<p
+							id=''
+							className='text-white'
+							onClick={() => {
+								let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
+
+								tmp.forEach((item2: prodottoCarrello) => {
+									if (item2.id === item.id) {
+										item2.quantita++;
+										setQuantita(quantita + 1);
+									}
+								});
+
+								localStorage.setItem("cart", JSON.stringify(tmp));
+							}}
+						>
 							+
 						</p>
 					</div>
 				</div>
 			</div>
-			<div className='h-24 justify-center hidden items-center clip-searchbtn bg-red-800 mb-3'>
+			<div
+				className='h-24 justify-center hidden items-center clip-searchbtn bg-red-800 mb-3'
+				onClick={() => {
+					let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
+					tmp = tmp.filter((item2: prodottoCarrello) => item2.id !== item.id);
+					setCarrello(tmp);
+					localStorage.setItem("cart", JSON.stringify(tmp));
+
+					//@ts-ignore
+					divtot.current.className = divtot.current.className.replace(
+						" animate-swipeLeftCarrello",
+						""
+					);
+					//@ts-ignore
+					bottoneElimina.current.className =
+						//@ts-ignore
+						bottoneElimina.current.className.replace(
+							" animate-swipeLeftCarrelloEl",
+
+							""
+						);
+					//@ts-ignore
+					bottoneElimina.current.className += " hidden";
+				}}
+				ref={bottoneElimina}
+			>
 				<img src={deleteImg} alt='' className='w-[40px] h-[40px] ml-5' />
 			</div>
 		</div>
 	);
 };
-const Lista = ({ carrello }: { carrello: Array<prodottoCarrello> }) => {
-	return carrello.map((item, index) => <Elemento item={item} key={index} />);
+const Lista = ({
+	carrello,
+	setCarrello,
+}: {
+	carrello: Array<prodottoCarrello>;
+	setCarrello: Function;
+}) => {
+	return carrello.map((item, index) => (
+		<Elemento item={item} key={index} setCarrello={setCarrello} />
+	));
 };
 
 const Cart = () => {
@@ -142,7 +217,7 @@ const Cart = () => {
 			<Container>
 				<div className='w-full h-full flex items-center flex-col'>
 					<div className='w-[80%]'>
-						<Lista carrello={carrello} />
+						<Lista carrello={carrello} setCarrello={setCarrello} />
 					</div>
 				</div>
 			</Container>
