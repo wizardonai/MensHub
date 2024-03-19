@@ -106,7 +106,7 @@ server.get("/", (req, res) => {
 server.post("/request/products", (req, res) => {
 	let token = req.headers.authorization;
 	let idm_utente = "";
-    res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Origin", "*");
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			console.log(err);
@@ -127,10 +127,26 @@ server.post("/request/products", (req, res) => {
 	);
 });
 
+server.post("/request/categories", (req, res) => {
+	let query = `SELECT * FROM categorie;`;
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+		console.log(result);
+		if (result.length > 0) {
+			res.send(result);
+			res.end();
+		} else {
+			res.send("nessuna categoria trovata");
+			res.end();
+		}
+	});
+
+});
+
 server.post("/send/cart", (req, res) => {
 	let token = req.headers.authorization;
 	let id_utente = "";
-    res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Origin", "*");
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			console.log(err);
@@ -167,81 +183,81 @@ server.post("/send/cart", (req, res) => {
 });
 
 server.post("/register/user", async function (req, res) {
-    const {
-      nome,
-      cognome,
-      email,
-      password,
-      confirm_password,
-      is_produttore,
-      nome_mensa,
-      indirizzo_mensa,
-      email_mensa,
-      telefono_mensa,
-    } = req.body;
-    if (!email || !password) {
-      // return res.status(400).send({
-      // 	message: "email o password mancante.",
-      // });
-      res.send("Email o password mancante!");
-      res.end();
-    }
-    if (password !== confirm_password) {
-      // return res.status(400).send({
-      // 	message: "le password non combaciano.",
-      // });
-      res.send("Le password non combaciano!");
-      res.end();
-    }
-    //controllo che la mail non sia già presente NON FUNZIONA NON CONCATENA EMAIL
-    let query = `SELECT * FROM utenti WHERE email="${email}";`;
-    connection.query(query, (err, result) => {
-      if (err) throw new Error(err);
-      if (result.length > 0) {
-        res.send("email già presente");
-        res.end;
-      }
-    });
-  
-    const { valid, reason, validators } = await validate(email);
-    let himcook;
-    if (valid) {
-      if (is_produttore === 1) {
-        var id_mensa_new = -1;
-        query = `insert into mense (nome,indirizzo,email,telefono) VALUES('${nome_mensa}','${indirizzo_mensa}','${email_mensa}',${telefono_mensa});`;
-        connection.query(query, (err, result) => {
-          if (err) throw new Error(err);
-          if (result) {
-            console.log(`inserimento della mensa ${nome_mensa} avvenuto`);
-            query = `SELECT * from mense where nome='${nome_mensa}' and indirizzo='${indirizzo_mensa}' and email='${email_mensa}' and telefono=${telefono_mensa};`;
-            connection.query(query, (err, result) => {
-              if (err) throw new Error(err);
-              console.log(result);
-              if (result.length > 0) {
-                id_mensa_new = result[0].id;
-                himcook = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa_new}','${is_produttore}');`;
-                connection.query(himcook, (err, result) => {
-                  if (err) throw new Error(err);
-                  res.send("Registrazione avvenuta con successo");
-                  res.end();
-                });
-              }
-            });
-          }
-        });
-      } else {
-        himcook = `INSERT INTO utenti (nome,cognome,email,password,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${is_produttore});`;
-        connection.query(himcook, (err, result) => {
-          if (err) throw new Error(err);
-          res.send("Registrazione avvenuta con successo");
-          res.end();
-        });
-    }
-    } else {
-      res.send("Email non valida!");
-      res.end();
-    }
-  });
+	const {
+		nome,
+		cognome,
+		email,
+		password,
+		confirm_password,
+		is_produttore,
+		nome_mensa,
+		indirizzo_mensa,
+		email_mensa,
+		telefono_mensa,
+	} = req.body;
+	if (!email || !password) {
+		// return res.status(400).send({
+		// 	message: "email o password mancante.",
+		// });
+		res.send("Email o password mancante!");
+		res.end();
+	}
+	if (password !== confirm_password) {
+		// return res.status(400).send({
+		// 	message: "le password non combaciano.",
+		// });
+		res.send("Le password non combaciano!");
+		res.end();
+	}
+	//controllo che la mail non sia già presente NON FUNZIONA NON CONCATENA EMAIL
+	let query = `SELECT * FROM utenti WHERE email="${email}";`;
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+		if (result.length > 0) {
+			res.send("email già presente");
+			res.end;
+		}
+	});
+
+	const { valid, reason, validators } = await validate(email);
+	let himcook;
+	if (valid) {
+		if (is_produttore === 1) {
+			var id_mensa_new = -1;
+			query = `insert into mense (nome,indirizzo,email,telefono) VALUES('${nome_mensa}','${indirizzo_mensa}','${email_mensa}',${telefono_mensa});`;
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+				if (result) {
+					console.log(`inserimento della mensa ${nome_mensa} avvenuto`);
+					query = `SELECT * from mense where nome='${nome_mensa}' and indirizzo='${indirizzo_mensa}' and email='${email_mensa}' and telefono=${telefono_mensa};`;
+					connection.query(query, (err, result) => {
+						if (err) throw new Error(err);
+						console.log(result);
+						if (result.length > 0) {
+							id_mensa_new = result[0].id;
+							himcook = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa_new}','${is_produttore}');`;
+							connection.query(himcook, (err, result) => {
+								if (err) throw new Error(err);
+								res.send("Registrazione avvenuta con successo");
+								res.end();
+							});
+						}
+					});
+				}
+			});
+		} else {
+			himcook = `INSERT INTO utenti (nome,cognome,email,password,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${is_produttore});`;
+			connection.query(himcook, (err, result) => {
+				if (err) throw new Error(err);
+				res.send("Registrazione avvenuta con successo");
+				res.end();
+			});
+		}
+	} else {
+		res.send("Email non valida!");
+		res.end();
+	}
+});
 
 server.post("/login/user", async function (req, res) {
 	let email = req.body.email;
@@ -292,41 +308,85 @@ server.post("/request/profile", (req, res) => {
 	//controllo che il token di sessione sia valido
 	let token = req.headers.authorization;
 	if (!token) {
-        res.send("Token non trovato");
-        res.end();
-    }
+		res.send("Token non trovato");
+		res.end();
+	}
 	else {
 		jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 			if (err) {
 				console.log(err);
 				res.send("Token non valido");
-                res.end();
+				res.end();
 			} else {
 				res.send(decoded);
-                res.end();
+				res.end();
 			}
 		});
 	}
 });
 
 server.post("/request/orders", (req, res) => {
-	let id_utente = req.body.id_ut;
-	let query = `SELECT * FROM utenti WHERE id_utente="${id_utente}" AND stato_ordine="attivo"`;
-	connection.query(query, (err, result) => {
-		if (err) throw new Error(err);
-		console.log(result);
-		if (result.length > 0) {
-			res.send(result);
-			res.end();
-		} else {
-			res.send("l'utente non ha ordini attivi");
-			res.end();
-		}
-	});
+    let token = req.headers.authorization;
+    let id_utente = "";
+
+    jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+        if (err) {
+            res.send("errore nel token");
+            res.end();
+        } else {
+            console.log("Decoded: " + decoded);
+            id_utente = decoded.id;
+
+            let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+
+            connection.query(query, (err, result) => {
+                if (err) throw new Error(err);
+
+                let id_mensa = result[0].id_mensa;
+
+                let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
+                                JOIN prodotti_ordini AS po ON o.id = po.id_ordine
+                                WHERE id_utente="${id_utente}" AND id_mensa="${id_mensa}"
+                                ORDER BY o.data, po.id_ordine;`;
+
+                connection.query(query, (err, result) => {
+                    if (err) throw new Error(err);
+
+                    let orders = [];
+                    let currentOrder = null;
+
+                    result.forEach(row => {
+                        if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
+                            currentOrder = {
+                                id_ordine: row.id_ordine,
+                                stato_ordine: row.stato_ordine,
+                                data: row.data,
+                                prodotti: []
+                            };
+                            orders.push(currentOrder);
+                        }
+
+                        currentOrder.prodotti.push({
+                            id: row.id_prodotto,
+                            quantita: row.quantita
+                        });
+                    });
+
+                    if (orders.length > 0) {
+                        res.send(orders);
+                    } else {
+                        res.send("L'utente non ha ordini attivi");
+                    }
+                    res.end();
+                });
+            });
+        }
+    });
 });
 
-//da aggiungere token negli header da uasard
+
 server.post("/producer/get/products", (req, res) => {
+
 	let token = req.headers.authorization;
 	let id_utente = "";
 
@@ -358,38 +418,64 @@ server.post("/producer/get/products", (req, res) => {
 	});
 });
 
-//da aggiungere token negli header da uasard
+
 server.post("/producer/get/orders", (req, res) => {
 	let token = req.headers.authorization;
-	let id_utente = "";
+    let id_utente = "";
 
-	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
-		if (err) {
-			console.log(err);
-			res.send("errore nel token");
-			res.end();
-		} else {
-			id_utente = decoded.id;
-		}
-	});
+    jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+        if (err) {
+            res.send("errore nel token");
+            res.end();
+        } else {
+            console.log("Decoded: " + decoded);
+            id_utente = decoded.id;
+            let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
 
-	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+            connection.query(query, (err, result) => {
+                if (err) throw new Error(err);
 
-	connection.query(query, (err, result) => {
-		if (err) throw new Error(err);
+                let id_mensa = result[0].id_mensa;
 
-		const id_mensa = result[0].id_mensa;
+                let query = `SELECT id_ordine,id_utente, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
+                                JOIN prodotti_ordini AS po ON o.id = po.id_ordine
+                                WHERE id_mensa="${id_mensa}"
+                                ORDER BY o.data, po.id_ordine;`;
 
-		connection.query(
-			"SELECT * FROM ordini where id_mensa=" + id_mensa,
-			(err, result) => {
-				if (err) throw new Error(err);
-				res.header("Access-Control-Allow-Origin", "*");
-				res.send(result);
-				res.end();
-			}
-		);
-	});
+                connection.query(query, (err, result) => {
+                    if (err) throw new Error(err);
+
+                    let orders = [];
+                    let currentOrder = null;
+
+                    result.forEach(row => {
+                        if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
+                            currentOrder = {
+                                id_ordine: row.id_ordine,
+								id_utente: row.id_utente,
+                                stato_ordine: row.stato_ordine,
+                                data: row.data,
+                                prodotti: []
+                            };
+                            orders.push(currentOrder);
+                        }
+
+                        currentOrder.prodotti.push({
+                            id: row.id_prodotto,
+                            quantita: row.quantita
+                        });
+                    });
+
+                    if (orders.length > 0) {
+                        res.send(orders);
+                    } else {
+                        res.send("L'utente non ha ordini attivi");
+                    }
+                    res.end();
+                });
+            });
+        }
+    });
 });
 
 server.post("/producer/edit/product", (req, res) => {
@@ -693,7 +779,6 @@ function renameImage(nome_file, id_prodotto) {
 		}
 	});
 }
-
 
 
 const port = 6969;

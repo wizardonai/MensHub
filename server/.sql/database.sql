@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 25, 2024 alle 18:59
+-- Creato il: Mar 19, 2024 alle 19:32
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -24,12 +24,23 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `mense`
+-- Struttura della tabella `categorie`
 --
 
 CREATE DATABASE mensapp;
+use mensapp;
 
-USE mensapp;
+CREATE TABLE `categorie` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(255) NOT NULL,
+  `indirizzo_img` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `mense`
+--
 
 CREATE TABLE `mense` (
   `id` int(11) NOT NULL,
@@ -47,34 +58,24 @@ INSERT INTO `mense` (`id`, `nome`, `indirizzo`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `menu`
---
-
-CREATE TABLE `menu` (
-  `id` int(11) NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  `descrizione` text NOT NULL,
-  `prezzo` decimal(10,2) NOT NULL,
-  `id_mensa` int(11) NOT NULL,
-  `disponibile` tinyint(1) NOT NULL,
-  `str_prod` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Struttura della tabella `ordini`
 --
 
 CREATE TABLE `ordini` (
   `id` int(11) NOT NULL,
   `id_mensa` int(11) NOT NULL,
-  `str_prod` varchar(255) NOT NULL,
-  `quantita` varchar(255) NOT NULL,
   `data` datetime DEFAULT NULL,
   `stato_ordine` varchar(255) DEFAULT NULL,
   `id_utente` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `ordini`
+--
+
+INSERT INTO `ordini` (`id`, `id_mensa`, `data`, `stato_ordine`, `id_utente`) VALUES
+(1234, 1, '2024-02-21 00:00:00', 'attivo', 1),
+(5678, 1, '2024-01-25 15:37:01', 'in corso', 1);
 
 -- --------------------------------------------------------
 
@@ -111,6 +112,28 @@ INSERT INTO `prodotti` (`id`, `nome`, `descrizione`, `allergeni`, `prezzo`, `cat
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `prodotti_ordini`
+--
+
+CREATE TABLE `prodotti_ordini` (
+  `id_prodotto` int(11) NOT NULL,
+  `id_ordine` int(11) NOT NULL,
+  `quantita` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `prodotti_ordini`
+--
+
+INSERT INTO `prodotti_ordini` (`id_prodotto`, `id_ordine`, `quantita`) VALUES
+(1, 1234, 7),
+(2, 1234, 3),
+(3, 1234, 1),
+(6, 5678, 8);
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `utenti`
 --
 
@@ -136,17 +159,16 @@ INSERT INTO `utenti` (`id`, `nome`, `cognome`, `email`, `password`, `id_mensa`, 
 --
 
 --
+-- Indici per le tabelle `categorie`
+--
+ALTER TABLE `categorie`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indici per le tabelle `mense`
 --
 ALTER TABLE `mense`
   ADD PRIMARY KEY (`id`);
-
---
--- Indici per le tabelle `menu`
---
-ALTER TABLE `menu`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_mensa` (`id_mensa`);
 
 --
 -- Indici per le tabelle `ordini`
@@ -164,6 +186,13 @@ ALTER TABLE `prodotti`
   ADD KEY `id_mensa` (`id_mensa`);
 
 --
+-- Indici per le tabelle `prodotti_ordini`
+--
+ALTER TABLE `prodotti_ordini`
+  ADD PRIMARY KEY (`id_prodotto`,`id_ordine`),
+  ADD KEY `id_ordine` (`id_ordine`);
+
+--
 -- Indici per le tabelle `utenti`
 --
 ALTER TABLE `utenti`
@@ -175,22 +204,22 @@ ALTER TABLE `utenti`
 --
 
 --
+-- AUTO_INCREMENT per la tabella `categorie`
+--
+ALTER TABLE `categorie`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT per la tabella `mense`
 --
 ALTER TABLE `mense`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT per la tabella `menu`
---
-ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT per la tabella `ordini`
 --
 ALTER TABLE `ordini`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5679;
 
 --
 -- AUTO_INCREMENT per la tabella `prodotti`
@@ -209,12 +238,6 @@ ALTER TABLE `utenti`
 --
 
 --
--- Limiti per la tabella `menu`
---
-ALTER TABLE `menu`
-  ADD CONSTRAINT `menu_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`);
-
---
 -- Limiti per la tabella `ordini`
 --
 ALTER TABLE `ordini`
@@ -226,6 +249,13 @@ ALTER TABLE `ordini`
 --
 ALTER TABLE `prodotti`
   ADD CONSTRAINT `prodotti_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`);
+
+--
+-- Limiti per la tabella `prodotti_ordini`
+--
+ALTER TABLE `prodotti_ordini`
+  ADD CONSTRAINT `prodotti_ordini_ibfk_1` FOREIGN KEY (`id_prodotto`) REFERENCES `prodotti` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `prodotti_ordini_ibfk_2` FOREIGN KEY (`id_ordine`) REFERENCES `ordini` (`id`) ON DELETE CASCADE;
 
 --
 -- Limiti per la tabella `utenti`
