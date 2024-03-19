@@ -2,8 +2,7 @@ import axios from "axios";
 import { sha256 } from "js-sha256";
 import { dataLog, dataReg, prodottoCarrello } from "../utils";
 
-const url =
-	(process.env.REACT_APP_HOSTNAME || "") + (process.env.REACT_APP_PORT || "");
+const url = process.env.REACT_APP_URL || "";
 
 //ok
 export async function loginUser(dati: dataLog) {
