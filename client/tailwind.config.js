@@ -49,9 +49,12 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         arancioneBordo: "var(--arancioneBordo)",
+        arancioneBordoHover: "var(--arancioneBordoHover)",
+        arancioneChiaro: "var(--arancioneChiaro)",
         gialloSfondo: "var(--gialloSfondo)",
         gialloSfondoHover: "var(--gialloSfondoHover)",
         verdeBordo: "var(--verdeBordo)",
+        verdeBordoHover: "var(--verdeBordoHover)",
       },
       borderRadius: {
         lg: `var(--radius)`,

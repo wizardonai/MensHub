@@ -54,7 +54,7 @@ const Filtri = ({
     return filtri.map((item, index) => {
       return (
         <div
-          className="bg-gialloSfondo h-[25px] border-2 border-arancioneBordo rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer"
+          className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
           key={index}
           onClick={filtroCliccato}
           id="divFiltro"
@@ -68,7 +68,7 @@ const Filtri = ({
   } else {
     return (
       <div
-        className="bg-gialloSfondo h-[25px] border-2 border-arancioneBordo rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer"
+        className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
         key={findIndex(filtro)}
         onClick={filtroCliccato}
         id="divFiltro"
@@ -77,6 +77,59 @@ const Filtri = ({
           {filtro}
         </p>
       </div>
+    );
+  }
+};
+
+const Prodotti = ({ filtro }: { filtro: string }) => {
+  const filtri = [
+    ["antipasto"],
+    ["primo"],
+    ["secondo"],
+    ["contorno"],
+    ["dolce"],
+    ["bibita"],
+  ];
+
+  if (filtro === "") {
+    ///////////////////////////////////////
+  } else {
+    return (
+      <>
+        <div className="bg-arancioneBordo h-[25px]  rounded-full flex items-center px-3 mr-[1%]">
+          <p className="capitalize">{filtro}</p>
+        </div>
+        <div style={css.prodottiContainer}>
+          <div className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]">
+            <img
+              src={hostnameProductor + "plus.png"}
+              style={{
+                filter:
+                  "brightness(0) saturate(100%) invert(95%) sepia(17%) saturate(206%) hue-rotate(349deg) brightness(92%) contrast(90%)",
+                width: "60px",
+                height: "60px",
+              }}
+            />
+          </div>
+          <div className="bg-arancioneBordo h-[150px] w-[225px] rounded-lg mt-[15px]  transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]">
+            <div className="flex items-center">
+              <div className="bg-verdeBordo h-[70px] w-[70px] mt-[10px] ml-[10px] mr-[10px]"></div>
+              <div className="mt-[10px]">
+                <p>
+                  Panna cotta <br />
+                  8.00€
+                </p>
+              </div>
+            </div>
+            <div className="ml-[10px] mt-[5px]">
+              <p>
+                Descrizione: ... <br />
+                Allergeni: ...
+              </p>
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
 };
@@ -92,76 +145,10 @@ const MenuPageProductor = () => {
       <div style={css.centerPage}>
         <div style={css.ricerca}></div>
         <div style={css.divCategorie}>
-          <div className="bg-gialloSfondo h-[25px] w-[25px] border-2 border-verdeBordo rounded-full flex items-center justify-center mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer">
-            <img
-              src={hostnameProductor + "plus.png"}
-              style={{
-                filter:
-                  "invert(50%) sepia(29%) saturate(651%) hue-rotate(54deg) brightness(93%) contrast(90%)",
-                width: "70%",
-              }}
-            />
-          </div>
           <Filtri filtro={filtro} setFiltro={setFiltro} />
         </div>
         <div style={css.container}>
-          <div className="bg-gialloSfondo h-[25px] border-2 border-arancioneBordo rounded-full flex items-center px-3 mr-[1%]">
-            <p>luca ching</p>
-          </div>
-          <div style={css.prodottiContainer}>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-verdeBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]">
-              <img
-                src={hostnameProductor + "plus.png"}
-                style={{
-                  filter:
-                    "invert(50%) sepia(29%) saturate(651%) hue-rotate(54deg) brightness(93%) contrast(90%)",
-                  width: "60px",
-                  height: "60px",
-                }}
-              />
-            </div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-          </div>
-          <div className="bg-gialloSfondo h-[25px]  border-2 border-arancioneBordo rounded-full flex items-center px-3 mr-[1%]">
-            <p>pizza</p>
-          </div>
-          <div style={css.prodottiContainer}>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-verdeBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]">
-              <img
-                src={hostnameProductor + "plus.png"}
-                style={{
-                  filter:
-                    "invert(50%) sepia(29%) saturate(651%) hue-rotate(54deg) brightness(93%) contrast(90%)",
-                  width: "60px",
-                  height: "60px",
-                }}
-              />
-            </div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-          </div>
-          <div className="bg-gialloSfondo h-[25px]  border-2 border-arancioneBordo rounded-full flex items-center px-3 mr-[1%]">
-            <p>dessert</p>
-          </div>
-          <div style={css.prodottiContainer}>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-verdeBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]">
-              <img
-                src={hostnameProductor + "plus.png"}
-                style={{
-                  filter:
-                    "invert(50%) sepia(29%) saturate(651%) hue-rotate(54deg) brightness(93%) contrast(90%)",
-                  width: "60px",
-                  height: "60px",
-                }}
-              />
-            </div>
-            <div className="bg-gialloSfondo h-[150px] w-[225px] border-[3px] border-arancioneBordo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover mr-[2%]"></div>
-          </div>
+          <Prodotti filtro={filtro} />
         </div>
       </div>
     </div>

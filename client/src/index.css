@@ -37,10 +37,13 @@
 
     --radius: 0.5rem;
 
-    --arancioneBordo: #de9629;
+    --arancioneBordo: #e59421;
+    --arancioneBordoHover: #d68a1e;
+    --arancioneChiaro: #e5a855;
     --gialloSfondo: #fffae7;
     --gialloSfondoHover: #ede9d8;
     --verdeBordo: #608b46;
+    --verdeBordoHover: #537d3e;
   }
 
   .dark {
