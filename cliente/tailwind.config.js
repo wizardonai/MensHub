@@ -96,7 +96,7 @@ module.exports = {
 					from: { width: "0%", display: "none" },
 					to: {
 						width: "25%",
-						display: "flex",
+						// display: "flex",
 						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
 						borderBottomLeftRadius: "0",
 					},
@@ -114,7 +114,7 @@ module.exports = {
 				swipeRightCarrelloEl: {
 					from: {
 						width: "25%",
-						display: "flex",
+						// display: "flex",
 						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
 						borderBottomLeftRadius: "0",
 					},
@@ -134,6 +134,7 @@ module.exports = {
 				navbar: "var(--navbarH)",
 				topbar: "var(--topbarH)",
 				container: "var(--containerH)",
+				containerProfile: "var(--containerProfileH)",
 			},
 		},
 	},

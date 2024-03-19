@@ -3,6 +3,9 @@ import { Container, Navbar, Topbar } from "../components/Components";
 import { Nullable, prodottoCarrello, urlImg } from "../utils";
 
 import deleteImg from "../img/delete.png";
+import { sendOrder } from "../scripts/fetch";
+import { toast } from "sonner";
+import { Toaster } from "../components/shadcn/Sonner";
 
 const Elemento = ({
 	item,
@@ -88,7 +91,7 @@ const Elemento = ({
 	return (
 		<div className='flex flex-row justify-start items-center'>
 			<div
-				className='w-full h-24 flex flex-row justify-start items-center rounded-2xl bg-arancioneScuro mb-3'
+				className='w-full h-[80px] flex flex-row justify-start items-center rounded-3xl bg-arancioneScuro mb-3'
 				onTouchStart={(e) => {
 					setEnd(null);
 					setStart(e.targetTouches[0].clientX);
@@ -103,26 +106,31 @@ const Elemento = ({
 				<img
 					src={urlImg + item.indirizzo_img}
 					alt={item.nome}
-					className='w-20 h-20'
+					className='w-[70px] h-[70px] ml-2'
 					id=''
 				/>
-				<p className='w-1/2 text-center text-white' id=''>
-					{item.nome}
-				</p>
+				<div className='w-1/2 flex flex-col items-center pl-1' id=''>
+					<p
+						id=''
+						className=' text-marrone w-full whitespace-nowrap overflow-hidden overflow-ellipsis'
+					>
+						{item.nome}
+					</p>
+					<p id='' className=' text-marrone w-full'>
+						{item.prezzo.toFixed(2)}€
+					</p>
+				</div>
 				<div
 					className='flex justify-center items-center flex-col w-1/4'
 					id='altriDati'
 				>
-					<p id='' className='text-white'>
-						{item.prezzo}€
-					</p>
 					<div
-						className='flex flex-row justify-evenly items-center w-full'
+						className='flex flex-row justify-center items-center w-full'
 						id=''
 					>
 						<p
 							id=''
-							className='text-white'
+							className='text-marrone text-2xl'
 							onClick={() => {
 								if (quantita === 1) return;
 								let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
@@ -135,16 +143,17 @@ const Elemento = ({
 								});
 
 								localStorage.setItem("cart", JSON.stringify(tmp));
+								setCarrello(tmp);
 							}}
 						>
 							-
 						</p>
-						<p id='' className='text-white'>
+						<p id='' className='text-marrone mx-2'>
 							{quantita}
 						</p>
 						<p
 							id=''
-							className='text-white'
+							className='text-marrone  text-xl'
 							onClick={() => {
 								let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 
@@ -156,6 +165,7 @@ const Elemento = ({
 								});
 
 								localStorage.setItem("cart", JSON.stringify(tmp));
+								setCarrello(tmp);
 							}}
 						>
 							+
@@ -164,7 +174,7 @@ const Elemento = ({
 				</div>
 			</div>
 			<div
-				className='h-24 justify-center hidden items-center clip-searchbtn bg-red-800 mb-3'
+				className='h-[80px] justify-center hidden items-center clip-searchbtn bg-red-800 mb-3'
 				onClick={() => {
 					let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 					tmp = tmp.filter((item2: prodottoCarrello) => item2.id !== item.id);
@@ -176,6 +186,14 @@ const Elemento = ({
 						" animate-swipeLeftCarrello",
 						""
 					);
+
+					//@ts-ignore
+					divtot.current.children["altriDati"].className =
+						//@ts-ignore
+						divtot.current.children["altriDati"].className.replace(
+							" hidden",
+							""
+						);
 					//@ts-ignore
 					bottoneElimina.current.className =
 						//@ts-ignore
@@ -189,7 +207,7 @@ const Elemento = ({
 				}}
 				ref={bottoneElimina}
 			>
-				<img src={deleteImg} alt='' className='w-[40px] h-[40px] ml-5' />
+				<img src={deleteImg} alt='' className='w-[40px] h-[40px] ml-7 mt-5' />
 			</div>
 		</div>
 	);
@@ -208,18 +226,54 @@ const Lista = ({
 
 const Cart = () => {
 	const [carrello, setCarrello] = useState(
-		JSON.parse(localStorage.getItem("cart") || "{}")
+		JSON.parse(localStorage.getItem("cart") || "{}") as Array<prodottoCarrello>
 	);
+
+	const [totale, setTotale] = useState(0);
+	useEffect(() => {
+		let tmp = 0;
+		carrello.forEach((item: prodottoCarrello) => {
+			tmp += item.prezzo * item.quantita;
+		});
+
+		setTotale(tmp);
+	}, [carrello]);
 
 	return (
 		<>
 			<Topbar page='cart' name={""} />
 			<Container>
-				<div className='w-full h-full flex items-center flex-col'>
+				<div className='h-[92%] w-full flex items-center flex-col'>
 					<div className='w-[80%]'>
 						<Lista carrello={carrello} setCarrello={setCarrello} />
 					</div>
 				</div>
+				<div className='h-[8%] w-full flex flex-row justify-evenly items-center border-t-2 border-dashed'>
+					<div className='text-xl text-marrone'>
+						Totale: {totale.toFixed(2)}€
+					</div>
+					<div
+						className='bg-[#5c8c46] p-[6px] px-6 rounded-3xl text-background text-xl'
+						onClick={() => {
+							if (carrello.length === 0) {
+								toast.error("Il carrello è vuoto");
+								return;
+							}
+							sendOrder(
+								carrello,
+								JSON.parse(localStorage.getItem("token") || "{}")
+							).then((res) => {
+								if (res == "Ordine aggiunto") {
+									localStorage.setItem("cart", "[]");
+									setCarrello([]);
+								}
+							});
+						}}
+					>
+						Ordina
+					</div>
+				</div>
+				<Toaster position='top-center' richColors />
 			</Container>
 			<Navbar page='cart' />
 		</>

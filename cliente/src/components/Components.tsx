@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import topbarProfile from "../img/topbarProfile.png";
+import { cn } from "./shadcn/utils";
 
 export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	if (page === "home") {
@@ -22,8 +24,16 @@ export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	);
 };
 
-export const Container = ({ children }: { children: React.ReactNode }) => (
-	<div className='w-full h-container overflow-y-scroll'>{children}</div>
+export const Container = ({
+	children,
+	className,
+}: {
+	children: React.ReactNode;
+	className?: string;
+}) => (
+	<div className={cn("w-full h-container overflow-y-scroll", className)}>
+		{children}
+	</div>
 );
 
 export const Navbar = ({ page }: { page: string }) => {
@@ -41,8 +51,6 @@ export const Navbar = ({ page }: { page: string }) => {
 		let h = window.screen.height - 20;
 		setHeight(h / 10 - 20);
 	});
-
-	const [width, setWidth] = useState(0);
 
 	return (
 		<div className='w-full h-navbar flex flex-row justify-evenly items-center'>

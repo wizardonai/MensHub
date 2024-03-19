@@ -52,7 +52,9 @@ const Listone = ({
 								className='w-full h-[50px] flex justify-center items-center'
 								id=''
 							>
-								<p className='text-[16px]'>{item.nome}</p>
+								<p className='text-[16px] text-marrone font-bold tracking-tight'>
+									{item.nome}
+								</p>
 							</div>
 							<div
 								className='flex flex-row h-[35px] w-full justify-center items-center'
@@ -62,7 +64,9 @@ const Listone = ({
 									className='w-[50%] h-full flex justify-center items-center'
 									id=''
 								>
-									<p className='text-[15px]'>{item.prezzo.toFixed(2)}€</p>
+									<p className='text-[15px] text-marrone'>
+										{item.prezzo.toFixed(2)}€
+									</p>
 								</div>
 								<div
 									className='w-[50%] h-full flex justify-center items-center'
@@ -118,10 +122,10 @@ const Listone = ({
 												localStorage.setItem("cart", JSON.stringify(carrello));
 											}
 
-											toast("Aggiunto al carrello!");
+											toast.success("Aggiunto al carrello!");
 										}}
 									>
-										<p className='text-[18px]'>+</p>
+										<p className='text-[18px] text-marrone'>+</p>
 									</div>
 								</div>
 							</div>
@@ -165,26 +169,18 @@ const Filtri = ({
 			filtroDivCliccato = filtroDivCliccato.parentNode;
 		}
 
-		if (filtro === "") {
-			console.log(filtroDivCliccato.className);
-
-			filtroDivCliccato.className += " cliccatoFiltro";
-
-			setFiltro(filtroDivCliccato.children["filtroDaApplicare"].innerHTML);
-		} else {
-			filtroDivCliccato.className = filtroDivCliccato.className.replace(
-				" cliccatoFiltro",
-				""
-			);
-			setFiltro("");
-		}
+		setFiltro(
+			filtro === ""
+				? filtroDivCliccato.children["filtroDaApplicare"].innerHTML
+				: ""
+		);
 	};
 
 	if (filtro === "") {
 		return filtri.map((item, index) => {
 			return (
 				<div
-					className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[15px] bg-arancioneChiaro'
+					className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[10px] bg-arancioneChiaro'
 					key={index}
 					onClick={filtroCliccato}
 					id='divFiltro'
@@ -196,7 +192,7 @@ const Filtri = ({
 						<img src={item[1]} alt='' className='h-[32px] w-[32px]' id='' />
 					</div>
 					<p
-						className='text-white capitalize text-[16px]'
+						className='text-marrone capitalize text-[16px]'
 						id='filtroDaApplicare'
 					>
 						{item[0]}
@@ -207,7 +203,7 @@ const Filtri = ({
 	} else {
 		return (
 			<div
-				className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[15px] bg-arancioneChiaro'
+				className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[15px] bg-arancioneScuro'
 				key={findIndex(filtro)}
 				onClick={filtroCliccato}
 				id='divFiltro'
@@ -223,7 +219,10 @@ const Filtri = ({
 						id=''
 					/>
 				</div>
-				<p className='text-white capitalize text-[16px]' id='filtroDaApplicare'>
+				<p
+					className='text-marrone capitalize text-[16px]'
+					id='filtroDaApplicare'
+				>
 					{filtro}
 				</p>
 			</div>
@@ -274,7 +273,7 @@ const Searchbar = ({
 				<Input
 					type='text'
 					onChange={onChangeSearch}
-					className='bg-biancoLatte h-[53px] rounded-l-[40px] rounded-r-none clip-searchbar border-arancioneScuro border-[3px] pr-6 w-full focus-visible:ring-0 focus-visible:ring-offset-0'
+					className='bg-biancoLatte h-[53px] rounded-l-[40px] rounded-r-none clip-searchbar border-arancioneScuro border-[3px] pr-6 w-full focus-visible:ring-0 focus-visible:ring-offset-0 text-marrone'
 				/>
 				<div className='h-[58px] w-[3px] bg-arancioneScuro rotate-[32.10deg] relative right-[20px]'></div>
 			</div>
@@ -319,7 +318,7 @@ const Homepage = ({ username }: { username: string }) => {
 					setFilteredProducts={setFilteredProducts}
 				/>
 				<div
-					className='h-[50px] w-[100%] overflow-x-scroll overflow-y-hidden flex flex-row items-center flex-nowrap p-[1svw] scrollbar-0 my-[10px]'
+					className='h-[50px] w-[100%] overflow-x-scroll overflow-y-hidden flex flex-row items-center flex-nowrap p-[2svw] scrollbar-0 my-[10px]'
 					id='tuttiFiltri'
 				>
 					<Filtri filtro={filtro} setFiltro={setFiltro} />
@@ -332,7 +331,7 @@ const Homepage = ({ username }: { username: string }) => {
 				</div>
 			</Container>
 			<Navbar page='home' />
-			<Toaster position='top-center' />
+			<Toaster position='top-center' richColors />
 		</>
 	);
 };

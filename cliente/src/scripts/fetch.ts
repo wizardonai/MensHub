@@ -1,6 +1,6 @@
 import axios from "axios";
 import { sha256 } from "js-sha256";
-import { dataLog, dataReg } from "../utils";
+import { dataLog, dataReg, prodottoCarrello } from "../utils";
 
 const url =
 	(process.env.REACT_APP_HOSTNAME || "") + (process.env.REACT_APP_PORT || "");
@@ -92,6 +92,7 @@ export async function getProfilo(token: string) {
 	return response;
 }
 
+//ok
 export async function getProdotti(token: { token: string }) {
 	let response;
 
@@ -116,8 +117,9 @@ export async function getProdotti(token: { token: string }) {
 	return response;
 }
 
+//ok
 export async function sendOrder(
-	carrello: Array<object>,
+	carrello: Array<prodottoCarrello>,
 	token: { token: string }
 ) {
 	let response;
