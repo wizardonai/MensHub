@@ -81,7 +81,11 @@ export const Navbar = ({ page }: { page: string }) => {
 						if (page !== "cart") navigate("/cart");
 					}}
 				>
-					{page === "cart" ? <p className='text-white text-xl'>CART</p> : ""}
+					{page === "cart" ? (
+						<p className='text-white text-xl'>CARRELLO</p>
+					) : (
+						""
+					)}
 				</div>
 				<div
 					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center`}
@@ -95,7 +99,11 @@ export const Navbar = ({ page }: { page: string }) => {
 						if (page !== "profile") navigate("/profile");
 					}}
 				>
-					{page === "profile" ? <p className='text-white text-xl'>PROF</p> : ""}
+					{page === "profile" ? (
+						<p className='text-white text-xl'>PROFILO</p>
+					) : (
+						""
+					)}
 				</div>
 			</div>
 		</div>

@@ -11,6 +11,7 @@ import Cart from "./pages/Cart";
 import { useLocalStorage } from "usehooks-ts";
 import Profile from "./pages/Profile";
 import { getProdotti, getProfilo } from "./scripts/fetch";
+import ProfilePages from "./pages/ProfilePages";
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", false);
@@ -52,6 +53,13 @@ function App() {
 			{
 				path: "/profile",
 				element: <Profile setLoggato={setLoggato} />,
+			},
+			{
+				path: "/profile/:page",
+				element: <ProfilePages />,
+				loader: async ({ params }) => {
+					return params.page;
+				}
 			},
 			{
 				path: "*",

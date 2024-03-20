@@ -5,6 +5,8 @@ export const urlImg =
 	(process.env.REACT_APP_PORT || "") +
 	"/image/";
 
+export type Nullable<T> = T | null;
+
 export type dataLog = {
 	email: string;
 	password: string;
@@ -18,6 +20,7 @@ export type dataReg = {
 	is_produttore: boolean;
 	id_mensa: any;
 };
+
 export type typeProfilo = {
 	cognome: string;
 	email: string;
@@ -26,7 +29,7 @@ export type typeProfilo = {
 	id: number;
 	nome: string;
 };
-export type Nullable<T> = T | null;
+
 export type prodotto = {
 	allergeni: string;
 	categoria: string;
@@ -40,7 +43,6 @@ export type prodotto = {
 	nome: string;
 	prezzo: number;
 };
-
 type quantita = { quantita: number };
 export type prodottoCarrello = prodotto & quantita;
 
