@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
+import { useLoaderData } from "react-router-dom";
+import { prodotto } from "src/cliente/pages/Homepage";
 
 const Filtri = ({
   filtro,
@@ -81,7 +83,13 @@ const Filtri = ({
   }
 };
 
-const Prodotti = ({ filtro }: { filtro: string }) => {
+const Prodotti = ({
+  filtro,
+  products,
+}: {
+  filtro: string;
+  products: Array<prodotto>;
+}) => {
   const filtri = [
     ["antipasto"],
     ["primo"],
@@ -90,9 +98,34 @@ const Prodotti = ({ filtro }: { filtro: string }) => {
     ["dolce"],
     ["bibita"],
   ];
-
   if (filtro === "") {
-    ///////////////////////////////////////
+    return filtri.map((item) => {
+      return products.map((product) => {
+        console.log(product.indirizzo_img);
+        return (
+          <div className="bg-arancioneBordo h-[150px] w-[225px] rounded-lg mt-[15px]  transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]">
+            <div className="flex items-center">
+              <div className=" h-[70px] w-[70px] mt-[10px] ml-[10px] mr-[10px]">
+                <img src={hostnameProductor + product.indirizzo_img} />
+              </div>
+              <div className="mt-[10px]">
+                <p>
+                  {product.nome}
+                  <br />
+                  {product.prezzo} €
+                </p>
+              </div>
+            </div>
+            <div className="ml-[10px] mt-[5px]">
+              <p>
+                Descrizione: ... <br />
+                Allergeni: ...
+              </p>
+            </div>
+          </div>
+        );
+      });
+    });
   } else {
     return (
       <>
@@ -116,7 +149,7 @@ const Prodotti = ({ filtro }: { filtro: string }) => {
               <div className="bg-verdeBordo h-[70px] w-[70px] mt-[10px] ml-[10px] mr-[10px]"></div>
               <div className="mt-[10px]">
                 <p>
-                  Panna cotta <br />
+                  {products[2].nome} <br />
                   8.00€
                 </p>
               </div>
@@ -135,7 +168,21 @@ const Prodotti = ({ filtro }: { filtro: string }) => {
 };
 
 const MenuPageProductor = () => {
+  const products: any = useLoaderData();
   const [filtro, setFiltro] = useState("");
+  const [assegnato, setAssegnato] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState(
+    [] as Array<prodotto>
+  );
+
+  if (!products) {
+    return <p>CARICAMENTO</p>;
+  }
+
+  if (!assegnato) {
+    setFilteredProducts(products);
+    setAssegnato(true);
+  }
 
   return (
     <div className="page" style={css.page}>
@@ -148,7 +195,7 @@ const MenuPageProductor = () => {
           <Filtri filtro={filtro} setFiltro={setFiltro} />
         </div>
         <div style={css.container}>
-          <Prodotti filtro={filtro} />
+          <Prodotti filtro={filtro} products={filteredProducts} />
         </div>
       </div>
     </div>

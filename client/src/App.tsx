@@ -11,7 +11,6 @@ import RegisterPage from "./login/pages/RegisterPage";
 import { getProdotti } from "./cliente/scripts/fetch";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 import "./App.css";
 import HomePageProductor from "./produttore/pages/HomePageProductor";
 import MenuPageProductor from "./produttore/pages/MenuPageProductor";
@@ -131,7 +130,7 @@ const App = () => {
         path: "/productorMenu",
         element: <MenuPageProductor />,
         loader: async () => {
-          return { prodotti: await loadProdotti() };
+          return getProdotti();
         },
       },
       {
