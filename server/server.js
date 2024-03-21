@@ -159,26 +159,25 @@ server.post("/send/cart", (req, res) => {
 
 	let data = req.body.carrello;
 
-	let query = `INSERT INTO ordini (id_mensa,id_utente, str_prod, quantita, stato_ordine, data) VALUES(${data[0].id_mensa},${id_utente},"`;
-	data.forEach((item, index) => {
-		query += `${item.id}`;
-		if (index !== data.length - 1) query += ",";
-	});
-	query += `","`;
-	data.forEach((item, index) => {
-		query += `${item.quantita}`;
-		if (index !== data.length - 1) query += ",";
-	});
-
-	let now = new Date();
-	let nowFormatted = now.toISOString().replace("T", " ").slice(0, -1);
-
-	query += `","attivo","` + nowFormatted + `");`;
+	let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'attivo', ${id_utente});`;
 
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
-		res.send("Ordine aggiunto");
-		res.end();
+
+		const id_ordine = result.insertId;
+
+		let prodottiOrdiniQuery = `INSERT INTO prodotti_ordini (id_prodotto, id_ordine, quantita) VALUES`;
+
+		data.forEach((item, index) => {
+			prodottiOrdiniQuery += ` (${item.id}, ${id_ordine}, ${item.quantita})`;
+			if (index !== data.length - 1) prodottiOrdiniQuery += ",";
+		});
+
+		connection.query(prodottiOrdiniQuery, (err, result) => {
+			if (err) throw new Error(err);
+			res.send("Ordine aggiunto");
+			res.end();
+		});
 	});
 });
 
