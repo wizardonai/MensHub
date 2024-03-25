@@ -261,7 +261,7 @@ const Cart = () => {
 							}
 							sendOrder(
 								carrello,
-								JSON.parse(localStorage.getItem("token") || "{}")
+								JSON.parse(localStorage.getItem("token") || '{"token": "scu"}')
 							).then((res) => {
 								if (res == "Ordine aggiunto") {
 									localStorage.setItem("cart", "[]");

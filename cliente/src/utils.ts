@@ -26,6 +26,15 @@ export type typeProfilo = {
 	id: number;
 	nome: string;
 };
+export type ordine = {
+	data: string;
+	id_ordine: number;
+	prodotti: Array<{
+		id: number;
+		quantita: number;
+	}>;
+	stato_ordine: string;
+};
 
 export type prodotto = {
 	allergeni: string;

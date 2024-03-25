@@ -55,56 +55,89 @@ export const Navbar = ({ page }: { page: string }) => {
 	return (
 		<div className='w-full h-navbar flex flex-row justify-evenly items-center'>
 			<div className='w-[90%] h-full flex flex-row justify-evenly items-center'>
-				<div
-					className={`bg-marrone flex justify-center items-center`}
-					style={{
-						width: page === "home" ? height * 3 + "px" : height + "px",
-						borderRadius: page === "home" ? "28px" : "50%",
-						height: height + "px",
-					}}
-					ref={buttons.home}
-					onClick={(e) => {
-						if (page !== "home") navigate("/home");
-					}}
-				>
-					{page === "home" ? <p className='text-white text-xl'>HOME</p> : ""}
-				</div>
-				<div
-					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center`}
-					style={{
-						width: page === "cart" ? height * 3 + "px" : height + "px",
-						borderRadius: page === "cart" ? "28px" : "50%",
-						height: height + "px",
-					}}
-					ref={buttons.cart}
-					onClick={(e) => {
-						if (page !== "cart") navigate("/cart");
-					}}
-				>
-					{page === "cart" ? (
-						<p className='text-white text-xl'>CARRELLO</p>
-					) : (
-						""
-					)}
-				</div>
-				<div
-					className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center`}
-					style={{
-						width: page === "profile" ? height * 3 + "px" : height + "px",
-						borderRadius: page === "profile" ? "28px" : "50%",
-						height: height + "px",
-					}}
-					ref={buttons.profile}
-					onClick={(e) => {
-						if (page !== "profile") navigate("/profile");
-					}}
-				>
-					{page === "profile" ? (
-						<p className='text-white text-xl'>PROFILO</p>
-					) : (
-						""
-					)}
-				</div>
+				{page === "product" ? (
+					<>
+						<div
+							className={`bg-marrone flex justify-center items-center`}
+							style={{
+								width: height + "px",
+								borderRadius: "28px",
+								height: height + "px",
+							}}
+							ref={buttons.home}
+						>
+							<p className='text-white text-xl'>X</p>
+						</div>
+						<div
+							className={`bg-marrone flex justify-center items-center`}
+							style={{
+								width: height * 4 + "px",
+								borderRadius: "28px",
+								height: height + "px",
+							}}
+							ref={buttons.home}
+						>
+							<p className='text-white text-xl'>Aggiungi al carrello</p>
+						</div>
+					</>
+				) : (
+					<>
+						<div
+							className={`bg-marrone flex justify-center items-center`}
+							style={{
+								width: page === "home" ? height * 3 + "px" : height + "px",
+								borderRadius: page === "home" ? "28px" : "50%",
+								height: height + "px",
+							}}
+							ref={buttons.home}
+							onClick={(e) => {
+								if (page !== "home") navigate("/home");
+							}}
+						>
+							{page === "home" ? (
+								<p className='text-white text-xl'>HOME</p>
+							) : (
+								""
+							)}
+						</div>
+						<div
+							className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center`}
+							style={{
+								width: page === "cart" ? height * 3 + "px" : height + "px",
+								borderRadius: page === "cart" ? "28px" : "50%",
+								height: height + "px",
+							}}
+							ref={buttons.cart}
+							onClick={(e) => {
+								if (page !== "cart") navigate("/cart");
+							}}
+						>
+							{page === "cart" ? (
+								<p className='text-white text-xl'>CARRELLO</p>
+							) : (
+								""
+							)}
+						</div>
+						<div
+							className={`h-[85%] bg-marrone rounded-[28px] flex justify-center items-center`}
+							style={{
+								width: page === "profile" ? height * 3 + "px" : height + "px",
+								borderRadius: page === "profile" ? "28px" : "50%",
+								height: height + "px",
+							}}
+							ref={buttons.profile}
+							onClick={(e) => {
+								if (page !== "profile") navigate("/profile");
+							}}
+						>
+							{page === "profile" ? (
+								<p className='text-white text-xl'>PROFILO</p>
+							) : (
+								""
+							)}
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);

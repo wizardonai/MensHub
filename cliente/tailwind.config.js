@@ -135,6 +135,7 @@ module.exports = {
 				topbar: "var(--topbarH)",
 				container: "var(--containerH)",
 				containerProfile: "var(--containerProfileH)",
+				containerProduct: "var(--containerProductH)",
 			},
 		},
 	},

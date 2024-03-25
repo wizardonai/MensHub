@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { Container, Navbar, Topbar } from "../components/Components";
 import { useState } from "react";
 import { prodotto, sleep, urlImg } from "../utils";
@@ -21,6 +21,8 @@ const Listone = ({
 	filteredProducts: Array<prodotto>;
 	filtro: string;
 }) => {
+	const navigate = useNavigate();
+
 	// eslint-disable-next-line
 	return filteredProducts.map((item) => {
 		if (filtro === "" || item.categoria === filtro) {
@@ -40,6 +42,7 @@ const Listone = ({
 						<div
 							className='rounded-[50%] bg-[#eaeaea] w-[102px] h-[102px] flex justify-center items-center relative'
 							id=''
+							onClick={() => navigate("/product/" + item.id)}
 						>
 							<img
 								src={urlImg + item.indirizzo_img}
@@ -51,6 +54,7 @@ const Listone = ({
 							<div
 								className='w-full h-[50px] flex justify-center items-center'
 								id=''
+								onClick={() => navigate("/product/" + item.id)}
 							>
 								<p className='text-[16px] text-marrone font-bold tracking-tight'>
 									{item.nome}
@@ -63,6 +67,7 @@ const Listone = ({
 								<div
 									className='w-[50%] h-full flex justify-center items-center'
 									id=''
+									onClick={() => navigate("/product/" + item.id)}
 								>
 									<p className='text-[15px] text-marrone'>
 										{item.prezzo.toFixed(2)}€
@@ -292,20 +297,25 @@ const Searchbar = ({
 	);
 };
 
-const Homepage = ({ username }: { username: string }) => {
-	const produtcs: any = useLoaderData();
+const Homepage = ({
+	username,
+	products,
+}: {
+	username: string;
+	products: Array<prodotto>;
+}) => {
 	const [assegnato, setAssegnato] = useState(false);
 	const [filteredProducts, setFilteredProducts] = useState(
 		[] as Array<prodotto>
 	);
 	const [filtro, setFiltro] = useState("");
 
-	if (!produtcs) {
+	if (products.length === 0) {
 		return <p>CARICAMENTO</p>;
 	}
 
 	if (!assegnato) {
-		setFilteredProducts(produtcs);
+		setFilteredProducts(products);
 		setAssegnato(true);
 	}
 
@@ -314,7 +324,7 @@ const Homepage = ({ username }: { username: string }) => {
 			<Topbar page='home' name={username} />
 			<Container>
 				<Searchbar
-					products={produtcs}
+					products={products}
 					setFilteredProducts={setFilteredProducts}
 				/>
 				<div

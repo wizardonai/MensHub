@@ -41,6 +41,7 @@
 		--navbarH: 10%;
 		--containerH: calc(100% - var(--topbarH) - var(--navbarH));
 		--containerProfileH: calc(100% - var(--navbarH) - 150px);
+		--containerProductH: calc(100% - var(--navbarH));
 		--marrone: #4f3431;
 		--arancioneScuro: #e39423;
 		--arancioneChiaro: #e6a854;

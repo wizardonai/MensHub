@@ -146,3 +146,29 @@ export async function sendOrder(
 
 	return response;
 }
+
+//ok
+export async function getCronologia(token: { token: string }) {
+	let response;
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/request/orders`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + token.token,
+		},
+	};
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}
