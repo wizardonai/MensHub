@@ -52,6 +52,12 @@ export type prodotto = {
 type quantita = { quantita: number };
 export type prodottoCarrello = prodotto & quantita;
 
+export type mensa = {
+	id: number;
+	indirizzo: string;
+	nome: string;
+};
+
 export function getFilter(resolvedTheme: string, hex: Nullable<string>) {
 	let rgb: number[] = [];
 	if (hex !== null) {

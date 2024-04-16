@@ -172,3 +172,28 @@ export async function getCronologia(token: { token: string }) {
 
 	return response;
 }
+
+//
+export async function getMense() {
+	let response;
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/request/mense`,
+		headers: {
+			"Content-Type": "application/json",
+		},
+	};
+
+	await axios
+		.request(config)
+		.then((res: any) => {
+			response = res.data;
+		})
+		.catch((err: any) => {
+			console.log(err);
+		});
+
+	return response;
+}

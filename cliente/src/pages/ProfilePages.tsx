@@ -1,4 +1,4 @@
-import { useLoaderData, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ordine, prodotto, typeProfilo, urlImg } from "../utils";
 import { useState } from "react";
 import { getCronologia } from "../scripts/fetch";
@@ -9,7 +9,6 @@ import {
 	SectionToggleItem,
 	SectionToggleTrigger,
 } from "../components/shadcn/SectionToggle";
-import { JsxElement } from "typescript";
 
 const DatiUtentePage = () => {
 	return <p>dati utente</p>;

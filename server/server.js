@@ -127,6 +127,20 @@ server.post("/request/products", (req, res) => {
 	);
 });
 
+server.post("/request/mense", (req, res) => {
+	let query = `SELECT * FROM mense;`;
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+		if (result.length > 0) {
+			res.send(result);
+			res.end();
+		} else {
+			res.send("nessuna mensa trovata");
+			res.end();
+		}
+	});
+});
+
 server.post("/request/categories", (req, res) => {
 	let query = `SELECT * FROM categorie;`;
 	connection.query(query, (err, result) => {
@@ -325,67 +339,6 @@ server.post("/request/profile", (req, res) => {
 });
 
 server.post("/request/orders", (req, res) => {
-    let token = req.headers.authorization;
-    let id_utente = "";
-
-    jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
-        if (err) {
-            res.send("errore nel token");
-            res.end();
-        } else {
-            console.log("Decoded: " + decoded);
-            id_utente = decoded.id;
-
-            let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
-
-            connection.query(query, (err, result) => {
-                if (err) throw new Error(err);
-
-                let id_mensa = result[0].id_mensa;
-
-                let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
-                                JOIN prodotti_ordini AS po ON o.id = po.id_ordine
-                                WHERE id_utente="${id_utente}" AND id_mensa="${id_mensa}"
-                                ORDER BY o.data, po.id_ordine;`;
-
-                connection.query(query, (err, result) => {
-                    if (err) throw new Error(err);
-
-                    let orders = [];
-                    let currentOrder = null;
-
-                    result.forEach(row => {
-                        if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
-                            currentOrder = {
-                                id_ordine: row.id_ordine,
-                                stato_ordine: row.stato_ordine,
-                                data: row.data,
-                                prodotti: []
-                            };
-                            orders.push(currentOrder);
-                        }
-
-                        currentOrder.prodotti.push({
-                            id: row.id_prodotto,
-                            quantita: row.quantita
-                        });
-                    });
-
-                    if (orders.length > 0) {
-                        res.send(orders);
-                    } else {
-                        res.send("L'utente non ha ordini attivi");
-                    }
-                    res.end();
-                });
-            });
-        }
-    });
-});
-
-
-server.post("/producer/get/products", (req, res) => {
-
 	let token = req.headers.authorization;
 	let id_utente = "";
 
@@ -395,86 +348,119 @@ server.post("/producer/get/products", (req, res) => {
 			res.end();
 		} else {
 			id_utente = decoded.id;
+
+			let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
+								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
+								WHERE id_utente="${id_utente}"
+								ORDER BY o.data, po.id_ordine;`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				let orders = [];
+				let currentOrder = null;
+
+				result.forEach(row => {
+					if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
+						currentOrder = {
+							id_ordine: row.id_ordine,
+							stato_ordine: row.stato_ordine,
+							data: row.data,
+							prodotti: []
+						};
+						orders.push(currentOrder);
+					}
+
+					currentOrder.prodotti.push({
+						id: row.id_prodotto,
+						quantita: row.quantita
+					});
+				});
+
+				if (orders.length > 0) {
+					res.send(orders);
+				} else {
+					res.send("L'utente non ha ordini attivi");
+				}
+				res.end();
+			});
 		}
 	});
+});
 
-	let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
 
-	connection.query(query, (err, result) => {
-		if (err) throw new Error(err);
+server.post("/producer/get/products", (req, res) => {
+	let token = req.headers.authorization;
+	let id_mensa = "";
 
-		const id_mensa = result[0].id_mensa;
-
-		connection.query(
-			"SELECT * FROM prodotti where id_mensa=" + id_mensa,
-			(err, result) => {
-				if (err) throw new Error(err);
-				res.header("Access-Control-Allow-Origin", "*");
-				res.send(result);
-				res.end();
-			}
-		);
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("errore nel token");
+			res.end();
+		} else {
+			id_mensa = decoded.id_mensa;
+			connection.query(
+				"SELECT * FROM prodotti where id_mensa=" + id_mensa + " ORDER BY categoria, nome",
+				(err, result) => {
+					if (err) throw new Error(err);
+					res.header("Access-Control-Allow-Origin", "*");
+					res.send(result);
+					res.end();
+				}
+			);
+		}
 	});
 });
 
 
 server.post("/producer/get/orders", (req, res) => {
 	let token = req.headers.authorization;
-    let id_utente = "";
+	let id_utente = "";
 
-    jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
-        if (err) {
-            res.send("errore nel token");
-            res.end();
-        } else {
-            console.log("Decoded: " + decoded);
-            id_utente = decoded.id;
-            let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("errore nel token");
+			res.end();
+		} else {
+			id_utente = decoded.id;
+			let query = `SELECT id_ordine,id_utente, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
+								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
+								WHERE id_utente="${id_utente}"
+								ORDER BY o.data, po.id_ordine;`;
 
-            connection.query(query, (err, result) => {
-                if (err) throw new Error(err);
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
 
-                let id_mensa = result[0].id_mensa;
+				let orders = [];
+				let currentOrder = null;
 
-                let query = `SELECT id_ordine,id_utente, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
-                                JOIN prodotti_ordini AS po ON o.id = po.id_ordine
-                                WHERE id_mensa="${id_mensa}"
-                                ORDER BY o.data, po.id_ordine;`;
+				result.forEach(row => {
+					if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
+						currentOrder = {
+							id_ordine: row.id_ordine,
+							id_utente: row.id_utente,
+							stato_ordine: row.stato_ordine,
+							data: row.data,
+							prodotti: []
+						};
+						orders.push(currentOrder);
+					}
 
-                connection.query(query, (err, result) => {
-                    if (err) throw new Error(err);
+					currentOrder.prodotti.push({
+						id: row.id_prodotto,
+						quantita: row.quantita
+					});
+				});
 
-                    let orders = [];
-                    let currentOrder = null;
-
-                    result.forEach(row => {
-                        if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
-                            currentOrder = {
-                                id_ordine: row.id_ordine,
-								id_utente: row.id_utente,
-                                stato_ordine: row.stato_ordine,
-                                data: row.data,
-                                prodotti: []
-                            };
-                            orders.push(currentOrder);
-                        }
-
-                        currentOrder.prodotti.push({
-                            id: row.id_prodotto,
-                            quantita: row.quantita
-                        });
-                    });
-
-                    if (orders.length > 0) {
-                        res.send(orders);
-                    } else {
-                        res.send("L'utente non ha ordini attivi");
-                    }
-                    res.end();
-                });
-            });
-        }
-    });
+				if (orders.length > 0) {
+					res.send(orders);
+				} else {
+					res.send("L'utente non ha ordini attivi");
+				}
+				res.end();
+			});
+		}
+	});
 });
 
 server.post("/producer/edit/product", (req, res) => {
@@ -506,8 +492,7 @@ server.post("/producer/edit/product", (req, res) => {
 
 //serve id del prodotto nella req per caricare immagine
 //richiesta da fare con form-data
-server.post(
-	"/producer/editWithImg/product",
+server.post("/producer/editWithImg/product",
 	upload2.single("image"),
 	(req, res) => {
 		const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
@@ -733,8 +718,6 @@ server.post("/producer/delete/product", (req, res) => {
 		}
 	});
 });
-
-
 
 
 function renameImage(nome_file, id_prodotto) {
