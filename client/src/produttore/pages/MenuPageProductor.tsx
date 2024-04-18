@@ -94,6 +94,8 @@ const Filtri = ({
 };
 
 const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
+  const [popup, setPopup] = useState(false);
+
   const filtri = [
     { nome: "antipasto", selected: false },
     { nome: "primo", selected: false },
@@ -103,6 +105,8 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
     { nome: "bibita", selected: false },
   ];
 
+  console.log(popup);
+
   if (filtro !== "") {
     const prodottiCategoria = dati.filter(
       (item: prodotto) => item.categoria === filtro
@@ -110,7 +114,10 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
 
     return (
       <div className="flex">
-        <div className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]">
+        <div
+          onClick={() => setPopup(true)}
+          className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
+        >
           <img
             src={hostnameProductor + "plus.png"}
             style={{
@@ -170,7 +177,10 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
             </div>
           </div>
           <div className="flex">
-            <div className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]">
+            <div
+              onClick={() => setPopup(true)}
+              className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
+            >
               <img
                 src={hostnameProductor + "plus.png"}
                 style={{
@@ -215,6 +225,29 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
               }
             })}
           </div>
+          {popup ? (
+            <div className="fixed flex justify-center items-center inset-0">
+              <div className="bg-gialloSfondo w-[35%] h-[55%] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px]">
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-bold text-xl pl-[10px] pt-[10px]">
+                      Aggiungi una pietanza
+                    </p>
+                  </div>
+                  <button
+                    className="bg-arancioneChiaro w-[30px] h-[30px] mr-[5px] mt-[5px] rounded-full flex items-center justify-center hover:cursor-pointer"
+                    onClick={() => setPopup(false)}
+                  >
+                    <img
+                      src={hostnameProductor + "X.png"}
+                      alt="close"
+                      className="w-[20px] h-[20px]"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       );
     });
