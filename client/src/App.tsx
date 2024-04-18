@@ -2,8 +2,6 @@ import { redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HomePage from "./cliente/pages/Homepage";
 import Menu from "./cliente/pages/Menu";
-import Orders from "./cliente/pages/Orders";
-import Profile from "./cliente/pages/Profile";
 import ProductPage from "./cliente/pages/ProductPage";
 import LoginPage from "./login/pages/LoginPage";
 import RegisterPage from "./login/pages/RegisterPage";
@@ -65,25 +63,6 @@ export var Colori = {
 export const sleep = (delay: number) =>
   new Promise((resolve) => setTimeout(resolve, delay));
 
-const loadProdotti = async () => {
-  function aggiungiHostname(prodotti: ArrayProdotti) {
-    let tmp: ArrayProdotti = prodotti;
-
-    tmp.prodotti.forEach((item) => {
-      item.indirizzo_img = hostname + item.indirizzo_img;
-      item.nome = item.nome.toLowerCase();
-    });
-
-    return tmp;
-  }
-
-  // @ts-ignore
-  let res: ArrayProdotti = { prodotti: await getProdotti() };
-
-  let elencoProdotti: ArrayProdotti = aggiungiHostname(res);
-  return elencoProdotti;
-};
-
 const App = () => {
   //loggato o no
   const [utente, setUtente] = useState("no");
@@ -108,7 +87,6 @@ const App = () => {
     refreshStorage();
     window.addEventListener("storage", () => {
       setUtente(localStorage.getItem("login") || "");
-      // console.log(localStorage.getItem("login"));
     });
   }, []);
 
@@ -123,30 +101,23 @@ const App = () => {
       {
         path: "/productorHome",
         element: <HomePageProductor />,
-        loader: async () => {
-          return { prodotti: await loadProdotti() };
-        },
       },
       {
         path: "/productorMenu",
         element: <MenuPageProductor />,
         loader: async () => {
-          return { prodotti: await loadProdotti() };
+          return getProdotti(
+            JSON.parse(localStorage.getItem("token") || '{"token":"asd"}')
+          );
         },
       },
       {
         path: "/balance",
         element: <Balance />,
-        loader: async () => {
-          return { prodotti: await loadProdotti() };
-        },
       },
       {
         path: "/productorProfile",
         element: <ProfileProductor />,
-        loader: async () => {
-          return { prodotti: await loadProdotti() };
-        },
       },
       {
         path: "*",
@@ -181,8 +152,3 @@ const App = () => {
 };
 
 export default App;
-
-/*cose da implementare
-
-- implementare il pulsante aggiungi al carrello con la dark mode
-*/

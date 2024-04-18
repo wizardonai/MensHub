@@ -1,6 +1,6 @@
 import React from "react";
 import { Checkbox } from "../../../shadcn/CheckBox";
-import { styleMap } from "src/App";
+import { hostnameProductor, styleMap } from "src/App";
 
 const OrdersTable = ({ colore }: { colore: string }) => {
   return (
@@ -15,58 +15,45 @@ const OrdersTable = ({ colore }: { colore: string }) => {
         border: "10px solid " + colore,
       }}
     >
+      <div style={css.ordine}>
+        <p className="text-2xl w-1/2">01234</p>
+        {/* testo a sistra */}
+        <p className="text-2xl relative w-1/2 text-right">x4</p>
+        <p className="w-1/2">11:56</p>
+        <div className="w-1/2 relative flex justify-end">
+          <p className="pr-1">pagato </p>
+          <img src={hostnameProductor + "check.png"} style={css.check} />
+        </div>
+      </div>
       <div style={css.ordine}></div>
       <div style={css.ordine}></div>
       <div style={css.ordine}></div>
       <div style={css.ordine}></div>
-      <div style={css.ordine}></div>
-      {/* <table style={css.tabella}>
-        <thead>
-          <tr style={css.tr}>
-            <th></th>
-            <th>Codice</th>
-            <th>Ora</th>
-            <th>Totale</th>
-            <th>Pagato</th>
-            <th>:</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style={css.tr}>
-            <td>
-              <Checkbox />
-            </td>
-            <td>6969</td>
-            <td>12:12</td>
-            <td>69,69€</td>
-            <td>X</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>
-              <Checkbox />
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table> */}
     </div>
   );
 };
 
 const css: styleMap = {
   ordine: {
-    backgroundColor: "#fceeed",
+    backgroundColor: "#fffae7",
     width: "90%",
     height: "10svh",
-    borderRadius: "25px",
+    borderRadius: "15px",
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: "5px 15px",
     margin: "auto",
     marginTop: "10px",
     marginBottom: "10px",
     boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+  },
+  check: {
+    width: "20px",
+    height: "20px",
+    filter:
+      "invert(45%) sepia(21%) saturate(931%) hue-rotate(57deg) brightness(103%) contrast(86%)",
   },
 };
 

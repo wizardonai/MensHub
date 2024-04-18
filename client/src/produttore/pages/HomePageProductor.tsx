@@ -12,11 +12,15 @@ const HomePageProductor = () => {
       <div style={css.centerPage}>
         <div style={css.containerList}>
           <p style={css.titolo}>Da fare</p>
-          <OrdersTable colore="#ec3837" />
+          <OrdersTable colore="#d24a3c" />
         </div>
         <div style={css.containerList}>
           <p style={css.titolo}>In corso</p>
-          <OrdersTable colore="#f3d657" />
+          <OrdersTable colore="#e39320" />
+        </div>
+        <div style={css.containerList}>
+          <p style={css.titolo}>Ordine</p>
+          <OrdersTable colore="#e39320" />
         </div>
       </div>
     </div>
@@ -25,7 +29,7 @@ const HomePageProductor = () => {
 
 const css: styleMap = {
   page: {
-    backgroundColor: "#fee8d8",
+    backgroundColor: "#dfd9c9",
     flexDirection: "row",
     display: "flex",
     alignItems: "center",
