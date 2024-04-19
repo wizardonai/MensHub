@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import { useLoaderData } from "react-router-dom";
 import { prodotto } from "src/cliente/pages/Homepage";
+import { Input } from "src/shadcn/Input";
 
 interface TruncateTextProps {
   text: string;
@@ -95,6 +96,7 @@ const Filtri = ({
 
 const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
   const [popup, setPopup] = useState(false);
+  const nome = useRef(null);
 
   const filtri = [
     { nome: "antipasto", selected: false },
@@ -196,7 +198,7 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
               return (
                 <div
                   key={index}
-                  className="bg-arancioneBordo h-[150px] w-[225px] rounded-lg mt-[15px]  transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]"
+                  className="bg-arancioneBordo h-[150px] w-[225px] rounded-lg mt-[15px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]"
                 >
                   <div className="flex items-center">
                     <div className="h-[70px] w-[70px] mt-[10px] ml-[10px] mr-[10px]">
@@ -230,12 +232,12 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
               <div className="bg-gialloSfondo w-[35%] h-[55%] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px]">
                 <div className="flex justify-between">
                   <div>
-                    <p className="font-bold text-xl pl-[10px] pt-[10px]">
+                    <p className="font-bold text-xl pl-[15px] pt-[10px]">
                       Aggiungi una pietanza
                     </p>
                   </div>
                   <button
-                    className="bg-arancioneChiaro w-[30px] h-[30px] mr-[5px] mt-[5px] rounded-full flex items-center justify-center hover:cursor-pointer"
+                    className="bg-arancioneChiaro w-[30px] h-[30px] mr-[8px] mt-[8px] rounded-full flex items-center justify-center hover:cursor-pointer"
                     onClick={() => setPopup(false)}
                   >
                     <img
@@ -244,6 +246,44 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
                       className="w-[20px] h-[20px]"
                     />
                   </button>
+                </div>
+                <div className="flex pt-[10px]">
+                  <div>
+                    <div className="pl-[15px]">
+                      <p className=" font-bold">Nome</p>
+                      <Input
+                        id="nome"
+                        placeholder=""
+                        type="text"
+                        defaultValue=""
+                        ref={nome}
+                        className="w-[80%] mt-[5px] rounded-full border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                    <div className="pl-[15px] pt-[20%]">
+                      <p className="font-bold">Scegli la categoria</p>
+                      <div
+                        className="flex overflow-auto w-[200px]"
+                        style={{ scrollbarWidth: "none" }}
+                      >
+                        <Filtri filtro={""} setFiltro={() => {}} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pl-[5%]">
+                    <p className="font-bold">Immagine</p>
+                    <div className="w-[22svh] h-[22svh] mt-[5px] border-[3px] border-arancioneChiaro rounded-lg flex justify-center items-center cursor-pointer transform transition-transform hover:scale-105 hover:bg-gialloSfondoHover">
+                      <img
+                        src={hostnameProductor + "plus.png"}
+                        style={{
+                          filter:
+                            "invert(69%) sepia(59%) saturate(478%) hue-rotate(345deg) brightness(97%) contrast(85%)",
+                          width: "60px",
+                          height: "60px",
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
