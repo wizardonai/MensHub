@@ -145,7 +145,7 @@ server.post("/request/categories", (req, res) => {
 	let query = `SELECT * FROM categorie;`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
-		console.log(result);
+		
 		if (result.length > 0) {
 			res.send(result);
 			res.end();
@@ -155,6 +155,21 @@ server.post("/request/categories", (req, res) => {
 		}
 	});
 
+});
+
+server.post("/request/allergens", (req, res) => {
+	let query = `SELECT * FROM allergeni;`;
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+	
+		if (result.length > 0) {
+			res.send(result);
+			res.end();
+		} else {
+			res.send("Nessun allergene trovato");
+			res.end();
+		}
+	});
 });
 
 server.post("/send/cart", (req, res) => {

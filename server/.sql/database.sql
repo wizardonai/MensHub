@@ -23,18 +23,54 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---
--- Struttura della tabella `categorie`
---
+
 
 CREATE DATABASE mensapp;
 use mensapp;
 
+-- Tabellla allergeni
+
+CREATE TABLE `allergeni` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `nome` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;  
+
+
+INSERT INTO `allergeni` (`nome`) VALUES
+('glutine'),
+('latticini'),
+('uova'),
+('soia'),
+('sesamo'),
+('noci'),
+('sedano'),
+('senape'),
+('aglio'),
+( 'frutta a guscio'),
+( 'pesce'),
+( 'arachidi'),
+( 'lupino'),
+( 'molluschi');
+
+
+--
+-- Struttura della tabella `categorie`
+--
+
 CREATE TABLE `categorie` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `nome` varchar(255) NOT NULL,
   `indirizzo_img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+INSERT INTO `categorie` (`nome`, `indirizzo_img`) VALUES
+('antipasto', 'categories/antipasto.png'),
+('primo', 'categories/primo.png'),
+('secondo', 'categories/secondo.png'),
+('contorno', 'categories/contorno.png'),
+('dolce', 'categories/dolce.png'),
+('bibita', 'categories/bibita.png');
 
 -- --------------------------------------------------------
 
@@ -158,11 +194,6 @@ INSERT INTO `utenti` (`id`, `nome`, `cognome`, `email`, `password`, `id_mensa`, 
 -- Indici per le tabelle scaricate
 --
 
---
--- Indici per le tabelle `categorie`
---
-ALTER TABLE `categorie`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indici per le tabelle `mense`
@@ -203,11 +234,6 @@ ALTER TABLE `utenti`
 -- AUTO_INCREMENT per le tabelle scaricate
 --
 
---
--- AUTO_INCREMENT per la tabella `categorie`
---
-ALTER TABLE `categorie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `mense`
