@@ -84,3 +84,73 @@ export async function loginUser(dati: datiLog) {
 
   return response;
 }
+
+export async function getProdotti(token: { token: string }) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/request/products`,
+    headers: {
+      Authorization: "Bearer " + token.token,
+    },
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
+
+//make a function that takes categories
+export async function getCategorie(token: { token: string }) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/request/categories`,
+    headers: {
+      Authorization: "Bearer " + token.token,
+    },
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
+
+export async function getAllergeni(token: { token: string }) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/request/allergens`,
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
