@@ -15,6 +15,7 @@ import HomePageProductor from "./produttore/pages/HomePageProductor";
 import MenuPageProductor from "./produttore/pages/MenuPageProductor";
 import Balance from "./produttore/pages/Balance";
 import ProfileProductor from "./produttore/pages/ProfileProductor";
+import { getAllergeni, getCategorie } from "./login/scripts/fetch";
 
 export type ArrayProdotti = {
   prodotti: Array<{
@@ -67,21 +68,48 @@ const App = () => {
   //loggato o no
   const [utente, setUtente] = useState("no");
 
-  const refreshStorage = () => {
+  const [categorie, setCategorie] = useState<Array<string>>([]);
+  const [allergeni, setAllergeni] = useState<Array<string>>([]);
+
+  const refreshStorage = async () => {
     setUtente(localStorage.getItem("login") || "");
     return localStorage.getItem("login");
   };
 
-  //cliente
-  const [stringaSearch, setStringaSearch] = useState("");
-  const [filtri, setFiltri] = useState({
-    antipasti: false,
-    primi: false,
-    secondi: false,
-    contorni: false,
-    panini: false,
-    dolci: false,
-  });
+  if (categorie.length === 0) {
+    const fetchCategories = async () => {
+      getCategorie(
+        JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+          .token
+      ).then((res: any) => {
+        if (res === "Token non valido") {
+          localStorage.removeItem("cart");
+          localStorage.removeItem("token");
+          localStorage.setItem("loggato", "false");
+        }
+        setCategorie(res);
+      });
+    };
+    fetchCategories();
+  }
+
+  if (allergeni.length === 0) {
+    const fetchAllergeni = async () => {
+      getAllergeni(
+        JSON.parse(
+          localStorage.getItem("token") || '{"token": "cicciogamer89"}'
+        ).token
+      ).then((res: any) => {
+        if (res === "Token non valido") {
+          localStorage.removeItem("cart");
+          localStorage.removeItem("token");
+          localStorage.setItem("loggato", "false");
+        }
+        setAllergeni(res);
+      });
+    };
+    fetchAllergeni();
+  }
 
   useEffect(() => {
     refreshStorage();
@@ -104,7 +132,9 @@ const App = () => {
       },
       {
         path: "/productorMenu",
-        element: <MenuPageProductor />,
+        element: (
+          <MenuPageProductor allergeni={allergeni} categorie={categorie} />
+        ),
         loader: async () => {
           return getProdotti(
             JSON.parse(localStorage.getItem("token") || '{"token":"asd"}')

@@ -20,22 +20,15 @@ const TruncateText: React.FC<TruncateTextProps> = ({ text, maxLength }) => {
 const Filtri = ({
   filtro,
   setFiltro,
+  categorie,
 }: {
   filtro: string;
   setFiltro: Function;
+  categorie: any;
 }) => {
-  const filtri = [
-    ["antipasto"],
-    ["primo"],
-    ["secondo"],
-    ["contorno"],
-    ["dolce"],
-    ["bibita"],
-  ];
-
   const findIndex = (x: string) => {
-    for (let i = 0; i < filtri.length; i++) {
-      if (filtri[i][0] === x) {
+    for (let i = 0; i < categorie.length; i++) {
+      if (categorie[i][0] === x) {
         return i;
       }
     }
@@ -64,7 +57,7 @@ const Filtri = ({
   };
 
   if (filtro === "") {
-    return filtri.map((item, index) => {
+    return categorie.map((item: any, index: any) => {
       return (
         <div
           className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
@@ -73,7 +66,7 @@ const Filtri = ({
           id="divFiltro"
         >
           <p className="capitalize text-[16px]" id="filtroDaApplicare">
-            {item[0]}
+            {item.nome}
           </p>
         </div>
       );
@@ -94,20 +87,24 @@ const Filtri = ({
   }
 };
 
-const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
+const Prodotti = ({
+  filtro,
+  dati,
+  categorie,
+  allergeni,
+}: {
+  filtro: string;
+  dati: any;
+  categorie: any;
+  allergeni: any;
+}) => {
   const [popup, setPopup] = useState(false);
   const nome = useRef(null);
 
-  const filtri = [
-    { nome: "antipasto", selected: false },
-    { nome: "primo", selected: false },
-    { nome: "secondo", selected: false },
-    { nome: "contorno", selected: false },
-    { nome: "dolce", selected: false },
-    { nome: "bibita", selected: false },
-  ];
-
-  console.log(popup);
+  const filtri = categorie.map((categoria: any) => ({
+    nome: categoria.nome,
+    selected: false,
+  }));
 
   if (filtro !== "") {
     const prodottiCategoria = dati.filter(
@@ -160,7 +157,7 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
       </div>
     );
   } else {
-    return filtri.map((categoria, index) => {
+    return filtri.map((categoria: any, index: any) => {
       const prodottiCategoria = dati.filter(
         (item: prodotto) => item.categoria === categoria.nome
       );
@@ -221,15 +218,15 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
               );
             })}
 
-            {filtri.map((item) => {
+            {filtri.map((item: any) => {
               if (item.nome === categoria.nome) {
                 item.selected = true;
               }
             })}
           </div>
           {popup ? (
-            <div className="fixed flex justify-center items-center inset-0">
-              <div className="bg-gialloSfondo w-[35%] h-[55%] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px]">
+            <div className="fixed flex justify-center items-center inset-0 bg-slate-600 bg-opacity-5">
+              <div className="bg-gialloSfondo w-[38%] h-[65%] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px] opacity-">
                 <div className="flex justify-between">
                   <div>
                     <p className="font-bold text-xl pl-[15px] pt-[10px]">
@@ -237,51 +234,106 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
                     </p>
                   </div>
                   <button
-                    className="bg-arancioneChiaro w-[30px] h-[30px] mr-[8px] mt-[8px] rounded-full flex items-center justify-center hover:cursor-pointer"
+                    className="w-[30px] h-[30px] mr-[8px] mt-[8px] rounded-full flex items-center justify-center hover:cursor-pointer"
                     onClick={() => setPopup(false)}
                   >
                     <img
                       src={hostnameProductor + "X.png"}
                       alt="close"
-                      className="w-[20px] h-[20px]"
+                      className="w-[20px] h-[20px] transform transition-transform hover:scale-105"
                     />
                   </button>
                 </div>
-                <div className="flex pt-[10px]">
-                  <div>
-                    <div className="pl-[15px]">
-                      <p className=" font-bold">Nome</p>
-                      <Input
-                        id="nome"
-                        placeholder=""
-                        type="text"
-                        defaultValue=""
-                        ref={nome}
-                        className="w-[80%] mt-[5px] rounded-full border-[3px] border-arancioneChiaro  bg-gialloSfondo"
-                      />
+                <div className="flex-col">
+                  <div className="flex pt-[10px]">
+                    <div>
+                      <div className="pl-[15px]">
+                        <p className=" font-bold">Nome</p>
+                        <Input
+                          id="nome"
+                          placeholder=""
+                          type="text"
+                          defaultValue=""
+                          ref={nome}
+                          className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        />
+                      </div>
+                      <div className="pl-[15px] pt-[15%]">
+                        <p className="font-bold">Scegli la categoria</p>
+                        <div
+                          className="flex overflow-auto w-[15svw]"
+                          style={{ scrollbarWidth: "none" }}
+                        >
+                          <Filtri
+                            filtro={""}
+                            setFiltro={() => {}}
+                            categorie={categorie}
+                          />
+                        </div>
+                      </div>
+                      <div className="pl-[15px] pt-[15%]">
+                        <p className=" font-bold">Descrizione</p>
+                        <textarea
+                          rows={4}
+                          cols={50}
+                          className="w-[15svw] h-[15svh] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro bg-gialloSfondo overflow-auto"
+                          style={{ scrollbarWidth: "none", resize: "none" }}
+                        />
+                      </div>
                     </div>
-                    <div className="pl-[15px] pt-[20%]">
-                      <p className="font-bold">Scegli la categoria</p>
-                      <div
-                        className="flex overflow-auto w-[200px]"
-                        style={{ scrollbarWidth: "none" }}
-                      >
-                        <Filtri filtro={""} setFiltro={() => {}} />
+                    <div className="pl-[4svw]">
+                      <div>
+                        <p className="font-bold">Immagine</p>
+                        <div className="w-[10svw] h-[10svw] mt-[5px] border-[3px] border-arancioneChiaro rounded-2xl flex justify-center items-center cursor-pointer transform transition-transform hover:scale-105 hover:bg-gialloSfondoHover">
+                          <img
+                            src={hostnameProductor + "plus.png"}
+                            style={{
+                              filter:
+                                "invert(69%) sepia(59%) saturate(478%) hue-rotate(345deg) brightness(97%) contrast(85%)",
+                              width: "60px",
+                              height: "60px",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="pt-[5%]">
+                        <p className="font-bold">Allergeni</p>
+                        <div
+                          className="flex overflow-auto w-[15svw]"
+                          style={{ scrollbarWidth: "none" }}
+                        >
+                          <div
+                            className="flex flex-wrap overflow-auto w-[15svw] h-[15svh]"
+                            style={{ scrollbarWidth: "none" }}
+                          >
+                            {allergeni.map((allergene: any, index: number) => {
+                              return (
+                                <div
+                                  key={index}
+                                  className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mx-1 my-1 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+                                >
+                                  <p className="capitalize text-[16px]">
+                                    {allergene.nome}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="pl-[5%]">
-                    <p className="font-bold">Immagine</p>
-                    <div className="w-[22svh] h-[22svh] mt-[5px] border-[3px] border-arancioneChiaro rounded-lg flex justify-center items-center cursor-pointer transform transition-transform hover:scale-105 hover:bg-gialloSfondoHover">
-                      <img
-                        src={hostnameProductor + "plus.png"}
-                        style={{
-                          filter:
-                            "invert(69%) sepia(59%) saturate(478%) hue-rotate(345deg) brightness(97%) contrast(85%)",
-                          width: "60px",
-                          height: "60px",
-                        }}
-                      />
+                  <div className="flex justify-center">
+                    <div
+                      className="bg-verdeBordo h-[25px] rounded-full flex items-center px-8 py-4 mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
+                      id="divFiltro"
+                    >
+                      <p
+                        className="capitalize text-[16px] text-gialloSfondo"
+                        id="filtroDaApplicare"
+                      >
+                        Aggiungi
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -294,25 +346,22 @@ const Prodotti = ({ filtro, dati }: { filtro: string; dati: any }) => {
   }
 };
 
-const MenuPageProductor = () => {
+const MenuPageProductor = ({
+  categorie,
+  allergeni,
+}: {
+  categorie: any;
+  allergeni: any;
+}) => {
   const dati: any = useLoaderData();
   const [filtro, setFiltro] = useState("");
 
   if (!dati) return <p>CARICAMENTO</p>;
 
-  const filtri = [
-    ["antipasto"],
-    ["primo"],
-    ["secondo"],
-    ["contorno"],
-    ["dolce"],
-    ["bibita"],
-  ];
-
   //ordina i dati in base alla categoria segue l'ordine di filtri
   dati.sort((a: prodotto, b: prodotto) => {
-    const aIndex = filtri.findIndex((x) => x[0] === a.categoria);
-    const bIndex = filtri.findIndex((x) => x[0] === b.categoria);
+    const aIndex = categorie.findIndex((x: any[]) => x[0] === a.categoria);
+    const bIndex = categorie.findIndex((x: any[]) => x[0] === b.categoria);
 
     return aIndex - bIndex;
   });
@@ -325,10 +374,15 @@ const MenuPageProductor = () => {
       <div style={css.centerPage}>
         <div style={css.ricerca}></div>
         <div style={css.divCategorie}>
-          <Filtri filtro={filtro} setFiltro={setFiltro} />
+          <Filtri filtro={filtro} setFiltro={setFiltro} categorie={categorie} />
         </div>
         <div style={css.container}>
-          <Prodotti filtro={filtro} dati={dati} />
+          <Prodotti
+            filtro={filtro}
+            dati={dati}
+            categorie={categorie}
+            allergeni={allergeni}
+          />
         </div>
       </div>
     </div>
@@ -375,7 +429,8 @@ const css: styleMap = {
     width: "95%",
     height: "59svh",
     marginRight: "20px",
-    marginLeft: "15px",
+    marginLeft: "8px",
+    paddingLeft: "7px",
     display: "flex",
     flexDirection: "column",
     alignItems: "start",
