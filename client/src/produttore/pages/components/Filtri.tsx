@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export default function Filtri({
   filtro,
   setFiltro,
@@ -46,7 +48,10 @@ export default function Filtri({
           onClick={filtroCliccato}
           id="divFiltro"
         >
-          <p className="capitalize text-[16px]" id="filtroDaApplicare">
+          <p
+            className="capitalize text-[16px] select-none pointer-events-none"
+            id="filtroDaApplicare"
+          >
             {item.nome}
           </p>
         </div>

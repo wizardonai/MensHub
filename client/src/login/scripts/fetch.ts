@@ -154,3 +154,28 @@ export async function getAllergeni(token: { token: string }) {
 
   return response;
 }
+
+export async function addProdotto(token: { token: string }, dati: any) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/add/products`,
+    headers: {
+      Authorization: "Bearer " + token.token,
+    },
+    data: dati,
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
