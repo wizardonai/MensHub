@@ -141,6 +141,47 @@ server.post("/request/mense", (req, res) => {
 	});
 });
 
+server.post("/modify/mensa", (req, res) => {
+	let token = req.headers.authorization;
+	let id_mensa = req.body.id_mensa;
+	let decoded_tmp = "";
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send("Token non valido");
+			res.end();
+		} else {
+			decoded_tmp = decoded;
+		}
+	});
+
+	let query = `UPDATE utenti SET id_mensa=${id_mensa} WHERE id=${decoded_tmp.id};`;
+
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+
+		const token = jwt.sign(
+			{
+				id: decoded_tmp.id,
+				nome: decoded_tmp.nome,
+				cognome: decoded_tmp.cognome,
+				email: decoded_tmp.email,
+				id_mensa: id_mensa,
+			},
+			secretKey,
+			{ expiresIn: "1h" }
+		);
+
+		res.json({ token: token });
+		res.send();
+		res.end();
+
+	});
+
+});
+
+
 server.post("/request/categories", (req, res) => {
 	let query = `SELECT * FROM categorie;`;
 	connection.query(query, (err, result) => {
