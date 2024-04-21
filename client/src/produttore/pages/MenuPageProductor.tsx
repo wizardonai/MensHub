@@ -6,6 +6,7 @@ import { prodotto } from "src/cliente/pages/Homepage";
 import { Input } from "src/shadcn/Input";
 import Filtri from "./components/Filtri";
 import Popup from "./components/Popup";
+import SearchBar from "./components/SearchBar";
 
 interface TruncateTextProps {
   text: string;
@@ -185,6 +186,8 @@ const MenuPageProductor = ({
 }) => {
   const dati: any = useLoaderData();
   const [filtro, setFiltro] = useState("");
+  const [ricerca, setRicerca] = useState("");
+  const [prodotti, setProdotti] = useState("");
 
   if (!dati) return <p>CARICAMENTO</p>;
 
@@ -202,7 +205,14 @@ const MenuPageProductor = ({
         <NavbarProductor page="productorMenu" />
       </div>
       <div style={css.centerPage}>
-        <div style={css.ricerca}></div>
+        <div style={css.ricerca}>
+          <SearchBar
+            elencoProdotti={dati}
+            stringaSearch={ricerca}
+            setStringaSearch={setRicerca}
+            setProdottiDaStampare={setProdotti}
+          />
+        </div>
         <div style={css.divCategorie}>
           <Filtri filtro={filtro} setFiltro={setFiltro} categorie={categorie} />
         </div>
@@ -240,11 +250,9 @@ const css: styleMap = {
   },
   ricerca: {
     width: "100%",
-    height: "10%",
+    height: "7svh",
     marginLeft: "15px",
-    marginTop: "10svh",
-    marginBottom: "5px",
-    backgroundColor: "green",
+    marginTop: "11svh",
   },
   divCategorie: {
     width: "100%",
@@ -257,7 +265,7 @@ const css: styleMap = {
   },
   container: {
     width: "95%",
-    height: "59svh",
+    height: "61.5svh",
     marginRight: "20px",
     marginLeft: "8px",
     paddingLeft: "7px",

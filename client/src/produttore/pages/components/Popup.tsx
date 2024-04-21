@@ -161,7 +161,7 @@ export default function Popup({
       <div className="bg-gialloSfondo w-[38%] h-[65%] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px] opacity-">
         <div className="flex justify-between">
           <div>
-            <p className="font-bold text-xl pl-[15px] pt-[10px] select-none pointer-events-none">
+            <p className="font-bold text-xl pl-[15px] pt-[10px] select-none pointer-events-none text-marroneScuro">
               Aggiungi una pietanza
             </p>
           </div>
@@ -180,7 +180,7 @@ export default function Popup({
           <div className="flex pt-[10px]">
             <div>
               <div className="pl-[15px]">
-                <p className=" font-bold select-none pointer-events-none">
+                <p className=" font-bold select-none pointer-events-none text-marroneScuro">
                   Nome
                 </p>
                 <Input
@@ -304,7 +304,7 @@ export default function Popup({
                             className="bg-verdeBordo h-[25px] rounded-full flex items-center px-3 mx-1 my-1 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
                             onClick={handleAllergeni(allergene.nome)}
                           >
-                            <p className="capitalize text-[16px] select-none pointer-events-none">
+                            <p className="capitalize text-[16px] select-none pointer-events-none text-gialloSfondo">
                               {allergene.nome}
                             </p>
                           </div>
