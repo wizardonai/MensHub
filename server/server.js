@@ -47,7 +47,7 @@ const secretKey = "CaccaPoopShitMierda";
 // Configura multer per salvare i file caricati nella cartella 'images'
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../client/src/cliente/pages/image");
+    cb(null, "../server/image");
   },
   filename: function (req, file, cb) {
     const nome = req.body.nome;
@@ -61,7 +61,7 @@ const storage = multer.diskStorage({
 
 const storage2 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../client/src/cliente/pages/image");
+    cb(null, "../server/image");
   },
   filename: function (req, file, cb) {
     const id = req.body.id;
@@ -413,8 +413,8 @@ server.post("/producer/get/products", (req, res) => {
       id_mensa = decoded.id_mensa;
       connection.query(
         "SELECT * FROM prodotti where id_mensa=" +
-          id_mensa +
-          " ORDER BY categoria, nome",
+        id_mensa +
+        " ORDER BY categoria, nome",
         (err, result) => {
           if (err) throw new Error(err);
           res.header("Access-Control-Allow-Origin", "*");
@@ -600,6 +600,8 @@ server.post("/producer/add/products", upload.single("image"), (req, res) => {
   let token = req.headers.authorization;
   let id_utente = "";
 
+  console.log("\n\nTOKEN: " + token + "\n\n")
+
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
       console.log(err);
@@ -667,7 +669,7 @@ server.post("/producer/add/products", upload.single("image"), (req, res) => {
     });
 
   res.header("Access-Control-Allow-Origin", "*");
-  res.send("Prodotto aggiunto al DB");
+  res.send("Prodotto aggiunto con successo");
   res.end();
 });
 
@@ -684,7 +686,7 @@ server.post("/producer/delete/product", (req, res) => {
       res.send(err);
       res.end();
     } else {
-      let cartella = "../client/src/cliente/pages/image/products";
+      let cartella = "../server/image/products";
 
       const queryPromise = new Promise((resolve, reject) => {
         fs.readdir(cartella, (err, files) => {
@@ -737,7 +739,7 @@ server.post("/producer/delete/product", (req, res) => {
 function renameImage(nome_file, id_prodotto) {
   console.log(`RENAME: ${nome_file} ${id_prodotto} `);
 
-  const cartella = "../client/src/cliente/pages/image/products";
+  const cartella = "../server/image/products";
   const nomeFileSenzaEstensione = nome_file;
   console.log("\nNome_file = " + nome_file);
 

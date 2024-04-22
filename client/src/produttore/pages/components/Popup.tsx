@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { hostnameProductor } from "src/App";
 import { Input } from "src/shadcn/Input";
+import { addProdotto } from "src/login/scripts/fetch";
 import Filtri from "./Filtri";
 
 export default function Popup({
@@ -12,11 +13,12 @@ export default function Popup({
   categorie: any;
   allergeni: any;
 }): JSX.Element {
-  const nome = useRef(null);
-  const prezzo = useRef(null);
+  const nome = useRef<HTMLInputElement>(null);
+  const prezzo = useRef<HTMLInputElement>(null);
   const [filtro, setFiltro] = useState("");
   const [allergeniScelti, setAllergeniScelti] = useState<any[]>([]);
-  const descrizione = useRef(null);
+  const descrizione = useRef<HTMLTextAreaElement>(null);
+  const [image, setImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const horizontalDivRef = useRef<HTMLDivElement>(null);
   const verticalDivRef = useRef<HTMLDivElement>(null);
@@ -28,11 +30,33 @@ export default function Popup({
   const [lastVerticalMouseMoveY, setLastVerticalMouseMoveY] = useState(0);
 
   const submitButton = () => {
-    const nomeValue = nome.current;
+    let nomeValue = "";
+    if (nome.current) {
+      nomeValue = nome.current.value;
+      console.log('Valore dell\'input:', nomeValue);
+    } else {
+      console.log('Elemento di input non trovato');
+    }
     const categoriaValue = filtro;
-    const descrizioneValue = descrizione.current;
+
+    let descrizioneValue = "";
+    if (descrizione.current) {
+      descrizioneValue = descrizione.current.value;
+      console.log('Valore dell\'input:', descrizioneValue);
+    } else {
+      console.log('Elemento di input non trovato');
+    }
     const allergeniValue = allergeniScelti;
-    const immagineValue = imageUrl;
+    const immagineValue = image;
+    let prezzoValue = "";
+    if (prezzo.current) {
+      prezzoValue = prezzo.current.value;
+      console.log('Valore dell\'input:', prezzoValue);
+    } else {
+      console.log('Elemento di input non trovato');
+    }
+
+    console.log("IMG" + immagineValue);
 
     if (
       nomeValue === "" ||
@@ -45,6 +69,33 @@ export default function Popup({
     }
 
     // Aggiungi la pietanza
+    const formData = new FormData();
+    if (prezzoValue !== null)
+      formData.append("prezzo", prezzoValue);
+    if (nomeValue !== null)
+      formData.append("nome", nomeValue);
+    formData.append("categoria", categoriaValue);
+    if (descrizioneValue !== null)
+      formData.append("descrizione", descrizioneValue);
+
+    //allergeni seperati da virgola
+    formData.append("allergeni",  allergeniValue.join(","));
+    formData.append("image", immagineValue);
+    formData.append("disponibile", "1");
+
+    addProdotto(JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}').token, formData)
+      .then((response) => {
+        if (response === "Prodotto aggiunto con successo") {
+          alert(response);
+          setPopup(false);
+        } else {
+          alert("Errore nell'aggiunta della pietanza");
+        }
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+
   };
 
   const handleAllergeni = (allergene: string) => {
@@ -147,6 +198,8 @@ export default function Popup({
         return;
       }
 
+      setImage(file);
+
       const reader = new FileReader();
       reader.onload = () => {
         const imageUrl = reader.result as string;
@@ -197,11 +250,11 @@ export default function Popup({
                   Prezzo
                 </p>
                 <Input
-                  id="nome"
+                  id="prezzo"
                   placeholder=""
                   type="numeric"
                   defaultValue=""
-                  ref={nome}
+                  ref={prezzo}
                   step="0.01"
                   className="w-[5svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro bg-gialloSfondo"
                 />
@@ -225,16 +278,19 @@ export default function Popup({
                 </div>
               </div>
               <div className="pl-[15px] pt-[3%]">
-                <p className=" font-bold select-none pointer-events-none">
+                <p className="font-bold select-none pointer-events-none">
                   Descrizione
                 </p>
                 <textarea
+                  id="descrizione"
+                  ref={descrizione}
                   rows={4}
                   cols={50}
                   className="w-[15svw] h-[12svh] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro bg-gialloSfondo overflow-auto"
                   style={{ scrollbarWidth: "none", resize: "none" }}
                 />
               </div>
+
             </div>
             <div className="pl-[4svw]">
               <div>

@@ -155,15 +155,17 @@ export async function getAllergeni(token: { token: string }) {
   return response;
 }
 
-export async function addProdotto(token: { token: string }, dati: any) {
+export async function addProdotto(token: string , dati: any ) {
   let response;
+
+  console.log("Token:"+ token);
 
   let config = {
     method: "post",
     maxBodyLength: Infinity,
     url: `${urlServer}/producer/add/products`,
     headers: {
-      Authorization: "Bearer " + token.token,
+      Authorization: "Bearer " + token,
     },
     data: dati,
   };
