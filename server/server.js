@@ -407,7 +407,7 @@ server.post("/request/orders", (req, res) => {
 
 			let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
 								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
-								WHERE id_utente="${id_utente}"
+								WHERE id_utente="${id_utente}" AND id_mensa="${decoded.id_mensa}"
 								ORDER BY o.data, po.id_ordine;`;
 
 			connection.query(query, (err, result) => {
