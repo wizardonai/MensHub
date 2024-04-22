@@ -18,66 +18,47 @@ import {
 } from "../components/shadcn/Select";
 import { mensa, typeProfilo } from "../utils";
 import { Button } from "../components/shadcn/Button";
+import { Label } from "../components/shadcn/Label";
+import { parse } from "path";
 
 const Popup = ({
 	tipoPopup,
 	setTipoPopup,
-	mense,
 	setLoggato,
-	datiUtente,
-	setDatiUtente,
-	setProducts,
 }: {
 	tipoPopup: string;
 	setTipoPopup: Function;
-	mense: Array<mensa>;
 	setLoggato: Function;
-	datiUtente: typeProfilo;
-	setDatiUtente: Function;
-	setProducts: Function;
 }) => {
-	const [valid, setValid] = useState(false);
-	const navigate = useNavigate();
-	const [nuovaMensa, setNuovaMensa] = useState(datiUtente.id_mensa + "");
-
 	if (tipoPopup === "") return <></>;
 
 	const funzionalita = () => {
-		switch (tipoPopup) {
-			case "mensa":
-				return (
-					<div className='w-full flex justify-center items-center flex-col h-[65%]'>
-						<p className='w-full text-center text-xl'>
-							Inserisci la tua mensa preferita
-						</p>
-						<Select
-							onOpenChange={(e) => setValid(e)}
-							onValueChange={(e) => {
-								setNuovaMensa(e);
-							}}
-							defaultValue={datiUtente.id_mensa + ""}
-						>
-							<SelectTrigger className='w-[85%] mt-2'>
-								<SelectValue placeholder='Seleziona la tua mensa'></SelectValue>
-							</SelectTrigger>
-							<SelectContent defaultValue={datiUtente.id_mensa + ""}>
-								{mense.map((item) => {
-									return (
-										<SelectItem value={item.id + ""} key={item.id}>
-											{item.nome}
-										</SelectItem>
-									);
-								})}
-							</SelectContent>
-						</Select>
-					</div>
-				);
+		switch (tipoPopup.split("-")[0]) {
 			case "disconnetti":
 				return (
-					<div className='w-full flex justify-center items-center flex-col h-[65%]'>
+					<div className='w-full flex justify-evenly items-center flex-col h-[80%]'>
 						<p className='w-full text-center text-xl'>
 							Sicuro di voler disconnettere l'account?
 						</p>
+						<div className='flex flex-row justify-around items-center w-full'>
+							<Button
+								onClick={() => setTipoPopup("")}
+								className='bg-arancioneScuro text-marrone rounded-xl'
+							>
+								Annulla
+							</Button>
+							<Button
+								onClick={() => {
+									setTipoPopup("");
+									localStorage.removeItem("cart");
+									localStorage.removeItem("token");
+									setLoggato(false);
+								}}
+								className='bg-arancioneScuro text-marrone rounded-xl'
+							>
+								Disconnetti
+							</Button>
+						</div>
 					</div>
 				);
 			default:
@@ -94,96 +75,140 @@ const Popup = ({
 			<div className='w-[350px] h-[180px] absolute top-1/2 left-1/2 mt-[-90px] ml-[-175px]'>
 				<div className='w-full h-full bg-background rounded-3xl flex flex-col justify-evenly items-center border-[2px] border-marrone'>
 					{funzionalita()}
-					<div className='flex justify-evenly items-start flex-row w-full h-[35%]'>
-						<Button
-							className='w-[100px] h-[40px] bg-arancioneScuro rounded-3xl'
-							onClick={() => {
-								if (tipoPopup === "mensa") {
-									setTipoPopup("");
-									setDatiUtente({
-										...datiUtente,
-										id_mensa: parseInt(nuovaMensa),
-									});
-
-									modifyMensa(
-										parseInt(nuovaMensa),
-										JSON.parse(
-											localStorage.getItem("token") || '{"token": "scu"}'
-										).token
-									).then((res: any) => {
-										localStorage.setItem("token", JSON.stringify(res));
-
-										getProdotti(res.token).then((res: any) => {
-											setProducts(res);
-										});
-									});
-									navigate("/");
-								} else if (tipoPopup === "disconnetti") {
-									setTipoPopup("");
-									localStorage.removeItem("cart");
-									localStorage.removeItem("token");
-									setLoggato(false);
-								}
-							}}
-							disabled={valid}
-						>
-							<p className='text-marrone'>
-								{tipoPopup === "mensa" ? "Imposta" : "Disconnetti"}
-							</p>
-						</Button>
-					</div>
 				</div>
 			</div>
 		</>
 	);
 };
 
-const Elementi = ({
-	setLoggato,
-	setTipoPopup,
-}: {
-	setLoggato: Function;
-	setTipoPopup: Function;
-}) => {
-	const navigate = useNavigate();
-
-	const pagine = [
-		["dati utente", datiUtente],
-		["mensa preferita", mensaPrefe],
-		["cronologia acquisti", cronologia],
-		["disconnetti", disconnetti],
-	];
-
-	const gestisciClick = (index: number) => {
-		const clicked = pagine[index][0];
-
-		switch (clicked) {
-			case "disconnetti":
-				setTipoPopup("disconnetti");
-				break;
-			case "mensa preferita":
-				setTipoPopup("mensa");
-				break;
-			default:
-				navigate("/profile/" + clicked.replace(" ", ""));
-				break;
-		}
-	};
-
-	return pagine.map((item, index) => (
+const BtnDisconnetti = ({ setTipoPopup }: { setTipoPopup: Function }) => {
+	return (
 		<div
-			className='w-[90%] h-[80px] flex flex-row justify-center items-center rounded-3xl bg-arancioneScuro mb-3'
-			key={index}
-			onClick={() => gestisciClick(index)}
+			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-arancioneScuro mb-3'
+			onClick={() => setTipoPopup("disconnetti")}
 		>
 			<p className='text-marrone text-xl capitalize w-[80%] indent-5'>
-				{item[0]}
+				Disconnetti
 			</p>
 			<div className='w-[20%]'>
-				<img src={item[1]} alt='' className='w-[40px] h-[40px]' />
+				<img src={disconnetti} alt='' className='w-[40px] h-[40px]' />
 			</div>
 		</div>
-	));
+	);
+};
+const BtnCronologia = () => {
+	const navigate = useNavigate();
+
+	return (
+		<div
+			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-arancioneScuro my-2'
+			onClick={() => navigate("/profile/cronologiaacquisti")}
+		>
+			<p className='text-marrone text-xl capitalize w-[80%] indent-5'>
+				Cronologia acquisti
+			</p>
+			<div className='w-[20%]'>
+				<img src={cronologia} alt='' className='w-[40px] h-[40px]' />
+			</div>
+		</div>
+	);
+};
+const MensaPreferita = ({
+	datiUtente,
+	mense,
+	setDatiUtente,
+	setProducts,
+}: {
+	datiUtente: typeProfilo;
+	mense: Array<mensa>;
+	setDatiUtente: Function;
+	setProducts: Function;
+}) => {
+	const [valid, setValid] = useState(false);
+	const navigate = useNavigate();
+	const [nuovaMensa, setNuovaMensa] = useState(datiUtente.id_mensa + "");
+
+	return (
+		<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+			<p className='w-full text-lg'>Mensa preferita</p>
+			<Select
+				onOpenChange={(e) => setValid(e)}
+				onValueChange={(e: any) => {
+					if (datiUtente.id_mensa !== parseInt(e)) {
+						setDatiUtente({
+							...datiUtente,
+							id_mensa: parseInt(e),
+						});
+
+						modifyMensa(
+							parseInt(e),
+							JSON.parse(localStorage.getItem("token") || '{"token": "scu"}')
+								.token
+						).then((res: any) => {
+							localStorage.setItem("token", JSON.stringify(res));
+
+							getProdotti(res.token).then((res: any) => {
+								setProducts(res);
+							});
+						});
+					}
+				}}
+				defaultValue={datiUtente.id_mensa + ""}
+			>
+				<SelectTrigger className='w-[85%] mt-2 m-0'>
+					<SelectValue placeholder='Seleziona la tua mensa'></SelectValue>
+				</SelectTrigger>
+				<SelectContent
+					defaultValue={datiUtente.id_mensa + ""}
+					ref={(ref) => {
+						if (!ref) return;
+						ref.ontouchstart = (e) => {
+							e.preventDefault();
+						};
+					}}
+				>
+					{mense.map((item) => {
+						return (
+							<SelectItem value={item.id + ""} key={item.id}>
+								{item.nome}
+							</SelectItem>
+						);
+					})}
+				</SelectContent>
+			</Select>
+		</div>
+	);
+};
+const InfoUtente = ({ datiUtente }: { datiUtente: typeProfilo }) => {
+	return (
+		<>
+			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+				<Label htmlFor='nome'>Nome</Label>
+				<Input type='nome' id='nome' defaultValue={datiUtente.nome} disabled />
+			</div>
+			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+				<Label htmlFor='cognome'>Cognome</Label>
+				<Input
+					type='cognome'
+					id='cognome'
+					defaultValue={datiUtente.cognome}
+					disabled
+				/>
+			</div>
+			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+				<Label htmlFor='email'>Email</Label>
+				<Input
+					type='email'
+					id='email'
+					defaultValue={datiUtente.email}
+					disabled
+				/>
+			</div>
+			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+				<p className='underline text-lg'>Cambia password</p>
+			</div>
+		</>
+	);
 };
 
 const Profile = ({
@@ -215,17 +240,24 @@ const Profile = ({
 				<img src={topbarProfile} alt='topbarProfile' />
 			</div>
 			<Container className='h-containerProfile w-full overflow-y-scroll'>
-				<div className='w-full h-full flex items-center flex-col justify-center'>
-					<Elementi setLoggato={setLoggato} setTipoPopup={setTipoPopup} />
+				<div className='w-full h-full flex items-center flex-col justify-start'>
+					<div className='flex flex-col items-start justify-start w-[85%]'>
+						<InfoUtente datiUtente={datiUtente} />
+						<MensaPreferita
+							datiUtente={datiUtente}
+							mense={mense}
+							setDatiUtente={setDatiUtente}
+							setProducts={setProducts}
+						/>
+						<BtnCronologia />
+						<BtnDisconnetti setTipoPopup={setTipoPopup} />
+					</div>
+					{/* <Elementi setLoggato={setLoggato} setTipoPopup={setTipoPopup} /> */}
 				</div>
 				<Popup
 					tipoPopup={tipoPopup}
 					setTipoPopup={setTipoPopup}
-					mense={mense}
 					setLoggato={setLoggato}
-					datiUtente={datiUtente}
-					setDatiUtente={setDatiUtente}
-					setProducts={setProducts}
 				/>
 			</Container>
 			<Navbar page='profile' />

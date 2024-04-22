@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import topbarProfile from "../img/topbarProfile.png";
 import { cn } from "./shadcn/utils";
+import { prodotto } from "../utils";
 
 export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	if (page === "home") {
@@ -36,7 +37,13 @@ export const Container = ({
 	</div>
 );
 
-export const Navbar = ({ page }: { page: string }) => {
+export const Navbar = ({
+	page,
+	product,
+}: {
+	page: string;
+	product?: prodotto;
+}) => {
 	const navigate = useNavigate();
 
 	const buttons = {
@@ -55,7 +62,8 @@ export const Navbar = ({ page }: { page: string }) => {
 	return (
 		<div className='w-full h-navbar flex flex-row justify-evenly items-center'>
 			<div className='w-[90%] h-full flex flex-row justify-evenly items-center'>
-				{page === "product" ? (
+				{page.split("-")[0] === "Aggiungi al carrello" ||
+				page === "Cronologia" ? (
 					<>
 						<div
 							className={`bg-marrone flex justify-center items-center`}
@@ -65,6 +73,10 @@ export const Navbar = ({ page }: { page: string }) => {
 								height: height + "px",
 							}}
 							ref={buttons.home}
+							onClick={() => {
+								if (page === "Cronologia") navigate("/profile");
+								else navigate("/home");
+							}}
 						>
 							<p className='text-white text-xl'>X</p>
 						</div>
@@ -76,8 +88,42 @@ export const Navbar = ({ page }: { page: string }) => {
 								height: height + "px",
 							}}
 							ref={buttons.home}
+							onClick={() => {
+								if (page.split("-")[0] === "Aggiungi al carrello") {
+									const id = page.split("-")[1];
+									let carrello = JSON.parse(
+										localStorage.getItem("cart") || "[]"
+									);
+									let presente = false;
+									for (let i = 0; i < carrello.length; i++) {
+										if (carrello[i].id === parseInt(id)) {
+											presente = true;
+											break;
+										}
+									}
+									if (presente) {
+										const nuovoCarrello = carrello.map((item: any) => {
+											if (item.id === parseInt(id)) {
+												let nuovoItem = item;
+												nuovoItem.quantita += 1;
+												return nuovoItem;
+											} else {
+												return item;
+											}
+										});
+										localStorage.setItem("cart", JSON.stringify(nuovoCarrello));
+									} else {
+										carrello.push({ ...product, quantita: 1 });
+										localStorage.setItem("cart", JSON.stringify(carrello));
+									}
+
+									navigate("/cart");
+								}
+							}}
 						>
-							<p className='text-white text-xl'>Aggiungi al carrello</p>
+							<p className='text-white text-xl capitalize'>
+								{page.split("-")[0]}
+							</p>
 						</div>
 					</>
 				) : (

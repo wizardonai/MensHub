@@ -18,7 +18,7 @@ const Product = () => {
 	return (
 		<>
 			<Container className='h-containerProduct py-14'>
-				<div className='flex flex-col items-center'>
+				<div className='flex flex-col items-center h-full justify-evenlyx'>
 					<p className='text-marrone text-3xl font-bold'>{product.nome}</p>
 					<img
 						src={urlImg + product.indirizzo_img}
@@ -31,12 +31,12 @@ const Product = () => {
 							<CarouselContent>
 								<CarouselItem>
 									<div className='h-[130px] flex flex-col justify-center items-center'>
-										<p>{product.descrizione}</p>
+										<p className='w-3/4 text-center'>{product.descrizione}</p>
 									</div>
 								</CarouselItem>
 								<CarouselItem>
 									<div className='h-[130px] flex flex-col justify-center items-center'>
-										{product.allergeni}
+										<p className='w-3/4 text-center'>{product.allergeni}</p>
 									</div>
 								</CarouselItem>
 							</CarouselContent>
@@ -46,7 +46,7 @@ const Product = () => {
 					</div>
 				</div>
 			</Container>
-			<Navbar page='product' />
+			<Navbar page={"Aggiungi al carrello-" + product.id} product={product} />
 		</>
 	);
 };

@@ -29,7 +29,11 @@ const CronologiaAcquistiPage = ({
 		).then((res: any) => {
 			setCronologia(res);
 		});
+
+		return <p>caricamento</p>;
 	}
+
+	console.log(cronologia);
 
 	const generaRighe = () => {
 		return cronologia.map((item: ordine, index: number) => {
@@ -102,7 +106,7 @@ const CronologiaAcquistiPage = ({
 					</SectionToggle>
 				</div>
 			</Container>
-			<Navbar page='profile' />
+			<Navbar page='Cronologia' />
 		</>
 	);
 };
