@@ -24,6 +24,7 @@ function App() {
 	let router;
 	if (loggato) {
 		if (username === "") {
+			setUsername("Caricamento...");
 			getProfilo(
 				JSON.parse(localStorage.getItem("token") || '{"token": "scu"}').token
 			).then((res: any) => {
@@ -31,17 +32,20 @@ function App() {
 					localStorage.removeItem("cart");
 					localStorage.removeItem("token");
 					localStorage.setItem("loggato", "false");
+					return;
 				}
+
 				setUsername(res.nome);
 				setDatiUtente(res);
 			});
-		}
-		if (products.length === 0) {
-			getProdotti(
-				JSON.parse(localStorage.getItem("token") || '{"token": "scu"}')
-			).then((res: any) => {
-				setProducts(res);
-			});
+
+			if (products.length === 0) {
+				getProdotti(
+					JSON.parse(localStorage.getItem("token") || '{"token": "scu"}').token
+				).then((res: any) => {
+					setProducts(res);
+				});
+			}
 		}
 
 		router = createBrowserRouter([
@@ -59,7 +63,14 @@ function App() {
 			},
 			{
 				path: "/profile",
-				element: <Profile setLoggato={setLoggato} />,
+				element: (
+					<Profile
+						setLoggato={setLoggato}
+						datiUtente={datiUtente}
+						setDatiUtente={setDatiUtente}
+						setProducts={setProducts}
+					/>
+				),
 			},
 			{
 				path: "/profile/:page",

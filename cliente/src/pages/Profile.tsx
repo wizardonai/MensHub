@@ -6,9 +6,9 @@ import riscattaCodice from "../img/riscattaCodice.png";
 import cronologia from "../img/cronologia.png";
 import disconnetti from "../img/disconnetti.png";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Input } from "../components/shadcn/Input";
-import { getMense } from "../scripts/fetch";
+import { getMense, getProdotti, modifyMensa } from "../scripts/fetch";
 import {
 	Select,
 	SelectContent,
@@ -16,18 +16,30 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/shadcn/Select";
-import { mensa } from "../utils";
+import { mensa, typeProfilo } from "../utils";
 import { Button } from "../components/shadcn/Button";
 
 const Popup = ({
 	tipoPopup,
 	setTipoPopup,
 	mense,
+	setLoggato,
+	datiUtente,
+	setDatiUtente,
+	setProducts,
 }: {
 	tipoPopup: string;
 	setTipoPopup: Function;
 	mense: Array<mensa>;
+	setLoggato: Function;
+	datiUtente: typeProfilo;
+	setDatiUtente: Function;
+	setProducts: Function;
 }) => {
+	const [valid, setValid] = useState(false);
+	const navigate = useNavigate();
+	const [nuovaMensa, setNuovaMensa] = useState(datiUtente.id_mensa + "");
+
 	if (tipoPopup === "") return <></>;
 
 	const funzionalita = () => {
@@ -38,12 +50,18 @@ const Popup = ({
 						<p className='w-full text-center text-xl'>
 							Inserisci la tua mensa preferita
 						</p>
-						<Select>
+						<Select
+							onOpenChange={(e) => setValid(e)}
+							onValueChange={(e) => {
+								setNuovaMensa(e);
+							}}
+							defaultValue={datiUtente.id_mensa + ""}
+						>
 							<SelectTrigger className='w-[85%] mt-2'>
 								<SelectValue placeholder='Seleziona la tua mensa'></SelectValue>
 							</SelectTrigger>
-							<SelectContent>
-								{mense.map((item, index) => {
+							<SelectContent defaultValue={datiUtente.id_mensa + ""}>
+								{mense.map((item) => {
 									return (
 										<SelectItem value={item.id + ""} key={item.id}>
 											{item.nome}
@@ -54,13 +72,12 @@ const Popup = ({
 						</Select>
 					</div>
 				);
-			case "codice":
+			case "disconnetti":
 				return (
 					<div className='w-full flex justify-center items-center flex-col h-[65%]'>
 						<p className='w-full text-center text-xl'>
-							Inserisci il codice da riscattare
+							Sicuro di voler disconnettere l'account?
 						</p>
-						<Input className='w-3/4 f	ocus-visible:ring-0 focus-visible:ring-offset-0 mt-2' />
 					</div>
 				);
 			default:
@@ -69,27 +86,55 @@ const Popup = ({
 	};
 
 	return (
-		<div className='w-[350px] h-[180px] absolute top-1/2 left-1/2 mt-[-90px] ml-[-175px]'>
-			<div className='w-full h-full bg-background rounded-3xl flex flex-col justify-evenly items-center border-[2px] border-marrone'>
-				{funzionalita()}
-				<div className='flex justify-evenly items-start flex-row w-full h-[35%]'>
-					<Button
-						className='w-[100px] h-[40px] bg-arancioneScuro rounded-3xl'
-						onClick={() => setTipoPopup("")}
-					>
-						<p className='text-marrone'>Annulla</p>
-					</Button>
-					<Button
-						className='w-[100px] h-[40px] bg-arancioneScuro rounded-3xl'
-						onClick={() => {}}
-					>
-						<p className='text-marrone'>
-							{tipoPopup === "mensa" ? "Imposta" : "Riscatta"}
-						</p>
-					</Button>
+		<>
+			<div
+				className='absolute w-full h-full top-0 left-0'
+				onClick={() => setTipoPopup("")}
+			></div>
+			<div className='w-[350px] h-[180px] absolute top-1/2 left-1/2 mt-[-90px] ml-[-175px]'>
+				<div className='w-full h-full bg-background rounded-3xl flex flex-col justify-evenly items-center border-[2px] border-marrone'>
+					{funzionalita()}
+					<div className='flex justify-evenly items-start flex-row w-full h-[35%]'>
+						<Button
+							className='w-[100px] h-[40px] bg-arancioneScuro rounded-3xl'
+							onClick={() => {
+								if (tipoPopup === "mensa") {
+									setTipoPopup("");
+									setDatiUtente({
+										...datiUtente,
+										id_mensa: parseInt(nuovaMensa),
+									});
+
+									modifyMensa(
+										parseInt(nuovaMensa),
+										JSON.parse(
+											localStorage.getItem("token") || '{"token": "scu"}'
+										).token
+									).then((res: any) => {
+										localStorage.setItem("token", JSON.stringify(res));
+
+										getProdotti(res.token).then((res: any) => {
+											setProducts(res);
+										});
+									});
+									navigate("/");
+								} else if (tipoPopup === "disconnetti") {
+									setTipoPopup("");
+									localStorage.removeItem("cart");
+									localStorage.removeItem("token");
+									setLoggato(false);
+								}
+							}}
+							disabled={valid}
+						>
+							<p className='text-marrone'>
+								{tipoPopup === "mensa" ? "Imposta" : "Disconnetti"}
+							</p>
+						</Button>
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 
@@ -105,7 +150,6 @@ const Elementi = ({
 	const pagine = [
 		["dati utente", datiUtente],
 		["mensa preferita", mensaPrefe],
-		["riscatta codice", riscattaCodice],
 		["cronologia acquisti", cronologia],
 		["disconnetti", disconnetti],
 	];
@@ -115,18 +159,13 @@ const Elementi = ({
 
 		switch (clicked) {
 			case "disconnetti":
-				localStorage.removeItem("cart");
-				localStorage.removeItem("token");
-				setLoggato(false);
+				setTipoPopup("disconnetti");
 				break;
 			case "mensa preferita":
 				setTipoPopup("mensa");
 				break;
-			case "riscatta codice":
-				setTipoPopup("codice");
-				break;
 			default:
-				navigate(`/profile/${clicked.replace(" ", "")}`);
+				navigate("/profile/" + clicked.replace(" ", ""));
 				break;
 		}
 	};
@@ -147,11 +186,22 @@ const Elementi = ({
 	));
 };
 
-const Profile = ({ setLoggato }: { setLoggato: Function }) => {
+const Profile = ({
+	setLoggato,
+	datiUtente,
+	setDatiUtente,
+	setProducts,
+}: {
+	setLoggato: Function;
+	datiUtente: typeProfilo;
+	setDatiUtente: Function;
+	setProducts: Function;
+}) => {
 	const [tipoPopup, setTipoPopup] = useState("");
-	const [mense, setMense] = useState([]);
+	const [mense, setMense] = useState([] as Array<mensa>);
 
 	if (mense.length === 0) {
+		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
 		getMense().then((res: any) => {
 			setMense(res);
 		});
@@ -172,6 +222,10 @@ const Profile = ({ setLoggato }: { setLoggato: Function }) => {
 					tipoPopup={tipoPopup}
 					setTipoPopup={setTipoPopup}
 					mense={mense}
+					setLoggato={setLoggato}
+					datiUtente={datiUtente}
+					setDatiUtente={setDatiUtente}
+					setProducts={setProducts}
 				/>
 			</Container>
 			<Navbar page='profile' />

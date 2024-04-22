@@ -1,10 +1,16 @@
 //processi da far partire
-import { execFile } from "child_process";
+import { exec } from "child_process";
 
-const fileMysql = execFile("mysql.bat", [], (err, data) => {
-	if (err) {
-		console.log(err);
+exec("mysql.server start", (error, stdout, stderr) => {
+	if (error) {
+		console.log(`error: ${error.message}`);
+		return;
 	}
+	if (stderr) {
+		console.log(`stderr: ${stderr}`);
+		return;
+	}
+	console.log(`stdout: ${stdout}`);
 });
 setTimeout(() => {
 	connetti();
@@ -141,11 +147,58 @@ server.post("/request/mense", (req, res) => {
 	});
 });
 
+server.post("/modify/mensa", (req, res) => {
+	let token = req.headers.authorization;
+	let id_mensa = req.body.id_mensa;
+	let decoded_tmp = "";
+
+	console.log(token.replace("Bearer ", ""));
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send("Token non valido");
+			res.end();
+		} else {
+			decoded_tmp = decoded;
+		}
+	});
+
+	let query = `UPDATE utenti SET id_mensa=${id_mensa} WHERE id=${decoded_tmp.id};`;
+
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+
+		let tokenNuovo = jwt.sign(
+			{
+				id: decoded_tmp.id,
+				nome: decoded_tmp.nome,
+				cognome: decoded_tmp.cognome,
+				email: decoded_tmp.email,
+				id_mensa: id_mensa,
+			},
+			secretKey,
+			{ expiresIn: "1h" }
+		);
+
+		console.log(tokenNuovo);
+
+		res.json({ token: tokenNuovo });
+		if (tokenNuovo === token) {
+			console.log("Token uguale");
+		} else {
+			console.log("Token diverso");
+		}
+		res.send();
+		res.end();
+	});
+});
+
 server.post("/request/categories", (req, res) => {
 	let query = `SELECT * FROM categorie;`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
-		console.log(result);
+
 		if (result.length > 0) {
 			res.send(result);
 			res.end();
@@ -154,7 +207,21 @@ server.post("/request/categories", (req, res) => {
 			res.end();
 		}
 	});
+});
 
+server.post("/request/allergens", (req, res) => {
+	let query = `SELECT * FROM allergeni;`;
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+
+		if (result.length > 0) {
+			res.send(result);
+			res.end();
+		} else {
+			res.send("Nessun allergene trovato");
+			res.end();
+		}
+	});
 });
 
 server.post("/send/cart", (req, res) => {
@@ -323,8 +390,7 @@ server.post("/request/profile", (req, res) => {
 	if (!token) {
 		res.send("Token non trovato");
 		res.end();
-	}
-	else {
+	} else {
 		jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 			if (err) {
 				console.log(err);
@@ -360,20 +426,20 @@ server.post("/request/orders", (req, res) => {
 				let orders = [];
 				let currentOrder = null;
 
-				result.forEach(row => {
+				result.forEach((row) => {
 					if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
 						currentOrder = {
 							id_ordine: row.id_ordine,
 							stato_ordine: row.stato_ordine,
 							data: row.data,
-							prodotti: []
+							prodotti: [],
 						};
 						orders.push(currentOrder);
 					}
 
 					currentOrder.prodotti.push({
 						id: row.id_prodotto,
-						quantita: row.quantita
+						quantita: row.quantita,
 					});
 				});
 
@@ -388,7 +454,6 @@ server.post("/request/orders", (req, res) => {
 	});
 });
 
-
 server.post("/producer/get/products", (req, res) => {
 	let token = req.headers.authorization;
 	let id_mensa = "";
@@ -400,7 +465,9 @@ server.post("/producer/get/products", (req, res) => {
 		} else {
 			id_mensa = decoded.id_mensa;
 			connection.query(
-				"SELECT * FROM prodotti where id_mensa=" + id_mensa + " ORDER BY categoria, nome",
+				"SELECT * FROM prodotti where id_mensa=" +
+					id_mensa +
+					" ORDER BY categoria, nome",
 				(err, result) => {
 					if (err) throw new Error(err);
 					res.header("Access-Control-Allow-Origin", "*");
@@ -411,7 +478,6 @@ server.post("/producer/get/products", (req, res) => {
 		}
 	});
 });
-
 
 server.post("/producer/get/orders", (req, res) => {
 	let token = req.headers.authorization;
@@ -434,21 +500,21 @@ server.post("/producer/get/orders", (req, res) => {
 				let orders = [];
 				let currentOrder = null;
 
-				result.forEach(row => {
+				result.forEach((row) => {
 					if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
 						currentOrder = {
 							id_ordine: row.id_ordine,
 							id_utente: row.id_utente,
 							stato_ordine: row.stato_ordine,
 							data: row.data,
-							prodotti: []
+							prodotti: [],
 						};
 						orders.push(currentOrder);
 					}
 
 					currentOrder.prodotti.push({
 						id: row.id_prodotto,
-						quantita: row.quantita
+						quantita: row.quantita,
 					});
 				});
 
@@ -492,7 +558,8 @@ server.post("/producer/edit/product", (req, res) => {
 
 //serve id del prodotto nella req per caricare immagine
 //richiesta da fare con form-data
-server.post("/producer/editWithImg/product",
+server.post(
+	"/producer/editWithImg/product",
 	upload2.single("image"),
 	(req, res) => {
 		const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
@@ -663,62 +730,62 @@ server.post("/producer/delete/product", (req, res) => {
 	let query = `DELETE from prodotti WHERE id = '${id}';`;
 	let fileDaEliminare = "";
 
-	console.log('\nQUERY DELETE' + query);
+	console.log("\nQUERY DELETE" + query);
 	connection.query(query, (err, result) => {
 		if (err) {
 			console.log(err);
 			res.send(err);
 			res.end();
 		} else {
-			let cartella = '../client/src/cliente/pages/image/products';
+			let cartella = "../client/src/cliente/pages/image/products";
 
 			const queryPromise = new Promise((resolve, reject) => {
 				fs.readdir(cartella, (err, files) => {
 					if (err) {
-						console.error('Errore durante la lettura della cartella:', err);
+						console.error("Errore durante la lettura della cartella:", err);
 						return;
 					}
 
-					fileDaEliminare = files.find(file => file.startsWith(id + "."));
+					fileDaEliminare = files.find((file) => file.startsWith(id + "."));
 
 					if (fileDaEliminare) {
 						console.log("File da eliminare:" + fileDaEliminare);
-						resolve(fileDaEliminare)
+						resolve(fileDaEliminare);
 					} else {
-						reject('File non trovato.');
-						console.log('File non trovato.');
+						reject("File non trovato.");
+						console.log("File non trovato.");
 					}
 				});
 			});
 
 			queryPromise
 				.then((fileDaEliminare) => {
-
 					const pathImg = cartella + "/" + fileDaEliminare;
 
 					fs.unlink(pathImg, (err) => {
 						if (err) {
-							console.error(`Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`);
+							console.error(
+								`Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
+							);
 							// Gestisci l'errore come preferisci
 						} else {
-							console.log(`Il file ${fileDaEliminare} è stato eliminato con successo`);
+							console.log(
+								`Il file ${fileDaEliminare} è stato eliminato con successo`
+							);
 						}
 					});
 
 					res.send("Prodotto eliminato");
-					res.end()
+					res.end();
 				})
 				.catch((error) => {
 					console.log(error);
 					res.send("Errore eliminazione");
 					res.end();
 				});
-
-
 		}
 	});
 });
-
 
 function renameImage(nome_file, id_prodotto) {
 	console.log(`RENAME: ${nome_file} ${id_prodotto} `);
@@ -761,7 +828,6 @@ function renameImage(nome_file, id_prodotto) {
 		}
 	});
 }
-
 
 const port = 6969;
 server.listen(port, () => {

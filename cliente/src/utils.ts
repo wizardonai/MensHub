@@ -24,6 +24,7 @@ export type typeProfilo = {
 	exp: number;
 	iat: number;
 	id: number;
+	id_mensa: number;
 	nome: string;
 };
 export type ordine = {

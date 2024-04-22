@@ -13,12 +13,6 @@ import {
 const DatiUtentePage = () => {
 	return <p>dati utente</p>;
 };
-const MensaPreferitaPage = () => {
-	return <p>mensa preferita</p>;
-};
-const RiscattaCodicePage = () => {
-	return <p>riscatta codice</p>;
-};
 const CronologiaAcquistiPage = ({
 	products,
 }: {
@@ -31,60 +25,67 @@ const CronologiaAcquistiPage = ({
 		setChiesto(true);
 		//fetch cronologia
 		getCronologia(
-			JSON.parse(localStorage.getItem("token") || '{"token": "scu"}')
+			JSON.parse(localStorage.getItem("token") || '{"token": "scu"}').token
 		).then((res: any) => {
 			setCronologia(res);
-			console.log(res);
 		});
 	}
 
 	const generaRighe = () => {
-		return cronologia.map((item: ordine, index: number) => (
-			<SectionToggleItem key={index} value={item.id_ordine + ""}>
-				<SectionToggleTrigger>
-					<div
-						key={index}
-						className='flex flex-col justify-center items-center'
-					>
-						{item.data.slice(0, 10).split("-").reverse().join("/")}
-					</div>
-				</SectionToggleTrigger>
-				<SectionToggleContent>
-					<div>
-						{item.prodotti.map((item: any, index) => {
-							const elemento = products.filter(
-								(product) => product.id === item.id
-							)[0];
+		return cronologia.map((item: ordine, index: number) => {
+			if (item.stato_ordine === "attivo") return <div key={index}></div>;
 
-							return (
-								<div
-									className='w-full h-[80px] flex flex-row justify-start items-center rounded-3xl bg-arancioneScuro mb-3'
-									key={elemento.id}
-								>
-									<img
-										src={urlImg + elemento.indirizzo_img}
-										alt={elemento.nome}
-										className='w-[70px] h-[70px] ml-2'
-									/>
-									<div className='w-3/4 flex flex-col items-center pl-1' id=''>
-										<p
+			return (
+				<SectionToggleItem
+					key={index}
+					value={item.id_ordine + ""}
+					className='border-0 bg-biancoLatte rounded-3xl'
+				>
+					<SectionToggleTrigger className='bg-arancioneScuro rounded-2xl flex flex-row justify-between items-center px-4 no-underline'>
+						<div key={index} className='w-full'>
+							{item.data.slice(0, 10).split("-").reverse().join("/")}
+						</div>
+					</SectionToggleTrigger>
+					<SectionToggleContent className='bg-biancoLatte border-0 p-0 rounded-3xl'>
+						<div>
+							{item.prodotti.map((item2: any) => {
+								const elemento = products.filter(
+									(product) => product.id === item2.id
+								)[0];
+
+								return (
+									<div
+										className='w-full h-[80px] flex flex-row justify-start items-center rounded-3xl'
+										key={elemento.id}
+									>
+										<img
+											src={urlImg + elemento.indirizzo_img}
+											alt={elemento.nome}
+											className='w-[70px] h-[70px] ml-2'
+										/>
+										<div
+											className='w-3/4 flex flex-col items-center pl-1'
 											id=''
-											className=' text-marrone w-full whitespace-nowrap overflow-hidden overflow-ellipsis'
 										>
-											{elemento.nome}
-										</p>
-										<p id='' className=' text-marrone w-full'>
-											{elemento.prezzo.toFixed(2)}€
-										</p>
+											<p
+												id=''
+												className=' text-marrone w-full whitespace-nowrap overflow-hidden overflow-ellipsis'
+											>
+												{elemento.nome}
+											</p>
+											<p id='' className=' text-marrone w-full'>
+												{elemento.prezzo.toFixed(2)}€
+											</p>
+										</div>
+										<p className='w-1/4 text-center'>{item2.quantita}</p>
 									</div>
-									<p className='w-1/4 text-center'>{item.quantita}</p>
-								</div>
-							);
-						})}
-					</div>
-				</SectionToggleContent>
-			</SectionToggleItem>
-		));
+								);
+							})}
+						</div>
+					</SectionToggleContent>
+				</SectionToggleItem>
+			);
+		});
 	};
 
 	return (
@@ -93,16 +94,17 @@ const CronologiaAcquistiPage = ({
 			<Container>
 				<div className='w-full flex flex-col items-center justify-center'>
 					<SectionToggle type='single' collapsible className='w-3/4'>
-						{generaRighe()}
+						{typeof cronologia === "string" ? (
+							<p>NESSUN ORDINE!</p>
+						) : (
+							generaRighe()
+						)}
 					</SectionToggle>
 				</div>
 			</Container>
 			<Navbar page='profile' />
 		</>
 	);
-};
-const DisconnettiPage = () => {
-	return <p>disconnetti</p>;
 };
 
 const ProfilePages = ({
@@ -114,13 +116,7 @@ const ProfilePages = ({
 }) => {
 	const { page } = useParams<{ page: string }>();
 
-	const pagine = [
-		"datiutente",
-		"mensapreferita",
-		"riscattacodice",
-		"cronologiaacquisti",
-		"disconnetti",
-	];
+	const pagine = ["datiutente", "cronologiaacquisti"];
 
 	if (!page) return <p>CARICAMENTO</p>;
 
@@ -128,13 +124,7 @@ const ProfilePages = ({
 		case pagine[0]:
 			return <DatiUtentePage />;
 		case pagine[1]:
-			return <MensaPreferitaPage />;
-		case pagine[2]:
-			return <RiscattaCodicePage />;
-		case pagine[3]:
 			return <CronologiaAcquistiPage products={products} />;
-		case pagine[4]:
-			return <DisconnettiPage />;
 		default:
 			return <p>PAGINA NON TROVATA!</p>;
 	}

@@ -92,7 +92,7 @@ export async function getProfilo(token: string) {
 }
 
 //ok
-export async function getProdotti(token: { token: string }) {
+export async function getProdotti(token: string) {
 	let response;
 
 	let config = {
@@ -100,7 +100,7 @@ export async function getProdotti(token: { token: string }) {
 		maxBodyLength: Infinity,
 		url: `${url}/request/products`,
 		headers: {
-			Authorization: "Bearer " + token.token,
+			Authorization: "Bearer " + token,
 		},
 	};
 
@@ -148,7 +148,7 @@ export async function sendOrder(
 }
 
 //ok
-export async function getCronologia(token: { token: string }) {
+export async function getCronologia(token: string) {
 	let response;
 
 	let config = {
@@ -157,7 +157,7 @@ export async function getCronologia(token: { token: string }) {
 		url: `${url}/request/orders`,
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: "Bearer " + token.token,
+			Authorization: "Bearer " + token,
 		},
 	};
 
@@ -173,7 +173,7 @@ export async function getCronologia(token: { token: string }) {
 	return response;
 }
 
-//
+//ok
 export async function getMense() {
 	let response;
 
@@ -192,6 +192,61 @@ export async function getMense() {
 			response = res.data;
 		})
 		.catch((err: any) => {
+			console.log(err);
+		});
+
+	return response;
+}
+
+//ok
+export async function modifyMensa(id: number, token: string) {
+	let response;
+
+	let data = JSON.stringify({ id_mensa: id });
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/modify/mensa`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + token,
+		},
+		data: data,
+	};
+
+	await axios
+		.request(config)
+		.then((res: any) => {
+			response = res.data;
+		})
+		.catch((err: any) => {
+			console.log(err);
+		});
+
+	return response;
+}
+
+//
+export async function getOrders(token: string) {
+	let response;
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/request/orders`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + token,
+		},
+	};
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+		})
+		.catch((err) => {
 			console.log(err);
 		});
 
