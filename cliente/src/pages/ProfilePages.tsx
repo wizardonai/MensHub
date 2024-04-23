@@ -10,9 +10,6 @@ import {
 	SectionToggleTrigger,
 } from "../components/shadcn/SectionToggle";
 
-const DatiUtentePage = () => {
-	return <p>dati utente</p>;
-};
 const CronologiaAcquistiPage = ({
 	products,
 }: {
@@ -45,8 +42,8 @@ const CronologiaAcquistiPage = ({
 					value={item.id_ordine + ""}
 					className='border-0 bg-biancoLatte rounded-3xl'
 				>
-					<SectionToggleTrigger className='bg-arancioneScuro rounded-2xl flex flex-row justify-between items-center px-4 no-underline'>
-						<div key={index} className='w-full'>
+					<SectionToggleTrigger className='bg-arancioneScuro rounded-2xl flex flex-row justify-between items-center px-4 no-underline h-[70px]'>
+						<div key={index} className='w-full text-marrone text-lg'>
 							{item.data.slice(0, 10).split("-").reverse().join("/")}
 						</div>
 					</SectionToggleTrigger>
@@ -120,14 +117,12 @@ const ProfilePages = ({
 }) => {
 	const { page } = useParams<{ page: string }>();
 
-	const pagine = ["datiutente", "cronologiaacquisti"];
+	const pagine = ["cronologiaacquisti"];
 
 	if (!page) return <p>CARICAMENTO</p>;
 
 	switch (page) {
 		case pagine[0]:
-			return <DatiUtentePage />;
-		case pagine[1]:
 			return <CronologiaAcquistiPage products={products} />;
 		default:
 			return <p>PAGINA NON TROVATA!</p>;

@@ -1,3 +1,0 @@
-yarn build
-yarn cap add android
-yarn cap open android

@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import topbarProfile from "../img/topbarProfile.png";
 import { cn } from "./shadcn/utils";
 import { prodotto } from "../utils";
+
+import homeImg from "../img/home.png";
+import cartImg from "../img/cart.png";
+import profileImg from "../img/profile.png";
 
 export const Topbar = ({ page, name }: { page: string; name: string }) => {
 	if (page === "home") {
@@ -143,7 +146,13 @@ export const Navbar = ({
 							{page === "home" ? (
 								<p className='text-white text-xl'>HOME</p>
 							) : (
-								""
+								<img
+									src={homeImg}
+									alt='home'
+									style={{
+										filter: "var(--filterImgBianco)",
+									}}
+								/>
 							)}
 						</div>
 						<div
@@ -161,7 +170,13 @@ export const Navbar = ({
 							{page === "cart" ? (
 								<p className='text-white text-xl'>CARRELLO</p>
 							) : (
-								""
+								<img
+									src={cartImg}
+									alt='cart'
+									style={{
+										filter: "var(--filterImgBianco)",
+									}}
+								/>
 							)}
 						</div>
 						<div
@@ -179,7 +194,13 @@ export const Navbar = ({
 							{page === "profile" ? (
 								<p className='text-white text-xl'>PROFILO</p>
 							) : (
-								""
+								<img
+									src={profileImg}
+									alt='profile'
+									style={{
+										filter: "var(--filterImgBianco)",
+									}}
+								/>
 							)}
 						</div>
 					</>

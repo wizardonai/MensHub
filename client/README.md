@@ -1,1 +1,0 @@
-ricky è gay

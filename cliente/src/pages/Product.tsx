@@ -18,7 +18,7 @@ const Product = () => {
 	return (
 		<>
 			<Container className='h-containerProduct py-14'>
-				<div className='flex flex-col items-center h-full justify-evenlyx'>
+				<div className='flex flex-col items-center h-full justify-evenly'>
 					<p className='text-marrone text-3xl font-bold'>{product.nome}</p>
 					<img
 						src={urlImg + product.indirizzo_img}

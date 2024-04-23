@@ -1,12 +1,9 @@
-import { Container, Navbar, Topbar } from "../components/Components";
+import { Container, Navbar } from "../components/Components";
 import topbarProfile from "../img/topbarProfile.png";
-import datiUtente from "../img/datiUtente.png";
-import mensaPrefe from "../img/mensaPrefe.png";
-import riscattaCodice from "../img/riscattaCodice.png";
 import cronologia from "../img/cronologia.png";
 import disconnetti from "../img/disconnetti.png";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Input } from "../components/shadcn/Input";
 import { getMense, getProdotti, modifyMensa } from "../scripts/fetch";
 import {
@@ -16,10 +13,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/shadcn/Select";
-import { mensa, typeProfilo } from "../utils";
+import { getFilter, mensa, typeProfilo } from "../utils";
 import { Button } from "../components/shadcn/Button";
 import { Label } from "../components/shadcn/Label";
-import { parse } from "path";
 
 const Popup = ({
 	tipoPopup,
@@ -124,15 +120,10 @@ const MensaPreferita = ({
 	setDatiUtente: Function;
 	setProducts: Function;
 }) => {
-	const [valid, setValid] = useState(false);
-	const navigate = useNavigate();
-	const [nuovaMensa, setNuovaMensa] = useState(datiUtente.id_mensa + "");
-
 	return (
 		<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
 			<p className='w-full text-lg'>Mensa preferita</p>
 			<Select
-				onOpenChange={(e) => setValid(e)}
 				onValueChange={(e: any) => {
 					if (datiUtente.id_mensa !== parseInt(e)) {
 						setDatiUtente({
@@ -180,31 +171,40 @@ const MensaPreferita = ({
 	);
 };
 const InfoUtente = ({ datiUtente }: { datiUtente: typeProfilo }) => {
+
 	return (
 		<>
-			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+			<div className='flex flex-col items-start justify-center w-full mb-4'>
 				<Label htmlFor='nome'>Nome</Label>
-				<Input type='nome' id='nome' defaultValue={datiUtente.nome} disabled />
+				<Input
+					type='nome'
+					id='nome'
+					defaultValue={datiUtente.nome}
+					disabled
+					className='bg-biancoLatte mt-0.5 w-[85%]'
+				/>
 			</div>
-			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+			<div className='flex flex-col items-start justify-center w-full mb-4'>
 				<Label htmlFor='cognome'>Cognome</Label>
 				<Input
 					type='cognome'
 					id='cognome'
 					defaultValue={datiUtente.cognome}
 					disabled
+					className='bg-biancoLatte mt-0.5 w-[85%]'
 				/>
 			</div>
-			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+			<div className='flex flex-col items-start justify-center w-full mb-4'>
 				<Label htmlFor='email'>Email</Label>
 				<Input
 					type='email'
 					id='email'
 					defaultValue={datiUtente.email}
 					disabled
+					className='bg-biancoLatte mt-0.5 w-[85%]'
 				/>
 			</div>
-			<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
+			<div className='flex flex-col items-start justify-center w-full mb-4'>
 				<p className='underline text-lg'>Cambia password</p>
 			</div>
 		</>
