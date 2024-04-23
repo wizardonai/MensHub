@@ -81,9 +81,7 @@ INSERT INTO `categorie` (`nome`, `indirizzo_img`) VALUES
 CREATE TABLE `mense` (
   `id` int(11) NOT NULL,
   `nome` varchar(50) NOT NULL,
-  `indirizzo` varchar(100) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `telefono` int(20) DEFAULT NULL
+  `indirizzo` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -102,8 +100,6 @@ INSERT INTO `mense` (`id`, `nome`, `indirizzo`) VALUES
 CREATE TABLE `ordini` (
   `id` int(11) NOT NULL,
   `id_mensa` int(11) NOT NULL,
-  `str_prod` varchar(255) NOT NULL,
-  `quantita` varchar(255) NOT NULL,
   `data` datetime DEFAULT NULL,
   `stato_ordine` varchar(255) DEFAULT NULL,
   `id_utente` int(11) DEFAULT NULL
@@ -113,8 +109,9 @@ CREATE TABLE `ordini` (
 -- Dump dei dati per la tabella `ordini`
 --
 
-INSERT INTO `ordini` (`id`, `id_mensa`, `str_prod`, `quantita`, `data`, `stato_ordine`, `id_utente`) VALUES
-(9, 1, '2', '1', '2024-01-25 18:01:21', 'attivo', 1);
+INSERT INTO `ordini` (`id`, `id_mensa`, `data`, `stato_ordine`, `id_utente`) VALUES
+(1234, 1, '2024-02-21 00:00:00', 'attivo', 1),
+(5678, 1, '2024-01-25 15:37:01', 'in corso', 1);
 
 -- --------------------------------------------------------
 
@@ -248,7 +245,7 @@ ALTER TABLE `mense`
 -- AUTO_INCREMENT per la tabella `ordini`
 --
 ALTER TABLE `ordini`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5679;
 
 --
 -- AUTO_INCREMENT per la tabella `prodotti`
