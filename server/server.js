@@ -101,12 +101,12 @@ server.use(urlencoded({ extended: false }));
 
 //deploy react
 server.use("/image", express.static("./image"));
-server.use(express.static("../client/build"));
+server.use(express.static("../cliente/build"));
 
 //all methods that return a response to the client
 server.get("/", (req, res) => {
 	//hosto la pagina sullo stesso sito
-	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
+	res.sendFile(path.resolve("../cliente/build/index.html")); //"../cliente/build/index.html"
 });
 
 server.post("/request/products", (req, res) => {

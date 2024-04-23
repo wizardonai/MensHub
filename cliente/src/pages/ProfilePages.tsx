@@ -30,8 +30,6 @@ const CronologiaAcquistiPage = ({
 		return <p>caricamento</p>;
 	}
 
-	console.log(cronologia);
-
 	const generaRighe = () => {
 		return cronologia.map((item: ordine, index: number) => {
 			if (item.stato_ordine === "attivo") return <div key={index}></div>;
