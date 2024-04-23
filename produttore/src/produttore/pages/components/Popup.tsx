@@ -33,36 +33,26 @@ export default function Popup({
     let nomeValue = "";
     if (nome.current) {
       nomeValue = nome.current.value;
-      console.log('Valore dell\'input:', nomeValue);
-    } else {
-      console.log('Elemento di input non trovato');
     }
     const categoriaValue = filtro;
 
     let descrizioneValue = "";
     if (descrizione.current) {
       descrizioneValue = descrizione.current.value;
-      console.log('Valore dell\'input:', descrizioneValue);
-    } else {
-      console.log('Elemento di input non trovato');
     }
     const allergeniValue = allergeniScelti;
     const immagineValue = image;
     let prezzoValue = "";
     if (prezzo.current) {
       prezzoValue = prezzo.current.value;
-      console.log('Valore dell\'input:', prezzoValue);
-    } else {
-      console.log('Elemento di input non trovato');
     }
-
-    console.log("IMG" + immagineValue);
 
     if (
       nomeValue === "" ||
       categoriaValue === "" ||
       descrizioneValue === "" ||
-      immagineValue === null
+      immagineValue === null ||
+      prezzoValue === ""
     ) {
       alert("Si prega di compilare tutti i campi.");
       return;
@@ -70,20 +60,22 @@ export default function Popup({
 
     // Aggiungi la pietanza
     const formData = new FormData();
-    if (prezzoValue !== null)
-      formData.append("prezzo", prezzoValue);
-    if (nomeValue !== null)
-      formData.append("nome", nomeValue);
+    if (prezzoValue !== null) formData.append("prezzo", prezzoValue);
+    if (nomeValue !== null) formData.append("nome", nomeValue);
     formData.append("categoria", categoriaValue);
     if (descrizioneValue !== null)
       formData.append("descrizione", descrizioneValue);
 
     //allergeni seperati da virgola
-    formData.append("allergeni",  allergeniValue.join(","));
+    formData.append("allergeni", allergeniValue.join(","));
     formData.append("image", immagineValue);
     formData.append("disponibile", "1");
 
-    addProdotto(JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}').token, formData)
+    addProdotto(
+      JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+        .token,
+      formData
+    )
       .then((response) => {
         if (response === "Prodotto aggiunto con successo") {
           alert(response);
@@ -95,7 +87,6 @@ export default function Popup({
       .catch((err: any) => {
         console.log(err);
       });
-
   };
 
   const handleAllergeni = (allergene: string) => {
@@ -290,7 +281,6 @@ export default function Popup({
                   style={{ scrollbarWidth: "none", resize: "none" }}
                 />
               </div>
-
             </div>
             <div className="pl-[4svw]">
               <div>
