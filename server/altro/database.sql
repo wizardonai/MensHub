@@ -163,12 +163,7 @@ CREATE TABLE `prodotti_ordini` (
 --
 -- Dump dei dati per la tabella `prodotti_ordini`
 --
-
-INSERT INTO `prodotti_ordini` (`id_prodotto`, `id_ordine`, `quantita`) VALUES
-(1, 1234, 7),
-(2, 1234, 3),
-(3, 1234, 1),
-(6, 5678, 8);
+\
 
 -- --------------------------------------------------------
 
