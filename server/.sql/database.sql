@@ -81,7 +81,9 @@ INSERT INTO `categorie` (`nome`, `indirizzo_img`) VALUES
 CREATE TABLE `mense` (
   `id` int(11) NOT NULL,
   `nome` varchar(50) NOT NULL,
-  `indirizzo` varchar(100) NOT NULL
+  `indirizzo` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `telefono` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

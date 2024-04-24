@@ -47,25 +47,25 @@ const secretKey = "CaccaPoopShitMierda";
 // Configura multer per salvare i file caricati nella cartella 'images'
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../server/image");
+    cb(null, "../server/image/products");
   },
   filename: function (req, file, cb) {
     const nome = req.body.nome;
     const prezzo = req.body.prezzo;
     cb(
       null,
-      "products/" + nome + "_" + prezzo + path.extname(file.originalname)
+      nome + "_" + prezzo + path.extname(file.originalname)
     );
   },
 });
 
 const storage2 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../server/image");
+    cb(null, "../server/image/products");
   },
   filename: function (req, file, cb) {
     const id = req.body.id;
-    cb(null, "products/" + id + path.extname(file.originalname));
+    cb(null, id + path.extname(file.originalname));
   },
 });
 
@@ -103,28 +103,34 @@ server.get("/", (req, res) => {
   res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
 });
 
+
+
 server.post("/request/products", (req, res) => {
   let token = req.headers.authorization;
   let idm_utente = "";
   res.header("Access-Control-Allow-Origin", "*");
+
+
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      console.log(err);
+      console.log("Token non valido");
       res.send("Token non valido");
       res.end();
     } else {
       idm_utente = decoded.id_mensa;
+
+      connection.query(
+        "SELECT * FROM prodotti where id_mensa=" + idm_utente + " ORDER BY nome",
+        (err, result) => {
+          if (err) throw new Error(err);
+          res.send(result);
+          res.end();
+        }
+      );
     }
   });
 
-  connection.query(
-    "SELECT * FROM prodotti where id_mensa=" + idm_utente + " ORDER BY nome",
-    (err, result) => {
-      if (err) throw new Error(err);
-      res.send(result);
-      res.end();
-    }
-  );
+
 });
 
 server.post("/request/mense", (req, res) => {
@@ -178,34 +184,34 @@ server.post("/send/cart", (req, res) => {
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
       console.log(err);
-      res.send("errore token");
+      res.send("Token non valido");
       res.end();
     } else {
       id_utente = decoded.id;
+
+      let data = req.body.carrello;
+
+      let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'attivo', ${id_utente});`;
+
+      connection.query(query, (err, result) => {
+        if (err) throw new Error(err);
+
+        const id_ordine = result.insertId;
+
+        let prodottiOrdiniQuery = `INSERT INTO prodotti_ordini (id_prodotto, id_ordine, quantita) VALUES`;
+
+        data.forEach((item, index) => {
+          prodottiOrdiniQuery += ` (${item.id}, ${id_ordine}, ${item.quantita})`;
+          if (index !== data.length - 1) prodottiOrdiniQuery += ",";
+        });
+
+        connection.query(prodottiOrdiniQuery, (err, result) => {
+          if (err) throw new Error(err);
+          res.send("Ordine aggiunto");
+          res.end();
+        });
+      });
     }
-  });
-
-  let data = req.body.carrello;
-
-  let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'attivo', ${id_utente});`;
-
-  connection.query(query, (err, result) => {
-    if (err) throw new Error(err);
-
-    const id_ordine = result.insertId;
-
-    let prodottiOrdiniQuery = `INSERT INTO prodotti_ordini (id_prodotto, id_ordine, quantita) VALUES`;
-
-    data.forEach((item, index) => {
-      prodottiOrdiniQuery += ` (${item.id}, ${id_ordine}, ${item.quantita})`;
-      if (index !== data.length - 1) prodottiOrdiniQuery += ",";
-    });
-
-    connection.query(prodottiOrdiniQuery, (err, result) => {
-      if (err) throw new Error(err);
-      res.send("Ordine aggiunto");
-      res.end();
-    });
   });
 });
 
@@ -505,25 +511,33 @@ server.post("/producer/edit/product", (req, res) => {
 
 //serve id del prodotto nella req per caricare immagine
 //richiesta da fare con form-data
-server.post(
-  "/producer/editWithImg/product",
-  upload2.single("image"),
-  (req, res) => {
-    const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-      req.body;
+server.post("/producer/editWithImg/product", upload2.single("image"), (req, res) => {
+  const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
+    req.body;
 
-    let cartella = "../client/src/cliente/pages/image/products";
-    let fileDaEliminare = "";
-    const estensioneFile = req.file.filename.split(".").pop();
+  let cartella = "../server/image/products";
+  let fileDaEliminare = "";
+  let pathFileDaEliminare = "";
+  const estensioneFile = req.file.filename.split(".").pop();
 
-    const queryPromise = new Promise((resolve, reject) => {
-      fs.readdir(cartella, (err, files) => {
+  const queryPromise = new Promise((resolve, reject) => {
+    fs.readdir(cartella, (err, files) => {
+      if (err) {
+        console.error("Errore durante la lettura della cartella:", err);
+        return;
+      }
+
+      let query = "SELECT indirizzo_img FROM prodotti WHERE id = " + id + ";";
+      console.log("QUERY: " + query);
+      connection.query(query, (err, result) => {
         if (err) {
-          console.error("Errore durante la lettura della cartella:", err);
-          return;
+          console.log(err);
+          reject(err);
         }
+        pathFileDaEliminare = result[0].indirizzo_img.split("/").pop();
+        console.log("Path file da eliminare: " + pathFileDaEliminare);
 
-        fileDaEliminare = files.find((file) => file.startsWith(id + "."));
+        fileDaEliminare = files.find((file) => file === pathFileDaEliminare);
 
         if (fileDaEliminare) {
           console.log("File da rinominare:" + fileDaEliminare);
@@ -534,30 +548,32 @@ server.post(
         }
       });
     });
+  });
 
-    queryPromise
-      .then((fileDaEliminare) => {
-        console.log("\n\nFile nuovo: " + req.file.filename);
+  queryPromise
+    .then((fileDaEliminare) => {
+      console.log("\n\nFile nuovo: " + req.file.filename);
 
-        const estensioneFileVecchio = fileDaEliminare.split(".").pop();
+      const estensioneFileVecchio = fileDaEliminare.split(".").pop();
 
-        if (estensioneFileVecchio != estensioneFile) {
-          const pathImg = cartella + "/" + fileDaEliminare;
+      if (estensioneFileVecchio != estensioneFile) {
+        const pathImg = cartella + "/" + fileDaEliminare;
 
-          fs.unlink(pathImg, (err) => {
-            if (err) {
-              console.error(
-                `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
-              );
-              // Gestisci l'errore come preferisci
-            } else {
-              console.log(
-                `Il file ${fileDaEliminare} è stato eliminato con successo`
-              );
-            }
-          });
+        fs.unlink(pathImg, (err) => {
+          if (err) {
+            console.error(
+              `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
+            );
+            // Gestisci l'errore come preferisci
+          } else {
+            console.log(
+              `Il file ${fileDaEliminare} è stato eliminato con successo`
+            );
+          }
+        });
 
-          let query = `
+      }
+      let query = `
 				UPDATE prodotti
 				SET nome = '${nome}',
 					descrizione = '${descrizione}',
@@ -568,32 +584,28 @@ server.post(
 					indirizzo_img= 'products/${id}.${estensioneFile}'
 				WHERE id = '${id}';`;
 
-          console.log("\nQUERY EDIT" + query);
-          connection.query(query, (err, result) => {
-            if (err) {
-              console.log(err);
-              res.send(err);
-              res.end();
-            } else {
-              res.send("Prodotto modificato");
-              res.end();
-            }
-          });
-        } else {
-          res.send("Prodotto modificato");
+      console.log("\nQUERY EDIT" + query);
+      connection.query(query, (err, result) => {
+        if (err) {
+          console.error(err);
+          res.send(err);
           res.end();
         }
-      })
-      .catch((error) => {
-        console.log(error);
-        res.send("Errore modifica");
-        res.end();
       });
-  }
+
+      res.send("Prodotto modificato");
+      res.end();
+    })
+    .catch((error) => {
+      console.log(error);
+      res.send("Errore modifica");
+      res.end();
+    });
+}
 );
 
 //richiesta da fare con form-data
-server.post("/producer/add/products", upload.single("image"), (req, res) => {
+server.post("/producer/add/product", upload.single("image"), (req, res) => {
   const { nome, descrizione, allergeni, prezzo, categoria, disponibile } =
     req.body;
 
@@ -609,68 +621,72 @@ server.post("/producer/add/products", upload.single("image"), (req, res) => {
       res.end();
     } else {
       id_utente = decoded.id;
-    }
-  });
 
-  const estensioneFile = req.file.filename.split(".").pop();
-  console.log("\n\nFile: " + estensioneFile + "\n\n");
+      const estensioneFile = req.file.filename.split(".").pop();
+      console.log("\n\nFile: " + estensioneFile + "\n\n");
 
-  const queryPromise = new Promise((resolve, reject) => {
-    let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
-
-    connection.query(query, (err, results) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-
-  queryPromise
-    .then((results) => {
-      let id_prodotto = "";
-      const id_mensa = results[0].id_mensa;
-      console.log("ID Mensa:", id_mensa);
-
-      const queryPromise2 = new Promise((resolve, reject) => {
-        let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES('${nome}','${descrizione}','${allergeni}','${prezzo}','${categoria}','','${disponibile}','0','${id_mensa}');`;
-        console.log("\nQUERY INSERT" + query);
-        connection.query(query, (err, result) => {
+      const queryPromise = new Promise((resolve, reject) => {
+        let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
+        console.log(query);
+        connection.query(query, (err, results) => {
           if (err) {
-            console.error(err);
+            console.log(err);
             reject(err);
           } else {
-            id_prodotto = result.insertId;
+            console.log("RISOLTO");
             resolve(results);
           }
         });
       });
 
-      queryPromise2
+      queryPromise
         .then((results) => {
-          let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
-          console.log("\nQUERY MODIFICA:" + query);
-          connection.query(query, (err, result) => {
-            if (err) throw new Error(err);
+          console.log("CIAO");
+          let id_prodotto = "";
+          const id_mensa = results[0].id_mensa;
+          console.log("ID Mensa:", id_mensa);
 
-            console.log("Prodotto modificato");
-
-            renameImage(nome + "_" + prezzo, id_prodotto); //rinominare immagine con id_prodotto
+          const queryPromise2 = new Promise((resolve, reject) => {
+            let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES('${nome}','${descrizione}','${allergeni}','${prezzo}','${categoria}','','${disponibile}','0','${id_mensa}');`;
+            console.log("\nQUERY INSERT" + query);
+            connection.query(query, (err, result) => {
+              if (err) {
+                console.error(err);
+                reject(err);
+              } else {
+                id_prodotto = result.insertId;
+                resolve(results);
+              }
+            });
           });
+
+          queryPromise2
+            .then((results) => {
+              let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
+              console.log("\nQUERY MODIFICA:" + query);
+              connection.query(query, (err, result) => {
+                if (err) throw new Error(err);
+
+                console.log("Prodotto modificato");
+
+                renameImage(nome + "_" + prezzo, id_prodotto); //rinominare immagine con id_prodotto
+              });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log(error);
         });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 
-  res.header("Access-Control-Allow-Origin", "*");
-  res.send("Prodotto aggiunto con successo");
-  res.end();
+      res.header("Access-Control-Allow-Origin", "*");
+      res.send("Prodotto aggiunto con successo");
+      res.end();
+    }
+  });
+
+
 });
 
 server.post("/producer/delete/product", (req, res) => {

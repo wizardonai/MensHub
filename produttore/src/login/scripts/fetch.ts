@@ -163,7 +163,7 @@ export async function addProdotto(token: string , dati: any ) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `${urlServer}/producer/add/products`,
+    url: `${urlServer}/producer/add/product`,
     headers: {
       Authorization: "Bearer " + token,
     },
