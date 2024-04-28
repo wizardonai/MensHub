@@ -52,10 +52,7 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const nome = req.body.nome;
     const prezzo = req.body.prezzo;
-    cb(
-      null,
-      nome + "_" + prezzo + path.extname(file.originalname)
-    );
+    cb(null, nome + "_" + prezzo + path.extname(file.originalname));
   },
 });
 
@@ -103,13 +100,10 @@ server.get("/", (req, res) => {
   res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
 });
 
-
-
 server.post("/request/products", (req, res) => {
   let token = req.headers.authorization;
   let idm_utente = "";
   res.header("Access-Control-Allow-Origin", "*");
-
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
@@ -120,17 +114,17 @@ server.post("/request/products", (req, res) => {
       idm_utente = decoded.id_mensa;
 
       connection.query(
-        "SELECT * FROM prodotti where id_mensa=" + idm_utente + " ORDER BY nome",
+        "SELECT * FROM prodotti where id_mensa=" +
+        idm_utente +
+        " ORDER BY nome",
         (err, result) => {
           if (err) throw new Error(err);
           res.send(result);
           res.end();
-        }
+        },
       );
     }
   });
-
-
 });
 
 server.post("/request/mense", (req, res) => {
@@ -174,13 +168,12 @@ server.post("/modify/mensa", (req, res) => {
             id_mensa: id_mensa,
           },
           secretKey,
-          { expiresIn: "1h" }
+          { expiresIn: "1h" },
         );
 
         res.json({ token: token });
         res.send();
         res.end();
-
       });
     }
   });
@@ -266,6 +259,7 @@ server.post("/register/user", async function (req, res) {
     indirizzo_mensa,
     email_mensa,
     telefono_mensa,
+    id_mensa,
   } = req.body;
   if (!email || !password) {
     // return res.status(400).send({
@@ -318,7 +312,7 @@ server.post("/register/user", async function (req, res) {
         }
       });
     } else {
-      himcook = `INSERT INTO utenti (nome,cognome,email,password,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${is_produttore});`;
+      himcook = `INSERT INTO utenti (nome,cognome,email,password,cliente, id_mensa) VALUES('${nome}','${cognome}','${email}','${password}',${is_produttore}, ${id_mensa});`;
       connection.query(himcook, (err, result) => {
         if (err) throw new Error(err);
         res.send("Registrazione avvenuta con successo");
@@ -354,7 +348,7 @@ server.post("/login/user", async function (req, res) {
             id_mensa: result[0].id_mensa,
           },
           secretKey,
-          { expiresIn: "1h" }
+          { expiresIn: "1h" },
         );
 
         res.json({ token: token });
@@ -407,7 +401,7 @@ server.post("/request/orders", (req, res) => {
     } else {
       id_utente = decoded.id;
 
-      let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
+      let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita FROM ordini AS o
 								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
 								WHERE id_utente="${id_utente}"
 								ORDER BY o.data, po.id_ordine;`;
@@ -465,7 +459,7 @@ server.post("/producer/get/products", (req, res) => {
           res.header("Access-Control-Allow-Origin", "*");
           res.send(result);
           res.end();
-        }
+        },
       );
     }
   });
@@ -481,7 +475,7 @@ server.post("/producer/get/orders", (req, res) => {
       res.end();
     } else {
       id_utente = decoded.id;
-      let query = `SELECT id_ordine,id_utente, stato_ordine, data, id_prodotto, quantita FROM ordini AS o 
+      let query = `SELECT id_ordine,id_utente, stato_ordine, data, id_prodotto, quantita FROM ordini AS o
 								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
 								WHERE id_utente="${id_utente}"
 								ORDER BY o.data, po.id_ordine;`;
@@ -601,16 +595,15 @@ server.post("/producer/editWithImg/product", upload2.single("image"), (req, res)
         fs.unlink(pathImg, (err) => {
           if (err) {
             console.error(
-              `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
+              `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`,
             );
             // Gestisci l'errore come preferisci
           } else {
             console.log(
-              `Il file ${fileDaEliminare} è stato eliminato con successo`
+              `Il file ${fileDaEliminare} è stato eliminato con successo`,
             );
           }
         });
-
       }
       let query = `
 				UPDATE prodotti
@@ -640,7 +633,7 @@ server.post("/producer/editWithImg/product", upload2.single("image"), (req, res)
       res.send("Errore modifica");
       res.end();
     });
-}
+},
 );
 
 //richiesta da fare con form-data
@@ -651,7 +644,7 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
   let token = req.headers.authorization;
   let id_utente = "";
 
-  console.log("\n\nTOKEN: " + token + "\n\n")
+  console.log("\n\nTOKEN: " + token + "\n\n");
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
@@ -724,8 +717,6 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
       res.end();
     }
   });
-
-
 });
 
 server.post("/producer/delete/product", (req, res) => {
@@ -769,12 +760,12 @@ server.post("/producer/delete/product", (req, res) => {
           fs.unlink(pathImg, (err) => {
             if (err) {
               console.error(
-                `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
+                `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`,
               );
               // Gestisci l'errore come preferisci
             } else {
               console.log(
-                `Il file ${fileDaEliminare} è stato eliminato con successo`
+                `Il file ${fileDaEliminare} è stato eliminato con successo`,
               );
             }
           });
@@ -807,7 +798,7 @@ function renameImage(nome_file, id_prodotto) {
 
     // Cerca il file senza estensione nella lista dei file
     const fileDaRinominare = files.find((file) =>
-      file.startsWith(nomeFileSenzaEstensione)
+      file.startsWith(nomeFileSenzaEstensione),
     );
 
     if (fileDaRinominare) {
@@ -816,7 +807,7 @@ function renameImage(nome_file, id_prodotto) {
       const nuovoNomeFileConEstensione = id_prodotto + estensioneFile; // Sostituisci con il nuovo nome e l'estensione desiderati
       const percorsoCompletoNuovo = path.join(
         cartella,
-        nuovoNomeFileConEstensione
+        nuovoNomeFileConEstensione,
       );
 
       // Rinomina il file
