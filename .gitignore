@@ -7,3 +7,5 @@ server/node_modules/.package-lock.json
 client/.env
 client/yarn.lock
 client/.env
+client/node_modules
+client/build
