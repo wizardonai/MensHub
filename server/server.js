@@ -31,6 +31,8 @@ process.argv.forEach((item) => {
 let connection = "";
 
 import { createConnection } from "mysql";
+import http2 from "http2";
+import { readFileSync } from "fs";
 import express from "express";
 import multer from "multer";
 import jwt from "jsonwebtoken";
@@ -43,9 +45,26 @@ import sharp from "sharp";
 
 sharp.cache({ files: 0 });
 
+
+
+const options = {
+  key: readFileSync('server.key'),  // Percorso certificato SSL/TLS privato
+  cert: readFileSync('server.crt')  // Percorso certificato SSL/TLS pubblico
+};
+
 const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
+
+const host = http2.createSecureServer({
+  ...options,
+  allowHTTP1: true // Abilita il supporto per HTTP/1.1
+}, server);
+
+host.on('unknownProtocol', (socket) => {
+  // Gestisci il protocollo sconosciuto qui, ad esempio rispondendo con HTTP/1.1
+  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+});
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -874,6 +893,6 @@ function renameImage(nome_file, id_prodotto) {
 }
 
 const port = 6969;
-server.listen(port, () => {
-  console.log("http://localhost:" + port);
+host.listen(port, () => {
+  console.log("Server HTTP/2 in ascolto su https://localhost:" + port);
 });
