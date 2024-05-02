@@ -3,21 +3,13 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./test/reportWebVitals";
-import { ThemeProvider } from "./ThemeProvider";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
 );
 root.render(
 	<React.StrictMode>
-		<ThemeProvider
-			attribute='class'
-			defaultTheme='light'
-			enableSystem
-			disableTransitionOnChange
-		>
-			<App />
-		</ThemeProvider>
+		<App />
 	</React.StrictMode>
 );
 

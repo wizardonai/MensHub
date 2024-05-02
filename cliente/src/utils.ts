@@ -59,16 +59,9 @@ export type mensa = {
 	nome: string;
 };
 
-export function getFilter(resolvedTheme: string, hex: Nullable<string>) {
+export function getFilter(hex: string) {
 	let rgb: number[] = [];
-	if (hex !== null) {
-		rgb = hexToRgb(hex) || [255, 255, 255];
-	} else {
-		rgb =
-			resolvedTheme === "dark"
-				? hexToRgb("#fff") || [255, 255, 255]
-				: hexToRgb("#000") || [255, 255, 255];
-	}
+	rgb = hexToRgb(hex) || [255, 255, 255];
 
 	let result: {
 		values: any;
