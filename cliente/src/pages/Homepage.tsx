@@ -1,18 +1,19 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Container, Navbar, Topbar } from "../components/Components";
 import { useState } from "react";
 import { prodotto, sleep, urlImg } from "../utils";
 import { Input } from "../components/shadcn/Input";
 
-import searchImg from "../img/search.png";
-import antipastoImg from "../img/antipasto.png";
-import primoImg from "../img/primo.png";
-import secondoImg from "../img/secondo.png";
-import contornoImg from "../img/contorno.png";
-import dolceImg from "../img/dolce.png";
-import bibitaImg from "../img/bibita.png";
+import searchImg from "../img/search.webp";
+import antipastoImg from "../img/antipasto.webp";
+import primoImg from "../img/primo.webp";
+import secondoImg from "../img/secondo.webp";
+import contornoImg from "../img/contorno.webp";
+import dolceImg from "../img/dolce.webp";
+import bibitaImg from "../img/bibita.webp";
 import { Toaster } from "../components/shadcn/Sonner";
 import { toast } from "sonner";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Listone = ({
   filteredProducts,
@@ -44,10 +45,11 @@ const Listone = ({
               id=""
               onClick={() => navigate("/product/" + item.id)}
             >
-              <img
+              <LazyLoadImage
                 src={urlImg + item.indirizzo_img}
                 alt=""
-                className="w-[100px] h-[100px]"
+                width={100}
+                height={100}
               />
             </div>
             <div className="h-[85%] w-full flex items-center flex-col" id="">
@@ -187,7 +189,7 @@ const Filtri = ({
             className="rounded-[50%] bg-[#fbfcfe] h-[40px] w-[40px] flex justify-center items-center mr-1"
             id=""
           >
-            <img src={item[1]} alt="" className="h-[32px] w-[32px]" id="" />
+            <LazyLoadImage src={item[1]} alt="" width={32} height={32} id="" />
           </div>
           <p
             className="text-marrone capitalize text-[16px]"
@@ -210,7 +212,7 @@ const Filtri = ({
           className="rounded-[50%] bg-[#fbfcfe] h-[40px] w-[40px] flex justify-center items-center mr-1"
           id=""
         >
-          <img
+          <LazyLoadImage
             src={possibiliFiltri[findIndex(filtro)][1]}
             alt=""
             className="h-[32px] w-[32px]"
@@ -321,10 +323,12 @@ const Searchbar = ({
         <div className="h-[58px] w-[3px] bg-arancioneScuro rotate-[32.10deg] relative right-[20px]"></div>
       </div>
       <div className="h-[53px] w-[80px] bg-arancioneScuro clip-searchbtn ml-[-10px] flex justify-end items-center">
-        <img
+        <LazyLoadImage
           src={searchImg}
           alt=""
-          className="w-[35px] h[35px] mr-[15px] rotate-[80deg]"
+          className="mr-[15px] rotate-[80deg]"
+          width={35}
+          height={35}
           style={{
             filter:
               "invert(21%) sepia(5%) saturate(3444%) hue-rotate(312deg) brightness(93%) contrast(91%)",
@@ -367,6 +371,7 @@ const Homepage = ({
 
   return (
     <>
+      <link rel="preconnect" href={process.env.REACT_APP_HOSTNAME + ":6969"} />
       <Topbar page="home" name={username} />
       <Container>
         <Searchbar

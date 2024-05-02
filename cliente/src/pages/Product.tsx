@@ -8,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../components/shadcn/Carousel";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Product = () => {
   const tmp: any = useLoaderData();
@@ -20,7 +21,7 @@ const Product = () => {
       <Container className="h-containerProduct py-14">
         <div className="flex flex-col items-center h-full justify-evenly">
           <p className="text-marrone text-3xl font-bold">{product.nome}</p>
-          <img
+          <LazyLoadImage
             src={urlImg + product.indirizzo_img}
             alt={product.nome}
             className="w-[65%]"

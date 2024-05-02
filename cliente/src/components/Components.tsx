@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "./shadcn/utils";
 import { prodotto } from "../utils";
 
-import homeImg from "../img/home.png";
-import cartImg from "../img/cart.png";
-import profileImg from "../img/profile.png";
-import goBackImg from "../img/goBack.png";
+import homeImg from "../img/home.webp";
+import cartImg from "../img/cart.webp";
+import profileImg from "../img/profile.webp";
+import goBackImg from "../img/goBack.webp";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 export const Topbar = ({ page, name }: { page: string; name: string }) => {
   if (page === "home") {
@@ -61,7 +62,7 @@ export const Navbar = ({
   useEffect(() => {
     let h = window.screen.height - 20;
     setHeight(h / 10 - 20);
-  });
+  }, []);
 
   return (
     <div className="w-full h-navbar flex flex-row justify-evenly items-center">
@@ -82,7 +83,7 @@ export const Navbar = ({
                 else navigate("/home");
               }}
             >
-              <img
+              <LazyLoadImage
                 src={goBackImg}
                 alt=""
                 className="w-[40%]"
@@ -154,9 +155,11 @@ export const Navbar = ({
               {page === "home" ? (
                 <p className="text-white text-xl">HOME</p>
               ) : (
-                <img
+                <LazyLoadImage
                   src={homeImg}
                   alt="home"
+                  width={height}
+                  height={height}
                   style={{
                     filter: "var(--filterImgBianco)",
                   }}
@@ -178,7 +181,7 @@ export const Navbar = ({
               {page === "cart" ? (
                 <p className="text-white text-xl">CARRELLO</p>
               ) : (
-                <img
+                <LazyLoadImage
                   src={cartImg}
                   alt="cart"
                   style={{
@@ -202,7 +205,7 @@ export const Navbar = ({
               {page === "profile" ? (
                 <p className="text-white text-xl">PROFILO</p>
               ) : (
-                <img
+                <LazyLoadImage
                   src={profileImg}
                   alt="profile"
                   style={{

@@ -33,7 +33,7 @@ use mensapp;
 CREATE TABLE `allergeni` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `nome` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 INSERT INTO `allergeni` (`nome`) VALUES
@@ -65,12 +65,12 @@ CREATE TABLE `categorie` (
 
 
 INSERT INTO `categorie` (`nome`, `indirizzo_img`) VALUES
-('antipasto', 'categories/antipasto.png'),
-('primo', 'categories/primo.png'),
-('secondo', 'categories/secondo.png'),
-('contorno', 'categories/contorno.png'),
-('dolce', 'categories/dolce.png'),
-('bibita', 'categories/bibita.png');
+('antipasto', 'categories/antipasto.webp'),
+('primo', 'categories/primo.webp'),
+('secondo', 'categories/secondo.webp'),
+('contorno', 'categories/contorno.webp'),
+('dolce', 'categories/dolce.webp'),
+('bibita', 'categories/bibita.webp');
 
 -- --------------------------------------------------------
 

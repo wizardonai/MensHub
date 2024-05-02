@@ -1,7 +1,7 @@
 import { Container, Navbar } from "../components/Components";
-import topbarProfile from "../img/topbarProfile.png";
-import cronologia from "../img/cronologia.png";
-import disconnetti from "../img/disconnetti.png";
+import topbarProfile from "../img/topbarProfile.webp";
+import cronologia from "../img/cronologia.webp";
+import disconnetti from "../img/disconnetti.webp";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Input } from "../components/shadcn/Input";
@@ -16,6 +16,7 @@ import {
 import { mensa, typeProfilo } from "../utils";
 import { Button } from "../components/shadcn/Button";
 import { Label } from "../components/shadcn/Label";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Popup = ({
   tipoPopup,
@@ -93,7 +94,7 @@ const BtnDisconnetti = ({ setTipoPopup }: { setTipoPopup: Function }) => {
         Disconnetti
       </p>
       <div className="w-[20%]">
-        <img src={disconnetti} alt="" className="w-[40px] h-[40px]" />
+        <LazyLoadImage src={disconnetti} alt="" className="w-[40px] h-[40px]" />
       </div>
     </div>
   );
@@ -110,7 +111,7 @@ const BtnCronologia = () => {
         Cronologia acquisti
       </p>
       <div className="w-[20%]">
-        <img src={cronologia} alt="" className="w-[40px] h-[40px]" />
+        <LazyLoadImage src={cronologia} alt="" className="w-[40px] h-[40px]" />
       </div>
     </div>
   );
@@ -243,7 +244,7 @@ const Profile = ({
   return (
     <>
       <div className="h-[150px] w-full flex justify-center items-center">
-        <img src={topbarProfile} alt="topbarProfile" />
+        <LazyLoadImage src={topbarProfile} alt="topbarProfile" />
       </div>
       <Container className="h-containerProfile w-full overflow-y-scroll">
         <div className="w-full h-full flex items-center flex-col justify-start">

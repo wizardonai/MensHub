@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   RouterProvider,
   createBrowserRouter,
@@ -14,6 +13,7 @@ import { getProdotti, getProfilo } from "./scripts/fetch";
 import ProfilePages from "./pages/ProfilePages";
 import { prodotto, typeProfilo } from "./utils";
 import Product from "./pages/Product";
+import { useState } from "react";
 
 function App() {
   const [loggato, setLoggato] = useLocalStorage("loggato", false);
