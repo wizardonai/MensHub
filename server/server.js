@@ -39,12 +39,12 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
+import sharp from "sharp";
 
 const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
 
-// Configura multer per salvare i file caricati nella cartella 'images'
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "../server/image/products");
@@ -52,7 +52,36 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const nome = req.body.nome;
     const prezzo = req.body.prezzo;
-    cb(null, nome + "_" + prezzo + path.extname(file.originalname));
+    const filename = nome + "_" + prezzo + path.extname(file.originalname);
+    cb(null, filename);
+    //stampa la var file in JSON
+    console.log("\n FILE: " + JSON.stringify(file));
+
+    const cartella = "../server/image/products";
+
+    fs.readdir(cartella, (err, files) => {
+      if (err) {
+        console.error("Errore durante la lettura della cartella:", err);
+        return;
+      }
+      console.log("filename = " + filename);
+      let fileDaConvertire = files.find((file) => file === filename);
+      //aspetta 2 secondi
+      
+      if (fileDaConvertire) {
+        console.log("File da convertire:" + fileDaConvertire);
+
+        // Convert the image to webp format and save it
+        sharp(fileDaConvertire.path)
+          .toFormat("webp")
+          .toFile("../server/image/products/" + filename.replace(/\.[^/.]+$/, ".webp"))
+          .catch((err) => console.error("Error converting to WebP:", err));
+      } else {
+        console.log("File non trovato.");
+      }
+    });
+
+
   },
 });
 
@@ -62,12 +91,20 @@ const storage2 = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const id = req.body.id;
-    cb(null, id + path.extname(file.originalname));
+    const filename = id + path.extname(file.originalname);
+    cb(null, filename);
+    //stampa la var file in JSON
+    console.log("\n FILE: " + JSON.stringify(file));
+
+    // Convert the image to webp format and save it
+    // sharp(file.path)
+    //   .webp()
+    //   .toFile("../server/image/products/" + filename.replace(/\.[^/.]+$/, ".webp"))
+    //   .catch((err) => console.error("Error converting to WebP:", err));
   },
 });
 
 const upload = multer({ storage: storage });
-
 const upload2 = multer({ storage: storage2 });
 
 function connetti() {
@@ -701,7 +738,7 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 
                 console.log("Prodotto modificato");
 
-                renameImage(nome + "_" + prezzo, id_prodotto); //rinominare immagine con id_prodotto
+                //renameImage(nome + "_" + prezzo, id_prodotto); //rinominare immagine con id_prodotto
               });
             })
             .catch((error) => {
