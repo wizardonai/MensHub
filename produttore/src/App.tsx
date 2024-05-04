@@ -14,7 +14,7 @@ import HomePageProductor from "./produttore/pages/HomePageProductor";
 import MenuPageProductor from "./produttore/pages/MenuPageProductor";
 import Balance from "./produttore/pages/Balance";
 import ProfileProductor from "./produttore/pages/ProfileProductor";
-import { getAllergeni, getCategorie } from "./login/scripts/fetch";
+import { getAllergeni, getCategorie, getOrdini } from "./login/scripts/fetch";
 
 export type ArrayProdotti = {
   prodotti: Array<{
@@ -128,6 +128,13 @@ const App = () => {
       {
         path: "/productorHome",
         element: <HomePageProductor />,
+        loader: async () => {
+          return getOrdini(
+            JSON.parse(
+              localStorage.getItem("token") || '{"token":"cicciogamer89"}'
+            )
+          );
+        },
       },
       {
         path: "/productorMenu",

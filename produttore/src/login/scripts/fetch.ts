@@ -155,10 +155,10 @@ export async function getAllergeni(token: { token: string }) {
   return response;
 }
 
-export async function addProdotto(token: string , dati: any ) {
+export async function addProdotto(token: string, dati: any) {
   let response;
 
-  console.log("Token:"+ token);
+  console.log("Token:" + token);
 
   let config = {
     method: "post",
@@ -168,6 +168,30 @@ export async function addProdotto(token: string , dati: any ) {
       Authorization: "Bearer " + token,
     },
     data: dati,
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
+
+export async function getOrdini(token: { token: string }) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/get/orders`,
+    headers: {
+      Authorization: "Bearer " + token.token,
+    },
   };
 
   await axios

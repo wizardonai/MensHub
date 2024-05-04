@@ -25,11 +25,15 @@ const Prodotti = ({
   dati,
   categorie,
   allergeni,
+  prodotti,
+  setProdotti,
 }: {
   filtro: string;
   dati: any;
   categorie: any;
   allergeni: any;
+  prodotti: any;
+  setProdotti: Function;
 }) => {
   const [popup, setPopup] = useState(false);
   const nome = useRef(null);
@@ -92,6 +96,8 @@ const Prodotti = ({
             setPopup={setPopup}
             categorie={categorie}
             allergeni={allergeni}
+            prodotti={prodotti}
+            setProdotti={setProdotti}
           />
         ) : null}
       </div>
@@ -115,7 +121,7 @@ const Prodotti = ({
               </p>
             </div>
           </div>
-          <div className="flex">
+          <div className="flex flex-wrap">
             <div
               onClick={() => setPopup(true)}
               className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
@@ -169,6 +175,8 @@ const Prodotti = ({
               setPopup={setPopup}
               categorie={categorie}
               allergeni={allergeni}
+              prodotti={prodotti}
+              setProdotti={setProdotti}
             />
           ) : null}
         </div>
@@ -187,7 +195,7 @@ const MenuPageProductor = ({
   const dati: any = useLoaderData();
   const [filtro, setFiltro] = useState("");
   const [ricerca, setRicerca] = useState("");
-  const [prodotti, setProdotti] = useState("");
+  const [prodotti, setProdotti] = useState(dati);
 
   if (!dati) return <p>CARICAMENTO</p>;
 
@@ -222,6 +230,8 @@ const MenuPageProductor = ({
             dati={dati}
             categorie={categorie}
             allergeni={allergeni}
+            prodotti={prodotti}
+            setProdotti={setProdotti}
           />
         </div>
       </div>

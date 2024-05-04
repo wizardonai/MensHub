@@ -8,10 +8,14 @@ export default function Popup({
   setPopup,
   categorie,
   allergeni,
+  prodotti,
+  setProdotti,
 }: {
   setPopup: Function;
   categorie: any;
   allergeni: any;
+  prodotti: any;
+  setProdotti: Function;
 }): JSX.Element {
   const nome = useRef<HTMLInputElement>(null);
   const prezzo = useRef<HTMLInputElement>(null);
@@ -78,6 +82,18 @@ export default function Popup({
     )
       .then((response) => {
         if (response === "Prodotto aggiunto con successo") {
+          const newProdotto = {
+            prezzo: prezzoValue,
+            nome: nomeValue,
+            categoria: categoriaValue,
+            descrizione: descrizioneValue,
+            allergeni: allergeniValue,
+            image: imageUrl,
+            disponibile: "1",
+          };
+
+          setProdotti([...prodotti, newProdotto]);
+
           alert(response);
           setPopup(false);
         } else {
@@ -102,8 +118,6 @@ export default function Popup({
       }
     };
   };
-
-  console.log(allergeniScelti);
 
   useEffect(() => {
     const handleHorizontalMouseMove = (event: MouseEvent) => {

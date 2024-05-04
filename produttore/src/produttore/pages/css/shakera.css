@@ -1,0 +1,16 @@
+.dragging {
+  animation: shake 0.5s infinite alternate; /* Definisce un'animazione di vibrazione */
+}
+
+@keyframes shake {
+  from {
+    transform: translateX(
+      -3px
+    ); /* Inizia la vibrazione spostando leggermente a sinistra */
+  }
+  to {
+    transform: translateX(
+      3px
+    ); /* Termina la vibrazione spostando leggermente a destra */
+  }
+}
