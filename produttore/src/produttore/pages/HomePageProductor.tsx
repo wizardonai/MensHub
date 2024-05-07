@@ -15,6 +15,7 @@ const HomePageProductor = ({
   const [ordineTrascinato, setOrdineTrascinato] = useState<any>(null);
   const [ordineCliccato, setOrdineCliccato] = useState<any>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [prodotti, setProdotti] = useState<any>([]);
 
   return (
     <div className="page" style={css.page}>
@@ -34,6 +35,8 @@ const HomePageProductor = ({
             setOrdineCliccato={setOrdineCliccato}
             isDragging={isDragging}
             setIsDragging={setIsDragging}
+            ordineCliccato={ordineCliccato}
+            setProdotti={setProdotti}
           />
         </div>
         <div style={css.containerList}>
@@ -48,6 +51,8 @@ const HomePageProductor = ({
             setOrdineCliccato={setOrdineCliccato}
             isDragging={isDragging}
             setIsDragging={setIsDragging}
+            ordineCliccato={ordineCliccato}
+            setProdotti={setProdotti}
           />
         </div>
         <div style={css.containerList}>
@@ -56,14 +61,14 @@ const HomePageProductor = ({
           ordineCliccato.stato_ordine === "da fare" ? (
             <OrdineCliccato
               ordineCliccato={ordineCliccato}
-              setOrdineCliccato={setOrdineCliccato}
+              prodotti={prodotti}
               colore="#d24a3c"
             ></OrdineCliccato>
           ) : ordineCliccato !== null &&
             ordineCliccato.stato_ordine === "in corso" ? (
             <OrdineCliccato
               ordineCliccato={ordineCliccato}
-              setOrdineCliccato={setOrdineCliccato}
+              prodotti={prodotti}
               colore="#e39320"
             ></OrdineCliccato>
           ) : null}

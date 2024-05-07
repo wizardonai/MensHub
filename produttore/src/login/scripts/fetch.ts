@@ -216,7 +216,9 @@ export async function getOrdine(token: { token: string }, id_ordine: number) {
     headers: {
       Authorization: "Bearer " + token.token,
     },
-    data: { id_ordine: id_ordine },
+    data: new URLSearchParams({
+      id_ordine: id_ordine.toString(),
+    }),
   };
 
   await axios

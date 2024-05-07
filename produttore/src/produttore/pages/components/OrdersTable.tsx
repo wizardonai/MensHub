@@ -3,7 +3,7 @@ import { hostnameProductor, styleMap } from "src/App";
 import { DndProvider, useDrop, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "../css/shakera.css";
-import { updateOrdine } from "src/login/scripts/fetch";
+import { getOrdine, updateOrdine } from "src/login/scripts/fetch";
 
 const OrdersTable = ({
   colore,
@@ -12,9 +12,11 @@ const OrdersTable = ({
   stato,
   ordineTrascinato,
   setOrdineTrascinato,
+  ordineCliccato,
   setOrdineCliccato,
   isDragging,
   setIsDragging,
+  setProdotti,
 }: {
   colore: string;
   ordini: any;
@@ -22,9 +24,11 @@ const OrdersTable = ({
   stato: string;
   ordineTrascinato: any;
   setOrdineTrascinato: Function;
+  ordineCliccato: any;
   setOrdineCliccato: Function;
   isDragging: boolean;
   setIsDragging: Function;
+  setProdotti: Function;
 }) => {
   const handleDragStart = (event: DragEvent<HTMLDivElement>, ordine: any) => {
     console.log("Inizio del trascinamento");
@@ -102,7 +106,21 @@ const OrdersTable = ({
                 key={ordine.id_ordine}
                 onDragStart={(event) => handleDragStart(event, ordine)}
                 onDragEnd={handleDragEnd}
-                onClick={() => setOrdineCliccato(ordine)}
+                onClick={() => {
+                  setOrdineCliccato(ordine);
+                  getOrdine(
+                    JSON.parse(
+                      localStorage.getItem("token") || '{"token": "lucaChing"}'
+                    ),
+                    JSON.parse(JSON.stringify(ordine.id_ordine))
+                  )
+                    .then((response) => {
+                      setProdotti(response);
+                    })
+                    .catch((err: any) => {
+                      console.log(err);
+                    });
+                }}
                 draggable
               >
                 <p className="text-2xl w-1/2 select-none pointer-events-none">
