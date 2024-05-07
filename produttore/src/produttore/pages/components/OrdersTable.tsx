@@ -103,6 +103,7 @@ const OrdersTable = ({
             return (
               <div
                 style={css.ordine}
+                className="transform transition-transform hover:scale-105 hover:cursor-pointer"
                 key={ordine.id_ordine}
                 onDragStart={(event) => handleDragStart(event, ordine)}
                 onDragEnd={handleDragEnd}

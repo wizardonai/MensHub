@@ -1,15 +1,21 @@
 import { useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
-import { getOrdine } from "src/login/scripts/fetch";
+import { deleteOrdine, getOrdine, updateOrdine } from "src/login/scripts/fetch";
 
 const OrdineCliccato = ({
   colore,
   ordineCliccato,
+  setOrdineCliccato,
   prodotti,
+  ordini,
+  setOrdini,
 }: {
   colore: string;
   ordineCliccato: any;
+  setOrdineCliccato: Function;
   prodotti: any;
+  ordini: any;
+  setOrdini: Function;
 }) => {
   return (
     <div
@@ -82,7 +88,27 @@ const OrdineCliccato = ({
         <div className="flex justify-center mt-[2svh]">
           <div
             style={{ backgroundColor: "#d24a3c" }}
-            className="w-[35px] h-[35px] flex justify-center rounded-full items-center mr-[3%]"
+            className="w-[35px] h-[35px] flex justify-center rounded-full items-center mr-[3%] transform transition-transform hover:scale-105 hover:cursor-pointer"
+            onClick={() => {
+              deleteOrdine(
+                JSON.parse(
+                  localStorage.getItem("token") || '{"token": "scuuuu"}'
+                ).token,
+                ordineCliccato.id_ordine
+              )
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((err: any) => {
+                  console.log(err);
+                });
+              setOrdini(
+                ordini.filter(
+                  (ordine: any) => ordine.id_ordine !== ordineCliccato.id_ordine
+                )
+              );
+              setOrdineCliccato(null);
+            }}
           >
             <img
               src={hostnameProductor + "deleteBin.png"}
@@ -93,7 +119,32 @@ const OrdineCliccato = ({
               }}
             />
           </div>
-          <div className="bg-verdeBordo font-bold rounded-full flex items-center justify-center ml-[3%]">
+          <div
+            className="bg-verdeBordo font-bold rounded-full flex items-center justify-center ml-[3%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
+            onClick={() => {
+              updateOrdine(
+                JSON.parse(
+                  localStorage.getItem("token") || '{"token": "scuuuu"}'
+                ).token,
+                ordineCliccato.id_ordine,
+                "completato"
+              )
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((err: any) => {
+                  console.log(err);
+                });
+              setOrdini(
+                ordini.map((ordine: any) => {
+                  if (ordine.id_ordine === ordineCliccato.id_ordine) {
+                    ordine.stato_ordine = "completato";
+                  }
+                  return ordine;
+                })
+              );
+            }}
+          >
             <p
               className="px-[10px]"
               style={{

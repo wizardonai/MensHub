@@ -61,15 +61,21 @@ const HomePageProductor = ({
           ordineCliccato.stato_ordine === "da fare" ? (
             <OrdineCliccato
               ordineCliccato={ordineCliccato}
+              setOrdineCliccato={setOrdineCliccato}
               prodotti={prodotti}
               colore="#d24a3c"
+              ordini={ordini}
+              setOrdini={setOrdini}
             ></OrdineCliccato>
           ) : ordineCliccato !== null &&
             ordineCliccato.stato_ordine === "in corso" ? (
             <OrdineCliccato
               ordineCliccato={ordineCliccato}
+              setOrdineCliccato={setOrdineCliccato}
               prodotti={prodotti}
               colore="#e39320"
+              ordini={ordini}
+              setOrdini={setOrdini}
             ></OrdineCliccato>
           ) : null}
         </div>

@@ -265,30 +265,29 @@ export async function updateOrdine(
   return response;
 }
 
-// export async function modifyMensa(id: number, token: string) {
-//   let response;
+export async function deleteOrdine(token: string, id_ordine: number) {
+  let response;
 
-//   let data = JSON.stringify({ id_mensa: id });
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/delete/order`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      id_ordine: id_ordine.toString(),
+    }),
+  };
 
-//   let config = {
-//     method: "post",
-//     maxBodyLength: Infinity,
-//     url: `${url}/modify/mensa`,
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: "Bearer " + token,
-//     },
-//     data: data,
-//   };
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
-//   await axios
-//     .request(config)
-//     .then((res: any) => {
-//       response = res.data;
-//     })
-//     .catch((err: any) => {
-//       console.log(err);
-//     });
-
-//   return response;
-// }
+  return response;
+}

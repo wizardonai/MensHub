@@ -398,7 +398,7 @@ server.post("/request/orders", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      res.send("errore nel token");
+      res.send("Token non valido");
       res.end();
     } else {
       id_utente = decoded.id;
@@ -448,7 +448,7 @@ server.post("/producer/get/products", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      res.send("errore nel token");
+      res.send("Token non valido");
       res.end();
     } else {
       id_mensa = decoded.id_mensa;
@@ -473,7 +473,7 @@ server.post("/producer/get/orders", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      res.send("errore nel token");
+      res.send("Token non valido");
       res.end();
     } else {
       id_utente = decoded.id;
@@ -518,7 +518,7 @@ server.post("/producer/get/order", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      res.send("errore nel token");
+      res.send("Token non valido");
       res.end();
     } else {
       //fai join prdotti
@@ -563,7 +563,7 @@ server.post("/producer/change/order", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      res.send("errore nel token");
+      res.send("Token non valido");
       res.end();
     } else {
       let query = `UPDATE ordini SET stato_ordine = '${stato_ordine}' WHERE id = ${id_ordine};`;
@@ -572,6 +572,27 @@ server.post("/producer/change/order", (req, res) => {
         if (err) throw new Error(err);
 
         res.send("Stato ordine modificato");
+        res.end();
+      });
+    }
+  });
+});
+
+server.post("/producer/delete/order", (req, res) => {
+  let token = req.headers.authorization;
+  let id_ordine = req.body.id_ordine;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      res.send("Token non valido");
+      res.end();
+    } else {
+      let query = `DELETE FROM ordini WHERE id = ${id_ordine};`;
+
+      connection.query(query, (err, result) => {
+        if (err) throw new Error(err);
+
+        res.send("Ordine eliminato");
         res.end();
       });
     }
