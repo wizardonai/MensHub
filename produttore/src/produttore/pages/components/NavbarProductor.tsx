@@ -59,6 +59,8 @@ const NavbarProductor = ({ page }: { page: string }) => {
       backgroundColor: "transparent",
       filter:
         "invert(96%) sepia(6%) saturate(1440%) hue-rotate(314deg) brightness(106%) contrast(75%)",
+
+      userSelect: "none",
     },
     navbarDivImgHover: {
       width: "55px",
@@ -69,6 +71,8 @@ const NavbarProductor = ({ page }: { page: string }) => {
       filter:
         "invert(96%) sepia(6%) saturate(1440%) hue-rotate(314deg) brightness(106%) contrast(75%)",
       // transition: "width 0.3s ease, height 0.3s ease",
+
+      userSelect: "none",
     },
   };
 
@@ -100,15 +104,7 @@ const NavbarProductor = ({ page }: { page: string }) => {
           onMouseLeave={() => setIsHoveredMenu(false)}
         />
       </div>
-      <div id="navbarBalance" onClick={navigateBalance} style={css.navbarDiv}>
-        <img
-          src={hostnameProductor + "balance.png"}
-          alt=""
-          style={isHoveredBalance ? css.navbarDivImgHover : css.navbarDivImg}
-          onMouseEnter={() => setIsHoveredBalance(true)}
-          onMouseLeave={() => setIsHoveredBalance(false)}
-        />
-      </div>
+
       <div
         id="navbarProductorProfile"
         onClick={navigateProductorProfile}

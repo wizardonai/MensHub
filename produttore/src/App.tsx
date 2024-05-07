@@ -64,9 +64,10 @@ export const sleep = (delay: number) =>
   new Promise((resolve) => setTimeout(resolve, delay));
 
 const App = () => {
+  const [ordini, setOrdini] = useState<any>([]);
+
   //loggato o no
   const [utente, setUtente] = useState("no");
-
   const [categorie, setCategorie] = useState<Array<string>>([]);
   const [allergeni, setAllergeni] = useState<Array<string>>([]);
 
@@ -74,6 +75,22 @@ const App = () => {
     setUtente(localStorage.getItem("login") || "");
     return localStorage.getItem("login");
   };
+
+  if (ordini.length === 0) {
+    const fetchOrdini = async () => {
+      getOrdini(
+        JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+      ).then((res: any) => {
+        if (res === "Token non valido") {
+          localStorage.removeItem("cart");
+          localStorage.removeItem("token");
+          localStorage.setItem("loggato", "false");
+        }
+        setOrdini(res);
+      });
+    };
+    fetchOrdini();
+  }
 
   if (categorie.length === 0) {
     const fetchCategories = async () => {
@@ -127,14 +144,7 @@ const App = () => {
       },
       {
         path: "/productorHome",
-        element: <HomePageProductor />,
-        loader: async () => {
-          return getOrdini(
-            JSON.parse(
-              localStorage.getItem("token") || '{"token":"cicciogamer89"}'
-            )
-          );
-        },
+        element: <HomePageProductor ordini={ordini} setOrdini={setOrdini} />,
       },
       {
         path: "/productorMenu",

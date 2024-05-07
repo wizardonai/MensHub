@@ -205,3 +205,88 @@ export async function getOrdini(token: { token: string }) {
 
   return response;
 }
+
+export async function getOrdine(token: { token: string }, id_ordine: number) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/get/order`,
+    headers: {
+      Authorization: "Bearer " + token.token,
+    },
+    data: { id_ordine: id_ordine },
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
+
+export async function updateOrdine(
+  token: string,
+  id_ordine: number,
+  stato_ordine: string
+) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/change/order`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      id_ordine: id_ordine.toString(),
+      stato_ordine: stato_ordine,
+    }),
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
+
+// export async function modifyMensa(id: number, token: string) {
+//   let response;
+
+//   let data = JSON.stringify({ id_mensa: id });
+
+//   let config = {
+//     method: "post",
+//     maxBodyLength: Infinity,
+//     url: `${url}/modify/mensa`,
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: "Bearer " + token,
+//     },
+//     data: data,
+//   };
+
+//   await axios
+//     .request(config)
+//     .then((res: any) => {
+//       response = res.data;
+//     })
+//     .catch((err: any) => {
+//       console.log(err);
+//     });
+
+//   return response;
+// }

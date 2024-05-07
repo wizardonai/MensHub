@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import OrdersTable from "./components/OrdersTable";
 import { styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import { useLoaderData } from "react-router-dom";
+import OrdineCliccato from "./components/OrdineCliccato";
 
-const HomePageProductor = () => {
-  const dati: any = useLoaderData();
-
-  if (!dati) return <p>CARICAMENTO</p>;
+const HomePageProductor = ({
+  ordini,
+  setOrdini,
+}: {
+  ordini: any;
+  setOrdini: Function;
+}) => {
+  const [ordineTrascinato, setOrdineTrascinato] = useState<any>(null);
+  const [ordineCliccato, setOrdineCliccato] = useState<any>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   return (
     <div className="page" style={css.page}>
@@ -17,14 +24,49 @@ const HomePageProductor = () => {
       <div style={css.centerPage}>
         <div style={css.containerList}>
           <p style={css.titolo}>Da fare</p>
-          <OrdersTable colore="#d24a3c" ordini={dati} stato="attivo" />
+          <OrdersTable
+            colore="#d24a3c"
+            ordini={ordini}
+            setOrdini={setOrdini}
+            stato="da fare"
+            ordineTrascinato={ordineTrascinato}
+            setOrdineTrascinato={setOrdineTrascinato}
+            setOrdineCliccato={setOrdineCliccato}
+            isDragging={isDragging}
+            setIsDragging={setIsDragging}
+          />
         </div>
         <div style={css.containerList}>
           <p style={css.titolo}>In corso</p>
-          <OrdersTable colore="#e39320" ordini={dati} stato="in corso" />
+          <OrdersTable
+            colore="#e39320"
+            ordini={ordini}
+            setOrdini={setOrdini}
+            stato="in corso"
+            ordineTrascinato={ordineTrascinato}
+            setOrdineTrascinato={setOrdineTrascinato}
+            setOrdineCliccato={setOrdineCliccato}
+            isDragging={isDragging}
+            setIsDragging={setIsDragging}
+          />
         </div>
         <div style={css.containerList}>
           <p style={css.titolo}>Ordine</p>
+          {ordineCliccato !== null &&
+          ordineCliccato.stato_ordine === "da fare" ? (
+            <OrdineCliccato
+              ordineCliccato={ordineCliccato}
+              setOrdineCliccato={setOrdineCliccato}
+              colore="#d24a3c"
+            ></OrdineCliccato>
+          ) : ordineCliccato !== null &&
+            ordineCliccato.stato_ordine === "in corso" ? (
+            <OrdineCliccato
+              ordineCliccato={ordineCliccato}
+              setOrdineCliccato={setOrdineCliccato}
+              colore="#e39320"
+            ></OrdineCliccato>
+          ) : null}
         </div>
       </div>
     </div>

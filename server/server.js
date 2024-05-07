@@ -556,6 +556,28 @@ server.post("/producer/get/order", (req, res) => {
   });
 });
 
+server.post("/producer/change/order", (req, res) => {
+  let token = req.headers.authorization;
+  let id_ordine = req.body.id_ordine;
+  let stato_ordine = req.body.stato_ordine;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      res.send("errore nel token");
+      res.end();
+    } else {
+      let query = `UPDATE ordini SET stato_ordine = '${stato_ordine}' WHERE id = ${id_ordine};`;
+
+      connection.query(query, (err, result) => {
+        if (err) throw new Error(err);
+
+        res.send("Stato ordine modificato");
+        res.end();
+      });
+    }
+  });
+});
+
 server.post("/producer/edit/product", (req, res) => {
   const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
     req.body;
