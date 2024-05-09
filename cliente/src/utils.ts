@@ -17,6 +17,16 @@ export type dataReg = {
 	is_produttore: boolean;
 	id_mensa: any;
 };
+export type dataMensa = {
+	nome: string;
+	email: string;
+	telefono: string;
+	regione: string;
+	provincia: string;
+	comune: string;
+	cap: number;
+	indirizzo: string;
+};
 
 export type typeProfilo = {
 	cognome: string;

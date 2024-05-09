@@ -1,6 +1,6 @@
 import axios from "axios";
 import { sha256 } from "js-sha256";
-import { dataLog, dataReg, prodottoCarrello } from "../utils";
+import { dataLog, dataMensa, dataReg, prodottoCarrello } from "../utils";
 
 const url = process.env.REACT_APP_URL || "";
 
@@ -119,7 +119,7 @@ export async function getProdotti(token: string) {
 //ok
 export async function sendOrder(
 	carrello: Array<prodottoCarrello>,
-	token: { token: string }
+	token: string
 ) {
 	let response;
 	let data = JSON.stringify({ carrello: carrello });
@@ -130,7 +130,7 @@ export async function sendOrder(
 		url: `${url}/send/cart`,
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: "Bearer " + token.token,
+			Authorization: "Bearer " + token,
 		},
 		data: data,
 	};
@@ -227,7 +227,7 @@ export async function modifyMensa(id: number, token: string) {
 	return response;
 }
 
-//
+//ok
 export async function getOrders(token: string) {
 	let response;
 
@@ -239,6 +239,31 @@ export async function getOrders(token: string) {
 			"Content-Type": "application/json",
 			Authorization: "Bearer " + token,
 		},
+	};
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}
+
+export async function registerMensa(data: dataMensa) {
+	let response;
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/register/mensa`,
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data: JSON.stringify(data),
 	};
 
 	await axios

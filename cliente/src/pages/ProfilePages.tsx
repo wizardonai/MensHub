@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ordine, prodotto, typeProfilo, urlImg } from "../utils";
 import { useState } from "react";
 import { getCronologia } from "../scripts/fetch";
@@ -13,8 +13,10 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const CronologiaAcquistiPage = ({
 	products,
+	setLoggato,
 }: {
 	products: Array<prodotto>;
+	setLoggato: Function;
 }) => {
 	const [chiesto, setChiesto] = useState(false);
 	const [cronologia, setCronologia] = useState([] as Array<ordine>);
@@ -22,9 +24,11 @@ const CronologiaAcquistiPage = ({
 	if (!chiesto && cronologia.length === 0) {
 		setChiesto(true);
 		//fetch cronologia
-		getCronologia(
-			JSON.parse(localStorage.getItem("token") || '{"token": "scu"}').token
-		).then((res: any) => {
+		getCronologia(localStorage.getItem("token") || "scu").then((res: any) => {
+			if (res === "Token non valido") {
+				setLoggato(false);
+				return;
+			}
 			setCronologia(res);
 		});
 
@@ -41,8 +45,6 @@ const CronologiaAcquistiPage = ({
 			</div>
 		);
 	}
-
-	console.log(cronologia);
 
 	const generaRighe = () => {
 		return cronologia.map((item: ordine, index: number) => {
@@ -123,9 +125,11 @@ const CronologiaAcquistiPage = ({
 const ProfilePages = ({
 	datiUtente,
 	products,
+	setLoggato,
 }: {
 	datiUtente: typeProfilo;
 	products: Array<prodotto>;
+	setLoggato: Function;
 }) => {
 	const { page } = useParams<{ page: string }>();
 
@@ -135,7 +139,9 @@ const ProfilePages = ({
 
 	switch (page) {
 		case pagine[0]:
-			return <CronologiaAcquistiPage products={products} />;
+			return (
+				<CronologiaAcquistiPage products={products} setLoggato={setLoggato} />
+			);
 		default:
 			return <p>PAGINA NON TROVATA!</p>;
 	}

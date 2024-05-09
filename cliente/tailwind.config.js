@@ -120,6 +120,54 @@ module.exports = {
 					},
 					to: { width: "0%", display: "none" },
 				},
+				hideElement: {
+					from: {
+						opacity: "1",
+					},
+					to: {
+						opacity: "0",
+					},
+				},
+				showElement: {
+					from: {
+						opacity: "0",
+					},
+					to: {
+						opacity: "1",
+					},
+				},
+				suSopra: {
+					from: {
+						marginTop: "0",
+					},
+					to: {
+						marginTop: "-120px",
+					},
+				},
+				giuSopra: {
+					from: {
+						marginTop: "-120px",
+					},
+					to: {
+						marginTop: "0",
+					},
+				},
+				giuSotto: {
+					from: {
+						marginBottom: "0",
+					},
+					to: {
+						marginBottom: "-120px",
+					},
+				},
+				suSotto: {
+					from: {
+						marginBottom: "-120px",
+					},
+					to: {
+						marginBottom: "0",
+					},
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
@@ -129,6 +177,12 @@ module.exports = {
 				swipeLeftCarrelloEl: "swipeLeftCarrelloEl 0.5s forwards",
 				swipeRightCarrello: "swipeRightCarrello 0.5s forwards",
 				swipeRightCarrelloEl: "swipeRightCarrelloEl 0.5s forwards",
+				hideElement: "hideElement 1s",
+				showElement: "showElement 1s forwards",
+				suSopra: "suSopra 1s forwards",
+				giuSopra: "giuSopra 1s forwards",
+				giuSotto: "giuSotto 1s forwards",
+				suSotto: "suSotto 1s forwards",
 			},
 			height: {
 				navbar: "var(--navbarH)",

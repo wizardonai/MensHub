@@ -121,11 +121,13 @@ const MensaPreferita = ({
 	mense,
 	setDatiUtente,
 	setProducts,
+	setLoggato,
 }: {
 	datiUtente: typeProfilo;
 	mense: Array<mensa>;
 	setDatiUtente: Function;
 	setProducts: Function;
+	setLoggato: Function;
 }) => {
 	return (
 		<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
@@ -140,10 +142,14 @@ const MensaPreferita = ({
 
 						modifyMensa(
 							parseInt(e),
-							JSON.parse(localStorage.getItem("token") || '{"token": "scu"}')
-								.token
+							localStorage.getItem("token") || "scu"
 						).then((res: any) => {
-							localStorage.setItem("token", JSON.stringify(res));
+							if (res === "Token non valido") {
+								setLoggato(false);
+								return;
+							}
+
+							localStorage.setItem("token", res.token);
 
 							getProdotti(res.token).then((res: any) => {
 								setProducts(res);
@@ -266,6 +272,7 @@ const Profile = ({
 							mense={mense}
 							setDatiUtente={setDatiUtente}
 							setProducts={setProducts}
+							setLoggato={setLoggato}
 						/>
 						<BtnCronologia />
 						<BtnDisconnetti setTipoPopup={setTipoPopup} />

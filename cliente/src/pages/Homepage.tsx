@@ -350,6 +350,7 @@ const Homepage = ({
 	const [filteredProducts, setFilteredProducts] = useState(
 		[] as Array<prodotto>
 	);
+	const navigate = useNavigate();
 	const [filtro, setFiltro] = useState("");
 	const [possibiliFiltri, setPossibiliFiltri] = useState([
 		["antipasto", antipastoImg],
@@ -361,6 +362,11 @@ const Homepage = ({
 	]);
 
 	if (products.length === 0) {
+		if (localStorage.getItem("token") === "false") {
+			navigate("/login");
+			return;
+		}
+
 		return (
 			<div className='w-full h-full flex justify-center items-center bg-white'>
 				<iframe
