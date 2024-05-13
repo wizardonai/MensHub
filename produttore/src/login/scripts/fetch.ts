@@ -291,3 +291,54 @@ export async function deleteOrdine(token: string, id_ordine: number) {
 
   return response;
 }
+
+export async function getInformazioniMensa(token: string) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/request/mensa`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
+
+export async function getTopProdotti(token: string, periodo: string) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/get/top10Products`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      periodo: periodo.toString(),
+    }),
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}

@@ -121,7 +121,7 @@ const Prodotti = ({
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap">
+          <div className="flex">
             <div
               onClick={() => setPopup(true)}
               className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"

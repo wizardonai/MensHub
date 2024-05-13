@@ -14,7 +14,12 @@ import HomePageProductor from "./produttore/pages/HomePageProductor";
 import MenuPageProductor from "./produttore/pages/MenuPageProductor";
 import Balance from "./produttore/pages/Balance";
 import ProfileProductor from "./produttore/pages/ProfileProductor";
-import { getAllergeni, getCategorie, getOrdini } from "./login/scripts/fetch";
+import {
+  getAllergeni,
+  getCategorie,
+  getInformazioniMensa,
+  getOrdini,
+} from "./login/scripts/fetch";
 
 export type ArrayProdotti = {
   prodotti: Array<{
@@ -164,6 +169,11 @@ const App = () => {
       {
         path: "/productorProfile",
         element: <ProfileProductor />,
+        loader: async () => {
+          return getInformazioniMensa(
+            JSON.parse(localStorage.getItem("token") || '{"token":"asd"}').token
+          );
+        },
       },
       {
         path: "*",

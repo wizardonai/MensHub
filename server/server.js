@@ -144,6 +144,49 @@ server.post("/request/mense", (req, res) => {
   });
 });
 
+server.post("/request/mensa", (req, res) => {
+  let token = req.headers.authorization;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      console.log(err);
+      res.send("Token non valido");
+      res.end();
+    } else {
+      let id_mensa = decoded.id_mensa;
+      let query = `SELECT * FROM mense WHERE id=${id_mensa};`;
+
+      connection.query(query, (err, result) => {
+        if (err) throw new Error(err);
+
+        if (result.length > 0) {
+          res.send(result);
+        } else {
+          res.send("Mensa non trovata");
+        }
+        res.end();
+      });
+    }
+  });
+});
+
+server.post("/insert/mensa", (req, res) => {
+  const { nome, indirizzo, regione, provincia, comune, cap, email, telefono } =
+    req.body;
+
+  const query = `INSERT INTO mense (nome, indirizzo, regione, provincia, comune, cap, email, telefono) VALUES ('${nome}', '${indirizzo}', '${regione}', '${provincia}', '${comune}', ${cap}, '${email}', '${telefono}')`;
+
+  // Esegui la query
+  connection.query(query, (error, result) => {
+    if (error) {
+      console.error("Errore durante l'esecuzione della query:", error);
+      res.status(500).json("Internal server error");
+      return;
+    }
+    res.status(200).json(result.insertId);
+  });
+});
+
 server.post("/modify/mensa", (req, res) => {
   let token = req.headers.authorization;
   let id_mensa = req.body.id_mensa;
@@ -257,11 +300,7 @@ server.post("/register/user", async function (req, res) {
     email,
     password,
     confirm_password,
-    is_produttore,
-    nome_mensa,
-    indirizzo_mensa,
-    email_mensa,
-    telefono_mensa,
+    cliente,
     id_mensa,
   } = req.body;
   if (!email || !password) {
@@ -289,38 +328,17 @@ server.post("/register/user", async function (req, res) {
   });
 
   const { valid, reason, validators } = await validate(email);
-  let himcook;
+  let queryInsertUser;
   if (valid) {
-    if (is_produttore === 1) {
-      var id_mensa_new = -1;
-      query = `insert into mense (nome,indirizzo,email,telefono) VALUES('${nome_mensa}','${indirizzo_mensa}','${email_mensa}',${telefono_mensa});`;
-      connection.query(query, (err, result) => {
-        if (err) throw new Error(err);
-        if (result) {
-          query = `SELECT * from mense where nome='${nome_mensa}' and indirizzo='${indirizzo_mensa}' and email='${email_mensa}' and telefono=${telefono_mensa};`;
-          connection.query(query, (err, result) => {
-            if (err) throw new Error(err);
-            console.log(result);
-            if (result.length > 0) {
-              id_mensa_new = result[0].id;
-              himcook = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa_new}','${is_produttore}');`;
-              connection.query(himcook, (err, result) => {
-                if (err) throw new Error(err);
-                res.send("Registrazione avvenuta con successo");
-                res.end();
-              });
-            }
-          });
-        }
-      });
-    } else {
-      himcook = `INSERT INTO utenti (nome,cognome,email,password,cliente, id_mensa) VALUES('${nome}','${cognome}','${email}','${password}',${is_produttore}, ${id_mensa});`;
-      connection.query(himcook, (err, result) => {
-        if (err) throw new Error(err);
+    queryInsertUser = `INSERT INTO UTENTI (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${cliente});`;
+    console.log("caca" + queryInsertUser);
+    connection.query(queryInsertUser, (err, result) => {
+      if (err) throw new Error(err);
+      if (result) {
         res.send("Registrazione avvenuta con successo");
-        res.end();
-      });
-    }
+        res.end;
+      }
+    });
   } else {
     res.send("Email non valida!");
     res.end();
@@ -467,6 +485,96 @@ server.post("/producer/get/products", (req, res) => {
   });
 });
 
+server.post("/producer/get/top10Products", (req, res) => {
+  let token = req.headers.authorization;
+  let periodo = req.body.periodo;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      console.log(err);
+      res.send("Token non valido");
+      res.end();
+    } else {
+      let id_mensa = decoded.id_mensa;
+      let query = "";
+
+      switch (periodo) {
+        case "1G":
+          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                    FROM prodotti_ordini AS po
+                    JOIN ordini AS o ON po.id_ordine = o.id
+                    JOIN prodotti AS p ON po.id_prodotto = p.id
+                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) = CURDATE()
+                    GROUP BY id_prodotto
+                    ORDER BY num_acquisti DESC
+                    LIMIT 10;`;
+          break;
+        case "1S":
+          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                    FROM prodotti_ordini AS po
+                    JOIN ordini AS o ON po.id_ordine = o.id
+                    JOIN prodotti AS p ON po.id_prodotto = p.id
+                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 WEEK
+                    GROUP BY id_prodotto
+                    ORDER BY num_acquisti DESC
+                    LIMIT 10;`;
+          break;
+        case "1M":
+          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                    FROM prodotti_ordini AS po
+                    JOIN ordini AS o ON po.id_ordine = o.id
+                    JOIN prodotti AS p ON po.id_prodotto = p.id
+                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 MONTH
+                    GROUP BY id_prodotto
+                    ORDER BY num_acquisti DESC
+                    LIMIT 10;`;
+          break;
+        case "3M":
+          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                    FROM prodotti_ordini AS po
+                    JOIN ordini AS o ON po.id_ordine = o.id
+                    JOIN prodotti AS p ON po.id_prodotto = p.id
+                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 3 MONTH
+                    GROUP BY id_prodotto
+                    ORDER BY num_acquisti DESC
+                    LIMIT 10;`;
+          break;
+        case "6M":
+          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                    FROM prodotti_ordini AS po
+                    JOIN ordini AS o ON po.id_ordine = o.id
+                    JOIN prodotti AS p ON po.id_prodotto = p.id
+                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 6 MONTH
+                    GROUP BY id_prodotto
+                    ORDER BY num_acquisti DESC
+                    LIMIT 10;`;
+          break;
+        case "1A":
+          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                    FROM prodotti_ordini AS po
+                    JOIN ordini AS o ON po.id_ordine = o.id
+                    JOIN prodotti AS p ON po.id_prodotto = p.id
+                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 YEAR
+                    GROUP BY id_prodotto
+                    ORDER BY num_acquisti DESC
+                    LIMIT 10;`;
+          break;
+      }
+
+      connection.query(query, (err, result) => {
+        if (err) throw new Error(err);
+
+        if (result.length > 0) {
+          res.send(result);
+        } else {
+          res.send("Non sono presenti prodotti");
+        }
+        res.end();
+      });
+    }
+  });
+});
+
 server.post("/producer/get/orders", (req, res) => {
   let token = req.headers.authorization;
   let id_utente = "";
@@ -566,6 +674,22 @@ server.post("/producer/change/order", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
+      if (stato_ordine === "finito") {
+        let query = `SELECT id_prodotto, quantita FROM prodotti_ordini WHERE id_ordine = ${id_ordine};`;
+
+        connection.query(query, (err, result) => {
+          if (err) throw new Error(err);
+
+          result.forEach((row) => {
+            let query = `UPDATE prodotti SET nacq = nacq + ${row.quantita} WHERE id = ${row.id_prodotto};`;
+
+            connection.query(query, (err, result) => {
+              if (err) throw new Error(err);
+            });
+          });
+        });
+      }
+
       let query = `UPDATE ordini SET stato_ordine = '${stato_ordine}' WHERE id = ${id_ordine};`;
 
       connection.query(query, (err, result) => {

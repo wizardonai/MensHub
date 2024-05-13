@@ -1,12 +1,54 @@
-import React, { useState } from "react";
-import OrdersTable from "./components/OrdersTable";
+import React, { useEffect, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
+import { getTopProdotti } from "src/login/scripts/fetch";
 import { useLoaderData } from "react-router-dom";
-import OrdineCliccato from "./components/OrdineCliccato";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 const ProfileProductor = () => {
+  const dati: any = useLoaderData();
   const periodo = ["1G", "1S", "1M", "3M", "6M", "1A"];
+  const [periodoCliccato, setPeriodoCliccato] = useState<string>("1A");
+  const [ricarica, setRicarica] = useState<boolean>(true);
+  const [topProdotti, setTopProdotti] = useState<any>([]);
+  const prova = [
+    { name: "Page A", uv: 400 },
+    { name: "Page B", uv: 300 },
+    { name: "Page C", uv: 300 },
+    { name: "Page D", uv: 200 },
+    { name: "Page E", uv: 278 },
+    { name: "Page F", uv: 189 },
+    { name: "Page G", uv: 239 },
+    { name: "Page H", uv: 349 },
+    { name: "Page I", uv: 278 },
+    { name: "Page L", uv: 189 },
+  ];
+
+  if (!dati) return <p>CARICAMENTO</p>;
+
+  console.log(dati);
+
+  if (ricarica) {
+    getTopProdotti(
+      JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
+        .token,
+      periodoCliccato
+    ).then((res) => {
+      setTopProdotti(res);
+      setRicarica(false);
+    });
+  }
+
+  let count = 0;
 
   return (
     <div className="page" style={css.page}>
@@ -15,7 +57,7 @@ const ProfileProductor = () => {
       </div>
       <div style={css.centerPage}>
         <div>
-          <p className="font-bold text-5xl text-marroneScuro">Nome Mensa</p>
+          <p className="font-bold text-5xl text-marroneScuro">{dati[0].nome}</p>
         </div>
         <div className="flex">
           <div className="pt-[15px] w-1/2">
@@ -30,7 +72,7 @@ const ProfileProductor = () => {
               Indirizzo:
             </p>
             <p className="text-xl text-marroneScuro pl-[10px]">
-              via Franchini, 1
+              {dati[0].indirizzo}
             </p>
           </div>
           <div className="pt-[15px] w-1/2">
@@ -91,16 +133,52 @@ const ProfileProductor = () => {
             </p>
             <div className="flex">
               {periodo.map((item) => (
-                <div className="bg-arancioneChiaro rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo">
+                <div
+                  key={item}
+                  className="bg-arancioneChiaro rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+                >
                   <p>{item}</p>
                 </div>
               ))}
             </div>
+            <ResponsiveContainer width="85%" height={250}>
+              <BarChart className="ml-[-20px] mt-[20px]" data={prova}>
+                <XAxis dataKey="name" stroke="#503431" />
+                <YAxis stroke="#503431" />
+                <Tooltip />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <Bar dataKey="uv" fill="#e59421" barSize={30} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
           <div className="w-1/2">
             <p className="font-bold text-2xl text-marroneScuro">
               Prodotti più venduti:
             </p>
+            <div>
+              {topProdotti.map(
+                (item: any) => (
+                  count++,
+                  (
+                    <div key={item.id} className="flex mt-[3px]">
+                      {count < 4 ? (
+                        <img
+                          src={hostnameProductor + "ranking/" + count + ".png"}
+                          className="h-[25px]"
+                        />
+                      ) : (
+                        <p className="font-bold text-lg text-arancioneChiaro">
+                          {count}
+                        </p>
+                      )}
+                      <p className="font-bold text-lg text-marroneScuro pl-[5px]">
+                        {item.nome}
+                      </p>
+                    </div>
+                  )
+                )
+              )}
+            </div>
           </div>
         </div>
       </div>
