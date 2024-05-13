@@ -14,9 +14,7 @@ import {
 } from "../components/shadcn/Select";
 
 import { Label } from "../components/shadcn/Label";
-
-import login_sopra from "../img/login_sopra.png";
-import login_sotto from "../img/login_sotto.png";
+import { Button } from "../components/shadcn/Button";
 
 const ContattiMensa = ({
 	data,
@@ -26,7 +24,7 @@ const ContattiMensa = ({
 	setData: Function;
 }) => {
 	return (
-		<div className='flex w-full items-center gap-4 flex-col'>
+		<div className='flex w-full items-center gap-4 flex-col animate-showElement'>
 			<div className='flex flex-col'>
 				<Label htmlFor='nome' className='text-marrone font-bold mb-0.5'>
 					Nome Mensa
@@ -43,7 +41,7 @@ const ContattiMensa = ({
 			</div>
 			<div className='flex flex-col'>
 				<Label htmlFor='email' className='text-marrone font-bold mb-0.5'>
-					Email
+					Email di contatto
 				</Label>
 				<Input
 					id='email'
@@ -57,7 +55,7 @@ const ContattiMensa = ({
 			</div>
 			<div className='flex flex-col'>
 				<Label htmlFor='telefono' className='text-marrone font-bold mb-0.5'>
-					Telefono
+					Telefono di contatto
 				</Label>
 				<Input
 					id='email'
@@ -115,7 +113,7 @@ const IndirizzoMensa = ({
 	}
 
 	return (
-		<div className='flex  items-center gap-4 flex-col w-3/4'>
+		<div className='flex  items-center gap-4 flex-col w-full animate-showFast'>
 			<div className='flex flex-col w-full'>
 				<Label htmlFor='regione' className='text-marrone font-bold mb-0.5'>
 					Regione
@@ -245,18 +243,7 @@ const IndirizzoMensa = ({
 		</div>
 	);
 };
-
-const RegisterMensa = ({
-	setUtente,
-	imgSopra,
-	imgSotto,
-}: {
-	setUtente: Function;
-	imgSopra: React.MutableRefObject<null>;
-	imgSotto: React.MutableRefObject<null>;
-}) => {
-	const navigate = useNavigate();
-
+export const RegisterMensa = ({ setUtente }: { setUtente: Function }) => {
 	const [pagina, setPagina] = useState(0);
 
 	const div = useRef(null);
@@ -271,66 +258,35 @@ const RegisterMensa = ({
 
 	return (
 		<div
-			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll w-3/4'
+			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll w-[85%]'
 			ref={div}
 		>
 			{elementi[pagina]}
 			<div className='flex flex-col'>
 				<p className='text-red-500'>{error}</p>
 			</div>
-			<p
-				onClick={() => navigate("/login")}
-				className='text-marrone underline w-3/4'
-			>
-				Accedi
-			</p>
-			<div className='flex flex-row items-center justify-center w-3/4'>
-				<button
+			<div className='flex flex-row items-center justify-center w-full mt-2'>
+				<Button
+					variant='indietro'
 					onClick={() => {
 						if (pagina === 0) {
 							//@ts-ignore
-							div.current.attributes.class.value =
-								//@ts-ignore
-								div.current.attributes.class.value.replace(
-									" animate-showElement",
-									""
-								);
-
+							div.current.classList.remove("animate-showElement");
 							//@ts-ignore
-							div.current.attributes.class.value += " animate-hideElement";
-
-							sleep(500).then(() => {
-								//@ts-ignore
-								imgSopra.current.attributes.class.value =
-									//@ts-ignore
-									imgSopra.current.attributes.class.value.replace(
-										" animate-suSopra",
-										""
-									);
-								//@ts-ignore
-								imgSotto.current.attributes.class.value =
-									//@ts-ignore
-									imgSotto.current.attributes.class.value.replace(
-										" animate-giuSotto",
-										""
-									);
-								//@ts-ignore
-								imgSopra.current.attributes.class.value += " animate-giuSopra";
-								//@ts-ignore
-								imgSotto.current.attributes.class.value += " animate-suSotto";
-							});
+							div.current.classList.add("animate-hideElement");
 
 							sleep(900).then(() => {
 								setUtente("?");
 							});
 						} else setPagina(0);
 					}}
-					className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl mt-1'
+					className='w-1/2 p-2 rounded-3xl mt-1 mr-1'
 				>
 					Indietro
-				</button>
-				<button
+				</Button>
+				<Button
 					// onClick={submitRegisterCliccato}
+					variant='avanti'
 					className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl mt-1'
 					onClick={() => {
 						if (pagina === 0) {
@@ -375,19 +331,17 @@ const RegisterMensa = ({
 					}}
 				>
 					{pagina === 0 ? "Avanti" : "Registra"}
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
 };
-const RegisterCliente = ({
+export const RegisterCliente = ({
 	setUtente,
-	imgSopra,
-	imgSotto,
+	animazioniImmagini,
 }: {
 	setUtente: Function;
-	imgSopra: React.MutableRefObject<null>;
-	imgSotto: React.MutableRefObject<null>;
+	animazioniImmagini: Function;
 }) => {
 	const navigate = useNavigate();
 
@@ -523,7 +477,7 @@ const RegisterCliente = ({
 						htmlFor='selectMensa'
 						className='text-marrone font-bold mb-0.5'
 					>
-						Seleziona la tua mensa
+						Mensa preferita
 					</Label>
 					<Select
 						onValueChange={(e: any) => {
@@ -564,52 +518,21 @@ const RegisterCliente = ({
 					<p className='text-red-500'>{error}</p>
 				</div>
 			</div>
-			<p
-				onClick={() => navigate("/login")}
-				className='text-marrone underline w-full'
-			>
-				Accedi
-			</p>
 			<div className='flex flex-row items-center justify-center w-full'>
 				<button
 					onClick={() => {
-						//@ts-ignore
-						div.current.attributes.class.value =
-							//@ts-ignore
-							div.current.attributes.class.value.replace(
-								" animate-showElement",
-								""
-							);
+						animazioniImmagini(45, 5, window.innerHeight);
 
 						//@ts-ignore
-						div.current.attributes.class.value += " animate-hideElement";
-
-						sleep(500).then(() => {
-							//@ts-ignore
-							imgSopra.current.attributes.class.value =
-								//@ts-ignore
-								imgSopra.current.attributes.class.value.replace(
-									" animate-suSopra",
-									""
-								);
-							//@ts-ignore
-							imgSotto.current.attributes.class.value =
-								//@ts-ignore
-								imgSotto.current.attributes.class.value.replace(
-									" animate-giuSotto",
-									""
-								);
-							//@ts-ignore
-							imgSopra.current.attributes.class.value += " animate-giuSopra";
-							//@ts-ignore
-							imgSotto.current.attributes.class.value += " animate-suSotto";
-						});
+						div.current.classList.remove("animate-showElement");
+						//@ts-ignore
+						div.current.classList.add("animate-hideElement");
 
 						sleep(900).then(() => {
 							setUtente("?");
 						});
 					}}
-					className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl mt-1'
+					className='w-1/2 bg-biancoLatte p-2 text-marrone border border-marrone rounded-3xl mt-1 mr-1'
 				>
 					Indietro
 				</button>
@@ -624,150 +547,126 @@ const RegisterCliente = ({
 	);
 };
 
-const SceltaUtente = ({
+export const SceltaUtente = ({
 	setUtente,
-	imgSopra,
-	imgSotto,
+	setLogin,
+	animazioniImmagini,
 }: {
 	setUtente: Function;
-	imgSopra: React.MutableRefObject<null>;
-	imgSotto: React.MutableRefObject<null>;
+	setLogin: Function;
+	animazioniImmagini: Function;
 }) => {
 	const div = useRef(null);
+
+	useEffect(() => {
+		animazioniImmagini(45, 5, window.innerHeight);
+	}, []);
 
 	return (
 		<div
 			className='flex flex-col items-center justify-center animate-showElement'
 			ref={div}
 		>
-			<div
-				className='w-40 text-biancoLatte bg-marrone p-3 rounded-xl'
+			<Button
+				variant='avanti'
+				className='w-full rounded-xl py-[22px] text-lg mt-2'
 				onClick={() => {
-					//@ts-ignore
-					div.current.attributes.class.value =
-						//@ts-ignore
-						div.current.attributes.class.value.replace(
-							" animate-showElement",
-							""
-						);
-					//@ts-ignore
-					imgSopra.current.attributes.class.value =
-						//@ts-ignore
-						imgSopra.current.attributes.class.value.replace(
-							" animate-giuSopra",
-							""
-						);
-					//@ts-ignore
-					imgSotto.current.attributes.class.value =
-						//@ts-ignore
-						imgSotto.current.attributes.class.value.replace(
-							" animate-suSotto",
-							""
-						);
+					animazioniImmagini(55, 15, window.innerHeight);
 
 					//@ts-ignore
-					div.current.attributes.class.value += " animate-hideElement";
-
+					div.current.classList.remove("animate-showElement");
 					//@ts-ignore
-					imgSopra.current.attributes.class.value += " animate-suSopra";
-					//@ts-ignore
-					imgSotto.current.attributes.class.value += " animate-giuSotto";
+					div.current.classList.add("animate-hideElement");
 
 					sleep(900).then(() => {
 						setUtente("cliente");
 					});
 				}}
 			>
-				<p className='w-full text-center'>Sono un Cliente</p>
-			</div>
-			<div
-				className='w-40 text-biancoLatte bg-marrone p-3 rounded-xl mt-2'
+				Sono un Cliente
+			</Button>
+			<Button
+				variant='avanti'
+				className='w-full rounded-xl py-[22px] text-lg mt-2'
 				onClick={() => {
 					//@ts-ignore
-					div.current.attributes.class.value =
-						//@ts-ignore
-						div.current.attributes.class.value.replace(
-							" animate-showElement",
-							""
-						);
+					div.current.classList.remove("animate-showElement");
 					//@ts-ignore
-					imgSopra.current.attributes.class.value =
-						//@ts-ignore
-						imgSopra.current.attributes.class.value.replace(
-							" animate-giuSopra",
-							""
-						);
-					//@ts-ignore
-					imgSotto.current.attributes.class.value =
-						//@ts-ignore
-						imgSotto.current.attributes.class.value.replace(
-							" animate-suSotto",
-							""
-						);
-
-					//@ts-ignore
-					div.current.attributes.class.value += " animate-hideElement";
-
-					//@ts-ignore
-					imgSopra.current.attributes.class.value += " animate-suSopra";
-					//@ts-ignore
-					imgSotto.current.attributes.class.value += " animate-giuSotto";
+					div.current.classList.add("animate-hideElement");
 
 					sleep(900).then(() => {
 						setUtente("produttore");
 					});
 				}}
 			>
-				<p className='w-full text-center'>Sono una Mensa</p>
-			</div>
+				Sono una Mensa
+			</Button>
+			<Button
+				variant='indietro'
+				className='w-full rounded-xl py-[22px] text-lg mt-2'
+				onClick={() => {
+					animazioniImmagini(0, 15, window.innerHeight);
+
+					//@ts-ignore
+					div.current.classList.remove("animate-showElement");
+					//@ts-ignore
+					div.current.classList.add("animate-hideElement");
+
+					sleep(900).then(() => {
+						setLogin("?");
+					});
+				}}
+			>
+				Indietro
+			</Button>
 		</div>
 	);
 };
 
-const RegisterPage = () => {
-	const [utente, setUtente] = useState("?");
-	const imgSopra = useRef(null);
-	const imgSotto = useRef(null);
+// const RegisterPage = () => {
+// 	const [utente, setUtente] = useState("?");
+// 	const imgSopra = useRef(null);
+// 	const imgSotto = useRef(null);
 
-	return (
-		<div className='flex justify-center items-center w-svw h-svh m-0 p-0 flex-col overflow-hidden'>
-			<img
-				src={login_sopra}
-				alt=''
-				// className='absolute top-0 left-0'
-				className='w-full h-[250px]'
-				ref={imgSopra}
-			/>
-			<div className='flex justify-center items-center w-svw h-svh overflow-y-scroll flex-col'>
-				{utente === "?" ? (
-					<SceltaUtente
-						setUtente={setUtente}
-						imgSopra={imgSopra}
-						imgSotto={imgSotto}
-					/>
-				) : utente === "cliente" ? (
-					<RegisterCliente
-						setUtente={setUtente}
-						imgSopra={imgSopra}
-						imgSotto={imgSotto}
-					/>
-				) : (
-					<RegisterMensa
-						setUtente={setUtente}
-						imgSopra={imgSopra}
-						imgSotto={imgSotto}
-					/>
-				)}
-			</div>
-			<img
-				src={login_sotto}
-				alt=''
-				// className='absolute bottom-0 left-0'
-				className='w-full h-[250px]'
-				ref={imgSotto}
-			/>
-		</div>
-	);
-};
+// 	return (
+// 		<div className='flex justify-center items-center w-svw h-svh m-0 p-0 flex-col overflow-hidden'>
+// 			<img
+// 				src={login_sopra}
+// 				alt=''
+// 				// className='absolute top-0 left-0'
+// 				className='w-full h-[250px]'
+// 				ref={imgSopra}
+// 			/>
+// 			<div className='flex justify-center items-center w-svw h-svh overflow-y-scroll flex-col'>
+// 				{utente === "?" ? (
+// 					<SceltaUtente
+// 						setUtente={setUtente}
+// 						imgSopra={imgSopra}
+// 						imgSotto={imgSotto}
+// 					/>
+// 				) : utente === "cliente" ? (
+// 					<RegisterCliente
+// 						setUtente={setUtente}
+// 						imgSopra={imgSopra}
+// 						imgSotto={imgSotto}
+// 					/>
+// 				) : (
+// 					<RegisterMensa
+// 						setUtente={setUtente}
+// 						imgSopra={imgSopra}
+// 						imgSotto={imgSotto}
+// 					/>
+// 				)}
+// 			</div>
+// 			<img
+// 				src={login_sotto}
+// 				alt=''
+// 				// className='absolute bottom-0 left-0'
+// 				className='w-full h-[250px]'
+// 				ref={imgSotto}
+// 			/>
+// 		</div>
+// 	);
+// };
 
-export default RegisterPage;
+// export default RegisterPage;

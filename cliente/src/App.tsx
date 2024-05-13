@@ -5,7 +5,7 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+// import RegisterPage from "./pages/RegisterPage";
 import Homepage from "./pages/Homepage";
 import Cart from "./pages/Cart";
 import { useLocalStorage } from "usehooks-ts";
@@ -15,6 +15,7 @@ import ProfilePages from "./pages/ProfilePages";
 import { prodotto, typeProfilo } from "./utils";
 import Product from "./pages/Product";
 import { useState } from "react";
+import Auth from "./pages/Auth";
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", false);
@@ -117,19 +118,15 @@ function App() {
 		router = createBrowserRouter([
 			{
 				path: "/",
-				loader: () => redirect("/login"),
+				loader: () => redirect("/auth"),
 			},
 			{
-				path: "/login",
-				element: <LoginPage setLoggato={setLoggato} />,
-			},
-			{
-				path: "/register",
-				element: <RegisterPage />,
+				path: "/auth",
+				element: <Auth setLoggato={setLoggato} />,
 			},
 			{
 				path: "*",
-				loader: () => redirect("/login"),
+				loader: () => redirect("/auth"),
 			},
 		]);
 	}

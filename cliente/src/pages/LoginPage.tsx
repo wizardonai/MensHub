@@ -47,10 +47,9 @@ const LoginPage = ({ setLoggato }: { setLoggato: Function }) => {
 
 	return (
 		<div className='flex justify-center items-center w-svw h-svh m-0 p-0 flex-col'>
-			<img src={login_sopra} alt='' className='w-full h-[30%]' />
-
+			<img src={login_sopra} alt='' className='w-full h-[250px]' />
 			<div
-				className='flex flex-col justify-center items-center h-[40%]'
+				className='flex flex-col justify-center items-center h-full'
 				ref={div}
 			>
 				<div className='grid w-full items-center gap-4'>
@@ -108,7 +107,7 @@ const LoginPage = ({ setLoggato }: { setLoggato: Function }) => {
 						</p>
 					</div>
 					<div className='flex flex-col space-y-1.5'>
-						<p>{error}</p>
+						<p className='text-red'>{error}</p>
 					</div>
 				</div>
 				<button
@@ -118,7 +117,7 @@ const LoginPage = ({ setLoggato }: { setLoggato: Function }) => {
 					Accedi
 				</button>
 			</div>
-			<img src={login_sotto} alt='' className='w-full h-[30%]' />
+			<img src={login_sotto} alt='' className='w-full h-[250px]' />
 		</div>
 	);
 };

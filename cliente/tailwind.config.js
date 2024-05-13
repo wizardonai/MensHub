@@ -136,36 +136,124 @@ module.exports = {
 						opacity: "1",
 					},
 				},
-				suSopra: {
-					from: {
-						marginTop: "0",
-					},
+				sopra0: {
 					to: {
-						marginTop: "-120px",
+						top: "0",
 					},
 				},
-				giuSopra: {
-					from: {
-						marginTop: "-120px",
-					},
+				sopra5: {
 					to: {
-						marginTop: "0",
+						top: "-5svh",
 					},
 				},
-				giuSotto: {
-					from: {
-						marginBottom: "0",
-					},
+				sopra10: {
 					to: {
-						marginBottom: "-120px",
+						top: "-10svh",
 					},
 				},
-				suSotto: {
-					from: {
-						marginBottom: "-120px",
-					},
+				sopra15: {
 					to: {
-						marginBottom: "0",
+						top: "-15svh",
+					},
+				},
+				sopra20: {
+					to: {
+						top: "-20svh",
+					},
+				},
+				sopra25: {
+					to: {
+						top: "-25svh",
+					},
+				},
+				sopra30: {
+					to: {
+						top: "-30svh",
+					},
+				},
+				sopra35: {
+					to: {
+						top: "-35svh",
+					},
+				},
+				sopra40: {
+					to: {
+						top: "-40svh",
+					},
+				},
+				sopra45: {
+					to: {
+						top: "-45svh",
+					},
+				},
+				sopra50: {
+					to: {
+						top: "-50svh",
+					},
+				},
+				sopra55: {
+					to: {
+						top: "-55svh",
+					},
+				},
+				sopra60: {
+					to: {
+						top: "-60svh",
+					},
+				},
+				sopra65: {
+					to: {
+						top: "-65svh",
+					},
+				},
+				sopra70: {
+					to: {
+						top: "-70svh",
+					},
+				},
+				sotto0: {
+					to: {
+						bottom: "0",
+					},
+				},
+				sotto5: {
+					to: {
+						bottom: "-5svh",
+					},
+				},
+				sotto10: {
+					to: {
+						bottom: "-10svh",
+					},
+				},
+				sotto15: {
+					to: {
+						bottom: "-15svh",
+					},
+				},
+				sotto20: {
+					to: {
+						bottom: "-20svh",
+					},
+				},
+				sotto25: {
+					to: {
+						bottom: "-25svh",
+					},
+				},
+				sotto30: {
+					to: {
+						bottom: "-30svh",
+					},
+				},
+				sotto35: {
+					to: {
+						bottom: "-35svh",
+					},
+				},
+				sotto40: {
+					to: {
+						bottom: "-40svh",
 					},
 				},
 			},
@@ -177,12 +265,34 @@ module.exports = {
 				swipeLeftCarrelloEl: "swipeLeftCarrelloEl 0.5s forwards",
 				swipeRightCarrello: "swipeRightCarrello 0.5s forwards",
 				swipeRightCarrelloEl: "swipeRightCarrelloEl 0.5s forwards",
-				hideElement: "hideElement 1s",
+				hideElement: "hideElement 1s forwards",
+				hideFast: "hideElement 0.5s forwards",
 				showElement: "showElement 1s forwards",
-				suSopra: "suSopra 1s forwards",
-				giuSopra: "giuSopra 1s forwards",
-				giuSotto: "giuSotto 1s forwards",
-				suSotto: "suSotto 1s forwards",
+				showFast: "showElement 0.5s forwards",
+				sopra0: "sopra0 1s forwards",
+				sopra5: "sopra5 1s forwards",
+				sopra10: "sopra10 1s forwards",
+				sopra15: "sopra15 1s forwards",
+				sopra20: "sopra20 1s forwards",
+				sopra25: "sopra25 1s forwards",
+				sopra30: "sopra30 1s forwards",
+				sopra35: "sopra35 1s forwards",
+				sopra40: "sopra40 1s forwards",
+				sopra45: "sopra45 1s forwards",
+				sopra50: "sopra50 1s forwards",
+				sopra55: "sopra55 1s forwards",
+				sopra60: "sopra60 1s forwards",
+				sopra65: "sopra65 1s forwards",
+				sopra70: "sopra70 1s forwards",
+				sotto0: "sotto0 1s forwards",
+				sotto5: "sotto5 1s forwards",
+				sotto10: "sotto10 1s forwards",
+				sotto15: "sotto15 1s forwards",
+				sotto20: "sotto20 1s forwards",
+				sotto25: "sotto25 1s forwards",
+				sotto30: "sotto30 1s forwards",
+				sotto35: "sotto35 1s forwards",
+				sotto40: "sotto40 1s forwards",
 			},
 			height: {
 				navbar: "var(--navbarH)",
