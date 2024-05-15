@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
-import { getTopProdotti } from "src/login/scripts/fetch";
+import { getStatMensa, getTopProdotti } from "src/login/scripts/fetch";
 import { useLoaderData } from "react-router-dom";
 import {
   BarChart,
@@ -20,18 +20,7 @@ const ProfileProductor = () => {
   const [periodoCliccato, setPeriodoCliccato] = useState<string>("1A");
   const [ricarica, setRicarica] = useState<boolean>(true);
   const [topProdotti, setTopProdotti] = useState<any>([]);
-  const prova = [
-    { name: "Page A", uv: 400 },
-    { name: "Page B", uv: 300 },
-    { name: "Page C", uv: 300 },
-    { name: "Page D", uv: 200 },
-    { name: "Page E", uv: 278 },
-    { name: "Page F", uv: 189 },
-    { name: "Page G", uv: 239 },
-    { name: "Page H", uv: 349 },
-    { name: "Page I", uv: 278 },
-    { name: "Page L", uv: 189 },
-  ];
+  const [ordiniCompletati, setOrdiniCompletati] = useState<any>([]);
 
   if (!dati) return <p>CARICAMENTO</p>;
 
@@ -44,9 +33,17 @@ const ProfileProductor = () => {
       periodoCliccato
     ).then((res) => {
       setTopProdotti(res);
-      setRicarica(false);
     });
+    getStatMensa(
+      JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
+        .token,
+      periodoCliccato
+    ).then((res) => {
+      setOrdiniCompletati(res);
+    });
+    setRicarica(false);
   }
+  console.log(ordiniCompletati);
 
   let count = 0;
 
@@ -65,7 +62,7 @@ const ProfileProductor = () => {
             <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
               email@example.com
             </p>
-            <a className="font-bold text-lg text-verdeBordo cursor-pointer underline">
+            <a className="font-bold text-lg text-verdeBordo cursor-pointer underline hover:text-verdeBordoHover">
               Cambia password
             </a>
             <p className="font-bold text-xl text-marroneScuro mt-[10px]">
@@ -136,18 +133,25 @@ const ProfileProductor = () => {
                 <div
                   key={item}
                   className="bg-arancioneChiaro rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+                  onClick={() => {
+                    setPeriodoCliccato(item);
+                    setRicarica(true);
+                  }}
                 >
                   <p>{item}</p>
                 </div>
               ))}
             </div>
             <ResponsiveContainer width="85%" height={250}>
-              <BarChart className="ml-[-20px] mt-[20px]" data={prova}>
-                <XAxis dataKey="name" stroke="#503431" />
+              <BarChart
+                className="ml-[-20px] mt-[20px]"
+                data={ordiniCompletati}
+              >
+                <XAxis dataKey="periodo" stroke="#503431" />
                 <YAxis stroke="#503431" />
                 <Tooltip />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <Bar dataKey="uv" fill="#e59421" barSize={30} />
+                <Bar dataKey="numero_prodotti" fill="#e59421" barSize={30} />
               </BarChart>
             </ResponsiveContainer>
           </div>

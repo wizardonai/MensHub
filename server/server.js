@@ -149,7 +149,6 @@ server.post("/request/mensa", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      console.log(err);
       res.send("Token non valido");
       res.end();
     } else {
@@ -194,7 +193,6 @@ server.post("/modify/mensa", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      console.log(err);
       res.send("Token non valido");
       res.end();
     } else {
@@ -261,7 +259,6 @@ server.post("/send/cart", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      console.log(err);
       res.send("Token non valido");
       res.end();
     } else {
@@ -399,7 +396,6 @@ server.post("/request/profile", (req, res) => {
   } else {
     jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
       if (err) {
-        console.log(err);
         res.send("Token non valido");
         res.end();
       } else {
@@ -491,76 +487,39 @@ server.post("/producer/get/top10Products", (req, res) => {
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
-      console.log(err);
       res.send("Token non valido");
       res.end();
     } else {
       let id_mensa = decoded.id_mensa;
-      let query = "";
+      let query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                  FROM prodotti_ordini AS po
+                  JOIN ordini AS o ON po.id_ordine = o.id
+                  JOIN prodotti AS p ON po.id_prodotto = p.id `;
 
       switch (periodo) {
         case "1G":
-          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
-                    FROM prodotti_ordini AS po
-                    JOIN ordini AS o ON po.id_ordine = o.id
-                    JOIN prodotti AS p ON po.id_prodotto = p.id
-                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) = CURDATE()
-                    GROUP BY id_prodotto
-                    ORDER BY num_acquisti DESC
-                    LIMIT 10;`;
+          query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) = CURDATE()`;
           break;
         case "1S":
-          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
-                    FROM prodotti_ordini AS po
-                    JOIN ordini AS o ON po.id_ordine = o.id
-                    JOIN prodotti AS p ON po.id_prodotto = p.id
-                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 WEEK
-                    GROUP BY id_prodotto
-                    ORDER BY num_acquisti DESC
-                    LIMIT 10;`;
+          query += ` WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 WEEK`;
           break;
         case "1M":
-          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
-                    FROM prodotti_ordini AS po
-                    JOIN ordini AS o ON po.id_ordine = o.id
-                    JOIN prodotti AS p ON po.id_prodotto = p.id
-                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 MONTH
-                    GROUP BY id_prodotto
-                    ORDER BY num_acquisti DESC
-                    LIMIT 10;`;
+          query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 MONTH`;
           break;
         case "3M":
-          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
-                    FROM prodotti_ordini AS po
-                    JOIN ordini AS o ON po.id_ordine = o.id
-                    JOIN prodotti AS p ON po.id_prodotto = p.id
-                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 3 MONTH
-                    GROUP BY id_prodotto
-                    ORDER BY num_acquisti DESC
-                    LIMIT 10;`;
+          query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 3 MONTH`;
           break;
         case "6M":
-          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
-                    FROM prodotti_ordini AS po
-                    JOIN ordini AS o ON po.id_ordine = o.id
-                    JOIN prodotti AS p ON po.id_prodotto = p.id
-                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 6 MONTH
-                    GROUP BY id_prodotto
-                    ORDER BY num_acquisti DESC
-                    LIMIT 10;`;
+          query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 6 MONTH`;
           break;
         case "1A":
-          query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
-                    FROM prodotti_ordini AS po
-                    JOIN ordini AS o ON po.id_ordine = o.id
-                    JOIN prodotti AS p ON po.id_prodotto = p.id
-                    WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 YEAR
-                    GROUP BY id_prodotto
-                    ORDER BY num_acquisti DESC
-                    LIMIT 10;`;
+          query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 YEAR`;
           break;
       }
 
+      query += ` GROUP BY id_prodotto
+                ORDER BY num_acquisti DESC
+                LIMIT 10`;
       connection.query(query, (err, result) => {
         if (err) throw new Error(err);
 
@@ -571,6 +530,296 @@ server.post("/producer/get/top10Products", (req, res) => {
         }
         res.end();
       });
+    }
+  });
+});
+
+server.post("/producer/get/stats", (req, res) => {
+  let token = req.headers.authorization;
+  let periodo = req.body.periodo;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, async (err, decoded) => {
+    if (err) {
+      console.log(err);
+      res.send("Token non valido");
+      res.end();
+    } else {
+      let id_mensa = decoded.id_mensa;
+      let query = "";
+      let ris = [];
+      let promises = [];
+      switch (periodo) {
+        case "1G":
+          query = `
+            SELECT DATE(data) AS periodo, SUM(quantita) AS numero_prodotti
+            FROM ordini
+            JOIN prodotti_ordini ON ordini.id = prodotti_ordini.id_ordine
+            WHERE id_mensa = ${id_mensa}
+              AND data = CURDATE()
+              AND stato_ordine = 'completato'
+            GROUP BY periodo
+            ORDER BY periodo;
+          `;
+
+          console.log(query);
+
+          connection.query(query, (err, result) => {
+            if (err) throw new Error(err);
+
+            if (result.length > 0) {
+              const formattedResult = result.map((row) => ({
+                periodo: new Date(row.periodo).toLocaleDateString("it-IT"),
+                numero_prodotti: row.numero_prodotti,
+              }));
+              console.log(formattedResult);
+              res.send(formattedResult);
+            } else {
+              res.send("Non sono presenti dati");
+            }
+            res.end();
+          });
+
+          break;
+        case "1S":
+          const oneDay = 1000 * 60 * 60 * 24;
+
+          for (let i = 6; i >= 0; i--) {
+            const currentDate = new Date();
+            const endDate = new Date(currentDate.getTime() - i * oneDay);
+            const periodo = `${endDate.toISOString().split("T")[0]}`;
+
+            const promise = new Promise((resolve, reject) => {
+              const query = `
+                  SELECT SUM(quantita) AS numero_prodotti
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) = '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+              connection.query(query, (err, result) => {
+                if (err) reject(err);
+                resolve({ result: result, periodo: periodo }); // Risultato della query e periodo corrente
+              });
+            });
+
+            promises.push(promise);
+          }
+
+          Promise.all(promises)
+            .then((results) => {
+              ris = results.map(({ result, periodo }) => {
+                const numero_prodotti =
+                  result.length > 0 && result[0].numero_prodotti
+                    ? result[0].numero_prodotti
+                    : 0;
+                return { numero_prodotti: numero_prodotti, periodo: periodo };
+              });
+
+              res.send(ris);
+              res.end();
+            })
+            .catch((err) => {
+              console.error(err);
+              res.send("Errore nel recupero dei dati");
+              res.end();
+            });
+
+          break;
+        case "1M":
+          const fourDays = 1000 * 60 * 60 * 24 * 4;
+
+          for (let i = 7; i >= 0; i--) {
+            const currentDate = new Date();
+            const endDate = new Date(currentDate.getTime() - i * fourDays);
+            const startDate = new Date(endDate.getTime() - fourDays);
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
+
+            const promise = new Promise((resolve, reject) => {
+              const query = `
+                  SELECT SUM(quantita) AS numero_prodotti
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+              console.log(query);
+
+              connection.query(query, (err, result) => {
+                if (err) reject(err);
+                resolve({ result: result, periodo: periodo });
+              });
+            });
+
+            promises.push(promise);
+          }
+
+          Promise.all(promises)
+            .then((results) => {
+              ris = results.map(({ result, periodo }) => {
+                const numero_prodotti =
+                  result.length > 0 && result[0].numero_prodotti
+                    ? result[0].numero_prodotti
+                    : 0;
+                return { numero_prodotti: numero_prodotti, periodo: periodo };
+              });
+
+              res.send(ris);
+              res.end();
+            })
+            .catch((err) => {
+              console.error(err);
+              res.send("Errore nel recupero dei dati");
+              res.end();
+            });
+
+          break;
+        case "3M":
+          const twoWeeks = 1000 * 60 * 60 * 24 * 7 * 2;
+
+          for (let i = 6; i >= 0; i--) {
+            const currentDate = new Date();
+            const endDate = new Date(currentDate.getTime() - i * twoWeeks);
+            const startDate = new Date(endDate.getTime() - twoWeeks);
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
+
+            const promise = new Promise((resolve, reject) => {
+              const query = `
+                  SELECT SUM(quantita) AS numero_prodotti
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+              connection.query(query, (err, result) => {
+                if (err) reject(err);
+                resolve({ result: result, periodo: periodo });
+              });
+            });
+
+            promises.push(promise);
+          }
+
+          Promise.all(promises)
+            .then((results) => {
+              ris = results.map(({ result, periodo }) => {
+                const numero_prodotti =
+                  result.length > 0 && result[0].numero_prodotti
+                    ? result[0].numero_prodotti
+                    : 0;
+                return { numero_prodotti: numero_prodotti, periodo: periodo };
+              });
+              res.send(ris);
+              res.end();
+            })
+            .catch((err) => {
+              console.error(err);
+              res.send("Errore nel recupero dei dati");
+              res.end();
+            });
+
+          break;
+        case "6M":
+          const threeWeeks = 1000 * 60 * 60 * 24 * 7 * 3;
+
+          for (let i = 8; i >= 0; i--) {
+            const currentDate = new Date();
+            const endDate = new Date(currentDate.getTime() - i * threeWeeks); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
+            const startDate = new Date(endDate.getTime() - threeWeeks); // 3 settimane prima della data di fine
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
+
+            const promise = new Promise((resolve, reject) => {
+              const query = `
+                  SELECT SUM(quantita) AS numero_prodotti
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+              connection.query(query, (err, result) => {
+                if (err) reject(err);
+                resolve({ result: result, periodo: periodo }); // Risultato della query e periodo corrente
+              });
+            });
+
+            promises.push(promise);
+          }
+
+          Promise.all(promises)
+            .then((results) => {
+              ris = results.map(({ result, periodo }) => {
+                const numero_prodotti =
+                  result.length > 0 && result[0].numero_prodotti
+                    ? result[0].numero_prodotti
+                    : 0;
+                return { numero_prodotti: numero_prodotti, periodo: periodo };
+              });
+              res.send(ris);
+              res.end();
+            })
+            .catch((err) => {
+              console.error(err);
+              res.send("Errore nel recupero dei dati");
+              res.end();
+            });
+
+          break;
+        case "1A":
+          query = `
+            SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL t.n MONTH), '%m/%y') AS periodo,
+                   COALESCE(SUM(po.quantita), 0) AS numero_prodotti
+            FROM (SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11) AS t
+            LEFT JOIN ordini o ON YEAR(o.data) = YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND MONTH(o.data) = MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND o.id_mensa = ${id_mensa}
+            LEFT JOIN prodotti_ordini po ON o.id = po.id_ordine
+            AND o.stato_ordine = 'completato'
+            GROUP BY YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)), MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH))
+            ORDER BY YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)), MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH));
+          `;
+
+          connection.query(query, (err, result) => {
+            if (err) throw new Error(err);
+
+            if (result.length > 0) {
+              res.send(result);
+            } else {
+              res.send("Non sono presenti dati");
+            }
+            res.end();
+          });
+          break;
+        default:
+          res.send("Periodo non valido");
+          res.end();
+          break;
+      }
     }
   });
 });

@@ -342,3 +342,30 @@ export async function getTopProdotti(token: string, periodo: string) {
 
   return response;
 }
+
+export async function getStatMensa(token: string, periodo: string) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/get/stats`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      periodo: periodo.toString(),
+    }),
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}
