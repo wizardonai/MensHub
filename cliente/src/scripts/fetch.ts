@@ -64,7 +64,6 @@ export async function registerUser(dati: dataReg) {
 		.request(config)
 		.then((res) => {
 			response = res.data;
-			console.log("Risposta " + response);
 		})
 		.catch((err) => {
 			console.log(err);
@@ -259,14 +258,14 @@ export async function getOrders(token: string) {
 	return response;
 }
 
-//
+//ok
 export async function registerMensa(data: dataMensa) {
 	let response;
 
 	let config = {
 		method: "post",
 		maxBodyLength: Infinity,
-		url: `${url}/register/mensa`,
+		url: `${url}/insert/mensa`,
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -311,7 +310,7 @@ export async function sendEmail(email: string) {
 	return response;
 }
 
-//
+//ok
 export async function changePassword(
 	token: string,
 	oldpwd: Nullable<string>,

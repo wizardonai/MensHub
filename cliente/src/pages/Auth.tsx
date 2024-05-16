@@ -13,7 +13,7 @@ import {
 	registerUser,
 	sendEmail,
 } from "../scripts/fetch";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "../components/shadcn/Label";
 import { Input } from "../components/shadcn/Input";
 import {
 	Select,
@@ -24,6 +24,8 @@ import {
 } from "../components/shadcn/Select";
 import { Toaster } from "../components/shadcn/Sonner";
 import { toast } from "sonner";
+
+import logopiccolo from "../img/logoPiccolo.png";
 
 //
 //
@@ -40,8 +42,6 @@ const Login = ({
 	const navigate = useNavigate();
 	const [pwdDimenticata, setPwdDimenticata] = useState(false);
 
-	const [error, setError] = useState("");
-
 	const [data, setData] = useState({
 		email: "",
 		password: "",
@@ -49,27 +49,30 @@ const Login = ({
 
 	const div = useRef(null);
 	const div2 = useRef(null);
+	const imgAngolo = useRef(null);
 
 	const submitLoginCliccato = () => {
-		setError("");
-
 		if (data.email === "" || data.password === "") {
-			setError("Compilare tutti i campi!");
+			toast.error("Compilare tutti i campi!");
 			return;
 		}
 
-		if (!error) {
-			loginUser(data).then((res: any) => {
-				if (typeof res === "string") {
-					setError(res);
-					return;
-				} else {
-					localStorage.setItem("token", res.token);
+		loginUser(data).then((res: any) => {
+			if (typeof res === "string") {
+				toast.error(res);
+				return;
+			} else {
+				localStorage.setItem("token", res.token);
+				console.log(res.cliente);
+
+				if (res.cliente + "" === "1") {
 					localStorage.setItem("cart", JSON.stringify([]));
-					setLoggato(true);
+					setLoggato("cliente");
+				} else {
+					setLoggato("produttore");
 				}
-			});
-		}
+			}
+		});
 	};
 
 	useEffect(() => {
@@ -77,87 +80,102 @@ const Login = ({
 	}, []);
 
 	return (
-		<div className='flex flex-col justify-center items-center h-full' ref={div}>
-			{pwdDimenticata ? (
-				<PasswordDimenticata
-					setPwdDimenticata={setPwdDimenticata}
-					animazioniImmagini={animazioniImmagini}
-				/>
-			) : (
-				<div ref={div2}>
-					<div className='grid w-full items-center gap-4'>
-						<div className='flex flex-col space-y-1.5'>
-							<Label htmlFor='email' className='text-marrone font-bold'>
-								Email
-							</Label>
-							<Input
-								id='email'
-								type='email'
-								onChange={(e) => {
-									setData({ ...data, email: e.target.value });
-								}}
-								variant='inputMenshub'
-							/>
+		<>
+			<img
+				src={logopiccolo}
+				alt='SCU'
+				className='absolute scale-[0.13] top-3 right-3 translate-x-[43%] translate-y-[-43%] animate-showElement'
+				ref={imgAngolo}
+			/>
+			<div
+				className='flex flex-col justify-center items-center h-full animate-showElement'
+				ref={div}
+			>
+				{pwdDimenticata ? (
+					<PasswordDimenticata
+						setPwdDimenticata={setPwdDimenticata}
+						animazioniImmagini={animazioniImmagini}
+					/>
+				) : (
+					<div ref={div2}>
+						<div className='flex flex-col w-full'>
+							<div className='flex flex-col'>
+								{" "}
+								<Label htmlFor='email' className='text-marrone font-bold'>
+									Email
+								</Label>
+								<Input
+									id='email'
+									type='email'
+									onChange={(e) => {
+										setData({ ...data, email: e.target.value });
+									}}
+									variant='inputMenshub'
+								/>
+							</div>
+							<div className='flex flex-col'>
+								<Label htmlFor='password' className='text-marrone font-bold'>
+									Password
+								</Label>
+								<Input
+									id='password'
+									type='password'
+									onChange={(e) => {
+										setData({ ...data, password: e.target.value });
+									}}
+									variant='inputMenshub'
+								/>
+							</div>
+							<div className='flex flex-col mt-1'>
+								<p
+									className='text-marrone text-base underline'
+									onClick={() => {
+										//@ts-ignore
+										div2.current.classList.add("animate-hideFast");
+										animazioniImmagini(35, 0, window.innerHeight);
+										sleep(400).then(() => {
+											setPwdDimenticata(true);
+										});
+									}}
+								>
+									Password dimenticata?
+								</p>
+							</div>
 						</div>
-						<div className='flex flex-col space-y-1.5'>
-							<Label htmlFor='password' className='text-marrone font-bold'>
-								Password
-							</Label>
-							<Input
-								id='password'
-								type='password'
-								onChange={(e) => {
-									setData({ ...data, password: e.target.value });
-								}}
-								variant='inputMenshub'
-							/>
-						</div>
-						<div className='flex flex-col space-y-1.5'>
-							<p
-								className='text-marrone text-sm underline'
+						<div className='flex flex-row w-full mt-3'>
+							<Button
+								variant='indietro'
+								className='w-1/2 rounded-3xl mr-1'
 								onClick={() => {
+									animazioniImmagini(0, 15, window.innerHeight);
+
 									//@ts-ignore
-									div2.current.classList.add("animate-hideFast");
-									animazioniImmagini(35, 0, window.innerHeight);
-									sleep(400).then(() => {
-										setPwdDimenticata(true);
+									div.current.classList.remove("animate-showElement");
+									//@ts-ignore
+									div.current.classList.add("animate-hideElement");
+									//@ts-ignore
+									imgAngolo.current.classList.remove("animate-showElement");
+									//@ts-ignore
+									imgAngolo.current.classList.add("animate-hideElement");
+
+									sleep(900).then(() => {
+										setLogin("?");
 									});
 								}}
 							>
-								Password dimenticata?
-							</p>
-						</div>
-						<div className='flex flex-col space-y-1.5'>
-							<p className='text-red'>{error}</p>
+								Indietro
+							</Button>
+							<button
+								onClick={submitLoginCliccato}
+								className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl'
+							>
+								Accedi
+							</button>
 						</div>
 					</div>
-					<div className='flex flex-row w-full'>
-						<Button
-							variant='indietro'
-							className='w-1/2 rounded-3xl mr-1'
-							onClick={() => {
-								animazioniImmagini(0, 15, window.innerHeight);
-
-								//@ts-ignore
-								div.current.classList.add("animate-hideElement");
-
-								sleep(900).then(() => {
-									setLogin("?");
-								});
-							}}
-						>
-							Indietro
-						</Button>
-						<button
-							onClick={submitLoginCliccato}
-							className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl'
-						>
-							Accedi
-						</button>
-					</div>
-				</div>
-			)}
-		</div>
+				)}
+			</div>
+		</>
 	);
 };
 //
@@ -174,13 +192,15 @@ const PasswordDimenticata = ({
 
 	return (
 		<div className='flex flex-col w-full' ref={div}>
-			<Label htmlFor='email'>Email</Label>
+			<Label htmlFor='email' className='text-marrone font-bold mb-1'>
+				Email
+			</Label>
 			<Input
 				id='email'
 				variant='inputMenshub'
 				onChange={(e: any) => setEmail(e.target.value)}
 			></Input>
-			<div className='flex flex-row w-full mt-2'>
+			<div className='flex flex-row w-full'>
 				<Button
 					variant='indietro'
 					className='w-1/2 rounded-3xl mr-1'
@@ -195,7 +215,8 @@ const PasswordDimenticata = ({
 				>
 					Indietro
 				</Button>
-				<button
+				<Button
+					variant='avanti'
 					onClick={() => {
 						if (email === "") {
 							toast.error("Inserire un'email!");
@@ -209,10 +230,10 @@ const PasswordDimenticata = ({
 							else toast.error(res);
 						});
 					}}
-					className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl'
+					className='w-1/2 rounded-3xl'
 				>
 					Invia
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
@@ -224,34 +245,54 @@ const PasswordDimenticata = ({
 const Register = ({
 	animazioniImmagini,
 	setLogin,
+	id,
+	setId,
 }: {
 	animazioniImmagini: Function;
 	setLogin: Function;
+	id: number;
+	setId: Function;
 }) => {
 	const [utente, setUtente] = useState("?");
 	const div = useRef(null);
+	const imgAngolo = useRef(null);
 
 	return (
-		<div
-			className='flex flex-col justify-center items-center h-full animate-showElement'
-			ref={div}
-		>
-			{utente === "?" ? (
-				<SceltaUtente
-					setUtente={setUtente}
-					setLogin={setLogin}
-					animazioniImmagini={animazioniImmagini}
-				/>
-			) : utente === "cliente" ? (
-				<RegisterCliente
-					setLogin={setLogin}
-					setUtente={setUtente}
-					animazioniImmagini={animazioniImmagini}
-				/>
-			) : (
-				<RegisterMensa setUtente={setUtente} />
-			)}
-		</div>
+		<>
+			<img
+				src={logopiccolo}
+				alt='SCU'
+				className='absolute scale-[0.13] top-3 right-3 translate-x-[43%] translate-y-[-43%] animate-showElement'
+				ref={imgAngolo}
+			/>
+			<div
+				className='flex flex-col justify-center items-center h-full animate-showElement'
+				ref={div}
+			>
+				{utente === "?" ? (
+					<SceltaUtente
+						setUtente={setUtente}
+						setLogin={setLogin}
+						animazioniImmagini={animazioniImmagini}
+						imgAngolo={imgAngolo}
+					/>
+				) : utente === "cliente" ? (
+					<RegisterCliente
+						setLogin={setLogin}
+						setUtente={setUtente}
+						animazioniImmagini={animazioniImmagini}
+						id_mensa={id}
+					/>
+				) : (
+					<RegisterMensa
+						setUtente={setUtente}
+						setLogin={setLogin}
+						animazioniImmagini={animazioniImmagini}
+						setId={setId}
+					/>
+				)}
+			</div>
+		</>
 	);
 };
 //
@@ -325,7 +366,12 @@ const IndirizzoMensa = ({
 		if (data.regione === undefined) return;
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/province/" +
-				data.regione
+				data.regione,
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+				},
+			}
 		)
 			.then((res) => res.json())
 			.then((res) => {
@@ -336,7 +382,12 @@ const IndirizzoMensa = ({
 		if (data.provincia === undefined) return;
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/comuni/provincia/" +
-				data.provincia
+				data.provincia,
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+				},
+			}
 		)
 			.then((res) => res.json())
 			.then((res) => {
@@ -345,7 +396,11 @@ const IndirizzoMensa = ({
 	}, [data.provincia]);
 
 	if (regioni.length === 0) {
-		fetch("https://axqvoqvbfjpaamphztgd.functions.supabase.co/regioni")
+		fetch("https://axqvoqvbfjpaamphztgd.functions.supabase.co/regioni", {
+			headers: {
+				"Access-Control-Allow-Origin": "*",
+			},
+		})
 			.then((res) => res.json())
 			.then((res) => {
 				setRegioni(res);
@@ -483,12 +538,21 @@ const IndirizzoMensa = ({
 		</div>
 	);
 };
-const RegisterMensa = ({ setUtente }: { setUtente: Function }) => {
+const RegisterMensa = ({
+	setUtente,
+	animazioniImmagini,
+	setLogin,
+	setId,
+}: {
+	setUtente: Function;
+	animazioniImmagini: Function;
+	setLogin: Function;
+	setId: Function;
+}) => {
 	const [pagina, setPagina] = useState(0);
 
 	const div = useRef(null);
 
-	const [error, setError] = useState("");
 	const [data, setData] = useState({} as dataMensa);
 
 	const elementi = [
@@ -496,20 +560,22 @@ const RegisterMensa = ({ setUtente }: { setUtente: Function }) => {
 		<IndirizzoMensa data={data} setData={setData} />,
 	];
 
+	useEffect(() => {
+		animazioniImmagini(40, 0, window.innerHeight);
+	}, []);
+
 	return (
 		<div
 			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll w-[85%]'
 			ref={div}
 		>
 			{elementi[pagina]}
-			<div className='flex flex-col'>
-				<p className='text-red-500'>{error}</p>
-			</div>
 			<div className='flex flex-row items-center justify-center w-full mt-2'>
 				<Button
 					variant='indietro'
 					onClick={() => {
 						if (pagina === 0) {
+							animazioniImmagini(35, 0, window.innerHeight);
 							//@ts-ignore
 							div.current.classList.remove("animate-showElement");
 							//@ts-ignore
@@ -538,10 +604,9 @@ const RegisterMensa = ({ setUtente }: { setUtente: Function }) => {
 								data.telefono === undefined ||
 								data.telefono === ""
 							) {
-								setError("Compilare tutti i campi!");
+								toast.error("Compilare tutti i campi!");
 								return;
 							}
-							setError("");
 							setPagina(1);
 						} else if (pagina === 1) {
 							if (
@@ -555,15 +620,16 @@ const RegisterMensa = ({ setUtente }: { setUtente: Function }) => {
 								data.comune === "" ||
 								data.indirizzo === ""
 							) {
-								setError("Compilare tutti i campi!");
+								toast.error("Compilare tutti i campi!");
 								return;
 							} else {
-								setError("");
 								registerMensa(data).then((res) => {
 									if (typeof res === "string") {
-										setError(res);
+										toast.error(res);
 									} else {
-										console.log(res);
+										setId(res);
+										setLogin(0);
+										setUtente("cliente");
 									}
 								});
 							}
@@ -582,10 +648,12 @@ const RegisterCliente = ({
 	setUtente,
 	animazioniImmagini,
 	setLogin,
+	id_mensa,
 }: {
 	setUtente: Function;
 	animazioniImmagini: Function;
 	setLogin: Function;
+	id_mensa: number;
 }) => {
 	const navigate = useNavigate();
 
@@ -597,8 +665,8 @@ const RegisterCliente = ({
 		email: "",
 		password: "",
 		confirm_password: "",
-		id_mensa: -1,
-		cliente: false,
+		id_mensa: id_mensa,
+		cliente: id_mensa === -1,
 	} as dataReg);
 
 	const [mense, setMense] = useState([] as Array<mensa>);
@@ -607,15 +675,27 @@ const RegisterCliente = ({
 	if (mense.length === 0) {
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
 		getMense().then((res: any) => {
-			setMense(res);
+			if (res === "nessuna mensa trovata") {
+				setMense([
+					{
+						id: -1,
+						indirizzo: "richiesto",
+						nome: "richiesto",
+					},
+				]);
+				toast.info("Nessuna mensa registrata\nReinderizzamento alla home...");
+
+				sleep(1500).then(() => {
+					animazioniImmagini(0, 15, window.innerHeight);
+					setLogin("?");
+				});
+			} else setMense(res);
 		});
 
 		return <p>CARICAMENTO</p>;
 	}
 
 	const submitRegisterCliccato = () => {
-		setError("");
-
 		if (
 			data.email === "" ||
 			data.nome === "" ||
@@ -624,28 +704,31 @@ const RegisterCliente = ({
 			data.confirm_password === "" ||
 			data.id_mensa === -1
 		) {
-			setError("Compilare tutti i campi!");
+			toast.error("Compilare tutti i campi!");
 			return;
 		}
 
 		if (data.password !== data.confirm_password) {
-			setError("Password e conferma password devono corrispondere!");
+			toast.error("Password e conferma password devono corrispondere!");
 			return;
 		}
 
 		registerUser(data).then((res) => {
 			if (res !== "Registrazione avvenuta con successo") {
-				setError(res + "");
+				toast.error(res + "");
 			} else {
-				animazioniImmagini(0, 15, window.innerHeight);
+				toast.info(res + "\nReinderizzamento al login...");
 
-				//@ts-ignore
-				div.current.classList.remove("animate-showElement");
-				//@ts-ignore
-				div.current.classList.add("animate-hideElement");
+				sleep(1000).then(() => {
+					animazioniImmagini(45, 5, window.innerHeight);
 
-				sleep(900).then(() => {
-					setLogin("?");
+					//@ts-ignore
+					div.current.classList.remove("animate-showElement");
+					//@ts-ignore
+					div.current.classList.add("animate-hideElement");
+					sleep(1500).then(() => {
+						setLogin("1");
+					});
 				});
 			}
 		});
@@ -725,56 +808,58 @@ const RegisterCliente = ({
 						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
 					/>
 				</div>
-				<div className='flex flex-col'>
-					<Label
-						htmlFor='selectMensa'
-						className='text-marrone font-bold mb-0.5'
-					>
-						Mensa preferita
-					</Label>
-					<Select
-						onValueChange={(e: any) => {
-							console.log(e);
-							setData({ ...data, id_mensa: e });
-						}}
-					>
-						<SelectTrigger
-							className='w-full m-0 bg-biancoLatte text-marrone rounded-3xl shadow-lg border-0'
-							id='selectMensa'
+				{id_mensa !== -1 ? (
+					""
+				) : (
+					<div className='flex flex-col'>
+						<Label
+							htmlFor='selectMensa'
+							className='text-marrone font-bold mb-0.5'
 						>
-							<SelectValue placeholder=''></SelectValue>
-						</SelectTrigger>
-						<SelectContent
-							ref={(ref) => {
-								if (!ref) return;
-								ref.ontouchstart = (e) => {
-									e.preventDefault();
-								};
+							Mensa preferita
+						</Label>
+						<Select
+							onValueChange={(e: any) => {
+								console.log(e);
+								setData({ ...data, id_mensa: e });
 							}}
-							className='bg-biancoLatte border-0 rounded-2xl hadow-lg'
 						>
-							{mense.map((item) => {
-								return (
-									<SelectItem
-										value={item.id + ""}
-										key={item.id}
-										className='text-marrone'
-									>
-										{item.nome}
-									</SelectItem>
-								);
-							})}
-						</SelectContent>
-					</Select>
-				</div>
-				<div className='flex flex-col'>
-					<p className='text-red-500'>{error}</p>
-				</div>
+							<SelectTrigger
+								className='w-full m-0 bg-biancoLatte text-marrone rounded-3xl shadow-lg border-0'
+								id='selectMensa'
+							>
+								<SelectValue placeholder=''></SelectValue>
+							</SelectTrigger>
+							<SelectContent
+								ref={(ref) => {
+									if (!ref) return;
+									ref.ontouchstart = (e) => {
+										e.preventDefault();
+									};
+								}}
+								className='bg-biancoLatte border-0 rounded-2xl hadow-lg'
+							>
+								{mense.map((item) => {
+									return (
+										<SelectItem
+											value={item.id + ""}
+											key={item.id}
+											className='text-marrone'
+										>
+											{item.nome}
+										</SelectItem>
+									);
+								})}
+							</SelectContent>
+						</Select>
+					</div>
+				)}
 			</div>
-			<div className='flex flex-row items-center justify-center w-full'>
-				<button
+			<div className='flex flex-row items-center justify-center w-full mt-3'>
+				<Button
+					variant='indietro'
 					onClick={() => {
-						animazioniImmagini(45, 5, window.innerHeight);
+						animazioniImmagini(35, 0, window.innerHeight);
 
 						//@ts-ignore
 						div.current.classList.remove("animate-showElement");
@@ -785,16 +870,17 @@ const RegisterCliente = ({
 							setUtente("?");
 						});
 					}}
-					className='w-1/2 bg-biancoLatte p-2 text-marrone border border-marrone rounded-3xl mt-1 mr-1'
+					className='w-1/2 rounded-3xl mt-1 mr-1'
 				>
 					Indietro
-				</button>
-				<button
+				</Button>
+				<Button
+					variant='avanti'
 					onClick={submitRegisterCliccato}
-					className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl mt-1'
+					className='w-1/2 rounded-3xl mt-1'
 				>
 					Registrati
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
@@ -807,15 +893,17 @@ const SceltaUtente = ({
 	setUtente,
 	setLogin,
 	animazioniImmagini,
+	imgAngolo,
 }: {
 	setUtente: Function;
 	setLogin: Function;
 	animazioniImmagini: Function;
+	imgAngolo: any;
 }) => {
 	const div = useRef(null);
 
 	useEffect(() => {
-		animazioniImmagini(45, 5, window.innerHeight);
+		animazioniImmagini(35, 0, window.innerHeight);
 	}, []);
 
 	return (
@@ -845,6 +933,7 @@ const SceltaUtente = ({
 				variant='avanti'
 				className='w-full rounded-3xl py-[22px] text-lg mt-2'
 				onClick={() => {
+					animazioniImmagini(40, 0, window.innerHeight);
 					//@ts-ignore
 					div.current.classList.remove("animate-showElement");
 					//@ts-ignore
@@ -867,6 +956,10 @@ const SceltaUtente = ({
 					div.current.classList.remove("animate-showElement");
 					//@ts-ignore
 					div.current.classList.add("animate-hideElement");
+					//@ts-ignore
+					imgAngolo.current.classList.remove("animate-showElement");
+					//@ts-ignore
+					imgAngolo.current.classList.add("animate-hideElement");
 
 					sleep(900).then(() => {
 						setLogin("?");
@@ -885,6 +978,8 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 	const [images, setImages] = useState([useRef(null), useRef(null)]);
 	const divBenvenuto = useRef(null);
 	const divBottoni = useRef(null);
+
+	const [id, setId] = useState(-1);
 
 	const animazioniImmagini = (sopra: number, sotto: number, height: number) => {
 		const generaProporzioni = (
@@ -917,7 +1012,9 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 				className='flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement'
 				ref={divBenvenuto}
 			>
-				<p className='text-marrone text-5xl font-bold'>Benvenuto in Menshub</p>
+				<p className='text-marrone text-5xl font-bold tracking-tight'>
+					Benvenuto in Menshub
+				</p>
 				<p className='text-marrone text-xl w-full'>
 					Il tuo amico per la tua mensa
 				</p>
@@ -949,7 +1046,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					variant='indietro'
 					className='p-[26px] text-lg w-[90%] rounded-[30px]'
 					onClick={() => {
-						animazioniImmagini(45, 5, window.innerHeight);
+						animazioniImmagini(35, 0, window.innerHeight);
 						//@ts-ignore
 						divBenvenuto.current.classList.add("mt-[-45svh]");
 						//@ts-ignore
@@ -989,6 +1086,8 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					<Register
 						animazioniImmagini={animazioniImmagini}
 						setLogin={setLogin}
+						id={id}
+						setId={setId}
 					/>
 				)}
 			</div>

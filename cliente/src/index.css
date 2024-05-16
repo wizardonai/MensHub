@@ -57,6 +57,7 @@
 			brightness(107%) contrast(104%);
 	}
 
+	/* *DARK MODE*
 	.dark {
 		--background: 224 71% 4%;
 		--foreground: 213 31% 91%;
@@ -93,6 +94,7 @@
 		--navbarH: 10%;
 		--containerH: calc(100% - var(--topbarH) - var(--navbarH));
 	}
+	*/
 }
 
 @layer base {
@@ -128,7 +130,7 @@
 }
 
 body {
-	font-family: "ArialRounded", sans-serif;
+	font-family: "Rubik", sans-serif;
 }
 
 #root {

@@ -17,13 +17,13 @@ import Auth from "./pages/Auth";
 import Pwdchange from "./pages/Pwdchange";
 
 function App() {
-	const [loggato, setLoggato] = useLocalStorage("loggato", false);
+	const [loggato, setLoggato] = useLocalStorage("loggato", "?");
 	const [username, setUsername] = useState("");
 	const [datiUtente, setDatiUtente] = useState({} as typeProfilo);
 	const [products, setProducts] = useState([] as Array<prodotto>);
 
 	let router;
-	if (loggato) {
+	if (loggato === "cliente") {
 		if (Object.keys(datiUtente).length === 0) {
 			setDatiUtente({
 				cognome: "",
@@ -103,6 +103,17 @@ function App() {
 					if (!params.token) return redirect("/home");
 					return params.token;
 				},
+			},
+			{
+				path: "*",
+				loader: () => redirect("/home"),
+			},
+		]);
+	} else if (loggato === "produttore") {
+		router = createBrowserRouter([
+			{
+				path: "/home",
+				element: <Homepage username={username} products={products} />,
 			},
 			{
 				path: "*",

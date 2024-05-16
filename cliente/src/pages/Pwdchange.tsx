@@ -68,7 +68,7 @@ const PasswordDimenticata = ({
 					changePassword(token, null, dati.pwd, dati.confpwd).then((res) => {
 						if (res !== "Password cambiata con successo") toast.error(res);
 						else {
-							toast.info(res);
+							toast.info(res + "\nReinderizzamento al login...");
 							sleep(2500).then(() => navigate("/auth"));
 						}
 					});
@@ -163,7 +163,7 @@ const CambiaPassword = ({
 	);
 };
 
-const Pwdchange = ({ loggato }: { loggato: boolean }) => {
+const Pwdchange = ({ loggato }: { loggato: string }) => {
 	const token: any = useLoaderData();
 
 	const [images, setImages] = useState([useRef(null), useRef(null)]);

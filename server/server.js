@@ -110,7 +110,7 @@ server.post("/request/products", (req, res) => {
 });
 
 server.post("/request/mense", (req, res) => {
-	let query = `SELECT * FROM mense;`;
+	let query = `SELECT * FROM mense WHERE verificato=1;`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		if (result.length > 0) {
@@ -153,6 +153,8 @@ server.post("/insert/mensa", (req, res) => {
 		req.body;
 
 	const query = `INSERT INTO mense (nome, indirizzo, regione, provincia, comune, cap, email, telefono) VALUES ('${nome}', '${indirizzo}', '${regione}', '${provincia}', '${comune}', ${cap}, '${email}', '${telefono}')`;
+
+	console.log(query);
 
 	// Esegui la query
 	connection.query(query, (error, result) => {
@@ -295,30 +297,33 @@ server.post("/register/user", async function (req, res) {
 	}
 	//controllo che la mail non sia già presente NON FUNZIONA NON CONCATENA EMAIL
 	let query = `SELECT * FROM utenti WHERE email="${email}";`;
-	connection.query(query, (err, result) => {
+	connection.query(query, async (err, result) => {
 		if (err) throw new Error(err);
 		if (result.length > 0) {
 			res.send("email già presente");
-			res.end;
+			res.end();
+			return;
+		}
+
+		const { valid, reason, validators } = await validate(email);
+		let queryInsertUser;
+		if (valid) {
+			queryInsertUser = `INSERT INTO UTENTI (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${
+				cliente ? 1 : 0
+			});`;
+			console.log(queryInsertUser);
+			connection.query(queryInsertUser, (err, result) => {
+				if (err) throw new Error(err);
+				if (result) {
+					res.send("Registrazione avvenuta con successo");
+					res.end();
+				}
+			});
+		} else {
+			res.send("Email non valida!");
+			res.end();
 		}
 	});
-
-	const { valid, reason, validators } = await validate(email);
-	let queryInsertUser;
-	if (valid) {
-		queryInsertUser = `INSERT INTO UTENTI (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${cliente});`;
-		console.log("caca" + queryInsertUser);
-		connection.query(queryInsertUser, (err, result) => {
-			if (err) throw new Error(err);
-			if (result) {
-				res.send("Registrazione avvenuta con successo");
-				res.end;
-			}
-		});
-	} else {
-		res.send("Email non valida!");
-		res.end();
-	}
 });
 
 server.post("/login/user", async function (req, res) {
@@ -347,7 +352,7 @@ server.post("/login/user", async function (req, res) {
 					{ expiresIn: "1h" }
 				);
 
-				res.json({ token: token });
+				res.json({ token: token, cliente: result[0].cliente });
 
 				res.send();
 				res.end();

@@ -15,7 +15,7 @@ const inputVariants = cva(
 		variants: {
 			variant: {
 				inputMenshub:
-					"bg-biancoLatte rounded-3xl border-0 shadow-lg text-marrone",
+					"bg-biancoLatte rounded-3xl border-0 shadow-lg text-marrone mb-2",
 			},
 		},
 	}
