@@ -1,6 +1,12 @@
 import axios from "axios";
 import { sha256 } from "js-sha256";
-import { dataLog, dataMensa, dataReg, prodottoCarrello } from "../utils";
+import {
+	Nullable,
+	dataLog,
+	dataMensa,
+	dataReg,
+	prodottoCarrello,
+} from "../utils";
 
 const url = process.env.REACT_APP_URL || "";
 
@@ -253,6 +259,7 @@ export async function getOrders(token: string) {
 	return response;
 }
 
+//
 export async function registerMensa(data: dataMensa) {
 	let response;
 
@@ -262,6 +269,79 @@ export async function registerMensa(data: dataMensa) {
 		url: `${url}/register/mensa`,
 		headers: {
 			"Content-Type": "application/json",
+		},
+		data: JSON.stringify(data),
+	};
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}
+
+//ok
+export async function sendEmail(email: string) {
+	let response;
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/recover/password`,
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data: JSON.stringify({ email: email }),
+	};
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}
+
+//
+export async function changePassword(
+	token: string,
+	oldpwd: Nullable<string>,
+	pwd: string,
+	confpwd: string
+) {
+	let response;
+
+	let data;
+	if (oldpwd === null) {
+		data = {
+			old_psw: null,
+			new_psw: sha256.create().update(pwd).hex(),
+			confirm_new_psw: sha256.create().update(confpwd).hex(),
+		};
+	} else {
+		data = {
+			old_psw: sha256.create().update(oldpwd).hex(),
+			new_psw: sha256.create().update(pwd).hex(),
+			confirm_new_psw: sha256.create().update(confpwd).hex(),
+		};
+	}
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/change/password`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + token,
 		},
 		data: JSON.stringify(data),
 	};

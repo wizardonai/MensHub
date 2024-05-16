@@ -41,14 +41,16 @@ const Popup = ({
 						<p className='w-full text-center text-xl'>
 							Sicuro di voler disconnettere l'account?
 						</p>
-						<div className='flex flex-row justify-around items-center w-full'>
+						<div className='flex flex-row justify-around items-center w-3/4'>
 							<Button
 								onClick={() => setTipoPopup("")}
-								className='bg-arancioneScuro text-marrone rounded-xl'
+								className='rounded-xl'
+								variant='indietro'
 							>
 								Annulla
 							</Button>
 							<Button
+								variant='avanti'
 								onClick={() => {
 									setTipoPopup("");
 									localStorage.removeItem("cart");
@@ -57,7 +59,7 @@ const Popup = ({
 									setDatiUtente({});
 									setProducts([]);
 								}}
-								className='bg-arancioneScuro text-marrone rounded-xl'
+								className='rounded-xl'
 							>
 								Disconnetti
 							</Button>
@@ -185,6 +187,7 @@ const MensaPreferita = ({
 	);
 };
 const InfoUtente = ({ datiUtente }: { datiUtente: typeProfilo }) => {
+	const navigate = useNavigate();
 	return (
 		<>
 			<div className='flex flex-col items-start justify-center w-full mb-4'>
@@ -218,7 +221,14 @@ const InfoUtente = ({ datiUtente }: { datiUtente: typeProfilo }) => {
 				/>
 			</div>
 			<div className='flex flex-col items-start justify-center w-full mb-4'>
-				<p className='underline text-lg'>Cambia password</p>
+				<p
+					className='underline text-lg'
+					onClick={() =>
+						navigate("/changepwd/" + localStorage.getItem("token") || "")
+					}
+				>
+					Cambia password
+				</p>
 			</div>
 		</>
 	);

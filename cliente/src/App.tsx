@@ -2,9 +2,7 @@ import {
 	RouterProvider,
 	createBrowserRouter,
 	redirect,
-	useNavigate,
 } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
 // import RegisterPage from "./pages/RegisterPage";
 import Homepage from "./pages/Homepage";
 import Cart from "./pages/Cart";
@@ -16,6 +14,7 @@ import { prodotto, typeProfilo } from "./utils";
 import Product from "./pages/Product";
 import { useState } from "react";
 import Auth from "./pages/Auth";
+import Pwdchange from "./pages/Pwdchange";
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", false);
@@ -83,13 +82,7 @@ function App() {
 			},
 			{
 				path: "/profile/:page",
-				element: (
-					<ProfilePages
-						datiUtente={datiUtente}
-						products={products}
-						setLoggato={setLoggato}
-					/>
-				),
+				element: <ProfilePages products={products} setLoggato={setLoggato} />,
 			},
 			{
 				path: "/product/:id",
@@ -101,6 +94,14 @@ function App() {
 
 					if (tmp.length === 0) return redirect("/home");
 					return tmp[0];
+				},
+			},
+			{
+				path: "/changepwd/:token",
+				element: <Pwdchange loggato={loggato} />,
+				loader: ({ params }) => {
+					if (!params.token) return redirect("/home");
+					return params.token;
 				},
 			},
 			{
@@ -117,12 +118,16 @@ function App() {
 
 		router = createBrowserRouter([
 			{
-				path: "/",
-				loader: () => redirect("/auth"),
-			},
-			{
 				path: "/auth",
 				element: <Auth setLoggato={setLoggato} />,
+			},
+			{
+				path: "/changepwd/:token",
+				element: <Pwdchange loggato={loggato} />,
+				loader: ({ params }) => {
+					if (!params.token) return redirect("/home");
+					return params.token;
+				},
 			},
 			{
 				path: "*",

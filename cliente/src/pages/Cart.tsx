@@ -8,6 +8,15 @@ import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useNavigate } from "react-router-dom";
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTrigger,
+} from "../components/shadcn/Drawer";
+import { Button } from "../components/shadcn/Button";
 
 const Elemento = ({
 	item,
@@ -258,29 +267,53 @@ const Cart = ({ setLoggato }: { setLoggato: Function }) => {
 					<div className='text-xl text-marrone'>
 						Totale: {totale.toFixed(2)}€
 					</div>
-					<div
-						className='bg-[#5c8c46] p-[6px] px-6 rounded-3xl text-background text-xl'
-						onClick={() => {
-							if (carrello.length === 0) {
-								toast.error("Il carrello è vuoto");
-								return;
-							}
-							sendOrder(carrello, localStorage.getItem("token") || "scu").then(
-								(res: any) => {
-									if (res === "Token non valido") {
-										setLoggato(false);
-										return;
-									}
-									if (res.toString() === "Ordine aggiunto") {
-										localStorage.setItem("cart", "[]");
-										setCarrello([]);
-									}
+					<Drawer>
+						<DrawerTrigger
+							className='bg-[#5c8c46] p-[6px] px-6 rounded-3xl text-background text-xl'
+							onClick={() => {
+								if (carrello.length === 0) {
+									toast.error("Il carrello è vuoto");
+									return;
 								}
-							);
-						}}
-					>
-						Ordina
-					</div>
+							}}
+						>
+							Ordina
+						</DrawerTrigger>
+						<DrawerContent>
+							<div className='w-full flex flex-col items-center justify-evenly h-40'>
+								<p className='text-xl'>Sicuro di voler ordinare?</p>
+								<p className='text-lg mt-1'>Totale: {totale}€</p>
+								<div className='flex flex-row items-center justify-evenly w-full mt-2'>
+									<DrawerClose>
+										<Button variant='indietro' className='rounded-2xl'>
+											Annulla
+										</Button>
+									</DrawerClose>
+									<DrawerClose
+										onClick={() => {
+											sendOrder(
+												carrello,
+												localStorage.getItem("token") || "scu"
+											).then((res: any) => {
+												if (res === "Token non valido") {
+													setLoggato(false);
+													return;
+												}
+												if (res.toString() === "Ordine aggiunto") {
+													localStorage.setItem("cart", "[]");
+													setCarrello([]);
+												}
+											});
+										}}
+									>
+										<Button variant='avanti' className='rounded-2xl'>
+											Conferma
+										</Button>
+									</DrawerClose>
+								</div>
+							</div>
+						</DrawerContent>
+					</Drawer>
 				</div>
 				<Toaster position='top-center' richColors />
 			</Container>

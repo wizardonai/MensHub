@@ -29,7 +29,7 @@ const CronologiaAcquistiPage = ({
 				setLoggato(false);
 				return;
 			}
-			setCronologia(res);
+			setCronologia(res.filter((item: any) => item.stato_ordine !== "attivo"));
 		});
 
 		return (
@@ -48,8 +48,6 @@ const CronologiaAcquistiPage = ({
 
 	const generaRighe = () => {
 		return cronologia.map((item: ordine, index: number) => {
-			if (item.stato_ordine === "attivo") return <div key={index}></div>;
-
 			return (
 				<SectionToggleItem
 					key={index}
@@ -103,14 +101,16 @@ const CronologiaAcquistiPage = ({
 		});
 	};
 
+	console.log(cronologia);
+
 	return (
 		<>
 			<Topbar name='' page='Cronologia' />
 			<Container>
 				<div className='w-full flex flex-col items-center justify-center'>
 					<SectionToggle type='single' collapsible className='w-3/4'>
-						{typeof cronologia === "string" ? (
-							<p>NESSUN ORDINE!</p>
+						{typeof cronologia === "string" || cronologia.length === 0 ? (
+							<p>NESSUN ORDINE COMPLETATO!</p>
 						) : (
 							generaRighe()
 						)}
@@ -123,11 +123,9 @@ const CronologiaAcquistiPage = ({
 };
 
 const ProfilePages = ({
-	datiUtente,
 	products,
 	setLoggato,
 }: {
-	datiUtente: typeProfilo;
 	products: Array<prodotto>;
 	setLoggato: Function;
 }) => {

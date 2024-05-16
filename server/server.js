@@ -1,35 +1,3 @@
-//processi da far partire
-import { execFile } from "child_process";
-
-const fileMysql = execFile("mysql.bat", [], (err, data) => {
-	if (err) {
-		console.log(err);
-	}
-});
-setTimeout(() => {
-	connetti();
-}, 2500);
-
-let fileApache;
-let fileShell;
-process.argv.forEach((item) => {
-	if (item === "apache") {
-		fileApache = execFile("apache.bat", [], (err, data) => {
-			if (err) {
-				console.log(err);
-			}
-		});
-	} else if (item === "shell") {
-		fileShell = execFile("shell.bat", [], (err, data) => {
-			if (err) {
-				console.log(err);
-			}
-		});
-	}
-});
-
-let connection = "";
-
 import { createConnection } from "mysql";
 import express from "express";
 import multer from "multer";
@@ -39,12 +7,16 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
+import sharp from "sharp";
+import nodemailer from "nodemailer";
+sharp.cache({ files: 0 });
+
+let connection = "";
 
 const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
 
-// Configura multer per salvare i file caricati nella cartella 'images'
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, "../server/image/products");
@@ -52,7 +24,8 @@ const storage = multer.diskStorage({
 	filename: function (req, file, cb) {
 		const nome = req.body.nome;
 		const prezzo = req.body.prezzo;
-		cb(null, nome + "_" + prezzo + path.extname(file.originalname));
+		const filename = nome + "_" + prezzo + path.extname(file.originalname);
+		cb(null, filename);
 	},
 });
 
@@ -62,13 +35,21 @@ const storage2 = multer.diskStorage({
 	},
 	filename: function (req, file, cb) {
 		const id = req.body.id;
-		cb(null, id + path.extname(file.originalname));
+		const filename = id + path.extname(file.originalname);
+		cb(null, filename);
 	},
 });
 
 const upload = multer({ storage: storage });
-
 const upload2 = multer({ storage: storage2 });
+
+const transporter = nodemailer.createTransport({
+	service: "hotmail",
+	auth: {
+		user: "menshub@outlook.it",
+		pass: "lucaching69#[!",
+	},
+});
 
 function connetti() {
 	connection = createConnection({
@@ -84,6 +65,7 @@ function connetti() {
 		});
 	});
 }
+connetti();
 
 server.use(cors());
 server.use(json());
@@ -141,6 +123,48 @@ server.post("/request/mense", (req, res) => {
 	});
 });
 
+server.post("/request/mensa", (req, res) => {
+	let token = req.headers.authorization;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let id_mensa = decoded.id_mensa;
+			let query = `SELECT * FROM mense WHERE id=${id_mensa};`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				if (result.length > 0) {
+					res.send(result);
+				} else {
+					res.send("Mensa non trovata");
+				}
+				res.end();
+			});
+		}
+	});
+});
+
+server.post("/insert/mensa", (req, res) => {
+	const { nome, indirizzo, regione, provincia, comune, cap, email, telefono } =
+		req.body;
+
+	const query = `INSERT INTO mense (nome, indirizzo, regione, provincia, comune, cap, email, telefono) VALUES ('${nome}', '${indirizzo}', '${regione}', '${provincia}', '${comune}', ${cap}, '${email}', '${telefono}')`;
+
+	// Esegui la query
+	connection.query(query, (error, result) => {
+		if (error) {
+			console.error("Errore durante l'esecuzione della query:", error);
+			res.status(500).json("Internal server error");
+			return;
+		}
+		res.status(200).json(result.insertId);
+	});
+});
+
 server.post("/modify/mensa", (req, res) => {
 	let token = req.headers.authorization;
 	let id_mensa = req.body.id_mensa;
@@ -148,7 +172,6 @@ server.post("/modify/mensa", (req, res) => {
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
-			console.log(err);
 			res.send("Token non valido");
 			res.end();
 		} else {
@@ -215,7 +238,6 @@ server.post("/send/cart", (req, res) => {
 	res.header("Access-Control-Allow-Origin", "*");
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
-			console.log(err);
 			res.send("Token non valido");
 			res.end();
 		} else {
@@ -254,11 +276,7 @@ server.post("/register/user", async function (req, res) {
 		email,
 		password,
 		confirm_password,
-		is_produttore,
-		nome_mensa,
-		indirizzo_mensa,
-		email_mensa,
-		telefono_mensa,
+		cliente,
 		id_mensa,
 	} = req.body;
 	if (!email || !password) {
@@ -286,39 +304,17 @@ server.post("/register/user", async function (req, res) {
 	});
 
 	const { valid, reason, validators } = await validate(email);
-	let himcook;
+	let queryInsertUser;
 	if (valid) {
-		if (is_produttore === 1) {
-			var id_mensa_new = -1;
-			query = `insert into mense (nome,indirizzo,email,telefono) VALUES('${nome_mensa}','${indirizzo_mensa}','${email_mensa}',${telefono_mensa});`;
-			connection.query(query, (err, result) => {
-				if (err) throw new Error(err);
-				if (result) {
-					console.log(`inserimento della mensa ${nome_mensa} avvenuto`);
-					query = `SELECT * from mense where nome='${nome_mensa}' and indirizzo='${indirizzo_mensa}' and email='${email_mensa}' and telefono=${telefono_mensa};`;
-					connection.query(query, (err, result) => {
-						if (err) throw new Error(err);
-						console.log(result);
-						if (result.length > 0) {
-							id_mensa_new = result[0].id;
-							himcook = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}','${id_mensa_new}','${is_produttore}');`;
-							connection.query(himcook, (err, result) => {
-								if (err) throw new Error(err);
-								res.send("Registrazione avvenuta con successo");
-								res.end();
-							});
-						}
-					});
-				}
-			});
-		} else {
-			himcook = `INSERT INTO utenti (nome,cognome,email,password,cliente, id_mensa) VALUES('${nome}','${cognome}','${email}','${password}',${is_produttore}, ${id_mensa});`;
-			connection.query(himcook, (err, result) => {
-				if (err) throw new Error(err);
+		queryInsertUser = `INSERT INTO UTENTI (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${cliente});`;
+		console.log("caca" + queryInsertUser);
+		connection.query(queryInsertUser, (err, result) => {
+			if (err) throw new Error(err);
+			if (result) {
 				res.send("Registrazione avvenuta con successo");
-				res.end();
-			});
-		}
+				res.end;
+			}
+		});
 	} else {
 		res.send("Email non valida!");
 		res.end();
@@ -379,7 +375,6 @@ server.post("/request/profile", (req, res) => {
 	} else {
 		jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 			if (err) {
-				console.log(err);
 				res.send("Token non valido");
 				res.end();
 			} else {
@@ -387,6 +382,133 @@ server.post("/request/profile", (req, res) => {
 				res.end();
 			}
 		});
+	}
+});
+
+server.post("/recover/password", (req, res) => {
+	let email = req.body.email;
+
+	let query = `SELECT * FROM utenti WHERE email="${email}";`;
+
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+
+		if (result.length > 0) {
+			const token = jwt.sign(
+				{
+					id: result[0].id,
+					nome: result[0].nome,
+					cognome: result[0].cognome,
+					email: result[0].email,
+					id_mensa: result[0].id_mensa,
+				},
+				secretKey,
+				{ expiresIn: "1h" }
+			);
+
+			let link = "http://172.20.10.3:3000/changepwd/" + token;
+			transporter.sendMail(
+				{
+					from: "menshub@outlook.it",
+					to: email,
+					subject: "Cambio password",
+					text: "Ciao, ecco il link per cambiare la tua password: [link]",
+					html:
+						'<p>Ciao,</p><p>Ecco il <a href="' +
+						link +
+						'">link</a> per cambiare la tua password.</p>',
+				},
+				(error, info) => {
+					if (error) {
+						res.send("Errore durante l'invio dell'email");
+						res.end();
+						console.log("Errore durante l'invio dell'email:", error);
+					} else {
+						res.send("Email inviata con successo");
+						res.end();
+						console.log("Email inviata con successo:", info.response);
+					}
+				}
+			);
+		} else {
+			res.send("Email non trovata");
+			res.end();
+		}
+	});
+});
+
+server.post("/change/password", (req, res) => {
+	let token = req.headers.authorization;
+	let id_utente = null;
+	let old_psw = req.body.old_psw;
+	let new_psw = req.body.new_psw;
+	let confirm_new_psw = req.body.confirm_new_psw;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			console.log("Token non valido");
+			res.send("Token non valido");
+			res.end();
+			return;
+		} else {
+			id_utente = decoded.id;
+		}
+	});
+
+	if (old_psw != null) {
+		//cambio password
+		let query_check_old_psw;
+		query_check_old_psw = `select password from utenti where id=${id_utente};`;
+		connection.query(query_check_old_psw, (err, result) => {
+			if (err) {
+				res.send("Errore db");
+				res.end();
+				return;
+			}
+			if (result.length > 0) {
+				console.log("Vecchia password" + result[0].password);
+				if (result[0].password === old_psw && new_psw === confirm_new_psw) {
+					let query_set_new_password = `update utenti set password = ${new_psw} where id=${id_utente};`;
+					connection.query(query_set_new_password, (err, result) => {
+						if (err) {
+							res.send("Errore db");
+							res.end();
+							return;
+						}
+						if (result) {
+							res.send("Password cambiata con successo");
+							res.end();
+							return;
+						}
+					});
+				} else {
+					res.send("Le password non combaciano");
+					res.end();
+					return;
+				}
+			}
+		});
+	} else {
+		//resetta password
+		if (new_psw === confirm_new_psw) {
+			let query_reset_password = `update utenti set password =${new_psw} where id=${id_utente};`;
+			connection.query(query_reset_password, (err, result) => {
+				if (err) {
+					res.send("Errore db");
+					res.end();
+					return;
+				}
+				if (result) {
+					res.send("Password cambiata con successo");
+					res.end();
+					return;
+				}
+			});
+		} else {
+			res.send("Le password non combaciano");
+			res.end();
+			return;
+		}
 	}
 });
 
@@ -446,7 +568,7 @@ server.post("/producer/get/products", (req, res) => {
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
-			res.send("errore nel token");
+			res.send("Token non valido");
 			res.end();
 		} else {
 			id_mensa = decoded.id_mensa;
@@ -465,50 +587,516 @@ server.post("/producer/get/products", (req, res) => {
 	});
 });
 
+server.post("/producer/get/top10Products", (req, res) => {
+	let token = req.headers.authorization;
+	let periodo = req.body.periodo;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let id_mensa = decoded.id_mensa;
+			let query = `SELECT id_prodotto, p.nome, SUM(quantita) AS num_acquisti
+                  FROM prodotti_ordini AS po
+                  JOIN ordini AS o ON po.id_ordine = o.id
+                  JOIN prodotti AS p ON po.id_prodotto = p.id `;
+
+			switch (periodo) {
+				case "1G":
+					query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) = CURDATE()`;
+					break;
+				case "1S":
+					query += ` WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 WEEK`;
+					break;
+				case "1M":
+					query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 MONTH`;
+					break;
+				case "3M":
+					query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 3 MONTH`;
+					break;
+				case "6M":
+					query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 6 MONTH`;
+					break;
+				case "1A":
+					query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 YEAR`;
+					break;
+			}
+
+			query += ` GROUP BY id_prodotto
+                ORDER BY num_acquisti DESC
+                LIMIT 10`;
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				if (result.length > 0) {
+					res.send(result);
+				} else {
+					res.send("Non sono presenti prodotti");
+				}
+				res.end();
+			});
+		}
+	});
+});
+
+server.post("/producer/get/stats", (req, res) => {
+	let token = req.headers.authorization;
+	let periodo = req.body.periodo;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, async (err, decoded) => {
+		if (err) {
+			console.log(err);
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let id_mensa = decoded.id_mensa;
+			let query = "";
+			let ris = [];
+			let promises = [];
+			switch (periodo) {
+				case "1G":
+					query = `
+            SELECT DATE(data) AS periodo, SUM(quantita) AS vendite
+            FROM ordini
+            JOIN prodotti_ordini ON ordini.id = prodotti_ordini.id_ordine
+            WHERE id_mensa = ${id_mensa}
+              AND data = CURDATE()
+              AND stato_ordine = 'completato'
+            GROUP BY periodo
+            ORDER BY periodo;
+          `;
+
+					console.log(query);
+
+					connection.query(query, (err, result) => {
+						if (err) throw new Error(err);
+
+						if (result.length > 0) {
+							const formattedResult = result.map((row) => ({
+								periodo: new Date(row.periodo).toLocaleDateString("it-IT"),
+								vendite: row.vendite,
+							}));
+							console.log(formattedResult);
+							res.send(formattedResult);
+						} else {
+							res.send("Non sono presenti dati");
+						}
+						res.end();
+					});
+
+					break;
+				case "1S":
+					const oneDay = 1000 * 60 * 60 * 24;
+
+					for (let i = 6; i >= 0; i--) {
+						const currentDate = new Date();
+						const endDate = new Date(currentDate.getTime() - i * oneDay);
+						const periodo = `${endDate.toISOString().split("T")[0]}`;
+
+						const promise = new Promise((resolve, reject) => {
+							const query = `
+                  SELECT SUM(quantita) AS vendite
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) = '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+							connection.query(query, (err, result) => {
+								if (err) reject(err);
+								resolve({ result: result, periodo: periodo }); // Risultato della query e periodo corrente
+							});
+						});
+
+						promises.push(promise);
+					}
+
+					Promise.all(promises)
+						.then((results) => {
+							ris = results.map(({ result, periodo }) => {
+								const vendite =
+									result.length > 0 && result[0].vendite
+										? result[0].vendite
+										: 0;
+								return { vendite: vendite, periodo: periodo };
+							});
+
+							res.send(ris);
+							res.end();
+						})
+						.catch((err) => {
+							console.error(err);
+							res.send("Errore nel recupero dei dati");
+							res.end();
+						});
+
+					break;
+				case "1M":
+					const fourDays = 1000 * 60 * 60 * 24 * 4;
+
+					for (let i = 7; i >= 0; i--) {
+						const currentDate = new Date();
+						const endDate = new Date(currentDate.getTime() - i * fourDays);
+						const startDate = new Date(endDate.getTime() - fourDays);
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${
+							endDate.toISOString().split("T")[0]
+						}`;
+
+						const promise = new Promise((resolve, reject) => {
+							const query = `
+                  SELECT SUM(quantita) AS vendite
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+							console.log(query);
+
+							connection.query(query, (err, result) => {
+								if (err) reject(err);
+								resolve({ result: result, periodo: periodo });
+							});
+						});
+
+						promises.push(promise);
+					}
+
+					Promise.all(promises)
+						.then((results) => {
+							ris = results.map(({ result, periodo }) => {
+								const vendite =
+									result.length > 0 && result[0].vendite
+										? result[0].vendite
+										: 0;
+								return { vendite: vendite, periodo: periodo };
+							});
+
+							res.send(ris);
+							res.end();
+						})
+						.catch((err) => {
+							console.error(err);
+							res.send("Errore nel recupero dei dati");
+							res.end();
+						});
+
+					break;
+				case "3M":
+					const twoWeeks = 1000 * 60 * 60 * 24 * 7 * 2;
+
+					for (let i = 6; i >= 0; i--) {
+						const currentDate = new Date();
+						const endDate = new Date(currentDate.getTime() - i * twoWeeks);
+						const startDate = new Date(endDate.getTime() - twoWeeks);
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${
+							endDate.toISOString().split("T")[0]
+						}`;
+
+						const promise = new Promise((resolve, reject) => {
+							const query = `
+                  SELECT SUM(quantita) AS vendite
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+							connection.query(query, (err, result) => {
+								if (err) reject(err);
+								resolve({ result: result, periodo: periodo });
+							});
+						});
+
+						promises.push(promise);
+					}
+
+					Promise.all(promises)
+						.then((results) => {
+							ris = results.map(({ result, periodo }) => {
+								const vendite =
+									result.length > 0 && result[0].vendite
+										? result[0].vendite
+										: 0;
+								return { vendite: vendite, periodo: periodo };
+							});
+							res.send(ris);
+							res.end();
+						})
+						.catch((err) => {
+							console.error(err);
+							res.send("Errore nel recupero dei dati");
+							res.end();
+						});
+
+					break;
+				case "6M":
+					const threeWeeks = 1000 * 60 * 60 * 24 * 7 * 3;
+
+					for (let i = 8; i >= 0; i--) {
+						const currentDate = new Date();
+						const endDate = new Date(currentDate.getTime() - i * threeWeeks); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
+						const startDate = new Date(endDate.getTime() - threeWeeks); // 3 settimane prima della data di fine
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${
+							endDate.toISOString().split("T")[0]
+						}`;
+
+						const promise = new Promise((resolve, reject) => {
+							const query = `
+                  SELECT SUM(quantita) AS vendite
+                  FROM prodotti_ordini
+                  WHERE id_ordine IN (
+                    SELECT id
+                    FROM ordini
+                    WHERE id_mensa = ${id_mensa}
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
+                    AND stato_ordine = 'completato'
+                  )
+                `;
+
+							connection.query(query, (err, result) => {
+								if (err) reject(err);
+								resolve({ result: result, periodo: periodo }); // Risultato della query e periodo corrente
+							});
+						});
+
+						promises.push(promise);
+					}
+
+					Promise.all(promises)
+						.then((results) => {
+							ris = results.map(({ result, periodo }) => {
+								const vendite =
+									result.length > 0 && result[0].vendite
+										? result[0].vendite
+										: 0;
+								return { vendite: vendite, periodo: periodo };
+							});
+							res.send(ris);
+							res.end();
+						})
+						.catch((err) => {
+							console.error(err);
+							res.send("Errore nel recupero dei dati");
+							res.end();
+						});
+
+					break;
+				case "1A":
+					query = `
+            SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL t.n MONTH), '%m/%y') AS periodo,
+                   COALESCE(SUM(po.quantita), 0) AS vendite
+            FROM (SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11) AS t
+            LEFT JOIN ordini o ON YEAR(o.data) = YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND MONTH(o.data) = MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND o.id_mensa = ${id_mensa}
+            LEFT JOIN prodotti_ordini po ON o.id = po.id_ordine
+            AND o.stato_ordine = 'completato'
+            GROUP BY YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)), MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH))
+            ORDER BY YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)), MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH));
+          `;
+
+					connection.query(query, (err, result) => {
+						if (err) throw new Error(err);
+
+						if (result.length > 0) {
+							res.send(result);
+						} else {
+							res.send("Non sono presenti dati");
+						}
+						res.end();
+					});
+					break;
+				default:
+					res.send("Periodo non valido");
+					res.end();
+					break;
+			}
+		}
+	});
+});
+
 server.post("/producer/get/orders", (req, res) => {
 	let token = req.headers.authorization;
 	let id_utente = "";
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
-			res.send("errore nel token");
+			res.send("Token non valido");
 			res.end();
 		} else {
 			id_utente = decoded.id;
-			let query = `SELECT id_ordine,id_utente, stato_ordine, data, id_prodotto, quantita FROM ordini AS o
-								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
-								WHERE id_utente="${id_utente}"
-								ORDER BY o.data, po.id_ordine;`;
+
+			let query = `SELECT id as id_ordine, id_utente, stato_ordine, ora_consegna, pagato, num_prodotti, tot_prezzo  
+                  FROM ordini AS o
+                  JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
+                  JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
+                  WHERE id_mensa = ${id_utente}`;
 
 			connection.query(query, (err, result) => {
 				if (err) throw new Error(err);
 
 				let orders = [];
-				let currentOrder = null;
 
 				result.forEach((row) => {
-					if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
-						currentOrder = {
-							id_ordine: row.id_ordine,
-							id_utente: row.id_utente,
-							stato_ordine: row.stato_ordine,
-							data: row.data,
-							prodotti: [],
-						};
-						orders.push(currentOrder);
-					}
-
-					currentOrder.prodotti.push({
-						id: row.id_prodotto,
-						quantita: row.quantita,
+					orders.push({
+						id_ordine: row.id_ordine,
+						id_utente: row.id_utente,
+						stato_ordine: row.stato_ordine,
+						ora_consegna: row.ora_consegna,
+						pagato: row.pagato,
+						num_prodotti: row.num_prodotti,
+						tot_prezzo: row.tot_prezzo,
 					});
 				});
 
 				if (orders.length > 0) {
 					res.send(orders);
 				} else {
-					res.send("L'utente non ha ordini attivi");
+					res.send("Non sono presenti ordini");
 				}
+				res.end();
+			});
+		}
+	});
+});
+
+server.post("/producer/get/order/completed", (req, res) => {
+	let token = req.headers.authorization;
+	let id_ordine = req.body.id_ordine;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let query = `SELECT * FROM ordini WHERE id = ${id_ordine}; WHERE stato_ordine = 'completato'`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				if (result.length > 0) {
+					res.send(result);
+				} else {
+					res.send("Ordine non trovato");
+				}
+				res.end();
+			});
+		}
+	});
+});
+
+server.post("/producer/get/order", (req, res) => {
+	let token = req.headers.authorization;
+	let id_ordine = req.body.id_ordine;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			//fai join prdotti
+			//let query = `SELECT id_prodotto, quantita FROM prodotti_ordini WHERE id_ordine = ${id_ordine};`;
+
+			let query = `SELECT po.id_prodotto, po.quantita, p.nome, p.categoria, p.prezzo, p.indirizzo_img
+                  FROM prodotti_ordini AS po
+                  JOIN prodotti AS p ON po.id_prodotto = p.id
+                  WHERE po.id_ordine = ${id_ordine};`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				let products = [];
+
+				result.forEach((row) => {
+					products.push({
+						id_prodotto: row.id_prodotto,
+						quantita: row.quantita,
+						nome: row.nome,
+						categoria: row.categoria,
+						indirizzo_img: row.indirizzo_img,
+						prezzo: row.prezzo,
+					});
+				});
+
+				if (products.length > 0) {
+					res.send(products);
+				} else {
+					res.send("Non sono presenti prodotti per questo ordine");
+				}
+				res.end();
+			});
+		}
+	});
+});
+
+server.post("/producer/change/order", (req, res) => {
+	let token = req.headers.authorization;
+	let id_ordine = req.body.id_ordine;
+	let stato_ordine = req.body.stato_ordine;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			if (stato_ordine === "finito") {
+				let query = `SELECT id_prodotto, quantita FROM prodotti_ordini WHERE id_ordine = ${id_ordine};`;
+
+				connection.query(query, (err, result) => {
+					if (err) throw new Error(err);
+
+					result.forEach((row) => {
+						let query = `UPDATE prodotti SET nacq = nacq + ${row.quantita} WHERE id = ${row.id_prodotto};`;
+
+						connection.query(query, (err, result) => {
+							if (err) throw new Error(err);
+						});
+					});
+				});
+			}
+
+			let query = `UPDATE ordini SET stato_ordine = '${stato_ordine}' WHERE id = ${id_ordine};`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				res.send("Stato ordine modificato");
+				res.end();
+			});
+		}
+	});
+});
+
+server.post("/producer/delete/order", (req, res) => {
+	let token = req.headers.authorization;
+	let id_ordine = req.body.id_ordine;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let query = `DELETE FROM ordini WHERE id = ${id_ordine};`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				res.send("Ordine eliminato");
 				res.end();
 			});
 		}
@@ -529,7 +1117,6 @@ server.post("/producer/edit/product", (req, res) => {
 					disponibile = '${disponibile}'
 				WHERE id = '${id}';`;
 
-	console.log("\nQUERY EDIT" + query);
 	connection.query(query, (err, result) => {
 		if (err) {
 			console.log(err);
@@ -564,19 +1151,17 @@ server.post(
 				}
 
 				let query = "SELECT indirizzo_img FROM prodotti WHERE id = " + id + ";";
-				console.log("QUERY: " + query);
+
 				connection.query(query, (err, result) => {
 					if (err) {
 						console.log(err);
 						reject(err);
 					}
 					pathFileDaEliminare = result[0].indirizzo_img.split("/").pop();
-					console.log("Path file da eliminare: " + pathFileDaEliminare);
 
 					fileDaEliminare = files.find((file) => file === pathFileDaEliminare);
 
 					if (fileDaEliminare) {
-						console.log("File da rinominare:" + fileDaEliminare);
 						resolve(fileDaEliminare);
 					} else {
 						reject("File non trovato.");
@@ -588,11 +1173,10 @@ server.post(
 
 		queryPromise
 			.then((fileDaEliminare) => {
-				console.log("\n\nFile nuovo: " + req.file.filename);
-
 				const estensioneFileVecchio = fileDaEliminare.split(".").pop();
 
 				if (estensioneFileVecchio != estensioneFile) {
+					let cartella = "../server/image/products";
 					const pathImg = cartella + "/" + fileDaEliminare;
 
 					fs.unlink(pathImg, (err) => {
@@ -616,15 +1200,50 @@ server.post(
 					prezzo = '${prezzo}',
 					categoria = '${categoria}',
 					disponibile = '${disponibile}',
-					indirizzo_img= 'products/${id}.${estensioneFile}'
+					indirizzo_img= 'products/${id}.webp'
 				WHERE id = '${id}';`;
 
-				console.log("\nQUERY EDIT" + query);
 				connection.query(query, (err, result) => {
 					if (err) {
 						console.error(err);
 						res.send(err);
 						res.end();
+					}
+				});
+
+				const cartella = "../server/image/products";
+
+				fs.readdir(cartella, (err, files) => {
+					if (err) {
+						console.error("Errore durante la lettura della cartella:", err);
+						return;
+					}
+					const filenameConEstensione = id + "." + estensioneFile;
+					let cartella = "../server/image/products/";
+					let fileDaConvertire = files.find(
+						(file) => file === filenameConEstensione
+					);
+
+					if (fileDaConvertire) {
+						sharp(cartella + fileDaConvertire)
+							.toFormat("webp")
+							.toFile(
+								cartella + filenameConEstensione.replace(/\.[^/.]+$/, ".webp")
+							)
+							.then((info) => {
+								fs.unlink(cartella + fileDaConvertire, (err) => {
+									if (err) {
+										console.error(
+											`Errore durante l'eliminazione del file ${fileDaConvertire}: ${err}`
+										);
+									}
+								});
+							})
+							.catch((err) => {
+								console.error("Error converting to WebP:", err);
+							});
+					} else {
+						console.log("File non trovato.");
 					}
 				});
 
@@ -647,8 +1266,6 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 	let token = req.headers.authorization;
 	let id_utente = "";
 
-	console.log("\n\nTOKEN: " + token + "\n\n");
-
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			console.log(err);
@@ -658,17 +1275,14 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 			id_utente = decoded.id;
 
 			const estensioneFile = req.file.filename.split(".").pop();
-			console.log("\n\nFile: " + estensioneFile + "\n\n");
 
 			const queryPromise = new Promise((resolve, reject) => {
 				let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
-				console.log(query);
 				connection.query(query, (err, results) => {
 					if (err) {
 						console.log(err);
 						reject(err);
 					} else {
-						console.log("RISOLTO");
 						resolve(results);
 					}
 				});
@@ -676,14 +1290,12 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 
 			queryPromise
 				.then((results) => {
-					console.log("CIAO");
 					let id_prodotto = "";
 					const id_mensa = results[0].id_mensa;
-					console.log("ID Mensa:", id_mensa);
 
 					const queryPromise2 = new Promise((resolve, reject) => {
 						let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES('${nome}','${descrizione}','${allergeni}','${prezzo}','${categoria}','','${disponibile}','0','${id_mensa}');`;
-						console.log("\nQUERY INSERT" + query);
+
 						connection.query(query, (err, result) => {
 							if (err) {
 								console.error(err);
@@ -697,14 +1309,53 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 
 					queryPromise2
 						.then((results) => {
-							let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
-							console.log("\nQUERY MODIFICA:" + query);
+							let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.webp' WHERE nome='${nome}' AND descrizione='${descrizione}' AND prezzo='${prezzo}';`;
+
 							connection.query(query, (err, result) => {
 								if (err) throw new Error(err);
 
-								console.log("Prodotto modificato");
+								const cartella = "../server/image/products";
 
-								renameImage(nome + "_" + prezzo, id_prodotto); //rinominare immagine con id_prodotto
+								fs.readdir(cartella, (err, files) => {
+									if (err) {
+										console.error(
+											"Errore durante la lettura della cartella:",
+											err
+										);
+										return;
+									}
+									const filenameConEstensione =
+										nome + "_" + prezzo + "." + estensioneFile;
+									const cartella = "../server/image/products/";
+									let fileDaConvertire = files.find(
+										(file) => file === filenameConEstensione
+									);
+
+									if (fileDaConvertire) {
+										sharp(cartella + fileDaConvertire)
+											.toFormat("webp")
+											.toFile(
+												cartella +
+													filenameConEstensione.replace(/\.[^/.]+$/, ".webp")
+											)
+											.then((info) => {
+												fs.unlink(cartella + fileDaConvertire, (err) => {
+													if (err) {
+														console.error(
+															`Errore durante l'eliminazione del file ${fileDaConvertire}: ${err}`
+														);
+													} else {
+														renameImage(nome + "_" + prezzo, id_prodotto);
+													}
+												});
+											})
+											.catch((err) => {
+												console.error("Error converting to WebP:", err);
+											});
+									} else {
+										console.log("File non trovato.");
+									}
+								});
 							});
 						})
 						.catch((error) => {
@@ -728,7 +1379,6 @@ server.post("/producer/delete/product", (req, res) => {
 	let query = `DELETE from prodotti WHERE id = '${id}';`;
 	let fileDaEliminare = "";
 
-	console.log("\nQUERY DELETE" + query);
 	connection.query(query, (err, result) => {
 		if (err) {
 			console.log(err);
@@ -747,7 +1397,6 @@ server.post("/producer/delete/product", (req, res) => {
 					fileDaEliminare = files.find((file) => file.startsWith(id + "."));
 
 					if (fileDaEliminare) {
-						console.log("File da eliminare:" + fileDaEliminare);
 						resolve(fileDaEliminare);
 					} else {
 						reject("File non trovato.");
@@ -786,11 +1435,8 @@ server.post("/producer/delete/product", (req, res) => {
 });
 
 function renameImage(nome_file, id_prodotto) {
-	console.log(`RENAME: ${nome_file} ${id_prodotto} `);
-
 	const cartella = "../server/image/products";
 	const nomeFileSenzaEstensione = nome_file;
-	console.log("\nNome_file = " + nome_file);
 
 	// Leggi tutti i file nella cartella
 	fs.readdir(cartella, (err, files) => {
@@ -817,8 +1463,6 @@ function renameImage(nome_file, id_prodotto) {
 			fs.rename(percorsoCompletoAttuale, percorsoCompletoNuovo, (err) => {
 				if (err) {
 					console.error("Errore durante il cambio nome del file:", err);
-				} else {
-					console.log("File rinominato con successo.");
 				}
 			});
 		} else {

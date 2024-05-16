@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400&family=Nunito:wght@400&family=Poppins:wght@400&family=Roboto:wght@400&family=Rubik:wght@400&display=swap");
 
+@font-face {
+	font-family: "ArialRounded";
+	src: url("arialRounded.TTF") format("ttf");
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -123,7 +128,7 @@
 }
 
 body {
-	font-family: "Rubik", sans-serif;
+	font-family: "ArialRounded", sans-serif;
 }
 
 #root {
