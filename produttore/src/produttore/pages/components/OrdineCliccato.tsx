@@ -143,6 +143,7 @@ const OrdineCliccato = ({
                   return ordine;
                 })
               );
+              setOrdineCliccato(null);
             }}
           >
             <p

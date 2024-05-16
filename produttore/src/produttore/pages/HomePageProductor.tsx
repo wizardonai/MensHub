@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrdersTable from "./components/OrdersTable";
 import { styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import { useLoaderData } from "react-router-dom";
 import OrdineCliccato from "./components/OrdineCliccato";
+import { getOrdini } from "src/login/scripts/fetch";
 
 const HomePageProductor = ({
   ordini,
@@ -16,6 +17,17 @@ const HomePageProductor = ({
   const [ordineCliccato, setOrdineCliccato] = useState<any>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prodotti, setProdotti] = useState<any>([]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getOrdini(
+        JSON.parse(localStorage.getItem("token") || '{"token":"asd"}')
+      ).then((data) => {
+        setOrdini(data);
+      });
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="page" style={css.page}>

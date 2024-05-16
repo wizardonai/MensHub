@@ -369,3 +369,27 @@ export async function getStatMensa(token: string, periodo: string) {
 
   return response;
 }
+
+export async function getProdottiCompletati(token: string) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/get/order/completed`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}

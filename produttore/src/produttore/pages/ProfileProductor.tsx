@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import { getStatMensa, getTopProdotti } from "src/login/scripts/fetch";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -16,6 +16,7 @@ import {
 
 const ProfileProductor = () => {
   const dati: any = useLoaderData();
+  const navigate = useNavigate();
   const periodo = ["1G", "1S", "1M", "3M", "6M", "1A"];
   const [periodoCliccato, setPeriodoCliccato] = useState<string>("1A");
   const [ricarica, setRicarica] = useState<boolean>(true);
@@ -78,6 +79,9 @@ const ProfileProductor = () => {
                 boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
               }}
               className="w-[50%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+              onClick={() => {
+                navigate("/completedOrders");
+              }}
             >
               <p className="font-bold text-2xl text-marroneScuro">
                 Ordini completati
@@ -151,7 +155,7 @@ const ProfileProductor = () => {
                 <YAxis stroke="#503431" />
                 <Tooltip />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <Bar dataKey="numero_prodotti" fill="#e59421" barSize={30} />
+                <Bar dataKey="vendite" fill="#e59421" barSize={30} />
               </BarChart>
             </ResponsiveContainer>
           </div>

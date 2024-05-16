@@ -19,7 +19,9 @@ import {
   getCategorie,
   getInformazioniMensa,
   getOrdini,
+  getProdottiCompletati,
 } from "./login/scripts/fetch";
+import CompletedOrders from "./produttore/pages/CompletedOrders";
 
 export type ArrayProdotti = {
   prodotti: Array<{
@@ -80,22 +82,6 @@ const App = () => {
     setUtente(localStorage.getItem("login") || "");
     return localStorage.getItem("login");
   };
-
-  if (ordini.length === 0) {
-    const fetchOrdini = async () => {
-      getOrdini(
-        JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
-      ).then((res: any) => {
-        if (res === "Token non valido") {
-          localStorage.removeItem("cart");
-          localStorage.removeItem("token");
-          localStorage.setItem("loggato", "false");
-        }
-        setOrdini(res);
-      });
-    };
-    fetchOrdini();
-  }
 
   if (categorie.length === 0) {
     const fetchCategories = async () => {
@@ -163,8 +149,15 @@ const App = () => {
         },
       },
       {
-        path: "/balance",
-        element: <Balance />,
+        path: "/completedOrders",
+        element: <CompletedOrders />,
+        loader: async () => {
+          return getProdottiCompletati(
+            JSON.parse(
+              localStorage.getItem("token") || '{"token":"uasardusss"}'
+            ).token
+          );
+        },
       },
       {
         path: "/productorProfile",

@@ -40,7 +40,7 @@ import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
-
+import nodemailer from "nodemailer";
 sharp.cache({ files: 0 });
 
 const { json, urlencoded } = bodyParser;
@@ -72,6 +72,14 @@ const storage2 = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 const upload2 = multer({ storage: storage2 });
+
+const transporter = nodemailer.createTransport({
+  service: "hotmail",
+  auth: {
+    user: "menshub@outlook.it",
+    pass: "lucaching69#[!",
+  },
+});
 
 function connetti() {
   connection = createConnection({
@@ -406,6 +414,132 @@ server.post("/request/profile", (req, res) => {
   }
 });
 
+server.post("/recover/password", (req, res) => {
+  let email = req.body.email;
+
+  let query = `SELECT * FROM utenti WHERE email="${email}";`;
+
+  connection.query(query, (err, result) => {
+    if (err) throw new Error(err);
+
+    if (result.length > 0) {
+      const token = jwt.sign(
+        {
+          id: result[0].id,
+          nome: result[0].nome,
+          cognome: result[0].cognome,
+          email: result[0].email,
+          id_mensa: result[0].id_mensa,
+        },
+        secretKey,
+        { expiresIn: "1h" }
+      );
+
+      let link = "http://localhost:3000/changepwd/" + token;
+      transporter.sendMail(
+        {
+          from: "menshub@outlook.it",
+          to: email,
+          subject: "Cambio password",
+          text: "Ciao, ecco il link per cambiare la tua password: [link]",
+          html:
+            '<p>Ciao,</p><p>Ecco il <a href="' +
+            link +
+            '">link</a> per cambiare la tua password.</p>',
+        },
+        (error, info) => {
+          if (error) {
+            console.log("Errore durante l'invio dell'email:", error);
+          } else {
+            console.log("Email inviata con successo:", info.response);
+          }
+        }
+      );
+
+      res.send("Email inviata con successo");
+      res.end();
+    } else {
+      res.send("Email non trovata");
+      res.end();
+    }
+  });
+});
+
+server.post("/change/password", (req, res) => {
+  let token = req.headers.authorization;
+  let id_utente = null;
+  let old_psw = req.body.old_psw;
+  let new_psw = req.body.new_psw;
+  let confirm_new_psw = req.body.confirm_new_psw;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      console.log("Token non valido");
+      res.send("Token non valido");
+      res.end();
+      return;
+    } else {
+      id_utente = decoded.id;
+    }
+  });
+
+  if (old_psw != null) {
+    //cambio password
+    let query_check_old_psw;
+    query_check_old_psw = `select password from utenti where id=${id_utente};`;
+    connection.query(query_check_old_psw, (err, result) => {
+      if (err) {
+        res.send(err);
+        res.end();
+        return;
+      }
+      if (result.length > 0) {
+        console.log("Vecchia password" + result[0].password);
+        if (result[0].password === old_psw && new_psw === confirm_new_psw) {
+          let query_set_new_password = `update utenti set password = ${new_psw} where id=${id_utente};`;
+          connection.query(query_set_new_password, (err, result) => {
+            if (err) {
+              res.send(err);
+              res.end();
+              return;
+            }
+            if (result) {
+              res.send("Password cambiata con successo");
+              res.end();
+              return;
+            }
+          });
+        } else {
+          res.send("Le password non combaciano");
+          res.end();
+          return;
+        }
+      }
+    });
+  } else {
+    //resetta password
+    if (new_psw === confirm_new_psw) {
+      let query_reset_password = `update utenti set password =${new_psw} where id=${id_utente};`;
+      connection.query(query_reset_password, (err, result) => {
+        if (err) {
+          res.send(err);
+          res.end();
+          return;
+        }
+        if (result) {
+          res.send("Password cambiata con successo");
+          res.end();
+          return;
+        }
+      });
+    } else {
+      res.send("Le password non combaciano");
+      res.end();
+      return;
+    }
+  }
+});
+
 server.post("/request/orders", (req, res) => {
   let token = req.headers.authorization;
   let id_utente = "";
@@ -551,7 +685,7 @@ server.post("/producer/get/stats", (req, res) => {
       switch (periodo) {
         case "1G":
           query = `
-            SELECT DATE(data) AS periodo, SUM(quantita) AS numero_prodotti
+            SELECT DATE(data) AS periodo, SUM(quantita) AS vendite
             FROM ordini
             JOIN prodotti_ordini ON ordini.id = prodotti_ordini.id_ordine
             WHERE id_mensa = ${id_mensa}
@@ -569,7 +703,7 @@ server.post("/producer/get/stats", (req, res) => {
             if (result.length > 0) {
               const formattedResult = result.map((row) => ({
                 periodo: new Date(row.periodo).toLocaleDateString("it-IT"),
-                numero_prodotti: row.numero_prodotti,
+                vendite: row.vendite,
               }));
               console.log(formattedResult);
               res.send(formattedResult);
@@ -590,7 +724,7 @@ server.post("/producer/get/stats", (req, res) => {
 
             const promise = new Promise((resolve, reject) => {
               const query = `
-                  SELECT SUM(quantita) AS numero_prodotti
+                  SELECT SUM(quantita) AS vendite
                   FROM prodotti_ordini
                   WHERE id_ordine IN (
                     SELECT id
@@ -613,11 +747,11 @@ server.post("/producer/get/stats", (req, res) => {
           Promise.all(promises)
             .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const numero_prodotti =
-                  result.length > 0 && result[0].numero_prodotti
-                    ? result[0].numero_prodotti
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
                     : 0;
-                return { numero_prodotti: numero_prodotti, periodo: periodo };
+                return { vendite: vendite, periodo: periodo };
               });
 
               res.send(ris);
@@ -643,7 +777,7 @@ server.post("/producer/get/stats", (req, res) => {
 
             const promise = new Promise((resolve, reject) => {
               const query = `
-                  SELECT SUM(quantita) AS numero_prodotti
+                  SELECT SUM(quantita) AS vendite
                   FROM prodotti_ordini
                   WHERE id_ordine IN (
                     SELECT id
@@ -669,11 +803,11 @@ server.post("/producer/get/stats", (req, res) => {
           Promise.all(promises)
             .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const numero_prodotti =
-                  result.length > 0 && result[0].numero_prodotti
-                    ? result[0].numero_prodotti
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
                     : 0;
-                return { numero_prodotti: numero_prodotti, periodo: periodo };
+                return { vendite: vendite, periodo: periodo };
               });
 
               res.send(ris);
@@ -699,7 +833,7 @@ server.post("/producer/get/stats", (req, res) => {
 
             const promise = new Promise((resolve, reject) => {
               const query = `
-                  SELECT SUM(quantita) AS numero_prodotti
+                  SELECT SUM(quantita) AS vendite
                   FROM prodotti_ordini
                   WHERE id_ordine IN (
                     SELECT id
@@ -723,11 +857,11 @@ server.post("/producer/get/stats", (req, res) => {
           Promise.all(promises)
             .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const numero_prodotti =
-                  result.length > 0 && result[0].numero_prodotti
-                    ? result[0].numero_prodotti
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
                     : 0;
-                return { numero_prodotti: numero_prodotti, periodo: periodo };
+                return { vendite: vendite, periodo: periodo };
               });
               res.send(ris);
               res.end();
@@ -752,7 +886,7 @@ server.post("/producer/get/stats", (req, res) => {
 
             const promise = new Promise((resolve, reject) => {
               const query = `
-                  SELECT SUM(quantita) AS numero_prodotti
+                  SELECT SUM(quantita) AS vendite
                   FROM prodotti_ordini
                   WHERE id_ordine IN (
                     SELECT id
@@ -776,11 +910,11 @@ server.post("/producer/get/stats", (req, res) => {
           Promise.all(promises)
             .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const numero_prodotti =
-                  result.length > 0 && result[0].numero_prodotti
-                    ? result[0].numero_prodotti
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
                     : 0;
-                return { numero_prodotti: numero_prodotti, periodo: periodo };
+                return { vendite: vendite, periodo: periodo };
               });
               res.send(ris);
               res.end();
@@ -795,7 +929,7 @@ server.post("/producer/get/stats", (req, res) => {
         case "1A":
           query = `
             SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL t.n MONTH), '%m/%y') AS periodo,
-                   COALESCE(SUM(po.quantita), 0) AS numero_prodotti
+                   COALESCE(SUM(po.quantita), 0) AS vendite
             FROM (SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11) AS t
             LEFT JOIN ordini o ON YEAR(o.data) = YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND MONTH(o.data) = MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND o.id_mensa = ${id_mensa}
             LEFT JOIN prodotti_ordini po ON o.id = po.id_ordine
@@ -862,6 +996,30 @@ server.post("/producer/get/orders", (req, res) => {
           res.send(orders);
         } else {
           res.send("Non sono presenti ordini");
+        }
+        res.end();
+      });
+    }
+  });
+});
+
+server.post("/producer/get/order/completed", (req, res) => {
+  let token = req.headers.authorization;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      res.send("Token non valido");
+      res.end();
+    } else {
+      let query = `SELECT * FROM ordini WHERE stato_ordine = 'completato'`;
+
+      connection.query(query, (err, result) => {
+        if (err) throw new Error(err);
+
+        if (result.length > 0) {
+          res.send(result);
+        } else {
+          res.send("Ordine non trovato");
         }
         res.end();
       });
