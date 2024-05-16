@@ -66,10 +66,11 @@ const PasswordDimenticata = ({
 					}
 
 					changePassword(token, null, dati.pwd, dati.confpwd).then((res) => {
-						if (res !== "Password cambiata con successo") {
-							toast.error(res);
-							return;
-						} else toast.info(res);
+						if (res !== "Password cambiata con successo") toast.error(res);
+						else {
+							toast.info(res);
+							sleep(2500).then(() => navigate("/auth"));
+						}
 					});
 				}}
 			>
@@ -87,6 +88,7 @@ const CambiaPassword = ({
 }) => {
 	const navigate = useNavigate();
 	const div = useRef(null);
+	const [data, setData] = useState({ oldpwd: "", pwd: "", confpwd: "" });
 
 	useEffect(() => {
 		animazioniImmagini(40, 5, window.innerHeight);
@@ -98,11 +100,32 @@ const CambiaPassword = ({
 			ref={div}
 		>
 			<Label htmlFor='vecchiaPassword'>Vecchia password</Label>
-			<Input type='password' id='vecchiaPassword' variant='inputMenshub' />
+			<Input
+				type='password'
+				id='vecchiaPassword'
+				variant='inputMenshub'
+				onChange={(e: any) =>
+					setData((prev) => ({ ...prev, oldpwd: e.target.value }))
+				}
+			/>
 			<Label htmlFor='nuovaPassword'>Nuova password</Label>
-			<Input type='password' id='nuovaPassword' variant='inputMenshub' />
+			<Input
+				type='password'
+				id='nuovaPassword'
+				variant='inputMenshub'
+				onChange={(e: any) =>
+					setData((prev) => ({ ...prev, pwd: e.target.value }))
+				}
+			/>
 			<Label htmlFor='confermaPassword'>Conferma password</Label>
-			<Input type='password' id='confermaPassword' variant='inputMenshub' />
+			<Input
+				type='password'
+				id='confermaPassword'
+				variant='inputMenshub'
+				onChange={(e: any) =>
+					setData((prev) => ({ ...prev, confpwd: e.target.value }))
+				}
+			/>
 			<div className='w-full flex flex-row items-center justify-center '>
 				<Button
 					variant='indietro'
@@ -120,6 +143,18 @@ const CambiaPassword = ({
 				<Button
 					variant='avanti'
 					className='rounded-3xl shadow-lg text-lg w-1/2'
+					onClick={() => {
+						//chiamata al server
+						changePassword(token, data.oldpwd, data.pwd, data.confpwd).then(
+							(res) => {
+								if (res !== "Password cambiata con successo") toast.error(res);
+								else {
+									toast.info(res);
+									sleep(2500).then(() => navigate("/profile"));
+								}
+							}
+						);
+					}}
 				>
 					Cambia
 				</Button>

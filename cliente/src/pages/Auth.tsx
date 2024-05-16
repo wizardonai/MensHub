@@ -244,35 +244,13 @@ const Register = ({
 				/>
 			) : utente === "cliente" ? (
 				<RegisterCliente
+					setLogin={setLogin}
 					setUtente={setUtente}
 					animazioniImmagini={animazioniImmagini}
 				/>
 			) : (
 				<RegisterMensa setUtente={setUtente} />
 			)}
-			{/* <div className='flex flex-row w-full'>
-				<Button
-					variant='indietro'
-					className='w-1/2 rounded-3xl mr-1'
-					onClick={() => {
-						animazioniImmagini(0, 15, window.innerHeight);
-
-						//@ts-ignore
-						div.current.classList.remove("animate-showElement");
-						//@ts-ignore
-						div.current.classList.add("animate-hideElement");
-
-						sleep(900).then(() => {
-							setLogin("?");
-						});
-					}}
-				>
-					Indietro
-				</Button>
-				<button className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl'>
-					Accedi
-				</button>
-			</div> */}
 		</div>
 	);
 };
@@ -603,9 +581,11 @@ const RegisterMensa = ({ setUtente }: { setUtente: Function }) => {
 const RegisterCliente = ({
 	setUtente,
 	animazioniImmagini,
+	setLogin,
 }: {
 	setUtente: Function;
 	animazioniImmagini: Function;
+	setLogin: Function;
 }) => {
 	const navigate = useNavigate();
 
@@ -618,7 +598,7 @@ const RegisterCliente = ({
 		password: "",
 		confirm_password: "",
 		id_mensa: -1,
-		is_produttore: false,
+		cliente: false,
 	} as dataReg);
 
 	const [mense, setMense] = useState([] as Array<mensa>);
@@ -657,7 +637,16 @@ const RegisterCliente = ({
 			if (res !== "Registrazione avvenuta con successo") {
 				setError(res + "");
 			} else {
-				navigate("/login");
+				animazioniImmagini(0, 15, window.innerHeight);
+
+				//@ts-ignore
+				div.current.classList.remove("animate-showElement");
+				//@ts-ignore
+				div.current.classList.add("animate-hideElement");
+
+				sleep(900).then(() => {
+					setLogin("?");
+				});
 			}
 		});
 	};

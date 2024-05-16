@@ -14,7 +14,7 @@ export type dataReg = {
 	email: string;
 	password: string;
 	confirm_password: string;
-	is_produttore: boolean;
+	cliente: boolean;
 	id_mensa: any;
 };
 export type dataMensa = {

@@ -406,7 +406,7 @@ server.post("/recover/password", (req, res) => {
 				{ expiresIn: "1h" }
 			);
 
-			let link = "http://172.20.10.3:3000/changepwd/" + token;
+			let link = "http://192.168.1.147:3000/changepwd/" + token;
 			transporter.sendMail(
 				{
 					from: "menshub@outlook.it",
@@ -444,6 +444,8 @@ server.post("/change/password", (req, res) => {
 	let new_psw = req.body.new_psw;
 	let confirm_new_psw = req.body.confirm_new_psw;
 
+	let oldPwsReset = null;
+
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			console.log("Token non valido");
@@ -466,49 +468,67 @@ server.post("/change/password", (req, res) => {
 				return;
 			}
 			if (result.length > 0) {
-				console.log("Vecchia password" + result[0].password);
-				if (result[0].password === old_psw && new_psw === confirm_new_psw) {
-					let query_set_new_password = `update utenti set password = ${new_psw} where id=${id_utente};`;
-					connection.query(query_set_new_password, (err, result) => {
-						if (err) {
-							res.send("Errore db");
-							res.end();
-							return;
-						}
-						if (result) {
-							res.send("Password cambiata con successo");
-							res.end();
-							return;
-						}
-					});
-				} else {
+				console.log("Vecchia password: " + result[0].password);
+				if (result[0].password !== old_psw || new_psw !== confirm_new_psw) {
 					res.send("Le password non combaciano");
 					res.end();
 					return;
 				}
+				if (old_psw === new_psw) {
+					res.send("La nuova password non può essere uguale a quella vecchia");
+					res.end();
+					return;
+				}
+
+				let query_set_new_password = `update utenti set password='${new_psw}' where id=${id_utente};`;
+				connection.query(query_set_new_password, (err, result) => {
+					if (err) {
+						res.send("Errore db");
+						res.end();
+						return;
+					}
+					if (result) {
+						res.send("Password cambiata con successo");
+						res.end();
+						return;
+					}
+				});
 			}
 		});
 	} else {
-		//resetta password
-		if (new_psw === confirm_new_psw) {
-			let query_reset_password = `update utenti set password =${new_psw} where id=${id_utente};`;
+		let query_check_old_psw;
+		query_check_old_psw = `select password from utenti where id=${id_utente};`;
+		connection.query(query_check_old_psw, (err, result) => {
+			if (err) {
+				console.log(err);
+				res.send("Errore db");
+				res.end();
+				return;
+			}
+
+			if (new_psw !== confirm_new_psw) {
+				res.send("Le password non combaciano");
+				res.end();
+				return;
+			}
+			if (result[0].password === new_psw) {
+				res.send("La nuova password non può essere uguale a quella vecchia");
+				res.end();
+				return;
+			}
+
+			let query_reset_password = `update utenti set password='${new_psw}' where id=${id_utente};`;
 			connection.query(query_reset_password, (err, result) => {
-				if (err) {
+				if (err || !result) {
+					console.log(err);
 					res.send("Errore db");
 					res.end();
 					return;
 				}
-				if (result) {
-					res.send("Password cambiata con successo");
-					res.end();
-					return;
-				}
+				res.send("Password cambiata con successo");
+				res.end();
 			});
-		} else {
-			res.send("Le password non combaciano");
-			res.end();
-			return;
-		}
+		});
 	}
 });
 

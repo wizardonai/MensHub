@@ -29,7 +29,12 @@ const CronologiaAcquistiPage = ({
 				setLoggato(false);
 				return;
 			}
-			setCronologia(res.filter((item: any) => item.stato_ordine !== "attivo"));
+			if (typeof res !== "string" && res.length > 0) {
+				setCronologia(
+					res.filter((item: any) => item.stato_ordine !== "attivo")
+				);
+				console.log(typeof res);
+			} else setCronologia([]);
 		});
 
 		return (
@@ -100,8 +105,6 @@ const CronologiaAcquistiPage = ({
 			);
 		});
 	};
-
-	console.log(cronologia);
 
 	return (
 		<>
