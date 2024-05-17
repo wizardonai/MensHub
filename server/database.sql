@@ -1,6 +1,6 @@
-create database mensapp;
+create database menshub;
 
-use mensapp;
+use menshub;
 
 CREATE TABLE `allergeni` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -34,12 +34,12 @@ CREATE TABLE `categorie` (
 INSERT INTO
   `categorie` (`nome`, `indirizzo_img`)
 VALUES
-  ('antipasto', 'categories/antipasto.png'),
-  ('primo', 'categories/primo.png'),
-  ('secondo', 'categories/secondo.png'),
-  ('contorno', 'categories/contorno.png'),
-  ('dolce', 'categories/dolce.png'),
-  ('bibita', 'categories/bibita.png');
+  ('antipasto', 'categories/antipasto.webp'),
+  ('primo', 'categories/primo.webp'),
+  ('secondo', 'categories/secondo.webp'),
+  ('contorno', 'categories/contorno.webp'),
+  ('dolce', 'categories/dolce.webp'),
+  ('bibita', 'categories/bibita.webp');
 
 CREATE TABLE `mense` (
   `id` int(11) AUTO_INCREMENT primary key,
@@ -55,9 +55,9 @@ CREATE TABLE `mense` (
 );
 
 INSERT INTO
-  `mense` (`id`, `nome`, `indirizzo`,`regione`,`provincia`,`comune`,`cap`,`email`,`telefono`)
+  `mense` (`id`, `nome`, `indirizzo`,`regione`,`provincia`,`comune`,`cap`,`email`,`telefono`, `verificato`)
 VALUES
-  (1, 'Mensa Planck', 'Via Franchini, 2','Veneto','Treviso','Villorba',31020,'mensaplanck@gmail.com','3285574653');
+  (1, 'Mensa Planck', 'Via Franchini, 2','Veneto','Treviso','Villorba',31020,'mensaplanck@gmail.com','3285574653', 1);
 
 
 CREATE TABLE `utenti` (
@@ -72,28 +72,31 @@ CREATE TABLE `utenti` (
 ALTER TABLE
   `utenti`
 ADD
-  CONSTRAINT `utenti_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`);
+  CONSTRAINT `utenti_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`)
+  ON DELETE SET NULL ON UPDATE CASCADE;
 
 INSERT INTO `utenti` (`id`, `nome`, `cognome`, `email`, `password`, `id_mensa`, `cliente`) VALUES
-(1, 'Simone', 'Lapomarda', 'simolapomarda@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1, 0);
+(1, 'Simone', 'Lapomarda', 'simolapomarda@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1, 1);
 
 
 CREATE TABLE `ordini` (
   `id` int(11) AUTO_INCREMENT PRIMARY KEY,
-  `id_mensa` int(11) NOT NULL,
+  `id_mensa` int(11),
   `data` datetime DEFAULT NULL,
   `ora_consegna` time DEFAULT '00:00:00',
   `stato_ordine` varchar(255) DEFAULT NULL,
   `pagato` tinyint(1) DEFAULT 0,
-  `id_utente` int(11) DEFAULT NULL
+  `id_utente` int(11) 
 );
 
 ALTER TABLE
   `ordini`
 ADD
-  CONSTRAINT `fk_ordini_utenti` FOREIGN KEY (`id_utente`) REFERENCES `utenti` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_ordini_utenti` FOREIGN KEY (`id_utente`) REFERENCES `utenti` (`id`)
+  ON DELETE SET NULL ON UPDATE CASCADE,
 ADD
-  CONSTRAINT `ordini_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`) ON DELETE CASCADE;
+  CONSTRAINT `ordini_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`)
+  ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO ordini (id, id_mensa, data, stato_ordine, id_utente, ora_consegna, pagato)
 VALUES
@@ -261,13 +264,14 @@ CREATE TABLE `prodotti` (
   `indirizzo_img` varchar(255) NOT NULL,
   `disponibile` tinyint(1) NOT NULL,
   `nacq` int(11) NOT NULL,
-  `id_mensa` int(11) NOT NULL
+  `id_mensa` int(11)
 );
 
 ALTER TABLE
   `prodotti`
 ADD
-  CONSTRAINT `prodotti_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`);
+  CONSTRAINT `prodotti_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`)
+  ON DELETE CASCADE ON UPDATE CASCADE;
 
   INSERT INTO
   `prodotti` (
@@ -288,7 +292,7 @@ VALUES
     'glutine, sesamo',
     4.50,
     'panino',
-    'products/paninomortazza.png',
+    'products/paninomortazza.webp',
     1,
     7,
     1
@@ -299,7 +303,7 @@ VALUES
     'uova, latticini, glutine',
     8.90,
     'primo',
-    'products/carbonara.png',
+    'products/carbonara.webp',
     1,
     14,
     1
@@ -310,7 +314,7 @@ VALUES
     'uova, glutine, latticini, soia, sesamo',
     11.20,
     'secondo',
-    'products/cotoletta.png',
+    'products/cotoletta.webp',
     1,
     8,
     1
@@ -321,7 +325,7 @@ VALUES
     'glutine, aglio, peperoncino',
     8.90,
     'primo',
-    'products/spaghettiArrabbiata.png',
+    'products/spaghettiArrabbiata.webp',
     1,
     6,
     1
@@ -332,7 +336,7 @@ VALUES
     'latticini, uova, gelatina, frutta a guscio',
     4.50,
     'dolce',
-    'products/pannacotta.png',
+    'products/pannacotta.webp',
     1,
     11,
     1
@@ -343,7 +347,7 @@ VALUES
     'glutine, latticini, noci, soia, sedano, uova',
     7.30,
     'contorno',
-    'products/insalata.png',
+    'products/insalata.webp',
     1,
     15,
     1
@@ -354,7 +358,7 @@ VALUES
     ' glutine, uova, senape, cipolla, latticini',
     6.40,
     'antipasto',
-    'products/tartare.png',
+    'products/tartare.webp',
     1,
     10,
     1

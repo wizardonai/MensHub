@@ -710,7 +710,7 @@ const RegisterCliente = ({
 			data.id_mensa === -1 ||
 			data.id_mensa === undefined
 		) {
-			toast.error("Compilare tutti i campi!\nid_mensa:" + id_mensa);
+			toast.error("Compilare tutti i campi!");
 			return;
 		}
 

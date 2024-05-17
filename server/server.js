@@ -63,21 +63,37 @@ function connetti() {
 	connection.connect(function (err) {
 		if (err) throw new Error(err);
 		console.log("Connected!");
-		connection.changeUser({ database: "mensapp" }, () => {
+		connection.changeUser({ database: "menshub" }, () => {
 			if (err) throw new Error(err);
 		});
 	});
 }
 connetti();
 
+// server.use(
+// 	cors({
+// 		origin: "http://127.0.0.1:6969",
+// 	})
+// );
 server.use(cors());
 server.use(json());
 server.use(express.json());
 server.use(urlencoded({ extended: false }));
 
 //deploy react
+const reactRoutes = [
+	"/home",
+	"/cart",
+	"/profile",
+	"/profile/:page",
+	"/product/:id",
+	"/changepwd/:token",
+	"/auth",
+];
+
 server.use("/image", express.static("./image"));
 server.use(express.static("../cliente/build"));
+server.use(reactRoutes, express.static("../cliente/build"));
 
 server.post("/request/products", (req, res) => {
 	let token = req.headers.authorization;
@@ -533,6 +549,48 @@ server.post("/change/password", (req, res) => {
 			});
 		});
 	}
+});
+
+server.post("/delete/user", (req, res) => {
+	let token = req.headers.authorization;
+	let password = req.body.password;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+				if (result.length > 0) {
+					let cliente = result[0].cliente;
+					let query = `DELETE FROM utenti WHERE id=${decoded.id};`;
+
+					connection.query(query, (err, result) => {
+						if (err) throw new Error(err);
+
+						if (cliente == 0) {
+							let query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
+
+							connection.query(query, (err, result) => {
+								if (err) throw new Error(err);
+								res.send("Mensa eliminata");
+								res.end();
+							});
+						} else {
+							res.send("Utente eliminato");
+							res.end();
+						}
+					});
+				} else {
+					res.send("Password errata");
+					res.end();
+				}
+			});
+		}
+	});
 });
 
 server.post("/request/orders", (req, res) => {

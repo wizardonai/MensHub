@@ -356,3 +356,33 @@ export async function changePassword(
 
 	return response;
 }
+
+export async function deleteUser(token: string, pwd: string) {
+	let response;
+
+	let data = {
+		password: sha256.create().update(pwd).hex(),
+	};
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/delete/user`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + token,
+		},
+		data: JSON.stringify(data),
+	};
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}

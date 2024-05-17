@@ -5,7 +5,12 @@ import disconnetti from "../img/disconnetti.webp";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Input } from "../components/shadcn/Input";
-import { getMense, getProdotti, modifyMensa } from "../scripts/fetch";
+import {
+	deleteUser,
+	getMense,
+	getProdotti,
+	modifyMensa,
+} from "../scripts/fetch";
 import {
 	Select,
 	SelectContent,
@@ -13,10 +18,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/shadcn/Select";
-import { mensa, typeProfilo } from "../utils";
+import { getFilter, mensa, sleep, typeProfilo } from "../utils";
 import { Button } from "../components/shadcn/Button";
 import { Label } from "../components/shadcn/Label";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+
+import deleteImg from "../img/deleteBlack.webp";
+import { toast } from "sonner";
+import { Toaster } from "../components/shadcn/Sonner";
 
 const Popup = ({
 	tipoPopup,
@@ -31,6 +40,9 @@ const Popup = ({
 	setDatiUtente: Function;
 	setProducts: Function;
 }) => {
+	const [pwd, setPwd] = useState("");
+	const [disabled, setDisabled] = useState(false);
+
 	if (tipoPopup === "") return <></>;
 
 	const funzionalita = () => {
@@ -66,6 +78,69 @@ const Popup = ({
 						</div>
 					</div>
 				);
+			case "eliminaaccount":
+				return (
+					<>
+						<div className='w-full flex justify-evenly items-center flex-col h-[80%]'>
+							<p className='w-full text-center text-xl'>Inserire la password</p>
+							<p className='w-full text-center mb-1.5 text-[#e36623]'>
+								(Quest'azione sarà irreversibile)
+							</p>
+							<div className='flex flex-col items-center w-3/4'>
+								<Input
+									type='password'
+									id='password'
+									className='bg-biancoLatte mt-0.5 w-[85%]'
+									variant='inputMenshub'
+									onChange={(e) => setPwd(e.target.value)}
+								/>
+							</div>
+							<div className='flex flex-row justify-around items-center w-3/4'>
+								<Button
+									onClick={() => setTipoPopup("")}
+									className='rounded-xl'
+									variant='indietro'
+								>
+									Annulla
+								</Button>
+								<Button
+									variant='avanti'
+									onClick={() => {
+										if (pwd === "") {
+											toast.error("Inserire la password");
+											return;
+										}
+
+										deleteUser(
+											localStorage.getItem("token") || "asd",
+											pwd
+										).then((res: any) => {
+											if (res + "" === "Utente eliminato") {
+												setDisabled(true);
+												toast.success(
+													"Utente eliminato!\nReindirizzamento in corso..."
+												);
+												sleep(2000).then(() => {
+													setTipoPopup("");
+													localStorage.removeItem("cart");
+													localStorage.removeItem("token");
+													localStorage.setItem("login", '"?"');
+													setLoggato(false);
+													setDatiUtente({});
+													setProducts([]);
+												});
+											} else toast.error(res);
+										});
+									}}
+									className='rounded-xl bg-[#e36623] border-[#e36623] text-biancoLatte'
+									disabled={disabled}
+								>
+									Elimina
+								</Button>
+							</div>
+						</div>
+					</>
+				);
 			default:
 				return "";
 		}
@@ -86,6 +161,31 @@ const Popup = ({
 	);
 };
 
+const BtnElmininaAccount = ({ setTipoPopup }: { setTipoPopup: Function }) => {
+	const navigate = useNavigate();
+
+	return (
+		<div
+			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-[#e36623] mb-3'
+			onClick={() => setTipoPopup("eliminaaccount")}
+		>
+			<p className='text-marrone text-xl capitalize w-[80%] indent-5'>
+				Elimina account
+			</p>
+			<div className='w-[20%]'>
+				<LazyLoadImage
+					src={deleteImg}
+					alt=''
+					className='w-[37px] h-[37px] ml-1'
+					style={{
+						filter:
+							"invert(20%) sepia(5%) saturate(4693%) hue-rotate(317deg) brightness(83%) contrast(83%)",
+					}}
+				/>
+			</div>
+		</div>
+	);
+};
 const BtnDisconnetti = ({ setTipoPopup }: { setTipoPopup: Function }) => {
 	return (
 		<div
@@ -286,6 +386,7 @@ const Profile = ({
 						/>
 						<BtnCronologia />
 						<BtnDisconnetti setTipoPopup={setTipoPopup} />
+						<BtnElmininaAccount setTipoPopup={setTipoPopup} />
 					</div>
 					{/* <Elementi setLoggato={setLoggato} setTipoPopup={setTipoPopup} /> */}
 				</div>
@@ -297,6 +398,7 @@ const Profile = ({
 					setDatiUtente={setDatiUtente}
 				/>
 			</Container>
+			<Toaster richColors />
 			<Navbar page='profile' />
 		</>
 	);
