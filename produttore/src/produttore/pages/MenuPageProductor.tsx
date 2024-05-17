@@ -153,7 +153,7 @@ const Prodotti = ({
                     <div className="mt-[10px]">
                       <p>
                         {item.nome} <br />
-                        {item.prezzo.toFixed(2)}€
+                        {item.prezzo}€
                       </p>
                     </div>
                   </div>
@@ -188,19 +188,21 @@ const Prodotti = ({
 const MenuPageProductor = ({
   categorie,
   allergeni,
+  prodotti,
+  setProdotti,
 }: {
   categorie: any;
   allergeni: any;
+  prodotti: any;
+  setProdotti: Function;
 }) => {
-  const dati: any = useLoaderData();
   const [filtro, setFiltro] = useState("");
   const [ricerca, setRicerca] = useState("");
-  const [prodotti, setProdotti] = useState(dati);
 
-  if (!dati) return <p>CARICAMENTO</p>;
+  console.log(prodotti);
 
   //ordina i dati in base alla categoria segue l'ordine di filtri
-  dati.sort((a: prodotto, b: prodotto) => {
+  prodotti.sort((a: prodotto, b: prodotto) => {
     const aIndex = categorie.findIndex((x: any[]) => x[0] === a.categoria);
     const bIndex = categorie.findIndex((x: any[]) => x[0] === b.categoria);
 
@@ -215,7 +217,7 @@ const MenuPageProductor = ({
       <div style={css.centerPage}>
         <div style={css.ricerca}>
           <SearchBar
-            elencoProdotti={dati}
+            elencoProdotti={prodotti}
             stringaSearch={ricerca}
             setStringaSearch={setRicerca}
             setProdottiDaStampare={setProdotti}
@@ -227,7 +229,7 @@ const MenuPageProductor = ({
         <div style={css.container}>
           <Prodotti
             filtro={filtro}
-            dati={dati}
+            dati={prodotti}
             categorie={categorie}
             allergeni={allergeni}
             prodotti={prodotti}

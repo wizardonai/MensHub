@@ -139,7 +139,7 @@ server.post("/request/products", (req, res) => {
 });
 
 server.post("/request/mense", (req, res) => {
-  let query = `SELECT * FROM mense;`;
+  let query = `SELECT * FROM mense WHERE verificato = 1;`;
   connection.query(query, (err, result) => {
     if (err) throw new Error(err);
     if (result.length > 0) {
@@ -1003,7 +1003,7 @@ server.post("/producer/get/orders", (req, res) => {
   });
 });
 
-server.post("/producer/get/order/completed", (req, res) => {
+server.post("/producer/get/orders/completed", (req, res) => {
   let token = req.headers.authorization;
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
@@ -1011,7 +1011,14 @@ server.post("/producer/get/order/completed", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-      let query = `SELECT * FROM ordini WHERE stato_ordine = 'completato'`;
+      let id_utente = decoded.id;
+      let query = `SELECT id as id_ordine, id_utente, stato_ordine, ora_consegna, pagato, num_prodotti, tot_prezzo  
+                  FROM ordini AS o
+                  JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
+                  JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
+                  WHERE o.id_mensa = ${id_utente} AND o.stato_ordine = 'completato'`;
+
+      console.log(query);
 
       connection.query(query, (err, result) => {
         if (err) throw new Error(err);

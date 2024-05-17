@@ -77,11 +77,28 @@ const App = () => {
   const [utente, setUtente] = useState("no");
   const [categorie, setCategorie] = useState<Array<string>>([]);
   const [allergeni, setAllergeni] = useState<Array<string>>([]);
+  const [prodotti, setProdotti] = useState<any>([]);
 
   const refreshStorage = async () => {
     setUtente(localStorage.getItem("login") || "");
     return localStorage.getItem("login");
   };
+
+  if (prodotti.length === 0) {
+    const fetchProdotti = async () => {
+      getProdotti(
+        JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+      ).then((res: any) => {
+        if (res === "Token non valido") {
+          localStorage.removeItem("cart");
+          localStorage.removeItem("token");
+          localStorage.setItem("loggato", "false");
+        }
+        setProdotti(res);
+      });
+    };
+    fetchProdotti();
+  }
 
   if (categorie.length === 0) {
     const fetchCategories = async () => {
@@ -140,7 +157,12 @@ const App = () => {
       {
         path: "/productorMenu",
         element: (
-          <MenuPageProductor allergeni={allergeni} categorie={categorie} />
+          <MenuPageProductor
+            allergeni={allergeni}
+            categorie={categorie}
+            prodotti={prodotti}
+            setProdotti={setProdotti}
+          />
         ),
         loader: async () => {
           return getProdotti(

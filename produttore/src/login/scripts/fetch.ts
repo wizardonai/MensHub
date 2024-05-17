@@ -376,7 +376,7 @@ export async function getProdottiCompletati(token: string) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `${urlServer}/producer/get/order/completed`,
+    url: `${urlServer}/producer/get/orders/completed`,
     headers: {
       Authorization: "Bearer " + token,
     },

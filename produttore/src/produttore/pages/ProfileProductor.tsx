@@ -61,7 +61,7 @@ const ProfileProductor = () => {
           <div className="pt-[15px] w-1/2">
             <p className="font-bold text-xl text-marroneScuro">Email:</p>
             <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
-              email@example.com
+              {dati[0].email}
             </p>
             <a className="font-bold text-lg text-verdeBordo cursor-pointer underline hover:text-verdeBordoHover">
               Cambia password

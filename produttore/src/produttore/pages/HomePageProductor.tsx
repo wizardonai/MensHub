@@ -25,7 +25,7 @@ const HomePageProductor = ({
       ).then((data) => {
         setOrdini(data);
       });
-    }, 500);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -119,7 +119,7 @@ const css: styleMap = {
     justifyContent: "center",
     marginLeft: "2%",
   },
-  titolo: { fontSize: "130%", color: "black" },
+  titolo: { fontSize: "130%", color: "#503431", fontWeight: "bold" },
   containerList: {
     display: "flex",
     flexDirection: "column",

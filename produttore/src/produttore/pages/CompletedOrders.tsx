@@ -7,10 +7,111 @@ import OrdersTable from "./components/OrdersTable";
 import OrdineCliccato from "./components/OrdineCliccato";
 import { getOrdine } from "src/login/scripts/fetch";
 
+const TabellaOrdini = ({
+  ordineCliccato,
+  setOrdineCliccato,
+  ordini,
+  prodotti,
+  setProdotti,
+  titolo,
+}: {
+  ordineCliccato: any;
+  setOrdineCliccato: Function;
+  ordini: any;
+  prodotti: any;
+  setProdotti: Function;
+  titolo: string;
+}) => {
+  return (
+    <div>
+      <p className="font-bold text-marroneScuro">{titolo}</p>
+      {ordini.map((ordine: any) => {
+        {
+          console.log(ordine);
+        }
+        <p>aloa</p>;
+
+        // <div className="flex flex-col items-center">
+        //   <div
+        //     style={css.ordine}
+        //     className="transform transition-transform hover:scale-105 hover:cursor-pointer"
+        //     key={ordine.id_ordine}
+        //     onClick={() => {
+        //       if (ordineCliccato === ordine) {
+        //         setOrdineCliccato(null);
+        //       } else {
+        //         getOrdine(
+        //           JSON.parse(
+        //             localStorage.getItem("token") || '{"token": "lucaChing"}'
+        //           ),
+        //           JSON.parse(JSON.stringify(ordine.id_ordine))
+        //         )
+        //           .then((response) => {
+        //             setProdotti(response);
+        //           })
+        //           .catch((err: any) => {
+        //             console.log(err);
+        //           });
+        //         setOrdineCliccato(ordine);
+        //       }
+        //     }}
+        //   >
+        //     <div className="flex flex-col">
+        //       <p className="text-2xl w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
+        //         {ordine.id_ordine}
+        //       </p>
+        //       <p className="w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
+        //         {ordine.ora_consegna.split(":").slice(0, 2).join(":")}
+        //       </p>
+        //     </div>
+        //     <div className="flex items-center">
+        //       <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro mr-[10px]">
+        //         x{ordine.num_prodotti}
+        //       </p>
+        //       <img
+        //         src={hostnameProductor + "/goBack.png"}
+        //         className={
+        //           ordineCliccato === ordine
+        //             ? "w-[20px] -rotate-90 select-none pointer-events-none"
+        //             : "w-[20px] rotate-90 select-none pointer-events-none"
+        //         }
+        //         style={{
+        //           filter:
+        //             "brightness(0) saturate(100%) invert(17%) sepia(13%) saturate(1594%) hue-rotate(318deg) brightness(99%) contrast(84%)",
+        //         }}
+        //       />
+        //     </div>
+        //   </div>
+        //   {ordineCliccato === ordine ? (
+        //     <div className="bg-gialloSfondo" style={css.aperto}>
+        //       {prodotti.map((prodotto: any) => {
+        //         return (
+        //           <div className="flex">
+        //             <img
+        //               src={hostnameProductor + prodotto.indirizzo_img}
+        //               className="w-[7svw] select-none pointer-events-none"
+        //             />
+        //             <p className="font-bold text-marroneScuro text-lg select-none pointer-events-none">
+        //               {prodotto.nome}
+        //             </p>
+        //             <p className="font-bold text-marroneScuro text-lg select-none pointer-events-none">
+        //               {prodotto.quantita}
+        //             </p>
+        //           </div>
+        //         );
+        //       })}
+        //     </div>
+        //   ) : null}
+        // </div>;
+      })}
+    </div>
+  );
+};
+
 const CompletedOrders = () => {
   const dati: any = useLoaderData();
-  const [ordineCliccato, setOrdineCliccato] = useState<any>(null);
   const [prodotti, setProdotti] = useState<any>([]);
+  const [ordineCliccato, setOrdineCliccato] = useState<any>(null);
 
   if (!dati) return <p>CARICAMENTO</p>;
 
@@ -21,80 +122,28 @@ const CompletedOrders = () => {
       </div>
       <div style={css.centerPage}>
         <div style={css.containerList}>
-          <p style={css.titolo}>In corso</p>
-
-          <>
-            <div
-              id="target"
-              style={{
-                borderRadius: "25px",
-                height: "100%",
-                width: "100%",
-                alignItems: "center",
-                overflow: "auto",
-                scrollbarWidth: "none",
-                border: "10px solid #608b46",
-              }}
-            >
-              {dati.map((ordine: any) => {
-                return (
-                  <div
-                    style={css.ordine}
-                    className="transform transition-transform hover:scale-105 hover:cursor-pointer"
-                    key={ordine.id_ordine}
-                    onClick={() => {
-                      setOrdineCliccato(ordine);
-                      getOrdine(
-                        JSON.parse(
-                          localStorage.getItem("token") ||
-                            '{"token": "lucaChing"}'
-                        ),
-                        JSON.parse(JSON.stringify(ordine.id_ordine))
-                      )
-                        .then((response) => {
-                          setProdotti(response);
-                        })
-                        .catch((err: any) => {
-                          console.log(err);
-                        });
-                    }}
-                  >
-                    <p className="text-2xl w-1/2 select-none pointer-events-none">
-                      {ordine.id_ordine}
-                    </p>
-                    <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none">
-                      x{ordine.num_prodotti}
-                    </p>
-                    <p className="w-1/2 select-none pointer-events-none">
-                      {ordine.ora_consegna.split(":").slice(0, 2).join(":")}
-                    </p>
-                    <div className="w-1/2 relative flex justify-end">
-                      <p className="pr-1 select-none pointer-events-none">
-                        pagato
-                      </p>
-                      {ordine.pagato === 0 ? (
-                        <img
-                          src={hostnameProductor + "check.png"}
-                          style={css.check}
-                          className="select-none pointer-events-none"
-                        />
-                      ) : (
-                        <img
-                          src={hostnameProductor + "X.png"}
-                          style={css.x}
-                          className="select-none pointer-events-none"
-                        />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        </div>
-        <div style={css.containerList}>
-          <p style={css.titolo}>Ordine</p>
-          {ordineCliccato !== null ? <></> : null}
+          <p style={css.titolo}>Completati</p>
+          <div
+            id="target"
+            style={{
+              borderRadius: "25px",
+              height: "100%",
+              width: "100%",
+              alignItems: "center",
+              overflow: "auto",
+              scrollbarWidth: "none",
+              border: "10px solid #608b46",
+            }}
+          >
+            <TabellaOrdini
+              ordineCliccato={ordineCliccato}
+              setOrdineCliccato={setOrdineCliccato}
+              ordini={dati}
+              prodotti={prodotti}
+              setProdotti={setProdotti}
+              titolo="Oggi"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -107,6 +156,32 @@ const css: styleMap = {
     flexDirection: "row",
     display: "flex",
     alignItems: "center",
+  },
+  centerPage: {
+    width: "90%",
+    height: "100%",
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  sidebar: {
+    display: "flex",
+    width: "10%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: "2%",
+  },
+  titolo: { fontSize: "130%", color: "#503431", fontWeight: "bold" },
+  containerList: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "84svh",
+    margin: "0% 2%",
+    position: "relative",
+    top: "-2svh ",
   },
   ordine: {
     backgroundColor: "#fffae7",
@@ -123,6 +198,13 @@ const css: styleMap = {
     marginBottom: "10px",
     boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
     cursor: "pointer",
+  },
+  aperto: {
+    backgroundColor: "#fffae7",
+    width: "90%",
+    borderRadius: "15px",
+    marginTop: "-35px",
+    paddingTop: "25px",
   },
   check: {
     width: "20px",

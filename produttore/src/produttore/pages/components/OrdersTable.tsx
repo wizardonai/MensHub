@@ -124,17 +124,19 @@ const OrdersTable = ({
                 }}
                 draggable
               >
-                <p className="text-2xl w-1/2 select-none pointer-events-none">
+                <p className="text-2xl w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
                   {ordine.id_ordine}
                 </p>
-                <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none">
+                <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro">
                   x{ordine.num_prodotti}
                 </p>
-                <p className="w-1/2 select-none pointer-events-none">
+                <p className="w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
                   {ordine.ora_consegna.split(":").slice(0, 2).join(":")}
                 </p>
                 <div className="w-1/2 relative flex justify-end">
-                  <p className="pr-1 select-none pointer-events-none">pagato</p>
+                  <p className="pr-1 select-none pointer-events-none font-bold text-marroneScuro">
+                    pagato
+                  </p>
                   {ordine.pagato === 0 ? (
                     <img
                       src={hostnameProductor + "check.png"}

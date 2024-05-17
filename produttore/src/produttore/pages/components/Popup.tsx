@@ -93,7 +93,6 @@ export default function Popup({
           };
 
           setProdotti([...prodotti, newProdotto]);
-
           alert(response);
           setPopup(false);
         } else {
