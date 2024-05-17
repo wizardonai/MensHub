@@ -1012,7 +1012,7 @@ server.post("/producer/get/orders/completed", (req, res) => {
       res.end();
     } else {
       let id_utente = decoded.id;
-      let query = `SELECT id as id_ordine, id_utente, stato_ordine, ora_consegna, pagato, num_prodotti, tot_prezzo  
+      let query = `SELECT id as id_ordine, id_utente, stato_ordine, data, ora_consegna, pagato, num_prodotti, tot_prezzo  
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine

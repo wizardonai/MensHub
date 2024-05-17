@@ -23,86 +23,100 @@ const TabellaOrdini = ({
   titolo: string;
 }) => {
   return (
-    <div>
-      <p className="font-bold text-marroneScuro">{titolo}</p>
+    <div className="w-1/2 h-[100%]">
+      <p className="font-bold text-marroneScuro text-2xl pl-[5%]">{titolo}</p>
       {ordini.map((ordine: any) => {
-        {
-          console.log(ordine);
-        }
-        <p>aloa</p>;
-
-        // <div className="flex flex-col items-center">
-        //   <div
-        //     style={css.ordine}
-        //     className="transform transition-transform hover:scale-105 hover:cursor-pointer"
-        //     key={ordine.id_ordine}
-        //     onClick={() => {
-        //       if (ordineCliccato === ordine) {
-        //         setOrdineCliccato(null);
-        //       } else {
-        //         getOrdine(
-        //           JSON.parse(
-        //             localStorage.getItem("token") || '{"token": "lucaChing"}'
-        //           ),
-        //           JSON.parse(JSON.stringify(ordine.id_ordine))
-        //         )
-        //           .then((response) => {
-        //             setProdotti(response);
-        //           })
-        //           .catch((err: any) => {
-        //             console.log(err);
-        //           });
-        //         setOrdineCliccato(ordine);
-        //       }
-        //     }}
-        //   >
-        //     <div className="flex flex-col">
-        //       <p className="text-2xl w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
-        //         {ordine.id_ordine}
-        //       </p>
-        //       <p className="w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
-        //         {ordine.ora_consegna.split(":").slice(0, 2).join(":")}
-        //       </p>
-        //     </div>
-        //     <div className="flex items-center">
-        //       <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro mr-[10px]">
-        //         x{ordine.num_prodotti}
-        //       </p>
-        //       <img
-        //         src={hostnameProductor + "/goBack.png"}
-        //         className={
-        //           ordineCliccato === ordine
-        //             ? "w-[20px] -rotate-90 select-none pointer-events-none"
-        //             : "w-[20px] rotate-90 select-none pointer-events-none"
-        //         }
-        //         style={{
-        //           filter:
-        //             "brightness(0) saturate(100%) invert(17%) sepia(13%) saturate(1594%) hue-rotate(318deg) brightness(99%) contrast(84%)",
-        //         }}
-        //       />
-        //     </div>
-        //   </div>
-        //   {ordineCliccato === ordine ? (
-        //     <div className="bg-gialloSfondo" style={css.aperto}>
-        //       {prodotti.map((prodotto: any) => {
-        //         return (
-        //           <div className="flex">
-        //             <img
-        //               src={hostnameProductor + prodotto.indirizzo_img}
-        //               className="w-[7svw] select-none pointer-events-none"
-        //             />
-        //             <p className="font-bold text-marroneScuro text-lg select-none pointer-events-none">
-        //               {prodotto.nome}
-        //             </p>
-        //             <p className="font-bold text-marroneScuro text-lg select-none pointer-events-none">
-        //               {prodotto.quantita}
-        //             </p>
-        //           </div>
-        //         );
-        //       })}
-        //     </div>
-        //   ) : null}
-        // </div>;
+        if (
+          titolo === "Oggi" &&
+          ordine.data_consegna !== new Date().toISOString().split("T")[0]
+        )
+          return null;
+        return (
+          <div className="flex flex-col items-center">
+            <div
+              style={css.ordine}
+              className="transform transition-transform hover:scale-105 hover:cursor-pointer"
+              key={ordine.id_ordine}
+              onClick={() => {
+                if (ordineCliccato === ordine) {
+                  setOrdineCliccato(null);
+                } else {
+                  getOrdine(
+                    JSON.parse(
+                      localStorage.getItem("token") || '{"token": "lucaChing"}'
+                    ),
+                    JSON.parse(JSON.stringify(ordine.id_ordine))
+                  )
+                    .then((response) => {
+                      setProdotti(response);
+                    })
+                    .catch((err: any) => {
+                      console.log(err);
+                    });
+                  setOrdineCliccato(ordine);
+                }
+              }}
+            >
+              <div className="flex flex-col">
+                <p className="text-2xl select-none pointer-events-none font-bold text-marroneScuro">
+                  {ordine.id_ordine}
+                </p>
+                {titolo === "Oggi" ? (
+                  <p className=" select-none pointer-events-none font-bold text-marroneScuro">
+                    {ordine.ora_consegna.split(":").slice(0, 2).join(":")}
+                  </p>
+                ) : (
+                  <p className=" select-none pointer-events-none font-bold text-marroneScuro">
+                    {ordine.data.split("T")[0]}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center">
+                <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro mr-[10px]">
+                  x{ordine.num_prodotti}
+                </p>
+                <img
+                  src={hostnameProductor + "/goBack.png"}
+                  className={
+                    ordineCliccato === ordine
+                      ? "w-[20px] rotate-90 select-none pointer-events-none"
+                      : "w-[20px] -rotate-90 select-none pointer-events-none"
+                  }
+                  style={{
+                    filter:
+                      "brightness(0) saturate(100%) invert(17%) sepia(13%) saturate(1594%) hue-rotate(318deg) brightness(99%) contrast(84%)",
+                  }}
+                />
+              </div>
+            </div>
+            {ordineCliccato === ordine ? (
+              <div className="bg-gialloSfondo" style={css.aperto}>
+                {prodotti.map((prodotto: any) => {
+                  return (
+                    <div className="flex items-center">
+                      <div className="w-1/3 justify-center flex">
+                        <img
+                          src={hostnameProductor + prodotto.indirizzo_img}
+                          className="pl-[1svw] w-[7svw] select-none pointer-events-none"
+                        />
+                      </div>
+                      <div className="w-1/3 justify-center flex">
+                        <p className="font-bold text-marroneScuro text-xl select-none pointer-events-none">
+                          {prodotto.nome}
+                        </p>
+                      </div>
+                      <div className="w-1/3 justify-center flex">
+                        <p className="font-bold text-marroneScuro text-xl select-none pointer-events-none">
+                          {prodotto.quantita}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+        );
       })}
     </div>
   );
@@ -134,6 +148,7 @@ const CompletedOrders = () => {
               scrollbarWidth: "none",
               border: "10px solid #608b46",
             }}
+            className="flex flex-row justify-between"
           >
             <TabellaOrdini
               ordineCliccato={ordineCliccato}
@@ -142,6 +157,14 @@ const CompletedOrders = () => {
               prodotti={prodotti}
               setProdotti={setProdotti}
               titolo="Oggi"
+            />
+            <TabellaOrdini
+              ordineCliccato={ordineCliccato}
+              setOrdineCliccato={setOrdineCliccato}
+              ordini={dati}
+              prodotti={prodotti}
+              setProdotti={setProdotti}
+              titolo="Passato"
             />
           </div>
         </div>
