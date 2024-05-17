@@ -194,6 +194,13 @@ const App = () => {
         path: "*",
         loader: () => redirect("/productorHome"),
       },
+      {
+        path: "/login",
+        element: <LoginPage />,
+        loader: () => ({
+          refreshStorage: refreshStorage,
+        }),
+      },
     ]);
   } else {
     router = createBrowserRouter([

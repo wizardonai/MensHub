@@ -111,6 +111,11 @@ const ProfileProductor = () => {
                   boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
                 }}
                 className="w-[22.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("login");
+                  navigate(`/login`);
+                }}
               >
                 <p className="font-bold text-lg text-marroneScuro ml-[8px] w-3/5">
                   Logout account
