@@ -12,6 +12,9 @@ import nodemailer from "nodemailer";
 sharp.cache({ files: 0 });
 
 let connection = "";
+const ip = "http://172.20.10.3";
+const porta = ":6969";
+const url = ip + porta;
 
 const { json, urlencoded } = bodyParser;
 const server = express();
@@ -74,13 +77,7 @@ server.use(urlencoded({ extended: false }));
 
 //deploy react
 server.use("/image", express.static("./image"));
-server.use(express.static("../client/build"));
-
-//all methods that return a response to the client
-server.get("/", (req, res) => {
-	//hosto la pagina sullo stesso sito
-	res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
-});
+server.use(express.static("../cliente/build"));
 
 server.post("/request/products", (req, res) => {
 	let token = req.headers.authorization;
@@ -411,7 +408,8 @@ server.post("/recover/password", (req, res) => {
 				{ expiresIn: "1h" }
 			);
 
-			let link = "http://192.168.1.147:3000/changepwd/" + token;
+			let link = url + "/changepwd/" + token;
+			console.log(link);
 			transporter.sendMail(
 				{
 					from: "menshub@outlook.it",
@@ -1496,7 +1494,6 @@ function renameImage(nome_file, id_prodotto) {
 	});
 }
 
-const port = 6969;
-server.listen(port, () => {
-	console.log("http://localhost:" + port);
+server.listen(6969, () => {
+	console.log("http://localhost:6969");
 });

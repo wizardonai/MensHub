@@ -201,12 +201,12 @@ const CarouselPrevious = React.forwardRef<
 	return (
 		<Button
 			ref={ref}
-			variant={variant}
 			size={size}
+			variant='indietro'
 			className={cn(
-				"absolute  h-8 w-8 rounded-full",
+				"absolute h-8 w-8 rounded-full bg-biancoLatte border-2 border-marrone flex justify-center items-center",
 				orientation === "horizontal"
-					? "-left-12 top-1/2 -translate-y-1/2"
+					? "-left-10 top-1/2 -translate-y-1/2"
 					: "-top-12 left-1/2 -translate-x-1/2 rotate-90",
 				className
 			)}
@@ -214,7 +214,8 @@ const CarouselPrevious = React.forwardRef<
 			onClick={scrollPrev}
 			{...props}
 		>
-			<ArrowLeftIcon className='h-4 w-4' />
+			{/* <ArrowLeftIcon className='h-4 w-4' /> */}
+			<p className='text-marrone text-xl'>{"<"}</p>
 			<span className='sr-only'>Previous slide</span>
 		</Button>
 	);
@@ -230,12 +231,12 @@ const CarouselNext = React.forwardRef<
 	return (
 		<Button
 			ref={ref}
-			variant={variant}
+			variant='avanti'
 			size={size}
 			className={cn(
-				"absolute h-8 w-8 rounded-full",
+				"absolute h-8 w-8 rounded-full bg-biancoLatte border-2 border-marrone flex justify-center items-center",
 				orientation === "horizontal"
-					? "-right-12 top-1/2 -translate-y-1/2"
+					? "-right-10 top-1/2 -translate-y-1/2"
 					: "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
 				className
 			)}
@@ -243,7 +244,8 @@ const CarouselNext = React.forwardRef<
 			onClick={scrollNext}
 			{...props}
 		>
-			<ArrowRightIcon className='h-4 w-4' />
+			{/* <ArrowRightIcon className='h-4 w-4' /> */}
+			<p className='text-marrone text-xl'>{">"}</p>
 			<span className='sr-only'>Next slide</span>
 		</Button>
 	);

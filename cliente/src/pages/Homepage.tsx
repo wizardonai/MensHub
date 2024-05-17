@@ -20,13 +20,13 @@ const Listone = ({
 	filtro,
 }: {
 	filteredProducts: Array<prodotto>;
-	filtro: string;
+	filtro: { nome: string; img: string };
 }) => {
 	const navigate = useNavigate();
 
 	// eslint-disable-next-line
 	return filteredProducts.map((item) => {
-		if (filtro === "" || item.categoria === filtro) {
+		if (filtro.nome === "" || item.categoria === filtro.nome) {
 			return (
 				<div
 					className='w-[42%] text-center flex flex-col justify-end items-center mb-3 ombraLista'
@@ -148,7 +148,10 @@ const Filtri = ({
 	setFiltro,
 	possibiliFiltri,
 }: {
-	filtro: string;
+	filtro: {
+		nome: string;
+		img: string;
+	};
 	setFiltro: Function;
 	possibiliFiltri: Array<any>;
 }) => {
@@ -169,14 +172,21 @@ const Filtri = ({
 			filtroDivCliccato = filtroDivCliccato.parentNode;
 		}
 
-		setFiltro(
-			filtro === ""
-				? filtroDivCliccato.children["filtroDaApplicare"].innerHTML
-				: ""
-		);
+		setFiltro({
+			nome:
+				filtro.nome === ""
+					? filtroDivCliccato.children["filtroDaApplicare"].innerHTML
+					: "",
+			img:
+				filtro.nome === ""
+					? filtroDivCliccato.children["divImgDaApplicare"].children[
+							"imgDaApplicare"
+					  ].src
+					: "",
+		});
 	};
 
-	if (filtro === "") {
+	if (filtro.nome === "") {
 		return possibiliFiltri.map((item, index) => {
 			return (
 				<div
@@ -187,9 +197,15 @@ const Filtri = ({
 				>
 					<div
 						className='rounded-[50%] bg-[#fbfcfe] h-[40px] w-[40px] flex justify-center items-center mr-1'
-						id=''
+						id='divImgDaApplicare'
 					>
-						<LazyLoadImage src={item[1]} alt='' width={32} height={32} id='' />
+						<LazyLoadImage
+							src={item[1]}
+							alt=''
+							width={32}
+							height={32}
+							id='imgDaApplicare'
+						/>
 					</div>
 					<p
 						className='text-marrone capitalize text-[16px]'
@@ -204,7 +220,7 @@ const Filtri = ({
 		return (
 			<div
 				className='h-[45px] rounded-3xl flex justify-center items-center flex-row px-[2.5px] pr-[5px] mx-[15px] bg-arancioneScuro'
-				key={findIndex(filtro)}
+				key={findIndex(filtro.nome)}
 				onClick={filtroCliccato}
 				id='divFiltro'
 			>
@@ -213,7 +229,7 @@ const Filtri = ({
 					id=''
 				>
 					<LazyLoadImage
-						src={possibiliFiltri[findIndex(filtro)][1]}
+						src={filtro.img}
 						alt=''
 						className='h-[32px] w-[32px]'
 						id=''
@@ -223,7 +239,7 @@ const Filtri = ({
 					className='text-marrone capitalize text-[16px]'
 					id='filtroDaApplicare'
 				>
-					{filtro}
+					{filtro.nome}
 				</p>
 			</div>
 		);
@@ -248,18 +264,13 @@ const Searchbar = ({
 			products.forEach((item) => {
 				let arr = item.nome.toLowerCase().split(" ");
 
-				let trovato = false;
-
-				for (let i = 0; i < arr.length && !trovato; i++) {
+				for (let i = 0; i < arr.length; i++) {
 					if (arr[i].slice(0, strSrc.length) === strSrc) {
-						trovato = true;
+						lista.push(item);
+						break;
 					} else {
-						trovato = false;
+						break;
 					}
-				}
-
-				if (trovato) {
-					lista.push(item);
 				}
 			});
 
@@ -351,7 +362,7 @@ const Homepage = ({
 		[] as Array<prodotto>
 	);
 	const navigate = useNavigate();
-	const [filtro, setFiltro] = useState("");
+	const [filtro, setFiltro] = useState({ nome: "", img: "" });
 	const [possibiliFiltri, setPossibiliFiltri] = useState([
 		["antipasto", antipastoImg],
 		["primo", primoImg],

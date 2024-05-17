@@ -7,16 +7,12 @@ import { sendOrder } from "../scripts/fetch";
 import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useNavigate } from "react-router-dom";
 import {
 	Drawer,
 	DrawerClose,
 	DrawerContent,
-	DrawerFooter,
-	DrawerHeader,
 	DrawerTrigger,
 } from "../components/shadcn/Drawer";
-import { Button } from "../components/shadcn/Button";
 
 const Elemento = ({
 	item,
@@ -256,7 +252,7 @@ const Cart = ({ setLoggato }: { setLoggato: Function }) => {
 
 	return (
 		<>
-			<Topbar page='cart' name={""} />
+			<Topbar page='carrello' name={""} />
 			<Container>
 				<div className='h-[92%] w-full flex items-center flex-col overflow-y-scroll'>
 					<div className='w-[80%]'>
@@ -270,24 +266,17 @@ const Cart = ({ setLoggato }: { setLoggato: Function }) => {
 					<Drawer>
 						<DrawerTrigger
 							className='bg-[#5c8c46] p-[6px] px-6 rounded-3xl text-background text-xl'
-							onClick={() => {
-								if (carrello.length === 0) {
-									toast.error("Il carrello è vuoto");
-									return;
-								}
-							}}
+							disabled={carrello.length === 0}
 						>
 							Ordina
 						</DrawerTrigger>
 						<DrawerContent>
 							<div className='w-full flex flex-col items-center justify-evenly h-40'>
 								<p className='text-xl'>Sicuro di voler ordinare?</p>
-								<p className='text-lg mt-1'>Totale: {totale}€</p>
-								<div className='flex flex-row items-center justify-evenly w-full mt-2'>
-									<DrawerClose>
-										<Button variant='indietro' className='rounded-2xl'>
-											Annulla
-										</Button>
+								<p className='text-lg mt-1'>Totale: {totale.toFixed(2)}€</p>
+								<div className='flex flex-row items-center justify-evenly mt-2 w-[65%]'>
+									<DrawerClose className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-5 bg-biancoLatte text-marrone border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'>
+										Annulla
 									</DrawerClose>
 									<DrawerClose
 										onClick={() => {
@@ -302,13 +291,13 @@ const Cart = ({ setLoggato }: { setLoggato: Function }) => {
 												if (res.toString() === "Ordine aggiunto") {
 													localStorage.setItem("cart", "[]");
 													setCarrello([]);
-												}
+													toast.info("Ordine effettuato");
+												} else toast.error(res + "");
 											});
 										}}
+										className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-marrone text-biancoLatte border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'
 									>
-										<Button variant='avanti' className='rounded-2xl'>
-											Conferma
-										</Button>
+										Conferma
 									</DrawerClose>
 								</div>
 							</div>

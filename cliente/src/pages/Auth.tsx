@@ -4,7 +4,6 @@ import imgSopra from "../img/sopra_benvenuto.png";
 import imgSotto from "../img/sotto_login.png";
 import { Button } from "../components/shadcn/Button";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { dataLog, dataMensa, dataReg, mensa, sleep } from "../utils";
 import {
 	getMense,
@@ -39,7 +38,6 @@ const Login = ({
 	setLoggato: Function;
 	animazioniImmagini: Function;
 }) => {
-	const navigate = useNavigate();
 	const [pwdDimenticata, setPwdDimenticata] = useState(false);
 
 	const [data, setData] = useState({
@@ -63,7 +61,6 @@ const Login = ({
 				return;
 			} else {
 				localStorage.setItem("token", res.token);
-				console.log(res.cliente);
 
 				if (res.cliente + "" === "1") {
 					localStorage.setItem("cart", JSON.stringify([]));
@@ -77,6 +74,7 @@ const Login = ({
 
 	useEffect(() => {
 		animazioniImmagini(45, 5, window.innerHeight);
+		//eslint-disable-next-line
 	}, []);
 
 	return (
@@ -189,6 +187,7 @@ const PasswordDimenticata = ({
 }) => {
 	const div = useRef(null);
 	const [email, setEmail] = useState("");
+	const [emailInviata, setEmailInviata] = useState(false);
 
 	return (
 		<div className='flex flex-col w-full' ref={div}>
@@ -223,6 +222,8 @@ const PasswordDimenticata = ({
 							return;
 						}
 
+						setEmailInviata(true);
+
 						//chiamata al server
 						sendEmail(email).then((res) => {
 							if (res === "Email inviata con successo")
@@ -231,6 +232,7 @@ const PasswordDimenticata = ({
 						});
 					}}
 					className='w-1/2 rounded-3xl'
+					disabled={emailInviata}
 				>
 					Invia
 				</Button>
@@ -326,7 +328,7 @@ const ContattiMensa = ({
 				</Label>
 				<Input
 					id='email'
-					type='text'
+					type='email'
 					onChange={(e) => {
 						setData({ ...data, email: e.target.value });
 					}}
@@ -339,11 +341,12 @@ const ContattiMensa = ({
 					Telefono di contatto
 				</Label>
 				<Input
-					id='email'
-					type='telefono'
+					id='telefono'
+					type='tel'
 					onChange={(e) => {
 						setData({ ...data, telefono: e.target.value });
 					}}
+					pattern='[0-9]{10}'
 					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
 					defaultValue={data.telefono}
 				/>
@@ -562,6 +565,7 @@ const RegisterMensa = ({
 
 	useEffect(() => {
 		animazioniImmagini(40, 0, window.innerHeight);
+		//eslint-disable-next-line
 	}, []);
 
 	return (
@@ -623,7 +627,10 @@ const RegisterMensa = ({
 								toast.error("Compilare tutti i campi!");
 								return;
 							} else {
-								registerMensa(data).then((res) => {
+								registerMensa({
+									...data,
+									provincia: data.provincia.replace("'", "\\'"),
+								}).then((res) => {
 									if (typeof res === "string") {
 										toast.error(res);
 									} else {
@@ -655,10 +662,6 @@ const RegisterCliente = ({
 	setLogin: Function;
 	id_mensa: number;
 }) => {
-	const navigate = useNavigate();
-
-	const [error, setError] = useState("");
-
 	const [data, setData] = useState({
 		nome: "",
 		cognome: "",
@@ -674,23 +677,25 @@ const RegisterCliente = ({
 
 	if (mense.length === 0) {
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
-		getMense().then((res: any) => {
-			if (res === "nessuna mensa trovata") {
-				setMense([
-					{
-						id: -1,
-						indirizzo: "richiesto",
-						nome: "richiesto",
-					},
-				]);
-				toast.info("Nessuna mensa registrata\nReinderizzamento alla home...");
+		if (id_mensa === -1) {
+			getMense().then((res: any) => {
+				if (res === "nessuna mensa trovata") {
+					setMense([
+						{
+							id: -1,
+							indirizzo: "richiesto",
+							nome: "richiesto",
+						},
+					]);
+					toast.info("Nessuna mensa registrata\nReinderizzamento alla home...");
 
-				sleep(1500).then(() => {
-					animazioniImmagini(0, 15, window.innerHeight);
-					setLogin("?");
-				});
-			} else setMense(res);
-		});
+					sleep(1500).then(() => {
+						animazioniImmagini(0, 15, window.innerHeight);
+						setLogin("?");
+					});
+				} else setMense(res);
+			});
+		}
 
 		return <p>CARICAMENTO</p>;
 	}
@@ -702,9 +707,10 @@ const RegisterCliente = ({
 			data.cognome === "" ||
 			data.password === "" ||
 			data.confirm_password === "" ||
-			data.id_mensa === -1
+			data.id_mensa === -1 ||
+			data.id_mensa === undefined
 		) {
-			toast.error("Compilare tutti i campi!");
+			toast.error("Compilare tutti i campi!\nid_mensa:" + id_mensa);
 			return;
 		}
 
@@ -820,7 +826,6 @@ const RegisterCliente = ({
 						</Label>
 						<Select
 							onValueChange={(e: any) => {
-								console.log(e);
 								setData({ ...data, id_mensa: e });
 							}}
 						>
@@ -904,6 +909,7 @@ const SceltaUtente = ({
 
 	useEffect(() => {
 		animazioniImmagini(35, 0, window.innerHeight);
+		//eslint-disable-next-line
 	}, []);
 
 	return (
@@ -975,6 +981,7 @@ const SceltaUtente = ({
 const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 	const [login, setLogin] = useLocalStorage("login", "?");
 
+	//eslint-disable-next-line
 	const [images, setImages] = useState([useRef(null), useRef(null)]);
 	const divBenvenuto = useRef(null);
 	const divBottoni = useRef(null);

@@ -15,6 +15,7 @@ import Product from "./pages/Product";
 import { useState } from "react";
 import Auth from "./pages/Auth";
 import Pwdchange from "./pages/Pwdchange";
+import Tmp from "./pages/tmp";
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", "?");
@@ -57,10 +58,6 @@ function App() {
 		}
 
 		router = createBrowserRouter([
-			{
-				path: "/",
-				loader: () => redirect("/home"),
-			},
 			{
 				path: "/home",
 				element: <Homepage username={username} products={products} />,
@@ -113,7 +110,7 @@ function App() {
 		router = createBrowserRouter([
 			{
 				path: "/home",
-				element: <Homepage username={username} products={products} />,
+				element: <Tmp setLoggato={setLoggato} />,
 			},
 			{
 				path: "*",
@@ -141,7 +138,7 @@ function App() {
 				},
 			},
 			{
-				path: "*",
+				path: "/*",
 				loader: () => redirect("/auth"),
 			},
 		]);
