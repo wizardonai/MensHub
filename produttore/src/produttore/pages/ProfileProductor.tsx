@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import { getStatMensa, getTopProdotti } from "src/login/scripts/fetch";
@@ -14,6 +14,19 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { Label } from "@radix-ui/react-label";
+import { Button } from "src/shadcn/Button";
+import { Input } from "src/shadcn/Input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogHeader,
+} from "src/shadcn/Dialog";
+
 const ProfileProductor = () => {
   const dati: any = useLoaderData();
   const navigate = useNavigate();
@@ -22,6 +35,12 @@ const ProfileProductor = () => {
   const [ricarica, setRicarica] = useState<boolean>(true);
   const [topProdotti, setTopProdotti] = useState<any>([]);
   const [ordiniCompletati, setOrdiniCompletati] = useState<any>([]);
+  const [popupEmail, setPopupEmail] = useState<boolean>(false);
+  const nome = useRef<HTMLTextAreaElement>(null);
+  const cognome = useRef<HTMLTextAreaElement>(null);
+  const email = useRef<HTMLTextAreaElement>(null);
+  const password = useRef<HTMLTextAreaElement>(null);
+  const confermaPassword = useRef<HTMLTextAreaElement>(null);
 
   if (!dati) return <p>CARICAMENTO</p>;
 
@@ -44,6 +63,49 @@ const ProfileProductor = () => {
   }
 
   let count = 0;
+
+  const submitButton = () => {
+    let nomeValue = "";
+    if (nome.current) {
+      nomeValue = nome.current.value;
+    }
+
+    let cognomeValue = "";
+    if (cognome.current) {
+      cognomeValue = cognome.current.value;
+    }
+
+    let emailValue = "";
+    if (email.current) {
+      emailValue = email.current.value;
+    }
+
+    let passwordValue = "";
+    if (password.current) {
+      passwordValue = password.current.value;
+    }
+
+    let confermaPasswordValue = "";
+    if (confermaPassword.current) {
+      confermaPasswordValue = confermaPassword.current.value;
+    }
+
+    if (
+      nomeValue === "" ||
+      cognomeValue === "" ||
+      emailValue === "" ||
+      passwordValue === "" ||
+      confermaPasswordValue === ""
+    ) {
+      alert("Si prega di compilare tutti i campi.");
+      return;
+    }
+
+    if (passwordValue !== confermaPasswordValue) {
+      alert("Le password non corrispondono.");
+      return;
+    }
+  };
 
   return (
     <div className="page" style={css.page}>
@@ -93,24 +155,145 @@ const ProfileProductor = () => {
                   }}
                 />
               </div>
-              <div
-                style={{
-                  boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
-                }}
-                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
-              >
-                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
-                  Email collegate
-                </p>
-                <img
-                  src={hostnameProductor + "connected.png"}
-                  className="h-1/2"
-                  style={{
-                    filter:
-                      "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
-                  }}
-                />
-              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div
+                    style={{
+                      boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+                    }}
+                    className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                    onClick={() => {
+                      setPopupEmail(true);
+                    }}
+                  >
+                    <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
+                      Collega email
+                    </p>
+                    <img
+                      src={hostnameProductor + "connected.png"}
+                      className="h-1/2"
+                      style={{
+                        filter:
+                          "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                      }}
+                    />
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <div className="flex justify-center">
+                        <p className="font-bold text-marroneScuro text-xl">
+                          Collega email
+                        </p>
+                      </div>
+                    </DialogTitle>
+                    <DialogDescription>
+                      <div className="flex justify-center">
+                        Collega una email a questa mensa
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="nome" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Nome
+                        </p>
+                      </Label>
+                      <Input
+                        id="nome"
+                        placeholder=""
+                        type="text"
+                        defaultValue=""
+                        ref={
+                          nome as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="cognome" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Cognome
+                        </p>
+                      </Label>
+                      <Input
+                        id="cognome"
+                        placeholder=""
+                        type="text"
+                        defaultValue=""
+                        ref={
+                          cognome as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="email" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Email
+                        </p>
+                      </Label>
+                      <Input
+                        id="email"
+                        placeholder=""
+                        type="email"
+                        defaultValue=""
+                        ref={
+                          email as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="password" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Password
+                        </p>
+                      </Label>
+                      <Input
+                        id="password"
+                        placeholder=""
+                        type="password"
+                        defaultValue=""
+                        ref={
+                          password as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="confermaPassword" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Conferma password
+                        </p>
+                      </Label>
+                      <Input
+                        id="confermaPassword"
+                        placeholder=""
+                        type="password"
+                        defaultValue=""
+                        ref={
+                          confermaPassword as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <div className="w-[100%] flex justify-center">
+                      <Button
+                        type="submit"
+                        className="rounded-full bg-verdeBordo hover:bg-verdeBordoHover"
+                        onClick={submitButton}
+                      >
+                        Registrati
+                      </Button>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="flex mt-[10px]">
               <div
