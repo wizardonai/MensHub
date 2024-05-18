@@ -25,7 +25,7 @@ const HomePageProductor = ({
       ).then((data) => {
         setOrdini(data);
       });
-    }, 5000);
+    }, 2500);
     return () => clearInterval(interval);
   }, []);
 

@@ -25,8 +25,6 @@ const ProfileProductor = () => {
 
   if (!dati) return <p>CARICAMENTO</p>;
 
-  console.log(dati);
-
   if (ricarica) {
     getTopProdotti(
       JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
@@ -44,7 +42,6 @@ const ProfileProductor = () => {
     });
     setRicarica(false);
   }
-  console.log(ordiniCompletati);
 
   let count = 0;
 
@@ -73,28 +70,56 @@ const ProfileProductor = () => {
               {dati[0].indirizzo}
             </p>
           </div>
-          <div className="pt-[15px] w-1/2">
-            <div
-              style={{
-                boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
-              }}
-              className="w-[50%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
-              onClick={() => {
-                navigate("/completedOrders");
-              }}
-            >
-              <p className="font-bold text-2xl text-marroneScuro">
-                Ordini completati
-              </p>
+          <div className="pt-[15px] w-1/2 ">
+            <div className="flex">
+              <div
+                style={{
+                  boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+                }}
+                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                onClick={() => {
+                  navigate("/completedOrders");
+                }}
+              >
+                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
+                  Ordini completati
+                </p>
+                <img
+                  src={hostnameProductor + "check.png"}
+                  className="h-1/2"
+                  style={{
+                    filter:
+                      "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+                }}
+                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+              >
+                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
+                  Email collegate
+                </p>
+                <img
+                  src={hostnameProductor + "connected.png"}
+                  className="h-1/2"
+                  style={{
+                    filter:
+                      "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                  }}
+                />
+              </div>
             </div>
             <div className="flex mt-[10px]">
               <div
                 style={{
                   boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
                 }}
-                className="w-[22.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
               >
-                <p className="font-bold text-lg text-marroneScuro ml-[8px] w-3/5">
+                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
                   Elimina account
                 </p>
                 <img
@@ -110,14 +135,14 @@ const ProfileProductor = () => {
                 style={{
                   boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
                 }}
-                className="w-[22.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
                 onClick={() => {
                   localStorage.removeItem("token");
                   localStorage.removeItem("login");
                   navigate(`/login`);
                 }}
               >
-                <p className="font-bold text-lg text-marroneScuro ml-[8px] w-3/5">
+                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
                   Logout account
                 </p>
                 <img
@@ -173,20 +198,34 @@ const ProfileProductor = () => {
                 (item: any) => (
                   count++,
                   (
-                    <div key={item.id} className="flex mt-[3px]">
-                      {count < 4 ? (
-                        <img
-                          src={hostnameProductor + "ranking/" + count + ".png"}
-                          className="h-[25px]"
-                        />
-                      ) : (
-                        <p className="font-bold text-lg text-arancioneChiaro">
-                          {count}
+                    <div
+                      key={item.id}
+                      className="flex w-[70%] mt-[3px] border-b-2 border-marroneScuro pb-1"
+                    >
+                      <div className="flex justify-center w-[10%]">
+                        {count < 4 ? (
+                          <img
+                            src={
+                              hostnameProductor + "ranking/" + count + ".png"
+                            }
+                            className="w-[27px] h-[35px] py-[10%]"
+                          />
+                        ) : (
+                          <p className="font-bold text-xl text-marroneScuro">
+                            {count}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex w-[60%] ml-[3%]">
+                        <p className="font-bold text-xl text-marroneScuro pl-[5px]">
+                          {item.nome}
                         </p>
-                      )}
-                      <p className="font-bold text-lg text-marroneScuro pl-[5px]">
-                        {item.nome}
-                      </p>
+                      </div>
+                      <div className="flex justify-center w-8">
+                        <p className="font-bold text-xl text-marroneScuro ml-[9svw]">
+                          {item.num_acquisti}
+                        </p>
+                      </div>
                     </div>
                   )
                 )
