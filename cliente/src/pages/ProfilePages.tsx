@@ -14,9 +14,13 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 const CronologiaAcquistiPage = ({
 	products,
 	setLoggato,
+	setDatiUtente,
+	setProducts,
 }: {
 	products: Array<prodotto>;
 	setLoggato: Function;
+	setDatiUtente: Function;
+	setProducts: Function;
 }) => {
 	const [chiesto, setChiesto] = useState(false);
 	const [cronologia, setCronologia] = useState([] as Array<ordine>);
@@ -28,6 +32,13 @@ const CronologiaAcquistiPage = ({
 			if (res === "Token non valido") {
 				setLoggato(false);
 				return;
+			}
+			if (res === "Mensa preferita cancellata") {
+				localStorage.removeItem("cart");
+				localStorage.removeItem("token");
+				setDatiUtente({} as typeProfilo);
+				setProducts([]);
+				setLoggato("false");
 			}
 			if (typeof res !== "string" && res.length > 0) {
 				setCronologia(
@@ -128,9 +139,13 @@ const CronologiaAcquistiPage = ({
 const ProfilePages = ({
 	products,
 	setLoggato,
+	setDatiUtente,
+	setProducts,
 }: {
 	products: Array<prodotto>;
 	setLoggato: Function;
+	setDatiUtente: Function;
+	setProducts: Function;
 }) => {
 	const { page } = useParams<{ page: string }>();
 
@@ -141,7 +156,12 @@ const ProfilePages = ({
 	switch (page) {
 		case pagine[0]:
 			return (
-				<CronologiaAcquistiPage products={products} setLoggato={setLoggato} />
+				<CronologiaAcquistiPage
+					products={products}
+					setLoggato={setLoggato}
+					setDatiUtente={setDatiUtente}
+					setProducts={setProducts}
+				/>
 			);
 		default:
 			return <p>PAGINA NON TROVATA!</p>;

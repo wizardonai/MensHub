@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Container, Navbar, Topbar } from "../components/Components";
-import { Nullable, prodottoCarrello, urlImg } from "../utils";
+import { Nullable, prodottoCarrello, typeProfilo, urlImg } from "../utils";
 
 import deleteImg from "../img/delete.webp";
 import { sendOrder } from "../scripts/fetch";
@@ -235,7 +235,15 @@ const Lista = ({
 	));
 };
 
-const Cart = ({ setLoggato }: { setLoggato: Function }) => {
+const Cart = ({
+	setLoggato,
+	setDatiUtente,
+	setProducts,
+}: {
+	setLoggato: Function;
+	setDatiUtente: Function;
+	setProducts: Function;
+}) => {
 	const [carrello, setCarrello] = useState(
 		JSON.parse(localStorage.getItem("cart") || "{}") as Array<prodottoCarrello>
 	);
@@ -286,6 +294,14 @@ const Cart = ({ setLoggato }: { setLoggato: Function }) => {
 											).then((res: any) => {
 												if (res === "Token non valido") {
 													setLoggato(false);
+													return;
+												}
+												if (res === "Mensa preferita cancellata") {
+													localStorage.removeItem("cart");
+													localStorage.removeItem("token");
+													setDatiUtente({} as typeProfilo);
+													setProducts([]);
+													setLoggato("false");
 													return;
 												}
 												if (res.toString() === "Ordine aggiunto") {

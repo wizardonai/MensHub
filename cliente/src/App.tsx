@@ -40,6 +40,14 @@ function App() {
 					localStorage.setItem("loggato", "false");
 					return;
 				}
+				if (res === "Mensa preferita cancellata") {
+					localStorage.removeItem("cart");
+					localStorage.removeItem("token");
+					setDatiUtente({} as typeProfilo);
+					setProducts([]);
+					setLoggato("false");
+					return;
+				}
 
 				setUsername(res.nome);
 				setDatiUtente(res);
@@ -64,7 +72,13 @@ function App() {
 			},
 			{
 				path: "/cart",
-				element: <Cart setLoggato={setLoggato} />,
+				element: (
+					<Cart
+						setLoggato={setLoggato}
+						setDatiUtente={setDatiUtente}
+						setProducts={setProducts}
+					/>
+				),
 			},
 			{
 				path: "/profile",
@@ -79,7 +93,14 @@ function App() {
 			},
 			{
 				path: "/profile/:page",
-				element: <ProfilePages products={products} setLoggato={setLoggato} />,
+				element: (
+					<ProfilePages
+						products={products}
+						setLoggato={setLoggato}
+						setDatiUtente={setDatiUtente}
+						setProducts={setProducts}
+					/>
+				),
 			},
 			{
 				path: "/product/:id",

@@ -353,22 +353,40 @@ server.post("/login/user", async function (req, res) {
 
 			if (result.length === 1) {
 				//bisogna creare tutti i dati di sessione per aprire la sessione con l'utente appunto
-				const token = jwt.sign(
-					{
-						id: result[0].id,
-						nome: result[0].nome,
-						cognome: result[0].cognome,
-						email: result[0].email,
-						id_mensa: result[0].id_mensa,
-					},
-					secretKey,
-					{ expiresIn: "1h" }
-				);
 
-				res.json({ token: token, cliente: result[0].cliente });
+				if (result[0].id_mensa == null) {
+					const token = jwt.sign(
+						{
+							id: result[0].id,
+							nome: result[0].nome,
+							cognome: result[0].cognome,
+							email: result[0].email,
+							id_mensa: 0,
+						},
+						secretKey,
+						{ expiresIn: "1h" }
+					);
 
-				res.send();
-				res.end();
+					res.json({ token: token, message: "Mensa preferita cancellata" });
+					res.send();
+					res.end();
+				} else {
+					const token = jwt.sign(
+						{
+							id: result[0].id,
+							nome: result[0].nome,
+							cognome: result[0].cognome,
+							email: result[0].email,
+							id_mensa: result[0].id_mensa,
+						},
+						secretKey,
+						{ expiresIn: "1h" }
+					);
+
+					res.json({ token: token });
+					res.send();
+					res.end();
+				}
 			} else {
 				res.send("Utente non trovato");
 				res.end();

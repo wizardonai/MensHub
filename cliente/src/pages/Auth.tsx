@@ -8,6 +8,7 @@ import { dataLog, dataMensa, dataReg, mensa, sleep } from "../utils";
 import {
 	getMense,
 	loginUser,
+	modifyMensa,
 	registerMensa,
 	registerUser,
 	sendEmail,
@@ -39,6 +40,10 @@ const Login = ({
 	animazioniImmagini: Function;
 }) => {
 	const [pwdDimenticata, setPwdDimenticata] = useState(false);
+	const [scegliMensa, setScegliMensa] = useState(false);
+	const [mense, setMense] = useState([] as Array<mensa>);
+	const [nuovaMensa, setNuovaMensa] = useState(-1);
+	const [token, setToken] = useState("");
 
 	const [data, setData] = useState({
 		email: "",
@@ -49,17 +54,72 @@ const Login = ({
 	const div2 = useRef(null);
 	const imgAngolo = useRef(null);
 
+	useEffect(() => {
+		if (!scegliMensa) return;
+
+		getMense().then((res: any) => {
+			setMense(res);
+		});
+	}, [scegliMensa]);
+
 	const submitLoginCliccato = () => {
 		if (data.email === "" || data.password === "") {
 			toast.error("Compilare tutti i campi!");
 			return;
 		}
 
-		loginUser(data).then((res: any) => {
-			if (typeof res === "string") {
-				toast.error(res);
+		if (scegliMensa) {
+			if (nuovaMensa === -1) {
+				toast.error("Scegliere una mensa!");
 				return;
-			} else {
+			}
+
+			modifyMensa(nuovaMensa, token).then((res) => {
+				loginUser(data).then((res: any) => {
+					if (
+						typeof res === "object" &&
+						res.message === "Mensa preferita cancellata"
+					) {
+						setToken(res.token);
+						setScegliMensa(true);
+						toast.error(
+							"La tua mensa preferita è stata cancellata!\nScegline un'altra"
+						);
+						return;
+					}
+					if (typeof res === "string") {
+						toast.error(res);
+						return;
+					}
+
+					localStorage.setItem("token", res.token);
+
+					if (res.cliente + "" === "1") {
+						localStorage.setItem("cart", JSON.stringify([]));
+						setLoggato("cliente");
+					} else {
+						setLoggato("produttore");
+					}
+				});
+			});
+		} else {
+			loginUser(data).then((res: any) => {
+				if (
+					typeof res === "object" &&
+					res.message === "Mensa preferita cancellata"
+				) {
+					setToken(res.token);
+					setScegliMensa(true);
+					toast.error(
+						"La tua mensa preferita è stata cancellata!\nScegline un'altra"
+					);
+					return;
+				}
+				if (typeof res === "string") {
+					toast.error(res);
+					return;
+				}
+
 				localStorage.setItem("token", res.token);
 
 				if (res.cliente + "" === "1") {
@@ -68,8 +128,8 @@ const Login = ({
 				} else {
 					setLoggato("produttore");
 				}
-			}
-		});
+			});
+		}
 	};
 
 	useEffect(() => {
@@ -98,7 +158,6 @@ const Login = ({
 					<div ref={div2}>
 						<div className='flex flex-col w-full'>
 							<div className='flex flex-col'>
-								{" "}
 								<Label htmlFor='email' className='text-marrone font-bold'>
 									Email
 								</Label>
@@ -124,6 +183,43 @@ const Login = ({
 									variant='inputMenshub'
 								/>
 							</div>
+							{scegliMensa ? (
+								<div className='flex flex-col'>
+									<Label
+										htmlFor='mensaprefe'
+										className='text-marrone font-bold'
+									>
+										Nuova mensa preferita
+									</Label>
+									<Select onValueChange={(e: any) => setNuovaMensa(e)}>
+										<SelectTrigger
+											id='mensaprefe'
+											className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone'
+										>
+											<SelectValue></SelectValue>
+										</SelectTrigger>
+										<SelectContent
+											ref={(ref) => {
+												if (!ref) return;
+												ref.ontouchstart = (e) => {
+													e.preventDefault();
+												};
+											}}
+											className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone'
+										>
+											{mense.map((item) => {
+												return (
+													<SelectItem value={item.id + ""} key={item.id}>
+														{item.nome}
+													</SelectItem>
+												);
+											})}
+										</SelectContent>
+									</Select>
+								</div>
+							) : (
+								""
+							)}
 							<div className='flex flex-col mt-1'>
 								<p
 									className='text-marrone text-base underline'

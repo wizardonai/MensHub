@@ -18,7 +18,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/shadcn/Select";
-import { getFilter, mensa, sleep, typeProfilo } from "../utils";
+import { mensa, sleep, typeProfilo } from "../utils";
 import { Button } from "../components/shadcn/Button";
 import { Label } from "../components/shadcn/Label";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -273,6 +273,7 @@ const MensaPreferita = ({
 							e.preventDefault();
 						};
 					}}
+					className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone'
 				>
 					{mense.map((item) => {
 						return (
