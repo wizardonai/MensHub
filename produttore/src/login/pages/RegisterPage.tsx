@@ -106,11 +106,8 @@ const RegisterPage = () => {
         email: valueEmail,
         password: valuePassword,
         confirm_password: valueConfermaPassowrd,
-        is_produttore: 1,
-        nome_mensa: valueNome,
-        indirizzo_mensa: valueIndirizzo,
-        email_mensa: valueEmail,
-        telefono_mensa: valueTelefono,
+        cliente: 0,
+        id_mensa: 0,
       }).then((res) => {
         if (res !== "Registrazione avvenuta con successo") {
           setErrore((prev) => ({

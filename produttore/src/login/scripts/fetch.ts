@@ -12,11 +12,8 @@ type datiReg = {
   email: string;
   password: string;
   confirm_password: string;
-  is_produttore: any;
-  nome_mensa: any;
-  indirizzo_mensa: any;
-  email_mensa: any;
-  telefono_mensa: any;
+  cliente: any;
+  id_mensa: any;
 };
 type datiLog = {
   email: string;

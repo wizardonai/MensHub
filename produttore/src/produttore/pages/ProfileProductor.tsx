@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
-import { getStatMensa, getTopProdotti } from "src/login/scripts/fetch";
+import {
+  getStatMensa,
+  getTopProdotti,
+  registerUser,
+} from "src/login/scripts/fetch";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import {
   BarChart,
@@ -59,6 +63,7 @@ const ProfileProductor = () => {
     ).then((res) => {
       setOrdiniCompletati(res);
     });
+
     setRicarica(false);
   }
 
@@ -105,6 +110,23 @@ const ProfileProductor = () => {
       alert("Le password non corrispondono.");
       return;
     }
+
+    registerUser({
+      nome: nomeValue,
+      cognome: cognomeValue,
+      email: emailValue,
+      password: passwordValue,
+      confirm_password: confermaPasswordValue,
+      cliente: 1,
+      id_mensa: dati[0].id,
+    }).then((res) => {
+      if (res === "Risposta Registrazione avvenuta con successo") {
+        alert("Utente registrato con successo");
+        setPopupEmail(false);
+      } else {
+        alert("Errore nella registrazione");
+      }
+    });
   };
 
   return (
@@ -343,7 +365,11 @@ const ProfileProductor = () => {
         <div className="flex pt-[20px]">
           <div className="w-1/2">
             <p className="font-bold text-2xl text-marroneScuro">
-              Totale vendite:
+              Totale vendite:{" "}
+              {ordiniCompletati.reduce(
+                (total: number, item: any) => total + item.vendite,
+                0
+              )}
             </p>
             <div className="flex">
               {periodo.map((item) => (
