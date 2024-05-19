@@ -5,15 +5,11 @@ import { useTheme } from "next-themes";
 import { prodotto } from "src/cliente/pages/Homepage";
 
 const SearchBar = ({
-  elencoProdotti,
-  stringaSearch,
-  setStringaSearch,
-  setProdottiDaStampare,
+  prodotti,
+  setProdottiFiltrati,
 }: {
-  elencoProdotti: any;
-  stringaSearch: string;
-  setStringaSearch: Function;
-  setProdottiDaStampare: Function;
+  prodotti: any;
+  setProdottiFiltrati: Function;
 }) => {
   const { resolvedTheme } = useTheme();
 
@@ -34,53 +30,36 @@ const SearchBar = ({
   //     //eslint-disable-next-line
   //   }, []);
 
-  function controlliSearch(e: any, effect: boolean) {
-    if (!effect) {
-      let str = e.target.value.toLowerCase();
-      setStringaSearch(str);
-      const nChar = str.length;
-      if (str.length > 0) {
-        let indici = [];
-        for (let i = 0; i < elencoProdotti.length; i++) {
-          let arr = elencoProdotti[i].nome.split(" ");
-          let arr2 = [];
-          if (arr.length === 1) {
-            arr2.push(arr[0]);
+  const onChangeSearch = (e: any) => {
+    const strSrc = e.target.value.toLowerCase();
+
+    if (strSrc.length > 0) {
+      let lista: Array<prodotto> = [];
+
+      prodotti.forEach((item: any) => {
+        let arr = item.nome.toLowerCase().split(" ");
+
+        let trovato = false;
+
+        for (let i = 0; i < arr.length && !trovato; i++) {
+          if (arr[i].slice(0, strSrc.length) === strSrc) {
+            trovato = true;
           } else {
-            let tmp: Array<string> = [];
-            arr.forEach((item: string) => {
-              let tmp2 = item.split("'");
-              tmp2.forEach((item2: string) => {
-                tmp.push(item2);
-              });
-            });
-            tmp.forEach((item) => {
-              arr2.push(item);
-            });
-          }
-          for (let j = 0; j < arr2.length; j++) {
-            if (arr2[j].slice(0, nChar) === str) {
-              indici.push(i);
-              break;
-            }
+            trovato = false;
           }
         }
-        let prodotti: Array<prodotto> = [];
-        indici.forEach((item) => {
-          prodotti.push(elencoProdotti[item]);
-        });
-        setProdottiDaStampare(prodotti);
-      } else {
-        setProdottiDaStampare(elencoProdotti);
-      }
+
+        if (trovato) {
+          lista.push(item);
+        }
+      });
+
+      setProdottiFiltrati(lista);
     } else {
-      setProdottiDaStampare(elencoProdotti);
+      setProdottiFiltrati(prodotti);
     }
-  }
-  useEffect(() => {
-    controlliSearch(null, true);
-    // eslint-disable-next-line
-  }, []);
+  };
+
   //
   //
   // stili
@@ -133,28 +112,11 @@ const SearchBar = ({
   };
 
   return (
-    // <div style={css.divSearchBar}>
-    //   <img
-    //     src={hostnameProductor + "search.png"}
-    //     alt=""
-    //     style={css.bottoneCerca}
-    //   />
-    //   <input
-    //     type="text"
-    //     placeholder="Cerca prodotti..."
-    //     // @ts-ignore
-    //     onChange={controlliSearch}
-    //     value={stringaSearch}
-    //     style={css.searchBar}
-    //     // @ts-ignore
-    //     onClick={controlliSearch}
-    //   />
-    // </div>
-
     <div className="flex">
       <input
         type="text"
         placeholder="Cerca prodotti..."
+        onChange={onChangeSearch}
         className="bg-gialloSfondo border-[3px] border-arancioneBordoHover rounded-3xl w-[17svw] h-[7svh] text-xl pl-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gialloSfondoHover"
         style={{
           clipPath: "polygon(0 0, 90% 0, 80% 100%, 0 100%)",

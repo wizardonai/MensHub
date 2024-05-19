@@ -36,7 +36,7 @@ const Prodotti = ({
   setProdotti: Function;
 }) => {
   const [popup, setPopup] = useState(false);
-  const nome = useRef(null);
+  console.log(dati);
 
   const filtri = categorie.map((categoria: any) => ({
     nome: categoria.nome,
@@ -153,7 +153,7 @@ const Prodotti = ({
                     <div className="mt-[10px]">
                       <p>
                         {item.nome} <br />
-                        {item.prezzo}€
+                        {item.prezzo.toFixed(2)}€
                       </p>
                     </div>
                   </div>
@@ -197,9 +197,8 @@ const MenuPageProductor = ({
   setProdotti: Function;
 }) => {
   const [filtro, setFiltro] = useState("");
-  const [ricerca, setRicerca] = useState("");
-
-  console.log(prodotti);
+  const [prodottiFiltrati, setProdottiFiltrati] = useState<any>([]);
+  console.log(prodottiFiltrati);
 
   //ordina i dati in base alla categoria segue l'ordine di filtri
   prodotti.sort((a: prodotto, b: prodotto) => {
@@ -217,10 +216,8 @@ const MenuPageProductor = ({
       <div style={css.centerPage}>
         <div style={css.ricerca}>
           <SearchBar
-            elencoProdotti={prodotti}
-            stringaSearch={ricerca}
-            setStringaSearch={setRicerca}
-            setProdottiDaStampare={setProdotti}
+            prodotti={prodotti}
+            setProdottiFiltrati={setProdottiFiltrati}
           />
         </div>
         <div style={css.divCategorie}>
@@ -229,7 +226,7 @@ const MenuPageProductor = ({
         <div style={css.container}>
           <Prodotti
             filtro={filtro}
-            dati={prodotti}
+            dati={prodottiFiltrati}
             categorie={categorie}
             allergeni={allergeni}
             prodotti={prodotti}
