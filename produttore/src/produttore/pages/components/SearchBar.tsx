@@ -1,5 +1,5 @@
 //css
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrayProdotti, hostnameProductor, styleMap } from "../../../App";
 import { useTheme } from "next-themes";
 import { prodotto } from "src/cliente/pages/Homepage";
@@ -7,57 +7,18 @@ import { prodotto } from "src/cliente/pages/Homepage";
 const SearchBar = ({
   prodotti,
   setProdottiFiltrati,
+  strSrc,
+  setStrSrc,
 }: {
   prodotti: any;
   setProdottiFiltrati: Function;
+  strSrc: string;
+  setStrSrc: Function;
 }) => {
   const { resolvedTheme } = useTheme();
 
-  //   elencoProdotti.map((item: prodotto, index: number) => {
-  //     console.log(item);
-  //   });
-
-  //   useEffect(() => {
-  //     elencoProdotti.prodotti.sort((a, b) => {
-  //       if (a.nome > b.nome) {
-  //         return 1;
-  //       }
-  //       if (a.nome < b.nome) {
-  //         return -1;
-  //       }
-  //       return 0;
-  //     });
-  //     //eslint-disable-next-line
-  //   }, []);
-
   const onChangeSearch = (e: any) => {
-    const strSrc = e.target.value.toLowerCase();
-
-    if (strSrc.length > 0) {
-      let lista: Array<prodotto> = [];
-
-      prodotti.forEach((item: any) => {
-        let arr = item.nome.toLowerCase().split(" ");
-
-        let trovato = false;
-
-        for (let i = 0; i < arr.length && !trovato; i++) {
-          if (arr[i].slice(0, strSrc.length) === strSrc) {
-            trovato = true;
-          } else {
-            trovato = false;
-          }
-        }
-
-        if (trovato) {
-          lista.push(item);
-        }
-      });
-
-      setProdottiFiltrati(lista);
-    } else {
-      setProdottiFiltrati(prodotti);
-    }
+    setStrSrc(e.target.value.toLowerCase());
   };
 
   //

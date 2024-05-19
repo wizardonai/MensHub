@@ -62,6 +62,9 @@ const ProfileProductor = () => {
       periodoCliccato
     ).then((res) => {
       setOrdiniCompletati(res);
+      if (res === "Non sono presenti dati") {
+        setOrdiniCompletati([]);
+      }
     });
 
     setRicarica(false);

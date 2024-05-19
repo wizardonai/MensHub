@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import { useLoaderData } from "react-router-dom";
@@ -7,6 +7,7 @@ import { Input } from "src/shadcn/Input";
 import Filtri from "./components/Filtri";
 import Popup from "./components/Popup";
 import SearchBar from "./components/SearchBar";
+import { getProdotti } from "src/login/scripts/fetch";
 
 interface TruncateTextProps {
   text: string;
@@ -36,7 +37,6 @@ const Prodotti = ({
   setProdotti: Function;
 }) => {
   const [popup, setPopup] = useState(false);
-  console.log(dati);
 
   const filtri = categorie.map((categoria: any) => ({
     nome: categoria.nome,
@@ -153,7 +153,7 @@ const Prodotti = ({
                     <div className="mt-[10px]">
                       <p>
                         {item.nome} <br />
-                        {item.prezzo.toFixed(2)}€
+                        {item.prezzo}€
                       </p>
                     </div>
                   </div>
@@ -188,17 +188,59 @@ const Prodotti = ({
 const MenuPageProductor = ({
   categorie,
   allergeni,
-  prodotti,
-  setProdotti,
 }: {
   categorie: any;
   allergeni: any;
-  prodotti: any;
-  setProdotti: Function;
 }) => {
   const [filtro, setFiltro] = useState("");
   const [prodottiFiltrati, setProdottiFiltrati] = useState<any>([]);
-  console.log(prodottiFiltrati);
+  const [prodotti, setProdotti] = useState<any>([]);
+  const [strSrc, setStrSrc] = useState("");
+
+  useEffect(() => {
+    getProdotti(
+      JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+    ).then((res: any) => {
+      if (res === "Token non valido") {
+        localStorage.removeItem("cart");
+        localStorage.removeItem("token");
+        localStorage.setItem("loggato", "false");
+      } else {
+        setProdotti(res);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    // Questo effetto verrà eseguito ogni volta che `prodotti` cambia
+    setStrSrc(strSrc.toLocaleLowerCase());
+
+    if (strSrc.length > 0) {
+      let lista: Array<prodotto> = [];
+
+      prodotti.forEach((item: any) => {
+        let arr = item.nome.toLowerCase().split(" ");
+
+        let trovato = false;
+
+        for (let i = 0; i < arr.length && !trovato; i++) {
+          if (arr[i].slice(0, strSrc.length) === strSrc) {
+            trovato = true;
+          } else {
+            trovato = false;
+          }
+        }
+
+        if (trovato) {
+          lista.push(item);
+        }
+      });
+
+      setProdottiFiltrati(lista);
+    } else {
+      setProdottiFiltrati(prodotti);
+    }
+  }, [strSrc]);
 
   //ordina i dati in base alla categoria segue l'ordine di filtri
   prodotti.sort((a: prodotto, b: prodotto) => {
@@ -218,6 +260,8 @@ const MenuPageProductor = ({
           <SearchBar
             prodotti={prodotti}
             setProdottiFiltrati={setProdottiFiltrati}
+            setStrSrc={setStrSrc}
+            strSrc={strSrc}
           />
         </div>
         <div style={css.divCategorie}>
@@ -226,7 +270,7 @@ const MenuPageProductor = ({
         <div style={css.container}>
           <Prodotti
             filtro={filtro}
-            dati={prodottiFiltrati}
+            dati={strSrc === "" ? prodotti : prodottiFiltrati}
             categorie={categorie}
             allergeni={allergeni}
             prodotti={prodotti}

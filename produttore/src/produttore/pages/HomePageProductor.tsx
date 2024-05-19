@@ -18,6 +18,14 @@ const HomePageProductor = ({
   const [isDragging, setIsDragging] = useState(false);
   const [prodotti, setProdotti] = useState<any>([]);
 
+  if (ordini.length === 0) {
+    getOrdini(
+      JSON.parse(localStorage.getItem("token") || '{"token":"lucasuperchicco"}')
+    ).then((data) => {
+      setOrdini(data);
+    });
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       getOrdini(

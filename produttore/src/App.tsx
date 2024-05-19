@@ -84,22 +84,6 @@ const App = () => {
     return localStorage.getItem("login");
   };
 
-  if (prodotti.length === 0) {
-    const fetchProdotti = async () => {
-      getProdotti(
-        JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
-      ).then((res: any) => {
-        if (res === "Token non valido") {
-          localStorage.removeItem("cart");
-          localStorage.removeItem("token");
-          localStorage.setItem("loggato", "false");
-        }
-        setProdotti(res);
-      });
-    };
-    fetchProdotti();
-  }
-
   if (categorie.length === 0) {
     const fetchCategories = async () => {
       getCategorie(
@@ -157,12 +141,7 @@ const App = () => {
       {
         path: "/productorMenu",
         element: (
-          <MenuPageProductor
-            allergeni={allergeni}
-            categorie={categorie}
-            prodotti={prodotti}
-            setProdotti={setProdotti}
-          />
+          <MenuPageProductor allergeni={allergeni} categorie={categorie} />
         ),
         loader: async () => {
           return getProdotti(
