@@ -18,9 +18,11 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 const Listone = ({
 	filteredProducts,
 	filtro,
+	setCarrello,
 }: {
 	filteredProducts: Array<prodotto>;
 	filtro: { nome: string; img: string };
+	setCarrello: Function;
 }) => {
 	const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ const Listone = ({
 		if (filtro.nome === "" || item.categoria === filtro.nome) {
 			return (
 				<div
-					className='w-[42%] text-center flex flex-col justify-end items-center mb-3 ombraLista'
+					className='w-[42%] text-center flex flex-col justify-end items-center mb-3 ombraLista rounded-2xl'
 					key={item.id}
 					id='elementoCompleto'
 				>
@@ -37,7 +39,7 @@ const Listone = ({
 						{item.id}
 					</p>
 					<div
-						className='h-[90%] w-full bg-arancioneScuro flex flex-col justify-end items-center'
+						className='h-[90%] w-full bg-arancioneScuro flex flex-col justify-end items-center rounded-2xl'
 						id=''
 					>
 						<div
@@ -120,13 +122,15 @@ const Listone = ({
 														return item;
 													}
 												});
-												localStorage.setItem(
-													"cart",
-													JSON.stringify(nuovoCarrello)
-												);
+												// localStorage.setItem(
+												// 	"cart",
+												// 	JSON.stringify(nuovoCarrello)
+												// );
+												setCarrello(nuovoCarrello);
 											} else {
 												carrello.push({ ...item, quantita: 1 });
-												localStorage.setItem("cart", JSON.stringify(carrello));
+												// localStorage.setItem("cart", JSON.stringify(carrello));
+												setCarrello(carrello);
 											}
 
 											toast.success("Aggiunto al carrello!");
@@ -353,9 +357,13 @@ const Searchbar = ({
 const Homepage = ({
 	username,
 	products,
+	setCarrello,
+	lunghezzaCarrello,
 }: {
 	username: string;
 	products: Array<prodotto>;
+	setCarrello: Function;
+	lunghezzaCarrello: number;
 }) => {
 	const [assegnato, setAssegnato] = useState(false);
 	const [filteredProducts, setFilteredProducts] = useState(
@@ -421,10 +429,14 @@ const Homepage = ({
 					className='w-full flex justify-evenly flex-row flex-wrap'
 					id='divListone'
 				>
-					<Listone filteredProducts={filteredProducts} filtro={filtro} />
+					<Listone
+						filteredProducts={filteredProducts}
+						filtro={filtro}
+						setCarrello={setCarrello}
+					/>
 				</div>
 			</Container>
-			<Navbar page='home' />
+			<Navbar page='home' lunghezzaCarrello={lunghezzaCarrello} />
 			<Toaster position='top-center' richColors />
 		</>
 	);

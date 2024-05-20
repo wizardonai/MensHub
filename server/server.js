@@ -12,7 +12,9 @@ import nodemailer from "nodemailer";
 sharp.cache({ files: 0 });
 
 let connection = "";
+
 const ip = "http://172.20.10.3";
+// const ip = "http://192.168.1.129";
 const porta = ":6969";
 const url = ip + porta;
 
@@ -106,24 +108,40 @@ server.post("/request/products", (req, res) => {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			idm_utente = decoded.id_mensa;
+			try {
+				const queryPromise = new Promise((resolve, reject) => {
+					checkMensaCancellata(decoded.id, resolve);
+				});
 
-			connection.query(
-				"SELECT * FROM prodotti where id_mensa=" +
-					idm_utente +
-					" ORDER BY nome",
-				(err, result) => {
-					if (err) throw new Error(err);
-					res.send(result);
-					res.end();
-				}
-			);
+				queryPromise.then((ris) => {
+					if (ris == false) {
+						res.send("Mensa preferita cancellata");
+						res.end();
+					} else {
+						idm_utente = decoded.id_mensa;
+
+						connection.query(
+							"SELECT * FROM prodotti where id_mensa=" +
+								idm_utente +
+								" ORDER BY nome",
+							(err, result) => {
+								if (err) throw new Error(err);
+								res.send(result);
+								res.end();
+							}
+						);
+					}
+				});
+			} catch (error) {
+				res.status(500).send("Errore del server");
+				res.end();
+			}
 		}
 	});
 });
 
 server.post("/request/mense", (req, res) => {
-	let query = `SELECT * FROM mense WHERE verificato=1;`;
+	let query = `SELECT * FROM mense WHERE verificato = 1;`;
 	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		if (result.length > 0) {
@@ -144,19 +162,35 @@ server.post("/request/mensa", (req, res) => {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			let id_mensa = decoded.id_mensa;
-			let query = `SELECT * FROM mense WHERE id=${id_mensa};`;
+			try {
+				const queryPromise = new Promise((resolve, reject) => {
+					checkMensaCancellata(decoded.id, resolve);
+				});
 
-			connection.query(query, (err, result) => {
-				if (err) throw new Error(err);
+				queryPromise.then((ris) => {
+					if (ris == false) {
+						res.send("Mensa preferita cancellata");
+						res.end();
+					} else {
+						let id_mensa = decoded.id_mensa;
+						let query = `SELECT * FROM mense WHERE id=${id_mensa};`;
 
-				if (result.length > 0) {
-					res.send(result);
-				} else {
-					res.send("Mensa non trovata");
-				}
+						connection.query(query, (err, result) => {
+							if (err) throw new Error(err);
+
+							if (result.length > 0) {
+								res.send(result);
+							} else {
+								res.send("Mensa non trovata");
+							}
+							res.end();
+						});
+					}
+				});
+			} catch (error) {
+				res.status(500).send("Errore del server");
 				res.end();
-			});
+			}
 		}
 	});
 });
@@ -166,8 +200,6 @@ server.post("/insert/mensa", (req, res) => {
 		req.body;
 
 	const query = `INSERT INTO mense (nome, indirizzo, regione, provincia, comune, cap, email, telefono) VALUES ('${nome}', '${indirizzo}', '${regione}', '${provincia}', '${comune}', ${cap}, '${email}', '${telefono}')`;
-
-	console.log(query);
 
 	// Esegui la query
 	connection.query(query, (error, result) => {
@@ -183,26 +215,23 @@ server.post("/insert/mensa", (req, res) => {
 server.post("/modify/mensa", (req, res) => {
 	let token = req.headers.authorization;
 	let id_mensa = req.body.id_mensa;
-	let decoded_tmp = "";
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			decoded_tmp = decoded;
-
-			let query = `UPDATE utenti SET id_mensa=${id_mensa} WHERE id=${decoded_tmp.id};`;
+			let query = `UPDATE utenti SET id_mensa=${id_mensa} WHERE id=${decoded.id};`;
 
 			connection.query(query, (err, result) => {
 				if (err) throw new Error(err);
 
 				const token = jwt.sign(
 					{
-						id: decoded_tmp.id,
-						nome: decoded_tmp.nome,
-						cognome: decoded_tmp.cognome,
-						email: decoded_tmp.email,
+						id: decoded.id,
+						nome: decoded.nome,
+						cognome: decoded.cognome,
+						email: decoded.email,
 						id_mensa: id_mensa,
 					},
 					secretKey,
@@ -256,30 +285,46 @@ server.post("/send/cart", (req, res) => {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			id_utente = decoded.id;
-
-			let data = req.body.carrello;
-
-			let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'attivo', ${id_utente});`;
-
-			connection.query(query, (err, result) => {
-				if (err) throw new Error(err);
-
-				const id_ordine = result.insertId;
-
-				let prodottiOrdiniQuery = `INSERT INTO prodotti_ordini (id_prodotto, id_ordine, quantita) VALUES`;
-
-				data.forEach((item, index) => {
-					prodottiOrdiniQuery += ` (${item.id}, ${id_ordine}, ${item.quantita})`;
-					if (index !== data.length - 1) prodottiOrdiniQuery += ",";
+			try {
+				const queryPromise = new Promise((resolve, reject) => {
+					checkMensaCancellata(decoded.id, resolve);
 				});
 
-				connection.query(prodottiOrdiniQuery, (err, result) => {
-					if (err) throw new Error(err);
-					res.send("Ordine aggiunto");
-					res.end();
+				queryPromise.then((ris) => {
+					if (ris == false) {
+						res.send("Mensa preferita cancellata");
+						res.end();
+					} else {
+						id_utente = decoded.id;
+
+						let data = req.body.carrello;
+
+						let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'attivo', ${id_utente});`;
+
+						connection.query(query, (err, result) => {
+							if (err) throw new Error(err);
+
+							const id_ordine = result.insertId;
+
+							let prodottiOrdiniQuery = `INSERT INTO prodotti_ordini (id_prodotto, id_ordine, quantita) VALUES`;
+
+							data.forEach((item, index) => {
+								prodottiOrdiniQuery += ` (${item.id}, ${id_ordine}, ${item.quantita})`;
+								if (index !== data.length - 1) prodottiOrdiniQuery += ",";
+							});
+
+							connection.query(prodottiOrdiniQuery, (err, result) => {
+								if (err) throw new Error(err);
+								res.send("Ordine aggiunto");
+								res.end();
+							});
+						});
+					}
 				});
-			});
+			} catch (error) {
+				res.status(500).send("Errore del server");
+				res.end();
+			}
 		}
 	});
 });
@@ -310,33 +355,30 @@ server.post("/register/user", async function (req, res) {
 	}
 	//controllo che la mail non sia già presente NON FUNZIONA NON CONCATENA EMAIL
 	let query = `SELECT * FROM utenti WHERE email="${email}";`;
-	connection.query(query, async (err, result) => {
+	connection.query(query, (err, result) => {
 		if (err) throw new Error(err);
 		if (result.length > 0) {
 			res.send("email già presente");
-			res.end();
-			return;
-		}
-
-		const { valid, reason, validators } = await validate(email);
-		let queryInsertUser;
-		if (valid) {
-			queryInsertUser = `INSERT INTO UTENTI (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${
-				cliente ? 1 : 0
-			});`;
-			console.log(queryInsertUser);
-			connection.query(queryInsertUser, (err, result) => {
-				if (err) throw new Error(err);
-				if (result) {
-					res.send("Registrazione avvenuta con successo");
-					res.end();
-				}
-			});
-		} else {
-			res.send("Email non valida!");
-			res.end();
+			res.end;
 		}
 	});
+
+	const { valid, reason, validators } = await validate(email);
+	let queryInsertUser;
+	if (valid) {
+		queryInsertUser = `INSERT INTO UTENTI (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${cliente});`;
+		console.log("caca" + queryInsertUser);
+		connection.query(queryInsertUser, (err, result) => {
+			if (err) throw new Error(err);
+			if (result) {
+				res.send("Registrazione avvenuta con successo");
+				res.end;
+			}
+		});
+	} else {
+		res.send("Email non valida!");
+		res.end();
+	}
 });
 
 server.post("/login/user", async function (req, res) {
@@ -383,7 +425,9 @@ server.post("/login/user", async function (req, res) {
 						{ expiresIn: "1h" }
 					);
 
-					res.json({ token: token });
+					let tipo = result[0].cliente;
+
+					res.json({ token: token, tipo: tipo });
 					res.send();
 					res.end();
 				}
@@ -403,7 +447,6 @@ server.post("/login/user", async function (req, res) {
 });
 
 server.post("/request/profile", (req, res) => {
-	//controllo che il token di sessione sia valido
 	let token = req.headers.authorization;
 	if (!token) {
 		res.send("Token non trovato");
@@ -414,8 +457,24 @@ server.post("/request/profile", (req, res) => {
 				res.send("Token non valido");
 				res.end();
 			} else {
-				res.send(decoded);
-				res.end();
+				try {
+					const queryPromise = new Promise((resolve, reject) => {
+						checkMensaCancellata(decoded.id, resolve);
+					});
+
+					queryPromise.then((ris) => {
+						if (ris == false) {
+							res.send("Mensa preferita cancellata");
+							res.end();
+						} else {
+							res.send(decoded);
+							res.end();
+						}
+					});
+				} catch (error) {
+					res.status(500).send("Errore del server");
+					res.end();
+				}
 			}
 		});
 	}
@@ -443,7 +502,6 @@ server.post("/recover/password", (req, res) => {
 			);
 
 			let link = url + "/changepwd/" + token;
-			console.log(link);
 			transporter.sendMail(
 				{
 					from: "menshub@outlook.it",
@@ -457,16 +515,15 @@ server.post("/recover/password", (req, res) => {
 				},
 				(error, info) => {
 					if (error) {
-						res.send("Errore durante l'invio dell'email");
-						res.end();
 						console.log("Errore durante l'invio dell'email:", error);
 					} else {
-						res.send("Email inviata con successo");
-						res.end();
 						console.log("Email inviata con successo:", info.response);
 					}
 				}
 			);
+
+			res.send("Email inviata con successo");
+			res.end();
 		} else {
 			res.send("Email non trovata");
 			res.end();
@@ -481,8 +538,6 @@ server.post("/change/password", (req, res) => {
 	let new_psw = req.body.new_psw;
 	let confirm_new_psw = req.body.confirm_new_psw;
 
-	let oldPwsReset = null;
-
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			console.log("Token non valido");
@@ -490,83 +545,84 @@ server.post("/change/password", (req, res) => {
 			res.end();
 			return;
 		} else {
-			id_utente = decoded.id;
-		}
-	});
+			try {
+				const queryPromise = new Promise((resolve, reject) => {
+					checkMensaCancellata(decoded.id, resolve);
+				});
 
-	if (old_psw != null) {
-		//cambio password
-		let query_check_old_psw;
-		query_check_old_psw = `select password from utenti where id=${id_utente};`;
-		connection.query(query_check_old_psw, (err, result) => {
-			if (err) {
-				res.send("Errore db");
-				res.end();
-				return;
-			}
-			if (result.length > 0) {
-				console.log("Vecchia password: " + result[0].password);
-				if (result[0].password !== old_psw || new_psw !== confirm_new_psw) {
-					res.send("Le password non combaciano");
-					res.end();
-					return;
-				}
-				if (old_psw === new_psw) {
-					res.send("La nuova password non può essere uguale a quella vecchia");
-					res.end();
-					return;
-				}
+				queryPromise.then((ris) => {
+					if (ris == false) {
+						res.send("Mensa preferita cancellata");
+						res.end();
+					} else {
+						id_utente = decoded.id;
 
-				let query_set_new_password = `update utenti set password='${new_psw}' where id=${id_utente};`;
-				connection.query(query_set_new_password, (err, result) => {
-					if (err) {
-						res.send("Errore db");
-						res.end();
-						return;
-					}
-					if (result) {
-						res.send("Password cambiata con successo");
-						res.end();
-						return;
+						if (old_psw != null) {
+							//cambio password
+							let query_check_old_psw;
+							query_check_old_psw = `select password from utenti where id=${id_utente};`;
+							connection.query(query_check_old_psw, (err, result) => {
+								if (err) {
+									res.send(err);
+									res.end();
+									return;
+								}
+								if (result.length > 0) {
+									console.log("Vecchia password" + result[0].password);
+									if (
+										result[0].password === old_psw &&
+										new_psw === confirm_new_psw
+									) {
+										let query_set_new_password = `update utenti set password = ${new_psw} where id=${id_utente};`;
+										connection.query(query_set_new_password, (err, result) => {
+											if (err) {
+												res.send(err);
+												res.end();
+												return;
+											}
+											if (result) {
+												res.send("Password cambiata con successo");
+												res.end();
+												return;
+											}
+										});
+									} else {
+										res.send("Le password non combaciano");
+										res.end();
+										return;
+									}
+								}
+							});
+						} else {
+							//resetta password
+							if (new_psw === confirm_new_psw) {
+								let query_reset_password = `update utenti set password =${new_psw} where id=${id_utente};`;
+								connection.query(query_reset_password, (err, result) => {
+									if (err) {
+										res.send(err);
+										res.end();
+										return;
+									}
+									if (result) {
+										res.send("Password cambiata con successo");
+										res.end();
+										return;
+									}
+								});
+							} else {
+								res.send("Le password non combaciano");
+								res.end();
+								return;
+							}
+						}
 					}
 				});
-			}
-		});
-	} else {
-		let query_check_old_psw;
-		query_check_old_psw = `select password from utenti where id=${id_utente};`;
-		connection.query(query_check_old_psw, (err, result) => {
-			if (err) {
-				console.log(err);
-				res.send("Errore db");
+			} catch (error) {
+				res.status(500).send("Errore del server");
 				res.end();
-				return;
 			}
-
-			if (new_psw !== confirm_new_psw) {
-				res.send("Le password non combaciano");
-				res.end();
-				return;
-			}
-			if (result[0].password === new_psw) {
-				res.send("La nuova password non può essere uguale a quella vecchia");
-				res.end();
-				return;
-			}
-
-			let query_reset_password = `update utenti set password='${new_psw}' where id=${id_utente};`;
-			connection.query(query_reset_password, (err, result) => {
-				if (err || !result) {
-					console.log(err);
-					res.send("Errore db");
-					res.end();
-					return;
-				}
-				res.send("Password cambiata con successo");
-				res.end();
-			});
-		});
-	}
+		}
+	});
 });
 
 server.post("/delete/user", (req, res) => {
@@ -582,19 +638,44 @@ server.post("/delete/user", (req, res) => {
 
 			connection.query(query, (err, result) => {
 				if (err) throw new Error(err);
+
 				if (result.length > 0) {
 					let cliente = result[0].cliente;
-					let query = `DELETE FROM utenti WHERE id=${decoded.id};`;
+
+					console.log(cliente);
+
+					if (cliente == 1) {
+						query = `DELETE FROM utenti WHERE id=${decoded.id};`;
+					} else {
+						query = `SELECT * FROM utenti WHERE cliente=0 AND id_mensa=${decoded.id_mensa};`;
+					}
+
+					console.log(query);
 
 					connection.query(query, (err, result) => {
 						if (err) throw new Error(err);
 
-						if (cliente == 0) {
-							let query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
+						console.log(result.length);
+
+						if (cliente == 0 && result.length == 1) {
+							query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
 
 							connection.query(query, (err, result) => {
 								if (err) throw new Error(err);
-								res.send("Mensa eliminata");
+								query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
+
+								connection.query(query, (err, result) => {
+									if (err) throw new Error(err);
+									res.send("Mensa eliminata");
+									res.end();
+								});
+							});
+						} else if (cliente == 0 && result.length > 1) {
+							query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
+
+							connection.query(query, (err, result) => {
+								if (err) throw new Error(err);
+								res.send("Utente eliminato");
 								res.end();
 							});
 						} else {
@@ -602,6 +683,50 @@ server.post("/delete/user", (req, res) => {
 							res.end();
 						}
 					});
+				} else {
+					res.send("Password errata");
+					res.end();
+				}
+			});
+		}
+	});
+});
+
+server.post("/delete/mensa", (req, res) => {
+	let token = req.headers.authorization;
+	let password = req.body.password;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+
+			connection.query(query, (err, result) => {
+				if (err) throw new Error(err);
+
+				if (result.length > 0) {
+					let cliente = result[0].cliente;
+
+					if (cliente == 0) {
+						let query = `DELETE FROM utenti WHERE id_mensa=${decoded.id_mensa} AND cliente=0;`;
+
+						connection.query(query, (err, result) => {
+							if (err) throw new Error(err);
+
+							let query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
+
+							connection.query(query, (err, result) => {
+								if (err) throw new Error(err);
+								res.send("Mensa eliminata");
+								res.end();
+							});
+						});
+					} else {
+						res.send("Non sei autorizzato a cancellare la mensa");
+						res.end();
+					}
 				} else {
 					res.send("Password errata");
 					res.end();
@@ -620,43 +745,61 @@ server.post("/request/orders", (req, res) => {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			id_utente = decoded.id;
-
-			let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita FROM ordini AS o
-								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
-								WHERE id_utente="${id_utente}"
-								ORDER BY o.data, po.id_ordine;`;
-
-			connection.query(query, (err, result) => {
-				if (err) throw new Error(err);
-
-				let orders = [];
-				let currentOrder = null;
-
-				result.forEach((row) => {
-					if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
-						currentOrder = {
-							id_ordine: row.id_ordine,
-							stato_ordine: row.stato_ordine,
-							data: row.data,
-							prodotti: [],
-						};
-						orders.push(currentOrder);
-					}
-
-					currentOrder.prodotti.push({
-						id: row.id_prodotto,
-						quantita: row.quantita,
-					});
+			try {
+				const queryPromise = new Promise((resolve, reject) => {
+					checkMensaCancellata(decoded.id, resolve);
 				});
 
-				if (orders.length > 0) {
-					res.send(orders);
-				} else {
-					res.send("L'utente non ha ordini attivi");
-				}
+				queryPromise.then((ris) => {
+					if (ris == false) {
+						res.send("Mensa preferita cancellata");
+						res.end();
+					} else {
+						id_utente = decoded.id;
+						let id_mensa = decoded.id_mensa;
+
+						let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita 
+                FROM ordini AS o
+								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
+								WHERE id_utente="${id_utente}" AND id_mensa = ${id_mensa}
+								ORDER BY o.data, po.id_ordine;`;
+
+						connection.query(query, (err, result) => {
+							if (err) throw new Error(err);
+
+							let orders = [];
+							let currentOrder = null;
+
+							result.forEach((row) => {
+								if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
+									currentOrder = {
+										id_ordine: row.id_ordine,
+										stato_ordine: row.stato_ordine,
+										data: row.data,
+										prodotti: [],
+									};
+									orders.push(currentOrder);
+								}
+
+								currentOrder.prodotti.push({
+									id: row.id_prodotto,
+									quantita: row.quantita,
+								});
+							});
+
+							if (orders.length > 0) {
+								res.send(orders);
+							} else {
+								res.send("L'utente non ha ordini attivi");
+							}
+							res.end();
+						});
+					}
+				});
+			} catch (error) {
+				res.status(500).send("Errore del server");
 				res.end();
-			});
+			}
 		}
 	});
 });
@@ -1074,16 +1217,22 @@ server.post("/producer/get/orders", (req, res) => {
 	});
 });
 
-server.post("/producer/get/order/completed", (req, res) => {
+server.post("/producer/get/orders/completed", (req, res) => {
 	let token = req.headers.authorization;
-	let id_ordine = req.body.id_ordine;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			let query = `SELECT * FROM ordini WHERE id = ${id_ordine}; WHERE stato_ordine = 'completato'`;
+			let id_utente = decoded.id;
+			let query = `SELECT id as id_ordine, id_utente, stato_ordine, data, ora_consegna, pagato, num_prodotti, tot_prezzo  
+                  FROM ordini AS o
+                  JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
+                  JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
+                  WHERE o.id_mensa = ${id_utente} AND o.stato_ordine = 'completato'`;
+
+			console.log(query);
 
 			connection.query(query, (err, result) => {
 				if (err) throw new Error(err);
@@ -1108,9 +1257,6 @@ server.post("/producer/get/order", (req, res) => {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			//fai join prdotti
-			//let query = `SELECT id_prodotto, quantita FROM prodotti_ordini WHERE id_ordine = ${id_ordine};`;
-
 			let query = `SELECT po.id_prodotto, po.quantita, p.nome, p.categoria, p.prezzo, p.indirizzo_img
                   FROM prodotti_ordini AS po
                   JOIN prodotti AS p ON po.id_prodotto = p.id
@@ -1570,6 +1716,21 @@ function renameImage(nome_file, id_prodotto) {
 	});
 }
 
-server.listen(6969, () => {
-	console.log("http://localhost:6969");
+function checkMensaCancellata(id, resolve) {
+	let query = `SELECT * FROM utenti WHERE id=${id};`;
+	console.log(query);
+	connection.query(query, (err, result) => {
+		if (err) throw new Error(err);
+		if (result[0].id_mensa == null) {
+			console.log("Mensa cancellata");
+			resolve(false);
+		} else {
+			resolve(true);
+		}
+	});
+}
+
+const port = 6969;
+server.listen(port, () => {
+	console.log("http://localhost:" + port);
 });

@@ -58,6 +58,11 @@ const Login = ({
 		if (!scegliMensa) return;
 
 		getMense().then((res: any) => {
+			if (res === "nessuna mensa trovata") {
+				setMense([]);
+				toast.error("Nessuna mensa disponibile");
+				return;
+			}
 			setMense(res);
 		});
 	}, [scegliMensa]);
@@ -69,6 +74,10 @@ const Login = ({
 		}
 
 		if (scegliMensa) {
+			if (mense.length === 0) {
+				toast.error("Nessuna mensa disponibile!");
+				return;
+			}
 			if (nuovaMensa === -1) {
 				toast.error("Scegliere una mensa!");
 				return;
@@ -94,7 +103,7 @@ const Login = ({
 
 					localStorage.setItem("token", res.token);
 
-					if (res.cliente + "" === "1") {
+					if (res.tipo + "" === "1") {
 						localStorage.setItem("cart", JSON.stringify([]));
 						setLoggato("cliente");
 					} else {
@@ -122,7 +131,7 @@ const Login = ({
 
 				localStorage.setItem("token", res.token);
 
-				if (res.cliente + "" === "1") {
+				if (res.tipo + "" === "1") {
 					localStorage.setItem("cart", JSON.stringify([]));
 					setLoggato("cliente");
 				} else {
@@ -183,7 +192,7 @@ const Login = ({
 									variant='inputMenshub'
 								/>
 							</div>
-							{scegliMensa ? (
+							{scegliMensa && mense.length > 0 ? (
 								<div className='flex flex-col'>
 									<Label
 										htmlFor='mensaprefe'

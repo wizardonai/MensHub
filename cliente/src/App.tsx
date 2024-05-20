@@ -22,6 +22,7 @@ function App() {
 	const [username, setUsername] = useState("");
 	const [datiUtente, setDatiUtente] = useState({} as typeProfilo);
 	const [products, setProducts] = useState([] as Array<prodotto>);
+	const [carrello, setCarrello] = useLocalStorage("cart", []);
 
 	let router;
 	if (loggato === "cliente") {
@@ -68,7 +69,14 @@ function App() {
 		router = createBrowserRouter([
 			{
 				path: "/home",
-				element: <Homepage username={username} products={products} />,
+				element: (
+					<Homepage
+						username={username}
+						products={products}
+						setCarrello={setCarrello}
+						lunghezzaCarrello={carrello.length}
+					/>
+				),
 			},
 			{
 				path: "/cart",
@@ -77,6 +85,8 @@ function App() {
 						setLoggato={setLoggato}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
+						carrello={carrello}
+						setCarrello={setCarrello}
 					/>
 				),
 			},
@@ -88,6 +98,7 @@ function App() {
 						datiUtente={datiUtente}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
+						lunghezzaCarrello={carrello.length}
 					/>
 				),
 			},

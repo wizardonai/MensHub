@@ -13,6 +13,7 @@ import {
 	DrawerContent,
 	DrawerTrigger,
 } from "../components/shadcn/Drawer";
+import { useLocalStorage } from "usehooks-ts";
 
 const Elemento = ({
 	item,
@@ -128,16 +129,16 @@ const Elemento = ({
 					</p>
 				</div>
 				<div
-					className='flex justify-center items-center flex-col w-1/4'
+					className='flex justify-center items-center flex-col w-[20%] mr-[5%]'
 					id='altriDati'
 				>
 					<div
-						className='flex flex-row justify-center items-center w-full'
+						className='flex flex-row justify-evenly items-center w-full'
 						id=''
 					>
 						<p
 							id=''
-							className='text-marrone text-2xl'
+							className='text-marrone text-3xl'
 							onClick={() => {
 								if (quantita === 1) return;
 								let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
@@ -149,7 +150,7 @@ const Elemento = ({
 									}
 								});
 
-								localStorage.setItem("cart", JSON.stringify(tmp));
+								// localStorage.setItem("cart", JSON.stringify(tmp));
 								setCarrello(tmp);
 							}}
 						>
@@ -160,7 +161,7 @@ const Elemento = ({
 						</p>
 						<p
 							id=''
-							className='text-marrone  text-xl'
+							className='text-marrone  text-2xl'
 							onClick={() => {
 								let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 
@@ -171,7 +172,7 @@ const Elemento = ({
 									}
 								});
 
-								localStorage.setItem("cart", JSON.stringify(tmp));
+								// localStorage.setItem("cart", JSON.stringify(tmp));
 								setCarrello(tmp);
 							}}
 						>
@@ -186,7 +187,7 @@ const Elemento = ({
 					let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 					tmp = tmp.filter((item2: prodottoCarrello) => item2.id !== item.id);
 					setCarrello(tmp);
-					localStorage.setItem("cart", JSON.stringify(tmp));
+					// localStorage.setItem("cart", JSON.stringify(tmp));
 
 					//@ts-ignore
 					divtot.current.className = divtot.current.className.replace(
@@ -239,15 +240,18 @@ const Cart = ({
 	setLoggato,
 	setDatiUtente,
 	setProducts,
+	carrello,
+	setCarrello,
 }: {
 	setLoggato: Function;
 	setDatiUtente: Function;
 	setProducts: Function;
+	carrello: Array<prodottoCarrello>;
+	setCarrello: Function;
 }) => {
-	const [carrello, setCarrello] = useState(
-		JSON.parse(localStorage.getItem("cart") || "{}") as Array<prodottoCarrello>
-	);
-
+	// const [carrello, setCarrello] = useState(
+	// 	JSON.parse(localStorage.getItem("cart") || "{}") as Array<prodottoCarrello>
+	// );
 	const [totale, setTotale] = useState(0);
 	useEffect(() => {
 		let tmp = 0;

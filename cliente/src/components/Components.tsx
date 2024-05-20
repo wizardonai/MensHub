@@ -45,9 +45,11 @@ export const Container = ({
 export const Navbar = ({
 	page,
 	product,
+	lunghezzaCarrello,
 }: {
 	page: string;
 	product?: prodotto;
+	lunghezzaCarrello?: number;
 }) => {
 	const navigate = useNavigate();
 
@@ -74,7 +76,7 @@ export const Navbar = ({
 							className={`bg-marrone flex justify-center items-center`}
 							style={{
 								width: height + "px",
-								borderRadius: "28px",
+								borderRadius: "50%",
 								height: height + "px",
 							}}
 							ref={buttons.home}
@@ -187,15 +189,20 @@ export const Navbar = ({
 							{page === "cart" ? (
 								<p className='text-marrone text-xl font-bold'>CARRELLO</p>
 							) : (
-								<LazyLoadImage
-									src={cartImg}
-									alt='cart'
-									width={50}
-									height={50}
-									style={{
-										filter: "var(--filterImgBianco)",
-									}}
-								/>
+								<div className='flex justify-center items-center relative'>
+									<LazyLoadImage
+										src={cartImg}
+										alt='cart'
+										width={50}
+										height={50}
+										style={{
+											filter: "var(--filterImgBianco)",
+										}}
+									/>
+									<div className='rounded-full bg-[#5c8c46] flex justify-center items-center absolute top-0.5 right-0.5 w-5 h-5'>
+										<p className='text-white'>{lunghezzaCarrello}</p>
+									</div>
+								</div>
 							)}
 						</div>
 						<div

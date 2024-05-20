@@ -67,6 +67,7 @@ const Popup = ({
 									setTipoPopup("");
 									localStorage.removeItem("cart");
 									localStorage.removeItem("token");
+									localStorage.setItem("login", '"?"');
 									setLoggato(false);
 									setDatiUtente({});
 									setProducts([]);
@@ -189,7 +190,7 @@ const BtnElmininaAccount = ({ setTipoPopup }: { setTipoPopup: Function }) => {
 const BtnDisconnetti = ({ setTipoPopup }: { setTipoPopup: Function }) => {
 	return (
 		<div
-			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-arancioneScuro mb-3'
+			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-arancioneScuro mb-2'
 			onClick={() => setTipoPopup("disconnetti")}
 		>
 			<p className='text-marrone text-xl capitalize w-[80%] indent-5'>
@@ -233,7 +234,7 @@ const MensaPreferita = ({
 }) => {
 	return (
 		<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
-			<p className='w-full text-lg'>Mensa preferita</p>
+			<p className='w-full text-lg text-marrone'>Mensa preferita</p>
 			<Select
 				onValueChange={(e: any) => {
 					if (datiUtente.id_mensa !== parseInt(e)) {
@@ -262,7 +263,7 @@ const MensaPreferita = ({
 				}}
 				defaultValue={datiUtente.id_mensa + ""}
 			>
-				<SelectTrigger className='w-[85%] mt-2 m-0'>
+				<SelectTrigger className='w-[85%] mt-2 m-0 bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone'>
 					<SelectValue placeholder='Seleziona la tua mensa'></SelectValue>
 				</SelectTrigger>
 				<SelectContent
@@ -292,38 +293,47 @@ const InfoUtente = ({ datiUtente }: { datiUtente: typeProfilo }) => {
 	return (
 		<>
 			<div className='flex flex-col items-start justify-center w-full mb-4'>
-				<Label htmlFor='nome'>Nome</Label>
+				<Label htmlFor='nome' className='text-marrone'>
+					Nome
+				</Label>
 				<Input
 					type='nome'
 					id='nome'
 					defaultValue={datiUtente.nome}
 					disabled
-					className='bg-biancoLatte mt-0.5 w-[85%]'
+					className='bg-biancoLatte mt-0.5 w-[85%] mb-0'
+					variant='inputMenshub'
 				/>
 			</div>
 			<div className='flex flex-col items-start justify-center w-full mb-4'>
-				<Label htmlFor='cognome'>Cognome</Label>
+				<Label htmlFor='cognome' className='text-marrone'>
+					Cognome
+				</Label>
 				<Input
 					type='cognome'
 					id='cognome'
 					defaultValue={datiUtente.cognome}
 					disabled
-					className='bg-biancoLatte mt-0.5 w-[85%]'
+					className='bg-biancoLatte mt-0.5 w-[85%] mb-0'
+					variant='inputMenshub'
 				/>
 			</div>
 			<div className='flex flex-col items-start justify-center w-full mb-4'>
-				<Label htmlFor='email'>Email</Label>
+				<Label htmlFor='email' className='text-marrone'>
+					Email
+				</Label>
 				<Input
 					type='email'
 					id='email'
 					defaultValue={datiUtente.email}
 					disabled
-					className='bg-biancoLatte mt-0.5 w-[85%]'
+					className='bg-biancoLatte mt-0.5 w-[85%] mb-0'
+					variant='inputMenshub'
 				/>
 			</div>
 			<div className='flex flex-col items-start justify-center w-full mb-4'>
 				<p
-					className='underline text-lg'
+					className='text-lg text-marrone underline'
 					onClick={() =>
 						navigate("/changepwd/" + localStorage.getItem("token") || "")
 					}
@@ -340,11 +350,13 @@ const Profile = ({
 	datiUtente,
 	setDatiUtente,
 	setProducts,
+	lunghezzaCarrello,
 }: {
 	setLoggato: Function;
 	datiUtente: typeProfilo;
 	setDatiUtente: Function;
 	setProducts: Function;
+	lunghezzaCarrello: number;
 }) => {
 	const [tipoPopup, setTipoPopup] = useState("");
 	const [mense, setMense] = useState([] as Array<mensa>);
@@ -400,7 +412,7 @@ const Profile = ({
 				/>
 			</Container>
 			<Toaster richColors />
-			<Navbar page='profile' />
+			<Navbar page='profile' lunghezzaCarrello={lunghezzaCarrello} />
 		</>
 	);
 };
