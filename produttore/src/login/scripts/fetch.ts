@@ -390,3 +390,30 @@ export async function getProdottiCompletati(token: string) {
 
   return response;
 }
+
+export async function deleteMensa(token: string, password: string) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/delete/mensa`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      password: password,
+    }),
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return response;
+}

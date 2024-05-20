@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import {
+  deleteMensa,
   getStatMensa,
   getTopProdotti,
   registerUser,
@@ -45,6 +46,8 @@ const ProfileProductor = () => {
   const email = useRef<HTMLTextAreaElement>(null);
   const password = useRef<HTMLTextAreaElement>(null);
   const confermaPassword = useRef<HTMLTextAreaElement>(null);
+  const passwordElimina = useRef<HTMLTextAreaElement>(null);
+  const confermaPasswordElimina = useRef<HTMLTextAreaElement>(null);
 
   if (!dati) return <p>CARICAMENTO</p>;
 
@@ -128,6 +131,43 @@ const ProfileProductor = () => {
         setPopupEmail(false);
       } else {
         alert("Errore nella registrazione");
+      }
+    });
+  };
+
+  const deleteButton = () => {
+    let passwordEliminaValue = "";
+    if (password.current) {
+      passwordEliminaValue = password.current.value;
+    }
+
+    let confermaPasswordEliminaValue = "";
+    if (confermaPassword.current) {
+      confermaPasswordEliminaValue = confermaPassword.current.value;
+    }
+
+    if (passwordEliminaValue === "" || confermaPasswordEliminaValue === "") {
+      alert("Si prega di compilare tutti i campi.");
+      return;
+    }
+
+    if (passwordEliminaValue !== confermaPasswordEliminaValue) {
+      alert("Le password non corrispondono.");
+      return;
+    }
+
+    deleteMensa(
+      JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
+        .token,
+      passwordEliminaValue
+    ).then((res) => {
+      if (res === "Risposta Eliminazione avvenuta con successo") {
+        alert("Mensa eliminata con successo");
+        localStorage.removeItem("token");
+        localStorage.removeItem("login");
+        navigate(`/login`);
+      } else {
+        alert("Errore nella eliminazione");
       }
     });
   };
@@ -321,24 +361,91 @@ const ProfileProductor = () => {
               </Dialog>
             </div>
             <div className="flex mt-[10px]">
-              <div
-                style={{
-                  boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
-                }}
-                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
-              >
-                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
-                  Elimina account
-                </p>
-                <img
-                  src={hostnameProductor + "deleteBin.png"}
-                  className="h-1/2"
-                  style={{
-                    filter:
-                      "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
-                  }}
-                />
-              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div
+                    style={{
+                      boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+                    }}
+                    className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                  >
+                    <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
+                      Elimina account
+                    </p>
+                    <img
+                      src={hostnameProductor + "deleteBin.png"}
+                      className="h-1/2"
+                      style={{
+                        filter:
+                          "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                      }}
+                    />
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <div className="flex justify-center">
+                        <p className="font-bold text-marroneScuro text-xl">
+                          Elimina mensa
+                        </p>
+                      </div>
+                    </DialogTitle>
+                    <DialogDescription>
+                      <div className="flex justify-center">
+                        Quest'azione sarà irreversible
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="password" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Password
+                        </p>
+                      </Label>
+                      <Input
+                        id="password"
+                        placeholder=""
+                        type="password"
+                        defaultValue=""
+                        ref={
+                          passwordElimina as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="confermaPassword" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Conferma password
+                        </p>
+                      </Label>
+                      <Input
+                        id="confermaPassword"
+                        placeholder=""
+                        type="password"
+                        defaultValue=""
+                        ref={
+                          confermaPasswordElimina as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <div className="w-[100%] flex justify-center">
+                      <Button
+                        type="submit"
+                        className="rounded-full bg-red-600 hover:bg-red-700"
+                        onClick={submitButton}
+                      >
+                        Elimina
+                      </Button>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <div
                 style={{
                   boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
