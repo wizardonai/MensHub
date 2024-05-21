@@ -426,10 +426,7 @@ export default function Popup({
                       .then((response) => {
                         if (response === "Prodotto eliminato") {
                           setProdotti(
-                            prodotti.filter(
-                              (prodotto: any) =>
-                                prodotto.id_prodotto !== prodotto.id_prodotto
-                            )
+                            prodotti.filter((p: any) => p.id !== prodotto.id)
                           );
                           alert(response);
                           setPopup(false);
