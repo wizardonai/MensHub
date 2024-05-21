@@ -7,13 +7,13 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
-import sharp from "sharp";
+// import sharp from "sharp";
 import nodemailer from "nodemailer";
-sharp.cache({ files: 0 });
+// sharp.cache({ files: 0 });
 
 let connection = "";
 
-const ip = "http://172.20.10.3";
+const ip = "http://menshub.it";
 // const ip = "http://192.168.1.129";
 const porta = ":6969";
 const url = ip + porta;

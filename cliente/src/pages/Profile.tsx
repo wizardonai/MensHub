@@ -174,7 +174,7 @@ const BtnElmininaAccount = ({ setTipoPopup }: { setTipoPopup: Function }) => {
 			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-rosso mb-3'
 			onClick={() => setTipoPopup("eliminaaccount")}
 		>
-			<p className='text-marrone text-xl capitalize w-[80%] indent-5'>
+			<p className='text-biancoLatte text-xl capitalize w-[80%] indent-5'>
 				Elimina account
 			</p>
 			<div className='w-[20%]'>
