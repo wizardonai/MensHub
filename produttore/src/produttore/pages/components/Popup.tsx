@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { hostnameProductor } from "src/App";
 import { Input } from "src/shadcn/Input";
-import { addProdotto } from "src/login/scripts/fetch";
+import { addProdotto, deleteProdotto } from "src/login/scripts/fetch";
 import Filtri from "./Filtri";
 
 export default function Popup({
@@ -10,12 +10,14 @@ export default function Popup({
   allergeni,
   prodotti,
   setProdotti,
+  prodotto,
 }: {
   setPopup: Function;
   categorie: any;
   allergeni: any;
   prodotti: any;
   setProdotti: Function;
+  prodotto: any;
 }): JSX.Element {
   const nome = useRef<HTMLInputElement>(null);
   const prezzo = useRef<HTMLInputElement>(null);
@@ -32,6 +34,26 @@ export default function Popup({
   const [isVerticalMouseDown, setIsVerticalMouseDown] = useState(false);
   const [verticalMouseDownY, setVerticalMouseDownY] = useState(0);
   const [lastVerticalMouseMoveY, setLastVerticalMouseMoveY] = useState(0);
+
+  useEffect(() => {
+    if (prodotto) {
+      nome.current!.value = prodotto.nome;
+      prezzo.current!.value = prodotto.prezzo;
+      setFiltro(prodotto.categoria);
+      descrizione.current!.value = prodotto.descrizione;
+      setImageUrl(hostnameProductor + prodotto.image);
+      setImage(null);
+      setAllergeniScelti(prodotto.allergeni.split(","));
+    } else {
+      nome.current!.value = "";
+      prezzo.current!.value = "";
+      setFiltro("");
+      descrizione.current!.value = "";
+      setImageUrl(null);
+      setImage(null);
+      setAllergeniScelti([]);
+    }
+  }, [prodotto]);
 
   const submitButton = () => {
     let nomeValue = "";
@@ -219,7 +241,7 @@ export default function Popup({
         <div className="flex justify-between">
           <div>
             <p className="font-bold text-xl pl-[15px] pt-[10px] select-none pointer-events-none text-marroneScuro">
-              Aggiungi una pietanza
+              {prodotto ? "Modifica prodotto" : "Aggiungi una pietanza"}
             </p>
           </div>
           <button
@@ -388,18 +410,74 @@ export default function Popup({
             </div>
           </div>
           <div className="flex justify-center">
-            <div
-              className="bg-verdeBordo h-[25px] rounded-full flex items-center px-8 py-4 mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
-              id="divFiltro"
-              onClick={submitButton}
-            >
-              <p
-                className="capitalize text-[16px] text-gialloSfondo select-none pointer-events-none"
-                id="filtroDaApplicare"
+            {prodotto ? (
+              <>
+                <div
+                  style={{ backgroundColor: "#d24a3c" }}
+                  className="w-[30px] h-[30px] flex justify-center rounded-full items-center my-4 mr-[2%] mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer"
+                  onClick={() => {
+                    deleteProdotto(
+                      JSON.parse(
+                        localStorage.getItem("token") ||
+                          '{"token": "lucaChing"}'
+                      ).token,
+                      prodotto.id
+                    )
+                      .then((response) => {
+                        if (response === "Prodotto eliminato con successo") {
+                          setProdotti(
+                            prodotti.filter(
+                              (prodotto: any) =>
+                                prodotto.id_prodotto !== prodotto.id_prodotto
+                            )
+                          );
+                          alert(response);
+                          setPopup(false);
+                        } else {
+                          alert("Errore nell'eliminazione della pietanza");
+                        }
+                      })
+                      .catch((err: any) => {
+                        console.log(err);
+                      });
+                  }}
+                >
+                  <img
+                    src={hostnameProductor + "deleteBin.png"}
+                    className="w-[18px] h-[18px]"
+                    style={{
+                      filter:
+                        "brightness(0) saturate(100%) invert(94%) sepia(20%) saturate(194%) hue-rotate(340deg) brightness(89%) contrast(95%)",
+                    }}
+                  />
+                </div>
+                <div
+                  className="bg-verdeBordo h-[25px] rounded-full flex items-center px-8 py-4 mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
+                  id="divFiltro"
+                  onClick={submitButton}
+                >
+                  <p
+                    className="capitalize text-[16px] text-gialloSfondo select-none pointer-events-none"
+                    id="filtroDaApplicare"
+                  >
+                    Salva
+                  </p>
+                </div>
+              </>
+            ) : (
+              <div
+                className="bg-verdeBordo h-[25px] rounded-full flex items-center px-8 py-4 mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
+                id="divFiltro"
+                onClick={submitButton}
               >
-                Aggiungi
-              </p>
-            </div>
+                <p
+                  className="capitalize text-[16px] text-gialloSfondo select-none pointer-events-none"
+                  id="filtroDaApplicare"
+                >
+                  Aggiungi
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

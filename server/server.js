@@ -559,6 +559,8 @@ server.post("/change/password", (req, res) => {
       res.end();
       return;
     } else {
+      id_utente = decoded.id;
+
       if (old_psw != null) {
         //cambio password
         let query_check_old_psw;
@@ -575,6 +577,7 @@ server.post("/change/password", (req, res) => {
               let query_set_new_password = `update utenti set password = ${new_psw} where id=${id_utente};`;
               connection.query(query_set_new_password, (err, result) => {
                 if (err) {
+                  console.log(err);
                   res.send(err);
                   res.end();
                   return;

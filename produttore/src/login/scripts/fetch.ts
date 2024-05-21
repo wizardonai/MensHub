@@ -417,3 +417,62 @@ export async function deleteMensa(token: string, password: string) {
 
   return response;
 }
+
+export async function changePassword(
+  token: string,
+  old_psw: string,
+  new_psw: string,
+  confirm_new_psw: string
+) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/change/password`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      old_psw: sha256.create().update(old_psw).hex(),
+      new_psw: sha256.create().update(new_psw).hex(),
+      confirm_new_psw: sha256.create().update(confirm_new_psw).hex(),
+    }),
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      response = err.response.data;
+    });
+}
+
+export async function deleteProdotto(token: string, id_prodotto: number) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/delete/product`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      id: id_prodotto.toString(),
+    }),
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      response = err.response.data;
+    });
+
+  return response;
+}
