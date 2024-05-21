@@ -14,9 +14,10 @@ import nodemailer from "nodemailer";
 let connection = "";
 
 const ip = "http://menshub.it";
-// const ip = "http://192.168.1.129";
-const porta = ":6969";
-const url = ip + porta;
+const porta = ":80";
+
+// const url = ip + porta;
+const url = ip;
 
 const { json, urlencoded } = bodyParser;
 const server = express();
@@ -72,12 +73,12 @@ function connetti() {
 }
 connetti();
 
-// server.use(
-// 	cors({
-// 		origin: "http://127.0.0.1:6969",
-// 	})
-// );
-server.use(cors());
+server.use(
+	cors({
+		origin: "http://127.0.0.1:6969",
+	})
+);
+// server.use(cors());
 server.use(json());
 server.use(express.json());
 server.use(urlencoded({ extended: false }));
@@ -1730,7 +1731,7 @@ function checkMensaCancellata(id, resolve) {
 	});
 }
 
-const port = 6969;
+const port = 80;
 server.listen(port, () => {
-	console.log("http://localhost:" + port);
+	console.log("http://menshub.it");
 });
