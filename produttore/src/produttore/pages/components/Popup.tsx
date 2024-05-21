@@ -424,7 +424,7 @@ export default function Popup({
                       prodotto.id
                     )
                       .then((response) => {
-                        if (response === "Prodotto eliminato con successo") {
+                        if (response === "Prodotto eliminato") {
                           setProdotti(
                             prodotti.filter(
                               (prodotto: any) =>
