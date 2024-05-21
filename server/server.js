@@ -572,9 +572,8 @@ server.post("/change/password", (req, res) => {
             return;
           }
           if (result.length > 0) {
-            console.log("Vecchia password" + result[0].password);
             if (result[0].password === old_psw && new_psw === confirm_new_psw) {
-              let query_set_new_password = `update utenti set password = ${new_psw} where id=${id_utente};`;
+              let query_set_new_password = `update utenti set password = '${new_psw}' where id=${id_utente};`;
               connection.query(query_set_new_password, (err, result) => {
                 if (err) {
                   console.log(err);
@@ -598,7 +597,7 @@ server.post("/change/password", (req, res) => {
       } else {
         //resetta password
         if (new_psw === confirm_new_psw) {
-          let query_reset_password = `update utenti set password =${new_psw} where id=${id_utente};`;
+          let query_reset_password = `update utenti set password = '${new_psw}' where id=${id_utente};`;
           connection.query(query_reset_password, (err, result) => {
             if (err) {
               res.send(err);

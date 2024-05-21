@@ -446,8 +446,10 @@ export async function changePassword(
       response = res.data;
     })
     .catch((err) => {
-      response = err.response.data;
+      console.log(err);
     });
+
+  return response;
 }
 
 export async function deleteProdotto(token: string, id_prodotto: number) {

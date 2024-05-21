@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
 import {
+  changePassword,
   deleteMensa,
   getStatMensa,
   getTopProdotti,
@@ -48,6 +49,9 @@ const ProfileProductor = () => {
   const confermaPassword = useRef<HTMLTextAreaElement>(null);
   const passwordElimina = useRef<HTMLTextAreaElement>(null);
   const confermaPasswordElimina = useRef<HTMLTextAreaElement>(null);
+  const new_psw = useRef<HTMLTextAreaElement>(null);
+  const old_psw = useRef<HTMLTextAreaElement>(null);
+  const confirm_new_psw = useRef<HTMLTextAreaElement>(null);
 
   if (!dati) return <p>CARICAMENTO</p>;
 
@@ -135,6 +139,47 @@ const ProfileProductor = () => {
     });
   };
 
+  const changeButton = () => {
+    let old_pswValue = "";
+    if (old_psw.current) {
+      old_pswValue = old_psw.current.value;
+    }
+
+    let new_pswValue = "";
+    if (new_psw.current) {
+      new_pswValue = new_psw.current.value;
+    }
+
+    let confirm_new_pswValue = "";
+    if (confirm_new_psw.current) {
+      confirm_new_pswValue = confirm_new_psw.current.value;
+    }
+
+    if (
+      old_pswValue === "" ||
+      new_pswValue === "" ||
+      confirm_new_pswValue === ""
+    ) {
+      alert("Si prega di compilare tutti i campi.");
+      return;
+    }
+
+    if (new_pswValue !== confirm_new_pswValue) {
+      alert("Le password non corrispondono.");
+      return;
+    }
+
+    changePassword(
+      JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
+        .token,
+      old_pswValue,
+      new_pswValue,
+      confirm_new_pswValue
+    ).then((response) => {
+      alert(response);
+    });
+  };
+
   const deleteButton = () => {
     let passwordEliminaValue = "";
     if (password.current) {
@@ -187,9 +232,93 @@ const ProfileProductor = () => {
             <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
               {dati[0].email}
             </p>
-            <a className="font-bold text-lg text-verdeBordo cursor-pointer underline hover:text-verdeBordoHover">
-              Cambia password
-            </a>
+            <Dialog>
+              <DialogTrigger asChild>
+                <a className="font-bold text-lg text-verdeBordo cursor-pointer underline hover:text-verdeBordoHover">
+                  Cambia password
+                </a>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                <DialogHeader>
+                  <DialogTitle>
+                    <div className="flex justify-center">
+                      <p className="font-bold text-marroneScuro text-xl">
+                        Cambia password
+                      </p>
+                    </div>
+                  </DialogTitle>
+                  <DialogDescription>
+                    <div className="flex justify-center">
+                      Inserisci la nuova password
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="old_psw" className="text-right">
+                      <p className="font-bold text-marroneScuro text-lg">
+                        Vecchia password
+                      </p>
+                    </Label>
+                    <Input
+                      id="old_psw"
+                      placeholder=""
+                      type="password"
+                      defaultValue=""
+                      ref={
+                        old_psw as unknown as React.RefObject<HTMLInputElement>
+                      }
+                      className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="new_psw" className="text-right">
+                      <p className="font-bold text-marroneScuro text-lg">
+                        Nuova password
+                      </p>
+                    </Label>
+                    <Input
+                      id="new_psw"
+                      placeholder=""
+                      type="password"
+                      defaultValue=""
+                      ref={
+                        new_psw as unknown as React.RefObject<HTMLInputElement>
+                      }
+                      className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="confirm_new_psw" className="text-right">
+                      <p className="font-bold text-marroneScuro text-lg">
+                        Conferma nuova password
+                      </p>
+                    </Label>
+                    <Input
+                      id="confirm_new_psw"
+                      placeholder=""
+                      type="password"
+                      defaultValue=""
+                      ref={
+                        confirm_new_psw as unknown as React.RefObject<HTMLInputElement>
+                      }
+                      className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <div className="w-[100%] flex justify-center">
+                    <Button
+                      type="submit"
+                      className="rounded-full bg-verdeBordo hover:bg-verdeBordoHover"
+                      onClick={changeButton}
+                    >
+                      Salva
+                    </Button>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
             <p className="font-bold text-xl text-marroneScuro mt-[10px]">
               Indirizzo:
             </p>
