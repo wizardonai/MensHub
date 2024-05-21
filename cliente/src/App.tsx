@@ -37,6 +37,9 @@ function App() {
 				nome: "",
 			});
 			getProfilo(localStorage.getItem("token") || "scu").then((res: any) => {
+				if (!res) {
+					return;
+				}
 				if (res === "Token non valido") {
 					localStorage.setItem("loggato", "false");
 					return;
@@ -50,12 +53,17 @@ function App() {
 					return;
 				}
 
-				setUsername(res.nome);
-				setDatiUtente(res);
+				if (res) {
+					setUsername(res.nome);
+					setDatiUtente(res);
+				}
 			});
 
 			if (products.length === 0) {
 				getProdotti(localStorage.getItem("token") || "scu").then((res: any) => {
+					if (!res) {
+						return;
+					}
 					if (res === "Token non valido") {
 						localStorage.setItem("loggato", "false");
 						return;

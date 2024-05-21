@@ -35,7 +35,7 @@ export async function loginUser(dati: dataLog) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -66,7 +66,7 @@ export async function registerUser(dati: dataReg) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -90,7 +90,7 @@ export async function getProfilo(token: string) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -115,7 +115,7 @@ export async function getProdotti(token: string) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -146,7 +146,7 @@ export async function sendOrder(
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -172,7 +172,7 @@ export async function getCronologia(token: string) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -197,7 +197,7 @@ export async function getMense() {
 			response = res.data;
 		})
 		.catch((err: any) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -226,7 +226,7 @@ export async function modifyMensa(id: number, token: string) {
 			response = res.data;
 		})
 		.catch((err: any) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -252,7 +252,7 @@ export async function getOrders(token: string) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -278,7 +278,7 @@ export async function registerMensa(data: dataMensa) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -304,7 +304,7 @@ export async function sendEmail(email: string) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -351,7 +351,7 @@ export async function changePassword(
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;
@@ -381,7 +381,7 @@ export async function deleteUser(token: string, pwd: string) {
 			response = res.data;
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 		});
 
 	return response;

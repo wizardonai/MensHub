@@ -58,6 +58,10 @@ const Login = ({
 		if (!scegliMensa) return;
 
 		getMense().then((res: any) => {
+			if (!res) {
+				toast.error("Errore nella connessione al server");
+				return;
+			}
 			if (res === "nessuna mensa trovata") {
 				setMense([]);
 				toast.error("Nessuna mensa disponibile");
@@ -84,7 +88,16 @@ const Login = ({
 			}
 
 			modifyMensa(nuovaMensa, token).then((res) => {
+				if (!res) {
+					toast.error("Errore nella connessione al server");
+					return;
+				}
 				loginUser(data).then((res: any) => {
+					if (!res) {
+						toast.error("Errore nella connessione al server");
+						return;
+					}
+
 					if (
 						typeof res === "object" &&
 						res.message === "Mensa preferita cancellata"
@@ -113,6 +126,11 @@ const Login = ({
 			});
 		} else {
 			loginUser(data).then((res: any) => {
+				if (!res) {
+					toast.error("Errore nella connessione al server");
+					return;
+				}
+
 				if (
 					typeof res === "object" &&
 					res.message === "Mensa preferita cancellata"
@@ -331,6 +349,11 @@ const PasswordDimenticata = ({
 
 						//chiamata al server
 						sendEmail(email).then((res) => {
+							if (!res) {
+								toast.error("Errore nella connessione al server");
+								setEmailInviata(false);
+								return;
+							}
 							if (res === "Email inviata con successo")
 								toast.info("Email inviata! (controlla spam)");
 							else toast.error(res);
@@ -483,6 +506,10 @@ const IndirizzoMensa = ({
 		)
 			.then((res) => res.json())
 			.then((res) => {
+				if (!res) {
+					toast.error("Errore nella connessione al server");
+					return;
+				}
 				setProvince(res);
 			});
 	}, [data.regione]);
@@ -499,6 +526,10 @@ const IndirizzoMensa = ({
 		)
 			.then((res) => res.json())
 			.then((res) => {
+				if (!res) {
+					toast.error("Errore nella connessione al server");
+					return;
+				}
 				setComuni(res);
 			});
 	}, [data.provincia]);
@@ -511,6 +542,10 @@ const IndirizzoMensa = ({
 		})
 			.then((res) => res.json())
 			.then((res) => {
+				if (!res) {
+					toast.error("Errore nella connessione al server");
+					return;
+				}
 				setRegioni(res);
 			});
 	}
@@ -736,6 +771,10 @@ const RegisterMensa = ({
 									...data,
 									provincia: data.provincia.replace("'", "\\'"),
 								}).then((res) => {
+									if (!res) {
+										toast.error("Errore nella connessione al server");
+										return;
+									}
 									if (typeof res === "string") {
 										toast.error(res);
 									} else {
@@ -784,6 +823,10 @@ const RegisterCliente = ({
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
 		if (id_mensa === -1) {
 			getMense().then((res: any) => {
+				if (!res) {
+					toast.error("Errore nella connessione al server");
+					return;
+				}
 				if (res === "nessuna mensa trovata") {
 					setMense([
 						{
@@ -825,6 +868,10 @@ const RegisterCliente = ({
 		}
 
 		registerUser(data).then((res) => {
+			if (!res) {
+				toast.error("Errore nella connessione al server");
+				return;
+			}
 			if (res !== "Registrazione avvenuta con successo") {
 				toast.error(res + "");
 			} else {

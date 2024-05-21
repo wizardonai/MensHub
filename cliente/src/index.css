@@ -52,6 +52,7 @@
 		--arancioneChiaro: #e6a854;
 		--marroncino: #a28245;
 		--biancolatte: #fffae7;
+		--rosso: #d14a3b;
 
 		--filterImgBianco: invert(88%) sepia(18%) saturate(200%) hue-rotate(350deg)
 			brightness(107%) contrast(104%);

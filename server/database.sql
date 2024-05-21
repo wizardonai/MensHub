@@ -291,7 +291,7 @@ VALUES
     'Panino con la mortadella',
     'glutine, sesamo',
     4.50,
-    'panino',
+    'secondo',
     'products/paninomortazza.webp',
     1,
     7,

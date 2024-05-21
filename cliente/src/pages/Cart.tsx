@@ -13,7 +13,6 @@ import {
 	DrawerContent,
 	DrawerTrigger,
 } from "../components/shadcn/Drawer";
-import { useLocalStorage } from "usehooks-ts";
 
 const Elemento = ({
 	item,
@@ -296,6 +295,10 @@ const Cart = ({
 												carrello,
 												localStorage.getItem("token") || "scu"
 											).then((res: any) => {
+												if (!res) {
+													toast.error("Errore di connessione");
+													return;
+												}
 												if (res === "Token non valido") {
 													setLoggato(false);
 													return;

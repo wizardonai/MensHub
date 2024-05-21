@@ -27,6 +27,8 @@ import deleteImg from "../img/deleteBlack.webp";
 import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
 
+import loadingVideo from "../img/loading.mov";
+
 const Popup = ({
 	tipoPopup,
 	setTipoPopup,
@@ -84,7 +86,7 @@ const Popup = ({
 					<>
 						<div className='w-full flex justify-evenly items-center flex-col h-[80%]'>
 							<p className='w-full text-center text-xl'>Inserire la password</p>
-							<p className='w-full text-center mb-1.5 text-[#e36623]'>
+							<p className='w-full text-center mb-1.5 text-rosso'>
 								(Quest'azione sarà irreversibile)
 							</p>
 							<div className='flex flex-col items-center w-3/4'>
@@ -116,6 +118,10 @@ const Popup = ({
 											localStorage.getItem("token") || "asd",
 											pwd
 										).then((res: any) => {
+											if (!res) {
+												toast.error("Errore nella connessione al server");
+												return;
+											}
 											if (res + "" === "Utente eliminato") {
 												setDisabled(true);
 												toast.success(
@@ -133,7 +139,7 @@ const Popup = ({
 											} else toast.error(res);
 										});
 									}}
-									className='rounded-xl bg-[#e36623] border-[#e36623] text-biancoLatte'
+									className='rounded-xl bg-rosso border-rosso text-biancoLatte'
 									disabled={disabled}
 								>
 									Elimina
@@ -163,11 +169,9 @@ const Popup = ({
 };
 
 const BtnElmininaAccount = ({ setTipoPopup }: { setTipoPopup: Function }) => {
-	const navigate = useNavigate();
-
 	return (
 		<div
-			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-[#e36623] mb-3'
+			className='w-full h-[70px] flex flex-row justify-center items-center rounded-3xl bg-rosso mb-3'
 			onClick={() => setTipoPopup("eliminaaccount")}
 		>
 			<p className='text-marrone text-xl capitalize w-[80%] indent-5'>
@@ -247,6 +251,10 @@ const MensaPreferita = ({
 							parseInt(e),
 							localStorage.getItem("token") || "scu"
 						).then((res: any) => {
+							if (!res) {
+								toast.error("Errore nella connessione al server");
+								return;
+							}
 							if (res === "Token non valido") {
 								setLoggato(false);
 								return;
@@ -255,6 +263,10 @@ const MensaPreferita = ({
 							localStorage.setItem("token", res.token);
 
 							getProdotti(res.token).then((res: any) => {
+								if (!res) {
+									toast.error("Errore nella connessione al server");
+									return;
+								}
 								setProducts(res);
 								localStorage.setItem("cart", JSON.stringify([]));
 							});
@@ -361,22 +373,31 @@ const Profile = ({
 	const [tipoPopup, setTipoPopup] = useState("");
 	const [mense, setMense] = useState([] as Array<mensa>);
 
+	if (!mense) {
+		return (
+			<div className='w-full h-full flex justify-center items-center bg-white'>
+				<video autoPlay loop muted>
+					<source src={loadingVideo} type='video/mp4' />
+				</video>
+			</div>
+		);
+	}
+
 	if (mense.length === 0) {
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
 		getMense().then((res: any) => {
+			if (!res) {
+				toast.error("Errore nella connessione al server");
+				return;
+			}
 			setMense(res);
 		});
 
 		return (
 			<div className='w-full h-full flex justify-center items-center bg-white'>
-				<iframe
-					src='https://giphy.com/embed/8Ajc7LGGMYssG3Xwlm'
-					width='300'
-					height='300'
-					className='giphy-embed'
-					allowFullScreen
-					title='caricamento'
-				></iframe>
+				<video autoPlay loop muted>
+					<source src={loadingVideo} type='video/mp4' />
+				</video>
 			</div>
 		);
 	}

@@ -10,6 +10,8 @@ import {
 	SectionToggleTrigger,
 } from "../components/shadcn/SectionToggle";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { toast } from "sonner";
+import { Toaster } from "../components/shadcn/Sonner";
 
 const CronologiaAcquistiPage = ({
 	products,
@@ -29,6 +31,10 @@ const CronologiaAcquistiPage = ({
 		setChiesto(true);
 		//fetch cronologia
 		getCronologia(localStorage.getItem("token") || "scu").then((res: any) => {
+			if (!res) {
+				toast.error("Errore nel caricamento della cronologia");
+				return;
+			}
 			if (res === "Token non valido") {
 				setLoggato(false);
 				return;
@@ -131,6 +137,7 @@ const CronologiaAcquistiPage = ({
 					</SectionToggle>
 				</div>
 			</Container>
+			<Toaster richColors />
 			<Navbar page='Cronologia' />
 		</>
 	);

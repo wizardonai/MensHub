@@ -3,7 +3,6 @@ import { Container, Navbar, Topbar } from "../components/Components";
 import { useState } from "react";
 import { prodotto, sleep, urlImg } from "../utils";
 import { Input } from "../components/shadcn/Input";
-
 import searchImg from "../img/search.webp";
 import antipastoImg from "../img/antipasto.webp";
 import primoImg from "../img/primo.webp";
@@ -14,6 +13,8 @@ import bibitaImg from "../img/bibita.webp";
 import { Toaster } from "../components/shadcn/Sonner";
 import { toast } from "sonner";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+
+import loadingVideo from "../img/loading.mov";
 
 const Listone = ({
 	filteredProducts,
@@ -272,8 +273,6 @@ const Searchbar = ({
 					if (arr[i].slice(0, strSrc.length) === strSrc) {
 						lista.push(item);
 						break;
-					} else {
-						break;
 					}
 				}
 			});
@@ -312,6 +311,12 @@ const Searchbar = ({
 						return 0;
 				}
 			});
+
+			//filtriTmp può contenere due volte lo stesso filtro (ad esempio [["secondo", "img"], ["secondo", "img"]]) e bisogna rimuovere questi duplicati
+
+			filtriTmp = filtriTmp.filter(
+				(item, index) => filtriTmp.indexOf(item) === index
+			);
 
 			setPossibiliFiltri(filtriTmp);
 		} else {
@@ -380,6 +385,15 @@ const Homepage = ({
 		["bibita", bibitaImg],
 	]);
 
+	if (!products)
+		return (
+			<div className='w-full h-full flex justify-center items-center bg-white'>
+				<video autoPlay loop muted>
+					<source src={loadingVideo} type='video/mp4' />
+				</video>
+			</div>
+		);
+
 	if (products.length === 0) {
 		if (localStorage.getItem("token") === "false") {
 			navigate("/login");
@@ -388,14 +402,9 @@ const Homepage = ({
 
 		return (
 			<div className='w-full h-full flex justify-center items-center bg-white'>
-				<iframe
-					src='https://giphy.com/embed/8Ajc7LGGMYssG3Xwlm'
-					width='300'
-					height='300'
-					className='giphy-embed'
-					allowFullScreen
-					title='caricamento'
-				></iframe>
+				<video autoPlay loop muted>
+					<source src={loadingVideo} type='video/mp4' />
+				</video>
 			</div>
 		);
 	}
