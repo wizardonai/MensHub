@@ -60,7 +60,7 @@ function connetti() {
 	connection = createConnection({
 		host: "localhost",
 		user: "root",
-		password: "",
+		password: "password",
 	});
 	connection.connect(function (err) {
 		if (err) throw new Error(err);
