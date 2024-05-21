@@ -62,6 +62,9 @@ const ProfileProductor = () => {
       periodoCliccato
     ).then((res) => {
       setTopProdotti(res);
+      if (res === "Non sono presenti prodotti") {
+        setTopProdotti([]);
+      }
     });
     getStatMensa(
       JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
@@ -73,7 +76,6 @@ const ProfileProductor = () => {
         setOrdiniCompletati([]);
       }
     });
-
     setRicarica(false);
   }
 
@@ -228,10 +230,21 @@ const ProfileProductor = () => {
         </div>
         <div className="flex">
           <div className="pt-[15px] w-1/2">
-            <p className="font-bold text-xl text-marroneScuro">Email:</p>
-            <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
-              {dati[0].email}
-            </p>
+            <div className="flex">
+              <div className="w-1/2">
+                <p className="font-bold text-xl text-marroneScuro">Email:</p>
+                <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
+                  {dati[0].email}
+                </p>
+                <p className="font-bold text-xl text-marroneScuro">Telefono:</p>
+              </div>
+              <div className="w-1/2">
+                <p className="font-bold text-xl text-marroneScuro">Telefono:</p>
+                <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
+                  {dati[0].telefono}
+                </p>
+              </div>
+            </div>
             <Dialog>
               <DialogTrigger asChild>
                 <a className="font-bold text-lg text-verdeBordo cursor-pointer underline hover:text-verdeBordoHover">
