@@ -75,7 +75,7 @@ connetti();
 
 server.use(
 	cors({
-		origin: "http://127.0.0.1:6969",
+		origin: "http://127.0.0.1:80",
 	})
 );
 // server.use(cors());
@@ -364,16 +364,16 @@ server.post("/register/user", async function (req, res) {
 		}
 	});
 
-	const { valid, reason, validators } = await validate(email);
+	//const { valid, reason, validators } = await validate(email);
 	let queryInsertUser;
-	if (valid) {
-		queryInsertUser = `INSERT INTO UTENTI (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${cliente});`;
+	if (true) {
+		queryInsertUser = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${cliente});`;
 		console.log("caca" + queryInsertUser);
 		connection.query(queryInsertUser, (err, result) => {
 			if (err) throw new Error(err);
 			if (result) {
 				res.send("Registrazione avvenuta con successo");
-				res.end;
+				res.end();
 			}
 		});
 	} else {
@@ -386,9 +386,9 @@ server.post("/login/user", async function (req, res) {
 	let email = req.body.email;
 	let password = req.body.password;
 
-	const { valid, reason, validators } = await validate(email);
+	//const { valid, reason, validators } = await validate(email);
 
-	if (valid) {
+	if (true) {
 		let query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
 
 		connection.query(query, (err, result) => {
@@ -564,7 +564,7 @@ server.post("/change/password", (req, res) => {
 							query_check_old_psw = `select password from utenti where id=${id_utente};`;
 							connection.query(query_check_old_psw, (err, result) => {
 								if (err) {
-									res.send(err);
+									res.send("Errore del database");
 									res.end();
 									return;
 								}
@@ -574,7 +574,7 @@ server.post("/change/password", (req, res) => {
 										result[0].password === old_psw &&
 										new_psw === confirm_new_psw
 									) {
-										let query_set_new_password = `update utenti set password = ${new_psw} where id=${id_utente};`;
+										let query_set_new_password = `update utenti set password='${new_psw}' where id=${id_utente};`;
 										connection.query(query_set_new_password, (err, result) => {
 											if (err) {
 												res.send(err);

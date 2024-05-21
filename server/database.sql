@@ -292,7 +292,7 @@ VALUES
     'glutine, sesamo',
     4.50,
     'secondo',
-    'products/paninomortazza.webp',
+    'products/paninoMortazza.webp',
     1,
     7,
     1
