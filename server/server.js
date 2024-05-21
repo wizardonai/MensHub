@@ -360,7 +360,7 @@ server.post("/register/user", async function (req, res) {
 		if (err) throw new Error(err);
 		if (result.length > 0) {
 			res.send("email già presente");
-			res.end;
+			res.end();
 		}
 	});
 
