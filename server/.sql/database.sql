@@ -67,7 +67,8 @@ CREATE TABLE `utenti` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `id_mensa` int(11) DEFAULT NULL,
-  `cliente` tinyint(1) NOT NULL
+  `cliente` tinyint(1) NOT NULL,
+  `verificato` tinyint(1) NOT NULL DEFAULT 0
 );
 ALTER TABLE
   `utenti`
@@ -76,7 +77,7 @@ ADD
   ON DELETE SET NULL ON UPDATE CASCADE;
 
 INSERT INTO `utenti` (`id`, `nome`, `cognome`, `email`, `password`, `id_mensa`, `cliente`) VALUES
-(1, 'Simone', 'Lapomarda', 'simolapomarda@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1, 1);
+(1, 'Simone', 'Lapomarda', 'simolapomarda@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1, 0);
 
 
 CREATE TABLE `ordini` (
@@ -275,6 +276,7 @@ ADD
 
   INSERT INTO
   `prodotti` (
+    `id`,
     `nome`,
     `descrizione`,
     `allergeni`,
@@ -287,78 +289,85 @@ ADD
   )
 VALUES
   (
+    1,
     'Paninazzo',
     'Panino con la mortadella',
     'glutine, sesamo',
     4.50,
     'secondo',
-    'products/paninoMortazza.webp',
+    'products/1.webp',
     1,
     7,
     1
   ),
   (
+    2,
     'Carbonara',
     'Pasta alla carbonara',
     'uova, latticini, glutine',
     8.90,
     'primo',
-    'products/carbonara.webp',
+    'products/2.webp',
     1,
     14,
     1
   ),
   (
+    3,
     'Cotoletta con le patatine',
     'Cotoletta di pollo accompagnata da delle patatine fritte',
     'uova, glutine, latticini, soia, sesamo',
     11.20,
     'secondo',
-    'products/cotoletta.webp',
+    'products/3.webp',
     1,
     8,
     1
   ),
   (
+    4,
     'Spaghetti all arrabbiata',
     'Piatto di spaghetti condito con pomodoro e peperoncino',
     'glutine, aglio, peperoncino',
     8.90,
     'primo',
-    'products/spaghettiArrabbiata.webp',
+    'products/4.webp',
     1,
     6,
     1
   ),
   (
+    5,
     'Panna cotta',
     'Panna cotta condita con caramello e granella di nocciola',
     'latticini, uova, gelatina, frutta a guscio',
     4.50,
     'dolce',
-    'products/pannacotta.webp',
+    'products/5.webp',
     1,
     11,
     1
   ),
   (
+    6,
     'Insalata',
     'Insalata, salsa yogurt e aceto balsamico',
     'glutine, latticini, noci, soia, sedano, uova',
     7.30,
     'contorno',
-    'products/insalata.webp',
+    'products/6.webp',
     1,
     15,
     1
   ),
   (
+    7,
     'Tar tar di manzo',
     'Carne di manzo di alta qualità. 100% Made in Italy',
     ' glutine, uova, senape, cipolla, latticini',
     6.40,
     'antipasto',
-    'products/tartare.webp',
+    'products/7.webp',
     1,
     10,
     1
