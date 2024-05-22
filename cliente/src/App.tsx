@@ -10,7 +10,7 @@ import { useLocalStorage } from "usehooks-ts";
 import Profile from "./pages/Profile";
 import { getProdotti, getProfilo } from "./scripts/fetch";
 import ProfilePages from "./pages/ProfilePages";
-import { prodotto, typeProfilo } from "./utils";
+import { prodotto, prodottoCarrello, typeProfilo } from "./utils";
 import Product from "./pages/Product";
 import { useState } from "react";
 import Auth from "./pages/Auth";
@@ -22,7 +22,7 @@ function App() {
 	const [username, setUsername] = useState("");
 	const [datiUtente, setDatiUtente] = useState({} as typeProfilo);
 	const [products, setProducts] = useState([] as Array<prodotto>);
-	const [carrello, setCarrello] = useLocalStorage("cart", []);
+	const [carrello, setCarrello] = useLocalStorage("cart", [] as Array<prodottoCarrello>);
 
 	let router;
 	if (loggato === "cliente") {

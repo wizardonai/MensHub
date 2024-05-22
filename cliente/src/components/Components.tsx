@@ -52,8 +52,8 @@ export const Navbar = ({
 	page: string;
 	product?: prodotto;
 	lunghezzaCarrello?: number;
-	carrello: Array<prodottoCarrello>;
-	setCarrello: Function
+	carrello?: Array<prodottoCarrello>;
+	setCarrello?: Function
 }) => {
 	const navigate = useNavigate();
 
@@ -111,13 +111,16 @@ export const Navbar = ({
 									const id = page.split("-")[1];
 									let carrelloTmp = carrello;
 									let presente = false;
+									//@ts-ignore
 									for (let i = 0; i < carrelloTmp.length; i++) {
+										//@ts-ignore
 										if (carrelloTmp[i].id === parseInt(id)) {
 											presente = true;
 											break;
 										}
 									}
 									if (presente) {
+										//@ts-ignore
 										const nuovoCarrello = carrelloTmp.map((item: any) => {
 											if (item.id === parseInt(id)) {
 												let nuovoItem = item;
@@ -127,9 +130,12 @@ export const Navbar = ({
 												return item;
 											}
 										});
+										//@ts-ignore
 										setCarrello(nuovoCarrello);
 									} else {
+										//@ts-ignore
 										carrelloTmp.push({ ...product, quantita: 1 });
+										//@ts-ignore
 										setCarrello(carrelloTmp);
 									}
 

@@ -481,7 +481,7 @@ server.post("/login/user", async function (req, res) {
   let password = req.body.password;
 
   if (EmailValidator.validate(email)) {
-    let query = `SELECT * FROM utenti WHERE email="${email}" AND password="${password}";`;
+    let query = `SELECT * FROM utenti WHERE email="${email}";`;
 
     connection.query(query, (err, result) => {
       if (err) {
