@@ -16,6 +16,7 @@ import { useState } from "react";
 import Auth from "./pages/Auth";
 import Pwdchange from "./pages/Pwdchange";
 import Tmp from "./pages/tmp";
+import ConfirmEmail from "./pages/ConfirmEmail";
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", "?");
@@ -178,9 +179,14 @@ function App() {
 				},
 			},
 			{
+				path : "/confirm/email/:token",
+				element : <ConfirmEmail />,
+			},
+			{
 				path: "/*",
 				loader: () => redirect("/auth"),
 			},
+
 		]);
 	}
 

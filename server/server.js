@@ -20,6 +20,7 @@ const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
 const url = "http://menshub.it";
+//const url = "http://localhost:3000";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -80,9 +81,9 @@ function connetti() {
 }
 
 server.use(
-  cors({
-    origin: "http://127.0.0.1:80",
-  })
+  cors(
+    { origin: "http://127.0.0.1:80", }
+  )
 );
 server.use(json());
 server.use(express.json());
@@ -95,6 +96,7 @@ const reactRoutes = [
   "/profile/:page",
   "/product/:id",
   "/changepwd/:token",
+  "/confirm/email/:token",
   "/auth",
 ];
 
@@ -437,7 +439,7 @@ server.post("/register/user", async function (req, res) {
                     res.send("Errore nell'invio dell'email");
                     res.end();
                   } else {
-                    res.send("Registrazione avvenuta con successo");
+                    res.send("Registrazione avvenuta. Controlla la casella di posta per confermare l'email.");
                     res.end();
                   }
                 });

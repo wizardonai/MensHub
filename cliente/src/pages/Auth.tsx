@@ -497,7 +497,7 @@ const IndirizzoMensa = ({
 		if (data.regione === undefined) return;
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/province/" +
-				data.regione,
+			data.regione,
 			{
 				headers: {
 					"Access-Control-Allow-Origin": "*",
@@ -517,7 +517,7 @@ const IndirizzoMensa = ({
 		if (data.provincia === undefined) return;
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/comuni/provincia/" +
-				data.provincia,
+			data.provincia,
 			{
 				headers: {
 					"Access-Control-Allow-Origin": "*",
@@ -818,6 +818,7 @@ const RegisterCliente = ({
 
 	const [mense, setMense] = useState([] as Array<mensa>);
 	const div = useRef(null);
+	const [emailInviata, setEmailInviata] = useState(false);
 
 	if (mense.length === 0) {
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
@@ -866,28 +867,31 @@ const RegisterCliente = ({
 			toast.error("Password e conferma password devono corrispondere!");
 			return;
 		}
-
+		setEmailInviata(true);
 		registerUser(data).then((res) => {
 			if (!res) {
 				toast.error("Errore nella connessione al server");
+				setEmailInviata(false);
 				return;
 			}
-			if (res !== "Registrazione avvenuta con successo") {
+			if (res !== "Registrazione avvenuta. Controlla la casella di posta per confermare l'email.") {
+				setEmailInviata(false);
 				toast.error(res + "");
 			} else {
-				toast.info(res + "\nReinderizzamento al login...");
+				toast.success(res);
 
-				sleep(1000).then(() => {
-					animazioniImmagini(45, 5, window.innerHeight);
 
-					//@ts-ignore
-					div.current.classList.remove("animate-showElement");
-					//@ts-ignore
-					div.current.classList.add("animate-hideElement");
-					sleep(1500).then(() => {
-						setLogin("1");
-					});
-				});
+				// sleep(1000).then(() => {
+				// 	animazioniImmagini(45, 5, window.innerHeight);
+
+				// 	//@ts-ignore
+				// 	div.current.classList.remove("animate-showElement");
+				// 	//@ts-ignore
+				// 	div.current.classList.add("animate-hideElement");
+				// 	sleep(1500).then(() => {
+				// 		setLogin("1");
+				// 	});
+				// });
 			}
 		});
 	};
@@ -1034,6 +1038,7 @@ const RegisterCliente = ({
 				<Button
 					variant='avanti'
 					onClick={submitRegisterCliccato}
+					disabled={emailInviata}
 					className='w-1/2 rounded-3xl mt-1'
 				>
 					Registrati
