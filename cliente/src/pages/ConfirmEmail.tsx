@@ -5,14 +5,16 @@ import { confirmEmail } from "../scripts/fetch";
 import { Button } from "../components/shadcn/Button";
 import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
-import exp from "constants";
+import { useLocalStorage } from "usehooks-ts";
 
 const ConfirmEmail = () => {
     const { token } = useParams<{ token: string }>();
 
     const [confermato, setConfermato] = useState(false);
+    const [login, setLogin] = useLocalStorage("login", "?");
     const [ok, setOk] = useState(false);
     const navigate = useNavigate();
+
     if (!token || token === "" || token === "undefined") {
         navigate("/login");
         return;
@@ -41,6 +43,7 @@ const ConfirmEmail = () => {
                         <p className='text-2xl text-marrone'>Ora puoi effettuare il login</p>
                         <Button
                             onClick={() => {
+                                setLogin("?")
                                 navigate("/login");
                             }}
                             variant='avanti'
@@ -50,7 +53,7 @@ const ConfirmEmail = () => {
                 ) : ("Caricamento...")}
 
             </div>
-            <Toaster richColors/>
+            <Toaster richColors />
         </>
     );
 
