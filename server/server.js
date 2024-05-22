@@ -89,13 +89,13 @@ server.use(express.json());
 server.use(urlencoded({ extended: false }));
 
 const reactRoutes = [
-	"/home",
-	"/cart",
-	"/profile",
-	"/profile/:page",
-	"/product/:id",
-	"/changepwd/:token",
-	"/auth",
+  "/home",
+  "/cart",
+  "/profile",
+  "/profile/:page",
+  "/product/:id",
+  "/changepwd/:token",
+  "/auth",
 ];
 
 server.use("/image", express.static("./image"));
@@ -508,27 +508,38 @@ server.post("/login/user", async function (req, res) {
             res.end();
           } else {
 
-            const token = jwt.sign(
-              {
-                id: result[0].id,
-                nome: result[0].nome,
-                cognome: result[0].cognome,
-                email: result[0].email,
-                id_mensa: result[0].id_mensa,
-              },
-              secretKey,
-              { expiresIn: "90d" },
-            );
+            if (password != result[0].password) {
+              res.send("Password errata");
+              res.end();
+            } else if (result[0].verificato == 0) {
+              res.send("Email non confermata");
+              res.end();
+            } else {
+              const token = jwt.sign(
+                {
+                  id: result[0].id,
+                  nome: result[0].nome,
+                  cognome: result[0].cognome,
+                  email: result[0].email,
+                  id_mensa: result[0].id_mensa,
+                },
+                secretKey,
+                { expiresIn: "90d" },
+              );
 
-            let tipo = result[0].cliente;
+              let tipo = result[0].cliente;
 
-            res.json({ token: token, tipo: tipo });
-            res.send();
-            res.end();
+              res.json({ token: token, tipo: tipo });
+              res.send();
+              res.end();
+            }
+
           }
         } else {
+
           res.send("Utente non trovato");
           res.end();
+
         }
       }
     });

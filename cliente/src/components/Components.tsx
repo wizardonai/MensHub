@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "./shadcn/utils";
-import { prodotto } from "../utils";
+import { prodotto, prodottoCarrello } from "../utils";
 
 import homeImg from "../img/home.webp";
 import cartImg from "../img/cart.webp";
@@ -46,10 +46,14 @@ export const Navbar = ({
 	page,
 	product,
 	lunghezzaCarrello,
+	carrello,
+	setCarrello
 }: {
 	page: string;
 	product?: prodotto;
 	lunghezzaCarrello?: number;
+	carrello: Array<prodottoCarrello>;
+	setCarrello: Function
 }) => {
 	const navigate = useNavigate();
 
@@ -70,7 +74,7 @@ export const Navbar = ({
 		<div className='w-full h-navbar flex flex-row justify-evenly items-center'>
 			<div className='w-[90%] h-full flex flex-row justify-evenly items-center'>
 				{page.split("-")[0] === "Aggiungi al carrello" ||
-				page === "Cronologia" ? (
+					page === "Cronologia" ? (
 					<>
 						<div
 							className={`bg-marrone flex justify-center items-center`}
@@ -105,18 +109,16 @@ export const Navbar = ({
 							onClick={() => {
 								if (page.split("-")[0] === "Aggiungi al carrello") {
 									const id = page.split("-")[1];
-									let carrello = JSON.parse(
-										localStorage.getItem("cart") || "[]"
-									);
+									let carrelloTmp = carrello;
 									let presente = false;
-									for (let i = 0; i < carrello.length; i++) {
-										if (carrello[i].id === parseInt(id)) {
+									for (let i = 0; i < carrelloTmp.length; i++) {
+										if (carrelloTmp[i].id === parseInt(id)) {
 											presente = true;
 											break;
 										}
 									}
 									if (presente) {
-										const nuovoCarrello = carrello.map((item: any) => {
+										const nuovoCarrello = carrelloTmp.map((item: any) => {
 											if (item.id === parseInt(id)) {
 												let nuovoItem = item;
 												nuovoItem.quantita += 1;
@@ -125,10 +127,10 @@ export const Navbar = ({
 												return item;
 											}
 										});
-										localStorage.setItem("cart", JSON.stringify(nuovoCarrello));
+										setCarrello(nuovoCarrello);
 									} else {
-										carrello.push({ ...product, quantita: 1 });
-										localStorage.setItem("cart", JSON.stringify(carrello));
+										carrelloTmp.push({ ...product, quantita: 1 });
+										setCarrello(carrelloTmp);
 									}
 
 									navigate("/cart");

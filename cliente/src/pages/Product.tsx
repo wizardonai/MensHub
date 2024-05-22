@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 import { Container, Navbar } from "../components/Components";
-import { prodotto, urlImg } from "../utils";
+import { prodotto, prodottoCarrello, urlImg } from "../utils";
 import {
 	Carousel,
 	CarouselContent,
@@ -10,7 +10,7 @@ import {
 } from "../components/shadcn/Carousel";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-const Product = () => {
+const Product = ({ carrello, setCarrello }: { carrello: Array<prodottoCarrello>, setCarrello: Function }) => {
 	const tmp: any = useLoaderData();
 
 	if (!tmp)
@@ -62,7 +62,7 @@ const Product = () => {
 					</div>
 				</div>
 			</Container>
-			<Navbar page={"Aggiungi al carrello-" + product.id} product={product} />
+			<Navbar page={"Aggiungi al carrello-" + product.id} product={product} carrello={carrello} setCarrello={setCarrello} />
 		</>
 	);
 };

@@ -123,7 +123,7 @@ function App() {
 			},
 			{
 				path: "/product/:id",
-				element: <Product />,
+				element: <Product carrello={carrello} setCarrello={setCarrello} />,
 				loader: ({ params }) => {
 					const tmp = products.filter(
 						(product) => product.id === parseInt(params.id || "-1")
