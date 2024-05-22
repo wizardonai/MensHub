@@ -19,8 +19,8 @@ import nodemailer from "nodemailer";
 const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
-//const url = "http://menshub.it";
-const url = "http://localhost:3000";
+const url = "http://menshub.it";
+//const url = "http://localhost:3000";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -62,7 +62,7 @@ function connetti() {
   connection = createConnection({
     host: "localhost",
     user: "root",
-    password: "",
+    password: "password",
   });
   connection.connect(function (err) {
     if (err) {
@@ -82,7 +82,7 @@ function connetti() {
 
 server.use(
   cors(
-    //{ origin: "http://127.0.0.1:80", }
+    { origin: "http://127.0.0.1:80", }
   )
 );
 server.use(json());
@@ -1891,7 +1891,7 @@ function checkMensaCancellata(id, resolve) {
 
 }
 
-const port = 6969;
+const port = 80;
 server.listen(port, () => {
   console.log("http://menshub.it");
 });
