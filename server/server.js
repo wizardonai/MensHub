@@ -88,15 +88,20 @@ server.use(json());
 server.use(express.json());
 server.use(urlencoded({ extended: false }));
 
-//deploy react
-server.use("/image", express.static("./image"));
-server.use(express.static("../client/build"));
+const reactRoutes = [
+	"/home",
+	"/cart",
+	"/profile",
+	"/profile/:page",
+	"/product/:id",
+	"/changepwd/:token",
+	"/auth",
+];
 
-//all methods that return a response to the client
-server.get("/", (req, res) => {
-  //hosto la pagina sullo stesso sito
-  res.sendFile(path.resolve("../client/build/index.html")); //"../client/build/index.html"
-});
+server.use("/image", express.static("./image"));
+server.use(express.static("../cliente/build"));
+server.use(reactRoutes, express.static("../cliente/build"));
+
 
 server.post("/request/products", (req, res) => {
   let token = req.headers.authorization;
