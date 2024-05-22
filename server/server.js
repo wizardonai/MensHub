@@ -19,8 +19,8 @@ import nodemailer from "nodemailer";
 const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
-const url = "http://menshub.it";
-//const url = "http://localhost:3000";
+//const url = "http://menshub.it";
+const url = "http://localhost:3000";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -62,7 +62,7 @@ function connetti() {
   connection = createConnection({
     host: "localhost",
     user: "root",
-    password: "password",
+    password: "",
   });
   connection.connect(function (err) {
     if (err) {
@@ -82,7 +82,7 @@ function connetti() {
 
 server.use(
   cors(
-    { origin: "http://127.0.0.1:80", }
+    //{ origin: "http://127.0.0.1:80", }
   )
 );
 server.use(json());
@@ -330,7 +330,7 @@ server.post("/send/cart", (req, res) => {
 
             let data = req.body.carrello;
 
-            let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'attivo', ${id_utente});`;
+            let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'da fare', ${id_utente});`;
 
             connection.query(query, (err, result) => {
               if (err) {
@@ -676,25 +676,39 @@ server.post("/change/password", (req, res) => {
               return;
             };
             if (result.length > 0) {
-              if (result[0].password === old_psw && new_psw === confirm_new_psw) {
-                let query_set_new_password = `update utenti set password = '${new_psw}' where id=${id_utente};`;
-                connection.query(query_set_new_password, (err, result) => {
-                  if (err) {
-                    res.send("Errore del database")
-                    res.end();
-                    return;
-                  };
-                  if (result) {
-                    res.send("Password cambiata con successo");
+              if (result[0].password === old_psw) {
+                if (new_psw === confirm_new_psw) {
+                  if (new_psw != old_psw) {
+                    let query_set_new_password = `update utenti set password = '${new_psw}' where id=${id_utente};`;
+                    connection.query(query_set_new_password, (err, result) => {
+                      if (err) {
+                        res.send("Errore del database")
+                        res.end();
+                        return;
+                      };
+                      if (result) {
+                        res.send("Password cambiata con successo");
+                        res.end();
+                        return;
+                      }
+                    });
+                  } else {
+                    res.send("La nuova password deve essere diversa dalla vecchia");
                     res.end();
                     return;
                   }
-                });
+
+                } else {
+                  res.send("Le password non combaciano");
+                  res.end();
+                  return;
+                }
               } else {
-                res.send("Le password non combaciano");
+                res.send("Vecchia password errata");
                 res.end();
                 return;
               }
+
             }
 
           });
@@ -1877,7 +1891,7 @@ function checkMensaCancellata(id, resolve) {
 
 }
 
-const port = 80;
+const port = 6969;
 server.listen(port, () => {
   console.log("http://menshub.it");
 });

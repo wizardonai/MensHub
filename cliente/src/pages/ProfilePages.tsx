@@ -48,7 +48,7 @@ const CronologiaAcquistiPage = ({
 			}
 			if (typeof res !== "string" && res.length > 0) {
 				setCronologia(
-					res.filter((item: any) => item.stato_ordine !== "attivo")
+					res.filter((item: any) => item.stato_ordine !== "")
 				);
 				console.log(typeof res);
 			} else setCronologia([]);
@@ -74,7 +74,7 @@ const CronologiaAcquistiPage = ({
 				<SectionToggleItem
 					key={index}
 					value={item.id_ordine + ""}
-					className='border-0 bg-biancoLatte rounded-3xl'
+					className='border-0 bg-biancoLatte rounded-3xl mb-2 w-full'
 				>
 					<SectionToggleTrigger className='bg-arancioneScuro rounded-2xl flex flex-row justify-between items-center px-4 no-underline h-[70px]'>
 						<div key={index} className='w-full text-marrone text-lg'>

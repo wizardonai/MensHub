@@ -61,7 +61,7 @@ const Listone = ({
 								id=''
 								onClick={() => navigate("/product/" + item.id)}
 							>
-								<p className='text-[16px] text-marrone font-bold tracking-tight'>
+								<p className='text-[16px] text-marrone font-bold tracking-tight pr-2 pl-2'>
 									{item.nome}
 								</p>
 							</div>

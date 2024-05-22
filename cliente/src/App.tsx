@@ -75,6 +75,11 @@ function App() {
 			}
 		}
 
+		let sommaCarrello = 0;
+		carrello.forEach(element => {
+			sommaCarrello += element.quantita;
+		});
+
 		router = createBrowserRouter([
 			{
 				path: "/home",
@@ -83,7 +88,7 @@ function App() {
 						username={username}
 						products={products}
 						setCarrello={setCarrello}
-						lunghezzaCarrello={carrello.length}
+						lunghezzaCarrello={sommaCarrello}
 					/>
 				),
 			},
@@ -107,7 +112,7 @@ function App() {
 						datiUtente={datiUtente}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
-						lunghezzaCarrello={carrello.length}
+						lunghezzaCarrello={sommaCarrello}
 					/>
 				),
 			},
