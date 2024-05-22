@@ -478,3 +478,70 @@ export async function deleteProdotto(token: string, id_prodotto: number) {
 
   return response;
 }
+
+export async function changeProdotto(
+  token: string,
+  id: string,
+  nome: string,
+  descrizione: string,
+  allergeni: string,
+  prezzo: number,
+  categoria: string,
+  disponibile: boolean
+) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/edit/product`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: new URLSearchParams({
+      id: id,
+      nome: nome,
+      descrizione: descrizione,
+      allergeni: allergeni,
+      prezzo: prezzo.toString(),
+      categoria: categoria,
+      disponibile: disponibile.toString(),
+    }),
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      response = err.response.data;
+    });
+
+  return response;
+}
+
+export async function changeProdottoImmagine(token: string, dati: any) {
+  let response;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/producer/editWithImg/product`,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    data: dati,
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      response = err.response.data;
+    });
+
+  return response;
+}

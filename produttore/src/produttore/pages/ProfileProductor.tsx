@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { hostnameProductor, styleMap } from "src/App";
 import NavbarProductor from "./components/NavbarProductor";
+import { Toaster } from "src/shadcn/Sonner";
+import { toast } from "sonner";
+
 import {
   changePassword,
   deleteMensa,
@@ -21,6 +24,7 @@ import {
 } from "recharts";
 
 import { Label } from "@radix-ui/react-label";
+
 import { Button } from "src/shadcn/Button";
 import { Input } from "src/shadcn/Input";
 import {
@@ -114,12 +118,12 @@ const ProfileProductor = () => {
       passwordValue === "" ||
       confermaPasswordValue === ""
     ) {
-      alert("Si prega di compilare tutti i campi.");
+      toast.error("Si prega di compilare tutti i campi!");
       return;
     }
 
     if (passwordValue !== confermaPasswordValue) {
-      alert("Le password non corrispondono.");
+      toast.error("Le password non corrispondono!");
       return;
     }
 
@@ -133,10 +137,10 @@ const ProfileProductor = () => {
       id_mensa: dati[0].id,
     }).then((res) => {
       if (res === "Risposta Registrazione avvenuta con successo") {
-        alert("Utente registrato con successo");
+        toast.success("Utente registrato con successo!");
         setPopupEmail(false);
       } else {
-        alert("Errore nella registrazione");
+        toast.error("Errore nella registrazione");
       }
     });
   };
@@ -162,12 +166,11 @@ const ProfileProductor = () => {
       new_pswValue === "" ||
       confirm_new_pswValue === ""
     ) {
-      alert("Si prega di compilare tutti i campi.");
+      toast.error("Compila tutti i campi!");
       return;
     }
-
     if (new_pswValue !== confirm_new_pswValue) {
-      alert("Le password non corrispondono.");
+      toast.error("Le password non corrispondono!");
       return;
     }
 
@@ -178,7 +181,7 @@ const ProfileProductor = () => {
       new_pswValue,
       confirm_new_pswValue
     ).then((response) => {
-      alert(response);
+      toast.info(response);
     });
   };
 
@@ -194,12 +197,12 @@ const ProfileProductor = () => {
     }
 
     if (passwordEliminaValue === "" || confermaPasswordEliminaValue === "") {
-      alert("Si prega di compilare tutti i campi.");
+      toast.error("Compila tutti i campi!");
       return;
     }
 
     if (passwordEliminaValue !== confermaPasswordEliminaValue) {
-      alert("Le password non corrispondono.");
+      toast.error("Le password non corrispondono!");
       return;
     }
 
@@ -209,12 +212,12 @@ const ProfileProductor = () => {
       passwordEliminaValue
     ).then((res) => {
       if (res === "Risposta Eliminazione avvenuta con successo") {
-        alert("Mensa eliminata con successo");
+        toast.success("Mensa eliminata con successo");
         localStorage.removeItem("token");
         localStorage.removeItem("login");
         navigate(`/login`);
       } else {
-        alert("Errore nella eliminazione");
+        toast.error("Errore nella eliminazione");
       }
     });
   };
@@ -281,7 +284,7 @@ const ProfileProductor = () => {
                       ref={
                         old_psw as unknown as React.RefObject<HTMLInputElement>
                       }
-                      className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -298,7 +301,7 @@ const ProfileProductor = () => {
                       ref={
                         new_psw as unknown as React.RefObject<HTMLInputElement>
                       }
-                      className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -315,7 +318,7 @@ const ProfileProductor = () => {
                       ref={
                         confirm_new_psw as unknown as React.RefObject<HTMLInputElement>
                       }
-                      className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                     />
                   </div>
                 </div>
@@ -416,7 +419,7 @@ const ProfileProductor = () => {
                         ref={
                           nome as unknown as React.RefObject<HTMLInputElement>
                         }
-                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -433,7 +436,7 @@ const ProfileProductor = () => {
                         ref={
                           cognome as unknown as React.RefObject<HTMLInputElement>
                         }
-                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -450,7 +453,7 @@ const ProfileProductor = () => {
                         ref={
                           email as unknown as React.RefObject<HTMLInputElement>
                         }
-                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -467,7 +470,7 @@ const ProfileProductor = () => {
                         ref={
                           password as unknown as React.RefObject<HTMLInputElement>
                         }
-                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -484,7 +487,7 @@ const ProfileProductor = () => {
                         ref={
                           confermaPassword as unknown as React.RefObject<HTMLInputElement>
                         }
-                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                       />
                     </div>
                   </div>
@@ -495,7 +498,7 @@ const ProfileProductor = () => {
                         className="rounded-full bg-verdeBordo hover:bg-verdeBordoHover"
                         onClick={submitButton}
                       >
-                        Registrati
+                        Collega
                       </Button>
                     </div>
                   </DialogFooter>
@@ -554,7 +557,7 @@ const ProfileProductor = () => {
                         ref={
                           passwordElimina as unknown as React.RefObject<HTMLInputElement>
                         }
-                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -571,7 +574,7 @@ const ProfileProductor = () => {
                         ref={
                           confermaPasswordElimina as unknown as React.RefObject<HTMLInputElement>
                         }
-                        className="w-[15svw] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                       />
                     </div>
                   </div>
@@ -624,18 +627,31 @@ const ProfileProductor = () => {
               )}
             </p>
             <div className="flex">
-              {periodo.map((item) => (
-                <div
-                  key={item}
-                  className="bg-arancioneChiaro rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
-                  onClick={() => {
-                    setPeriodoCliccato(item);
-                    setRicarica(true);
-                  }}
-                >
-                  <p>{item}</p>
-                </div>
-              ))}
+              {periodo.map((item) =>
+                periodoCliccato.toString() === item.toString() ? (
+                  <div
+                    key={item}
+                    className="bg-arancioneBordo rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+                    onClick={() => {
+                      setPeriodoCliccato(item);
+                      setRicarica(true);
+                    }}
+                  >
+                    <p>{item}</p>
+                  </div>
+                ) : (
+                  <div
+                    key={item}
+                    className="bg-arancioneChiaro rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+                    onClick={() => {
+                      setPeriodoCliccato(item);
+                      setRicarica(true);
+                    }}
+                  >
+                    <p>{item}</p>
+                  </div>
+                )
+              )}
             </div>
             <ResponsiveContainer width="85%" height={250}>
               <BarChart
@@ -695,6 +711,7 @@ const ProfileProductor = () => {
           </div>
         </div>
       </div>
+      <Toaster position="top-center" richColors />
     </div>
   );
 };

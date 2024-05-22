@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { hostnameProductor } from "src/App";
 import { Input } from "src/shadcn/Input";
-import { addProdotto, deleteProdotto } from "src/login/scripts/fetch";
+import {
+  addProdotto,
+  changeProdottoImmagine,
+  deleteProdotto,
+} from "src/login/scripts/fetch";
 import Filtri from "./Filtri";
 
 export default function Popup({
@@ -41,7 +45,7 @@ export default function Popup({
       prezzo.current!.value = prodotto.prezzo;
       setFiltro(prodotto.categoria);
       descrizione.current!.value = prodotto.descrizione;
-      setImageUrl(hostnameProductor + prodotto.image);
+      setImageUrl(hostnameProductor + prodotto.indirizzo_img);
       setImage(null);
       setAllergeniScelti(prodotto.allergeni.split(","));
     } else {
@@ -54,6 +58,79 @@ export default function Popup({
       setAllergeniScelti([]);
     }
   }, [prodotto]);
+
+  const saveButton = () => {
+    let nomeValue = "";
+    if (nome.current) {
+      nomeValue = nome.current.value;
+    }
+    const categoriaValue = filtro;
+
+    let descrizioneValue = "";
+    if (descrizione.current) {
+      descrizioneValue = descrizione.current.value;
+    }
+    const allergeniValue = allergeniScelti;
+    const immagineValue = image;
+    let prezzoValue = "";
+    if (prezzo.current) {
+      prezzoValue = prezzo.current.value;
+    }
+
+    if (
+      nomeValue === "" ||
+      categoriaValue === "" ||
+      descrizioneValue === "" ||
+      immagineValue === null ||
+      prezzoValue === ""
+    ) {
+      alert("Si prega di compilare tutti i campi.");
+      return;
+    }
+
+    // Aggiungi la pietanza
+    const formData = new FormData();
+    if (prezzoValue !== null) formData.append("prezzo", prezzoValue);
+    if (nomeValue !== null) formData.append("nome", nomeValue);
+    formData.append("categoria", categoriaValue);
+    if (descrizioneValue !== null)
+      formData.append("descrizione", descrizioneValue);
+
+    //allergeni seperati da virgola
+    formData.append("allergeni", allergeniValue.join(","));
+    formData.append("image", immagineValue);
+    formData.append("disponibile", "1");
+
+    changeProdottoImmagine(
+      JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+        .token,
+      formData
+    )
+      .then((response) => {
+        if (response === "Prodotto modificato") {
+          const newProdotto = {
+            prezzo: prezzoValue,
+            nome: nomeValue,
+            categoria: categoriaValue,
+            descrizione: descrizioneValue,
+            allergeni: allergeniValue,
+            image: imageUrl,
+            disponibile: "1",
+          };
+
+          setProdotti(
+            prodotti.map((p: any) => (p.id === prodotto.id ? newProdotto : p))
+          );
+          alert(response);
+          setPopup(false);
+        } else {
+          alert("Errore nella modifica della pietanza");
+        }
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  };
 
   const submitButton = () => {
     let nomeValue = "";
@@ -272,7 +349,7 @@ export default function Popup({
                 />
               </div>
               <div className="pl-[15px] pt-[3%]">
-                <p className=" font-bold select-none pointer-events-none">
+                <p className=" font-bold select-none pointer-events-none text-marroneScuro">
                   Prezzo
                 </p>
                 <Input
@@ -286,7 +363,7 @@ export default function Popup({
                 />
               </div>
               <div className="pl-[15px] pt-[3%]">
-                <p className="font-bold select-none pointer-events-none">
+                <p className="font-bold select-none pointer-events-none text-marroneScuro">
                   Scegli la categoria
                 </p>
                 <div
@@ -304,7 +381,7 @@ export default function Popup({
                 </div>
               </div>
               <div className="pl-[15px] pt-[3%]">
-                <p className="font-bold select-none pointer-events-none">
+                <p className="font-bold select-none pointer-events-none text-marroneScuro">
                   Descrizione
                 </p>
                 <textarea
@@ -319,7 +396,7 @@ export default function Popup({
             </div>
             <div className="pl-[4svw]">
               <div>
-                <p className="font-bold select-none pointer-events-none">
+                <p className="font-bold select-none pointer-events-none text-marroneScuro">
                   Immagine
                 </p>
                 <div
@@ -364,7 +441,7 @@ export default function Popup({
                 </div>
               </div>
               <div className="pt-[5%]">
-                <p className="font-bold select-none pointer-events-none">
+                <p className="font-bold select-none pointer-events-none text-marroneScuro">
                   Allergeni
                 </p>
                 <div
@@ -451,7 +528,7 @@ export default function Popup({
                 <div
                   className="bg-verdeBordo h-[25px] rounded-full flex items-center px-8 py-4 mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
                   id="divFiltro"
-                  onClick={submitButton}
+                  onClick={saveButton}
                 >
                   <p
                     className="capitalize text-[16px] text-gialloSfondo select-none pointer-events-none"
