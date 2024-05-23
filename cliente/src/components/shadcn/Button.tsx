@@ -19,7 +19,7 @@ const buttonVariants = cva(
 				ghost: "hover:bg-accent hover:text-accent-foreground",
 				link: "text-primary underline-offset-4 hover:underline",
 				avanti:
-					"bg-marrone text-biancoLatte border-2 border-marrone font-bold shadow-lg tracking-wide",
+					"bg-marrone text-biancoLatte border-2 border-marrone font-bold shadow-lg tracking-wide pointer",
 				indietro:
 					"bg-biancoLatte text-marrone border-2 border-marrone font-bold shadow-lg tracking-wide",
 			},

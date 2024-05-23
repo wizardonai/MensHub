@@ -12,7 +12,7 @@ import { getProdotti, getProfilo } from "./scripts/fetch";
 import ProfilePages from "./pages/ProfilePages";
 import { prodotto, prodottoCarrello, typeProfilo } from "./utils";
 import Product from "./pages/Product";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Auth from "./pages/Auth";
 import Pwdchange from "./pages/Pwdchange";
 import Tmp from "./pages/tmp";
@@ -23,7 +23,19 @@ function App() {
 	const [username, setUsername] = useState("");
 	const [datiUtente, setDatiUtente] = useState({} as typeProfilo);
 	const [products, setProducts] = useState([] as Array<prodotto>);
-	const [carrello, setCarrello] = useLocalStorage("cart", [] as Array<prodottoCarrello>);
+	const [carrello, setCarrello] = useLocalStorage(
+		"cart",
+		[] as Array<prodottoCarrello>
+	);
+	const [lunghezzaCarrello, setLunghezzaCarrello] = useState(0);
+
+	useEffect(() => {
+		let sommaCarrello = 0;
+		carrello.forEach((element) => {
+			sommaCarrello += element.quantita;
+		});
+		setLunghezzaCarrello(sommaCarrello);
+	}, [carrello]);
 
 	let router;
 	if (loggato === "cliente") {
@@ -75,11 +87,6 @@ function App() {
 			}
 		}
 
-		let sommaCarrello = 0;
-		carrello.forEach(element => {
-			sommaCarrello += element.quantita;
-		});
-
 		router = createBrowserRouter([
 			{
 				path: "/home",
@@ -88,7 +95,7 @@ function App() {
 						username={username}
 						products={products}
 						setCarrello={setCarrello}
-						lunghezzaCarrello={sommaCarrello}
+						lunghezzaCarrello={lunghezzaCarrello}
 					/>
 				),
 			},
@@ -112,7 +119,7 @@ function App() {
 						datiUtente={datiUtente}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
-						lunghezzaCarrello={sommaCarrello}
+						lunghezzaCarrello={lunghezzaCarrello}
 					/>
 				),
 			},
@@ -184,14 +191,13 @@ function App() {
 				},
 			},
 			{
-				path : "/confirm/email/:token",
-				element : <ConfirmEmail />,
+				path: "/confirm/email/:token",
+				element: <ConfirmEmail />,
 			},
 			{
 				path: "/*",
 				loader: () => redirect("/auth"),
 			},
-
 		]);
 	}
 

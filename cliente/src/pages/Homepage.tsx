@@ -123,10 +123,6 @@ const Listone = ({
 														return item;
 													}
 												});
-												// localStorage.setItem(
-												// 	"cart",
-												// 	JSON.stringify(nuovoCarrello)
-												// );
 												setCarrello(nuovoCarrello);
 											} else {
 												carrello.push({ ...item, quantita: 1 });

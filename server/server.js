@@ -20,7 +20,7 @@ const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
 //const url = "http://menshub.it";
-const url = "http://localhost:3000";
+const url = "http://172.20.10.3:3000";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

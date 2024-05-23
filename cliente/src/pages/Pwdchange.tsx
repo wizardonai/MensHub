@@ -149,7 +149,7 @@ const CambiaPassword = ({
 							(res) => {
 								if (res !== "Password cambiata con successo") toast.error(res);
 								else {
-									toast.info(res);
+									toast.success(res);
 									sleep(2500).then(() => navigate("/profile"));
 								}
 							}

@@ -2,6 +2,10 @@ import { useLocalStorage } from "usehooks-ts";
 
 import imgSopra from "../img/sopra_benvenuto.png";
 import imgSotto from "../img/sotto_login.png";
+import loginTop from "../img/topLogin.png";
+import loginBottom from "../img/bottomLogin.png";
+import loginCerchio from "../img/cerchioLogin.png";
+
 import { Button } from "../components/shadcn/Button";
 import { useEffect, useRef, useState } from "react";
 import { dataLog, dataMensa, dataReg, mensa, sleep } from "../utils";
@@ -169,7 +173,7 @@ const Login = ({
 			<img
 				src={logopiccolo}
 				alt='SCU'
-				className='absolute scale-[0.13] top-3 right-3 translate-x-[43%] translate-y-[-43%] animate-showElement'
+				className='absolute scale-[0.13] top-3 right-3 translate-x-[43%] translate-y-[-43%] animate-showElement flex tel:hidden'
 				ref={imgAngolo}
 			/>
 			<div
@@ -497,7 +501,7 @@ const IndirizzoMensa = ({
 		if (data.regione === undefined) return;
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/province/" +
-			data.regione,
+				data.regione,
 			{
 				headers: {
 					"Access-Control-Allow-Origin": "*",
@@ -517,7 +521,7 @@ const IndirizzoMensa = ({
 		if (data.provincia === undefined) return;
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/comuni/provincia/" +
-			data.provincia,
+				data.provincia,
 			{
 				headers: {
 					"Access-Control-Allow-Origin": "*",
@@ -874,12 +878,14 @@ const RegisterCliente = ({
 				setEmailInviata(false);
 				return;
 			}
-			if (res !== "Registrazione avvenuta. Controlla la casella di posta per confermare l'email.") {
+			if (
+				res !==
+				"Registrazione avvenuta. Controlla la casella di posta per confermare l'email."
+			) {
 				setEmailInviata(false);
 				toast.error(res + "");
 			} else {
 				toast.success(res);
-
 
 				// sleep(1000).then(() => {
 				// 	animazioniImmagini(45, 5, window.innerHeight);
@@ -1139,9 +1145,16 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 	const [login, setLogin] = useLocalStorage("login", "?");
 
 	//eslint-disable-next-line
-	const [images, setImages] = useState([useRef(null), useRef(null)]);
+	const [images, setImages] = useState([
+		useRef(null),
+		useRef(null),
+		useRef(null),
+		useRef(null),
+		useRef(null),
+	]);
 	const divBenvenuto = useRef(null);
 	const divBottoni = useRef(null);
+	const inputs = useRef(null);
 
 	const [id, setId] = useState(-1);
 
@@ -1169,11 +1182,38 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 		//@ts-ignore
 		images[1].current.style.bottom = `-${proporzioni.sotto}svh`;
 	};
+	const animazioneProduttore = (
+		sopra: number,
+		sotto: number,
+		width: number
+	) => {
+		const generaProporzioni = (sopra: number, sotto: number, width: number) => {
+			const rapportoProporzione1 = 1242 / width;
+			const rapportoProporzione2 = width / 1242;
+
+			const sopraHeight = sopra * rapportoProporzione2;
+			const sottoHeight = sotto * rapportoProporzione2;
+			const cerchio = 450 * rapportoProporzione2;
+
+			return {
+				sopra: Math.round(sopraHeight),
+				sotto: Math.round(sottoHeight),
+				cerchio: Math.round(cerchio),
+			};
+		};
+
+		const proporzioni = generaProporzioni(sopra, sotto, window.innerWidth);
+
+		//@ts-ignore
+		images[2].current.style.top = `-${proporzioni.sopra}svh`;
+		//@ts-ignore
+		images[3].current.style.bottom = `-${proporzioni.sotto}svh`;
+	};
 
 	const btnBenvenuti = () => (
-		<div className='h-[70%] w-[80%] flex flex-col justify-between items-center'>
+		<div className='h-[70%] w-[80%] flex flex-col justify-between items-center tel:h-full tel:w-full tel:justify-center'>
 			<div
-				className='flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement'
+				className='flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement tel:hidden'
 				ref={divBenvenuto}
 			>
 				<p className='text-marrone text-5xl font-bold tracking-tight'>
@@ -1189,7 +1229,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 			>
 				<Button
 					variant='avanti'
-					className='p-[26px] text-lg w-[90%] rounded-[30px] mb-4'
+					className='p-[26px] text-lg w-[90%] rounded-[30px] mb-4 tel:w-3/4'
 					onClick={() => {
 						animazioniImmagini(45, 5, window.innerHeight);
 						//@ts-ignore
@@ -1208,7 +1248,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 				</Button>
 				<Button
 					variant='indietro'
-					className='p-[26px] text-lg w-[90%] rounded-[30px]'
+					className='p-[26px] text-lg w-[90%] rounded-[30px] tel:w-3/4'
 					onClick={() => {
 						animazioniImmagini(35, 0, window.innerHeight);
 						//@ts-ignore
@@ -1229,40 +1269,123 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 		</div>
 	);
 
+	useEffect(() => {
+		if (window.innerWidth > 450) {
+			animazioneProduttore(90, 40, window.innerWidth);
+
+			const generaProporzioni = (
+				sopra: number,
+				sotto: number,
+				width: number
+			) => {
+				const rapportoProporzione1 = 1242 / width;
+				const rapportoProporzione2 = width / 1242;
+
+				const sopraHeight = sopra * rapportoProporzione2;
+				const sottoHeight = sotto * rapportoProporzione2;
+				return {
+					sopra: Math.round(sopraHeight),
+					sotto: Math.round(sottoHeight),
+				};
+			};
+
+			const proporzioni = generaProporzioni(16, 5, window.innerWidth);
+			console.log(proporzioni);
+
+			//@ts-ignore
+			divBenvenuto.current.style.top = `${proporzioni.sopra}%`;
+			//@ts-ignore
+			divBenvenuto.current.style.left = `${proporzioni.sotto}%`;
+		}
+		//eslint-disable-next-line
+	}, []);
+
 	return (
-		<div className='w-svw h-svh overflow-hidden absolute top-0 left-0'>
-			<img
-				src={imgSopra}
-				alt=''
-				className='absolute top-0 z-[-1] border-0 transition-[top] duration-1000 ease-in-out'
-				ref={images[0]}
-			/>
-			<div className='h-full w-full flex justify-center items-center'>
-				{login === "?" ? (
-					btnBenvenuti()
-				) : login === "1" ? (
-					<Login
-						setLoggato={setLoggato}
-						setLogin={setLogin}
-						animazioniImmagini={animazioniImmagini}
-					/>
-				) : (
-					<Register
-						animazioniImmagini={animazioniImmagini}
-						setLogin={setLogin}
-						id={id}
-						setId={setId}
-					/>
-				)}
+		<>
+			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 flex tel:hidden'>
+				<img
+					src={imgSopra}
+					alt=''
+					className='absolute top-0 z-[-1] border-0 transition-[top] duration-1000 ease-in-out'
+					ref={images[0]}
+				/>
+				<div className='h-full w-full flex justify-center items-center'>
+					{login === "?" ? (
+						btnBenvenuti()
+					) : login === "1" ? (
+						<Login
+							setLoggato={setLoggato}
+							setLogin={setLogin}
+							animazioniImmagini={animazioniImmagini}
+						/>
+					) : (
+						<Register
+							animazioniImmagini={animazioniImmagini}
+							setLogin={setLogin}
+							id={id}
+							setId={setId}
+						/>
+					)}
+				</div>
+				<img
+					src={imgSotto}
+					alt=''
+					className='absolute bottom-[-15svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
+					ref={images[1]}
+				/>
+				<Toaster richColors />
 			</div>
-			<img
-				src={imgSotto}
-				alt=''
-				className='absolute bottom-[-15svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
-				ref={images[1]}
-			/>
-			<Toaster richColors />
-		</div>
+			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 hidden tel:flex'>
+				<img
+					src={loginTop}
+					alt=''
+					className='absolute top-[-90svh] z-[-1] border-0 transition-[top] duration-1000 ease-in-out'
+					ref={images[2]}
+				/>
+				<div
+					className='absolute top-[16%] left-[5%] flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement'
+					ref={divBenvenuto}
+				>
+					<p className='text-marrone text-7xl font-bold tracking-tight w-3/4'>
+						Benvenuto in Menshub
+					</p>
+				</div>
+				<div
+					className='absolute justify-center items-center w-[400px] right-0 top-[13%] h-[520px]'
+					ref={inputs}
+				>
+					{login === "?" ? (
+						btnBenvenuti()
+					) : login === "1" ? (
+						<Login
+							setLoggato={setLoggato}
+							setLogin={setLogin}
+							animazioniImmagini={animazioniImmagini}
+						/>
+					) : (
+						<Register
+							animazioniImmagini={animazioniImmagini}
+							setLogin={setLogin}
+							id={id}
+							setId={setId}
+						/>
+					)}
+				</div>
+				<img
+					src={loginCerchio}
+					alt=''
+					className='absolute top-[15%] right-0 z-[-2] transition-[bottom] duration-1000 ease-in-out'
+					width={450}
+					ref={images[4]}
+				/>
+				<img
+					src={loginBottom}
+					alt=''
+					className='absolute bottom-[-40svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
+					ref={images[3]}
+				/>
+			</div>
+		</>
 	);
 };
 
