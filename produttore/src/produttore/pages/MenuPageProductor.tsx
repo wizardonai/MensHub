@@ -93,7 +93,7 @@ const Prodotti = ({
                   </p>
                 </div>
               </div>
-              <div className="ml-[10px] mt-[-2px] h-[65px] flex items-center">
+              <div className="ml-[10px] mt-[-2px] h-[65px] flex items-center text-marroneScuro">
                 <TruncateText text={item.descrizione} maxLength={60} />
               </div>
             </div>
@@ -125,7 +125,10 @@ const Prodotti = ({
               key={index}
               id="divFiltro"
             >
-              <p className="capitalize text-[16px]" id="filtroDaApplicare">
+              <p
+                className="capitalize text-[16px] text-marroneScuro"
+                id="filtroDaApplicare"
+              >
                 {categoria.nome}
               </p>
             </div>
@@ -173,7 +176,7 @@ const Prodotti = ({
                       </p>
                     </div>
                   </div>
-                  <div className="ml-[10px] mt-[-2px] h-[65px] flex items-center">
+                  <div className="ml-[10px] mt-[-2px] h-[65px] flex items-center text-marroneScuro">
                     <TruncateText text={item.descrizione} maxLength={60} />
                   </div>
                 </div>

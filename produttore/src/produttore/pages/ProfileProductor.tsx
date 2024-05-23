@@ -83,7 +83,10 @@ const ProfileProductor = () => {
         }
         if (periodoCliccato !== "1A") {
           (res as any[]).forEach((element: any) => {
-            element.periodo = element.periodo.substring(2, 7);
+            element.periodo =
+              element.periodo.substring(8, 10) +
+              "/" +
+              element.periodo.substring(5, 7);
           });
         }
 
@@ -253,7 +256,10 @@ const ProfileProductor = () => {
               <div className="w-1/2">
                 <p className="font-bold text-xl text-marroneScuro">Telefono:</p>
                 <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
-                  {dati[0].telefono}
+                  {dati[0].telefono.replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "$1 $2 $3"
+                  )}
                 </p>
               </div>
             </div>

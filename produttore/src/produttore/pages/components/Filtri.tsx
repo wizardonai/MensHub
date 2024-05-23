@@ -49,7 +49,7 @@ export default function Filtri({
           id="divFiltro"
         >
           <p
-            className="capitalize text-[16px] select-none pointer-events-none"
+            className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
             id="filtroDaApplicare"
           >
             {item.nome}

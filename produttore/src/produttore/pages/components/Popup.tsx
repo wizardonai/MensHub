@@ -7,6 +7,8 @@ import {
   deleteProdotto,
 } from "src/login/scripts/fetch";
 import Filtri from "./Filtri";
+import { Toaster } from "src/shadcn/Sonner";
+import { toast } from "sonner";
 
 export default function Popup({
   setPopup,
@@ -84,7 +86,7 @@ export default function Popup({
       immagineValue === null ||
       prezzoValue === ""
     ) {
-      alert("Si prega di compilare tutti i campi.");
+      toast.error("Si prega di compilare tutti i campi.");
       return;
     }
 
@@ -121,10 +123,10 @@ export default function Popup({
           setProdotti(
             prodotti.map((p: any) => (p.id === prodotto.id ? newProdotto : p))
           );
-          alert(response);
+          toast.success(response);
           setPopup(false);
         } else {
-          alert("Errore nella modifica della pietanza");
+          toast.error("Errore nella modifica della pietanza");
         }
       })
       .catch((err: any) => {
@@ -157,7 +159,7 @@ export default function Popup({
       immagineValue === null ||
       prezzoValue === ""
     ) {
-      alert("Si prega di compilare tutti i campi.");
+      toast.error("Si prega di compilare tutti i campi.");
       return;
     }
 
@@ -192,10 +194,10 @@ export default function Popup({
           };
 
           setProdotti([...prodotti, newProdotto]);
-          alert(response);
+          toast.success(response);
           setPopup(false);
         } else {
-          alert("Errore nell'aggiunta della pietanza");
+          toast.error("Errore nell'aggiunta della pietanza");
         }
       })
       .catch((err: any) => {
@@ -297,7 +299,7 @@ export default function Popup({
     const file = e.target.files?.[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        alert("Si prega di selezionare solo file immagine.");
+        toast.warning("Si prega di selezionare solo file immagine.");
         return;
       }
 
@@ -505,10 +507,12 @@ export default function Popup({
                           setProdotti(
                             prodotti.filter((p: any) => p.id !== prodotto.id)
                           );
-                          alert(response);
+                          toast.info(response);
                           setPopup(false);
                         } else {
-                          alert("Errore nell'eliminazione della pietanza");
+                          toast.error(
+                            "Errore nell'eliminazione della pietanza"
+                          );
                         }
                       })
                       .catch((err: any) => {
@@ -555,6 +559,7 @@ export default function Popup({
           </div>
         </div>
       </div>
+      <Toaster position="top-center" richColors />
     </div>
   );
 }
