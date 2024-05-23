@@ -125,6 +125,10 @@ const Prodotti = ({
               key={index}
               id="divFiltro"
             >
+              <img
+                className="w-[20px] ml-[-3px] mr-[3px]"
+                src={hostnameProductor + "filtri/" + categoria.nome + ".webp"}
+              />
               <p
                 className="capitalize text-[16px] text-marroneScuro"
                 id="filtroDaApplicare"

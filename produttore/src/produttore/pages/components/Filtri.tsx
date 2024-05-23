@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { hostnameProductor } from "src/App";
 
 export default function Filtri({
   filtro,
@@ -48,6 +49,10 @@ export default function Filtri({
           onClick={filtroCliccato}
           id="divFiltro"
         >
+          <img
+            className="w-[20px] ml-[-3px] mr-[3px]"
+            src={hostnameProductor + "filtri/" + item.nome + ".webp"}
+          />
           <p
             className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
             id="filtroDaApplicare"
@@ -65,6 +70,10 @@ export default function Filtri({
         onClick={filtroCliccato}
         id="divFiltro"
       >
+        <img
+          className="w-[20px] ml-[-3px] mr-[3px]"
+          src={hostnameProductor + "filtri/" + filtro + ".webp"}
+        />
         <p className="capitalize text-[16px]" id="filtroDaApplicare">
           {filtro}
         </p>
