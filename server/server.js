@@ -1873,21 +1873,27 @@ function renameImage(nome_file, id_prodotto) {
 }
 
 function checkMensaCancellata(id, resolve) {
-
-  let query = `SELECT * FROM utenti WHERE id=${id};`;
-  connection.query(query, (err, result) => {
-    if (err) {
-      res.send("Errore del database");
-      res.end();
-    } else {
-      if (result[0].id_mensa == null) {
-        console.log("Mensa cancellata");
-        resolve(false);
+  try {
+    let query = `SELECT * FROM utenti WHERE id=${id};`;
+    connection.query(query, (err, result) => {
+      if (err) {
+        res.send("Errore del database");
+        res.end();
       } else {
-        resolve(true);
+        if (result.length == 0) {
+          resolve(false);
+        } else if (result[0].id_mensa == null) {
+          console.log("Mensa cancellata");
+          resolve(false);
+        } else {
+          resolve(true);
+        }
       }
-    }
-  });
+    });
+  }catch (error) {
+    console.log(error);
+    resolve(false);
+  }
 
 }
 
