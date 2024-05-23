@@ -50,12 +50,22 @@ const storage2 = multer.diskStorage({
 const upload = multer({ storage: storage });
 const upload2 = multer({ storage: storage2 });
 
+// const transporter = nodemailer.createTransport({
+//   service: "Zoho",
+//   auth: {
+//     user: 'noreply@menshub.it',
+//     pass: '1ehiHDkFLawX',
+//   },
+// });
+
 const transporter = nodemailer.createTransport({
-  service: "hotmail",
+  host: 'smtp.zoho.eu',
+  port: 465,
+  secure: true, // use SSL
   auth: {
-    user: 'menshub@outlook.it',
-    pass: 'lucaching69#[!',
-  },
+      user: 'noreply@menshub.it',
+      pass: '1ehiHDkFLawX'
+  }
 });
 
 function connetti() {
@@ -417,7 +427,7 @@ server.post("/register/user", async function (req, res) {
 
                 let link = url + "/confirm/email/" + token;
                 transporter.sendMail({
-                  from: 'menshub@outlook.it',
+                  from: 'noreply@menshub.it',
                   to: email,
                   subject: 'Conferma email di registrazione',
                   text: 'Ciao, clicca sul link per confermare la tua email: [link]',
@@ -614,7 +624,7 @@ server.post("/recover/password", (req, res) => {
 
         let link = url + "/changepwd/" + token;
         transporter.sendMail({
-          from: 'menshub@outlook.it',
+          from: 'noreply@menshub.it',
           to: email,
           subject: 'Cambio password',
           text: 'Ciao, clicca sul link per cambiare la tua password: [link]',
