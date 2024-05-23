@@ -487,7 +487,7 @@ export async function changeProdotto(
   allergeni: string,
   prezzo: number,
   categoria: string,
-  disponibile: boolean
+  disponibile: any
 ) {
   let response;
 

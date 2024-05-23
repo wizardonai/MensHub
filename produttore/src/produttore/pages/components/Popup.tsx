@@ -3,8 +3,10 @@ import { hostnameProductor } from "src/App";
 import { Input } from "src/shadcn/Input";
 import {
   addProdotto,
+  changeProdotto,
   changeProdottoImmagine,
   deleteProdotto,
+  getProdotti,
 } from "src/login/scripts/fetch";
 import Filtri from "./Filtri";
 import { Toaster } from "src/shadcn/Sonner";
@@ -40,6 +42,11 @@ export default function Popup({
   const [isVerticalMouseDown, setIsVerticalMouseDown] = useState(false);
   const [verticalMouseDownY, setVerticalMouseDownY] = useState(0);
   const [lastVerticalMouseMoveY, setLastVerticalMouseMoveY] = useState(0);
+  const [salvaImmagine, setSalvaImmagine] = useState(false);
+
+  const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
   useEffect(() => {
     if (prodotto) {
       nome.current!.value = prodotto.nome;
@@ -71,74 +78,117 @@ export default function Popup({
       descrizioneValue = descrizione.current.value;
     }
     const allergeniValue = allergeniScelti;
-    const immagineValue = image;
+
     let prezzoValue = "";
     if (prezzo.current) {
       prezzoValue = prezzo.current.value;
     }
 
-    console.log(
-      nomeValue,
-      categoriaValue,
-      descrizioneValue,
-      immagineValue,
-      prezzoValue
-    );
+    if (salvaImmagine === false) {
+      if (
+        nomeValue === "" ||
+        categoriaValue === "" ||
+        descrizioneValue === "" ||
+        prezzoValue === ""
+      ) {
+        toast.error("Si prega di compilare tutti i campi.");
+        return;
+      }
 
-    if (
-      nomeValue === "" ||
-      categoriaValue === "" ||
-      descrizioneValue === "" ||
-      immagineValue === null ||
-      prezzoValue === ""
-    ) {
-      toast.error("Si prega di compilare tutti i campi.");
-      return;
+      changeProdotto(
+        JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+          .token,
+        prodotto.id,
+        nomeValue,
+        descrizioneValue,
+        allergeniValue.join(","),
+        parseFloat(prezzoValue),
+        categoriaValue,
+        1
+      )
+        .then((response) => {
+          if (response === "Prodotto modificato") {
+            getProdotti(
+              JSON.parse(
+                localStorage.getItem("token") || '{"token": "lucaChing"}'
+              )
+            ).then((res: any) => {
+              if (res === "Token non valido") {
+                localStorage.removeItem("cart");
+                localStorage.removeItem("token");
+                localStorage.setItem("loggato", "false");
+              } else {
+                setProdotti(res);
+              }
+            });
+
+            toast.success(response);
+            setPopup(false);
+          } else {
+            toast.error("Errore nella modifica della pietanza");
+          }
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    } else {
+      const immagineValue = image;
+      if (
+        nomeValue === "" ||
+        categoriaValue === "" ||
+        descrizioneValue === "" ||
+        immagineValue === null ||
+        prezzoValue === ""
+      ) {
+        toast.error("Si prega di compilare tutti i campi.");
+        return;
+      }
+
+      // Aggiungi la pietanza
+      const formData = new FormData();
+      formData.append("id", prodotto.id);
+      if (prezzoValue !== null) formData.append("prezzo", prezzoValue);
+      if (nomeValue !== null) formData.append("nome", nomeValue);
+      formData.append("categoria", categoriaValue);
+      if (descrizioneValue !== null)
+        formData.append("descrizione", descrizioneValue);
+
+      //allergeni seperati da virgola
+      formData.append("allergeni", allergeniValue.join(","));
+      formData.append("image", immagineValue);
+      formData.append("disponibile", "1");
+
+      changeProdottoImmagine(
+        JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
+          .token,
+        formData
+      )
+        .then((response) => {
+          if (response === "Prodotto modificato") {
+            getProdotti(
+              JSON.parse(
+                localStorage.getItem("token") || '{"token": "lucaChing"}'
+              )
+            ).then((res: any) => {
+              if (res === "Token non valido") {
+                localStorage.removeItem("cart");
+                localStorage.removeItem("token");
+                localStorage.setItem("loggato", "false");
+              } else {
+                setProdotti(res);
+              }
+            });
+
+            toast.success(response);
+            setPopup(false);
+          } else {
+            toast.error("Errore nella modifica della pietanza");
+          }
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
     }
-
-    // Aggiungi la pietanza
-    const formData = new FormData();
-    formData.append("id", prodotto.id);
-    if (prezzoValue !== null) formData.append("prezzo", prezzoValue);
-    if (nomeValue !== null) formData.append("nome", nomeValue);
-    formData.append("categoria", categoriaValue);
-    if (descrizioneValue !== null)
-      formData.append("descrizione", descrizioneValue);
-
-    //allergeni seperati da virgola
-    formData.append("allergeni", allergeniValue.join(","));
-    formData.append("image", immagineValue);
-    formData.append("disponibile", "1");
-
-    changeProdottoImmagine(
-      JSON.parse(localStorage.getItem("token") || '{"token": "lucaChing"}')
-        .token,
-      formData
-    )
-      .then((response) => {
-        if (response === "Prodotto modificato") {
-          const newProdotto = {
-            prezzo: prezzoValue,
-            nome: nomeValue,
-            categoria: categoriaValue,
-            descrizione: descrizioneValue,
-            allergeni: allergeniValue,
-            image: imageUrl,
-            disponibile: "1",
-          };
-
-          setProdotti(
-            prodotti.map((p: any) => (p.id === prodotto.id ? newProdotto : p))
-          );
-          toast.success(response);
-          setPopup(false);
-        } else {
-          toast.error("Errore nella modifica della pietanza");
-        }
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
   };
 
   const submitButton = () => {
@@ -190,17 +240,20 @@ export default function Popup({
     )
       .then((response) => {
         if (response === "Prodotto aggiunto con successo") {
-          const newProdotto = {
-            prezzo: prezzoValue,
-            nome: nomeValue,
-            categoria: categoriaValue,
-            descrizione: descrizioneValue,
-            allergeni: allergeniValue,
-            image: imageUrl,
-            disponibile: "1",
-          };
+          getProdotti(
+            JSON.parse(
+              localStorage.getItem("token") || '{"token": "lucaChing"}'
+            )
+          ).then((res: any) => {
+            if (res === "Token non valido") {
+              localStorage.removeItem("cart");
+              localStorage.removeItem("token");
+              localStorage.setItem("loggato", "false");
+            } else {
+              setProdotti(res);
+            }
+          });
 
-          setProdotti([...prodotti, newProdotto]);
           toast.success(response);
           setPopup(false);
         } else {
@@ -304,7 +357,7 @@ export default function Popup({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(e);
+
     if (file) {
       if (!file.type.startsWith("image/")) {
         toast.warning("Si prega di selezionare solo file immagine.");
@@ -320,6 +373,7 @@ export default function Popup({
         setImageUrl(imageUrl);
       };
       reader.readAsDataURL(file);
+      setSalvaImmagine(true);
     }
   };
 

@@ -87,9 +87,7 @@ const OrdersTable = ({
               ordineTrascinato.id_ordine,
               stato
             )
-              .then((response) => {
-                console.log(response);
-              })
+              .then((response) => {})
               .catch((err: any) => {
                 console.log(err);
               });
