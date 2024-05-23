@@ -73,13 +73,13 @@ const OrdineCliccato = ({
               >
                 <img
                   src={hostnameProductor + prodotto.indirizzo_img}
-                  className="h-[60%]"
+                  className="h-[60%] pr-[2.5%]"
                 />
-                <div className="flex flex-col">
-                  <p className="w-[7svw] select-none pointer-events-none">
+                <div className="flex flex-col pl-[2.5%]">
+                  <p className="w-[7svw] select-none pointer-events-none font-bold text-marroneScuro">
                     {prodotto.nome}
                   </p>
-                  <p className="select-none pointer-events-none">
+                  <p className="select-none pointer-events-none font-bold text-marroneScuro">
                     x{prodotto.quantita}
                   </p>
                 </div>

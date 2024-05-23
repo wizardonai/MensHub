@@ -31,21 +31,19 @@ const OrdersTable = ({
   setProdotti: Function;
 }) => {
   const handleDragStart = (event: DragEvent<HTMLDivElement>, ordine: any) => {
-    console.log("Inizio del trascinamento");
     event.currentTarget.classList.add("dragging");
     setOrdineTrascinato(ordine);
     setIsDragging(true);
   };
 
   const handleDragEnd = (event: DragEvent<HTMLDivElement>) => {
-    console.log("Fine del trascinamento");
     event.currentTarget.classList.remove("dragging");
     setOrdineTrascinato(null);
     setIsDragging(false);
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    console.log("Ciao");
+    console.log("");
   };
 
   return (

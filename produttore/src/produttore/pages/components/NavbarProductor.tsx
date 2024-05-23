@@ -59,19 +59,19 @@ const NavbarProductor = ({ page }: { page: string }) => {
       backgroundColor: "transparent",
       filter:
         "invert(96%) sepia(6%) saturate(1440%) hue-rotate(314deg) brightness(106%) contrast(75%)",
+      transform: "none" /* Initial transform value */,
 
       userSelect: "none",
     },
     navbarDivImgHover: {
-      width: "55px",
-      height: "55px",
+      width: "40px",
+      height: "40px",
       cursor: "pointer",
-      margin: "-7.5px 0px",
       borderRadius: "5px",
       filter:
         "invert(96%) sepia(6%) saturate(1440%) hue-rotate(314deg) brightness(106%) contrast(75%)",
-      // transition: "width 0.3s ease, height 0.3s ease",
-
+      transform: "scale(1.5)",
+      transition: "transform 0.2s",
       userSelect: "none",
     },
   };

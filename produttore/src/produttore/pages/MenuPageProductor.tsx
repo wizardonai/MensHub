@@ -52,7 +52,10 @@ const Prodotti = ({
     return (
       <div className="flex">
         <div
-          onClick={() => setPopup(true)}
+          onClick={() => {
+            setProdottoCliccato(null);
+            setPopup(true);
+          }}
           className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
         >
           <img
@@ -71,6 +74,10 @@ const Prodotti = ({
             <div
               className="bg-arancioneBordo h-[150px] w-[225px] rounded-lg mt-[15px]  transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]"
               key={index}
+              onClick={() => {
+                setProdottoCliccato(item);
+                setPopup(true);
+              }}
             >
               <div className="flex items-center">
                 <div className="h-[70px] w-[70px] mt-[10px] ml-[10px] mr-[10px]">
@@ -80,7 +87,7 @@ const Prodotti = ({
                   />
                 </div>
                 <div className="mt-[10px]">
-                  <p>
+                  <p className="font-bold text-marroneScuro">
                     {item.nome} <br />
                     {item.prezzo.toFixed(2)}€
                   </p>
@@ -160,7 +167,7 @@ const Prodotti = ({
                       />
                     </div>
                     <div className="mt-[10px]">
-                      <p>
+                      <p className="font-bold text-marroneScuro">
                         {item.nome} <br />
                         {item.prezzo}€
                       </p>

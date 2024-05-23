@@ -313,7 +313,7 @@ export default function Popup({
   };
 
   return (
-    <div className="fixed flex justify-center items-center inset-0 bg-slate-700 bg-opacity-5">
+    <div className="fixed flex justify-center items-center inset-0 bg-slate-800 bg-opacity-5">
       <div className="bg-gialloSfondo w-[38%] h-[65%] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px] opacity-">
         <div className="flex justify-between">
           <div>

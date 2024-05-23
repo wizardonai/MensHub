@@ -75,9 +75,19 @@ const ProfileProductor = () => {
         .token,
       periodoCliccato
     ).then((res) => {
-      setOrdiniCompletati(res);
-      if (res === "Non sono presenti dati") {
-        setOrdiniCompletati([]);
+      if (res !== undefined) {
+        if (res === "Non sono presenti dati") {
+          setOrdiniCompletati([]);
+          setRicarica(false);
+          return;
+        }
+        if (periodoCliccato !== "1A") {
+          (res as any[]).forEach((element: any) => {
+            element.periodo = element.periodo.substring(2, 7);
+          });
+        }
+
+        setOrdiniCompletati(res);
       }
     });
     setRicarica(false);
@@ -239,7 +249,6 @@ const ProfileProductor = () => {
                 <p className="text-xl text-marroneScuro pl-[10px] mb-[10px]">
                   {dati[0].email}
                 </p>
-                <p className="font-bold text-xl text-marroneScuro">Telefono:</p>
               </div>
               <div className="w-1/2">
                 <p className="font-bold text-xl text-marroneScuro">Telefono:</p>
@@ -631,13 +640,13 @@ const ProfileProductor = () => {
                 periodoCliccato.toString() === item.toString() ? (
                   <div
                     key={item}
-                    className="bg-arancioneBordo rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+                    className="bg-verdeBordo rounded-full px-3 mr-2 transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
                     onClick={() => {
                       setPeriodoCliccato(item);
                       setRicarica(true);
                     }}
                   >
-                    <p>{item}</p>
+                    <p style={{ color: "#dfd9c9" }}>{item}</p>
                   </div>
                 ) : (
                   <div
@@ -648,7 +657,7 @@ const ProfileProductor = () => {
                       setRicarica(true);
                     }}
                   >
-                    <p>{item}</p>
+                    <p className="text-marroneScuro">{item}</p>
                   </div>
                 )
               )}
