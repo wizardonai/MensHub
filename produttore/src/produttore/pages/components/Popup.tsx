@@ -40,7 +40,6 @@ export default function Popup({
   const [isVerticalMouseDown, setIsVerticalMouseDown] = useState(false);
   const [verticalMouseDownY, setVerticalMouseDownY] = useState(0);
   const [lastVerticalMouseMoveY, setLastVerticalMouseMoveY] = useState(0);
-
   useEffect(() => {
     if (prodotto) {
       nome.current!.value = prodotto.nome;
@@ -48,7 +47,7 @@ export default function Popup({
       setFiltro(prodotto.categoria);
       descrizione.current!.value = prodotto.descrizione;
       setImageUrl(hostnameProductor + prodotto.indirizzo_img);
-      setImage(null);
+
       setAllergeniScelti(prodotto.allergeni.split(","));
     } else {
       nome.current!.value = "";
@@ -56,7 +55,6 @@ export default function Popup({
       setFiltro("");
       descrizione.current!.value = "";
       setImageUrl(null);
-      setImage(null);
       setAllergeniScelti([]);
     }
   }, [prodotto]);
@@ -79,6 +77,14 @@ export default function Popup({
       prezzoValue = prezzo.current.value;
     }
 
+    console.log(
+      nomeValue,
+      categoriaValue,
+      descrizioneValue,
+      immagineValue,
+      prezzoValue
+    );
+
     if (
       nomeValue === "" ||
       categoriaValue === "" ||
@@ -92,6 +98,7 @@ export default function Popup({
 
     // Aggiungi la pietanza
     const formData = new FormData();
+    formData.append("id", prodotto.id);
     if (prezzoValue !== null) formData.append("prezzo", prezzoValue);
     if (nomeValue !== null) formData.append("nome", nomeValue);
     formData.append("categoria", categoriaValue);
@@ -297,6 +304,7 @@ export default function Popup({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log(e);
     if (file) {
       if (!file.type.startsWith("image/")) {
         toast.warning("Si prega di selezionare solo file immagine.");
@@ -304,6 +312,7 @@ export default function Popup({
       }
 
       setImage(file);
+      console.log(file);
 
       const reader = new FileReader();
       reader.onload = () => {
