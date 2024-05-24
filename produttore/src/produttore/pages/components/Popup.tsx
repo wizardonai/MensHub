@@ -108,6 +108,7 @@ export default function Popup({
       )
         .then((response) => {
           if (response === "Prodotto modificato") {
+            
             getProdotti(
               JSON.parse(
                 localStorage.getItem("token") || '{"token": "lucaChing"}'
@@ -164,6 +165,9 @@ export default function Popup({
         formData
       )
         .then((response) => {
+          setProdotti([...prodotti.filter((item: any) => (item.id !== prodotto.id))]);
+          
+          console.log(prodotti, [...prodotti.filter((item: any) => (item.id !== prodotto.id))]);
           if (response === "Prodotto modificato") {
             getProdotti(
               JSON.parse(

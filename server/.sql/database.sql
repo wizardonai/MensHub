@@ -67,7 +67,8 @@ CREATE TABLE `utenti` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `id_mensa` int(11) DEFAULT NULL,
-  `cliente` tinyint(1) NOT NULL
+  `cliente` tinyint(1) NOT NULL,
+  `verificato` tinyint(1) NOT NULL DEFAULT 0
 );
 ALTER TABLE
   `utenti`
@@ -75,8 +76,8 @@ ADD
   CONSTRAINT `utenti_ibfk_1` FOREIGN KEY (`id_mensa`) REFERENCES `mense` (`id`)
   ON DELETE SET NULL ON UPDATE CASCADE;
 
-INSERT INTO `utenti` (`id`, `nome`, `cognome`, `email`, `password`, `id_mensa`, `cliente`) VALUES
-(1, 'Simone', 'Lapomarda', 'simolapomarda@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1, 0);
+INSERT INTO `utenti` (`id`, `nome`, `cognome`, `email`, `password`, `id_mensa`, `cliente`,`verificato` ) VALUES
+(1, 'Simone', 'Lapomarda', 'simolapomarda@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1, 1,1);
 
 
 CREATE TABLE `ordini` (
@@ -290,7 +291,7 @@ VALUES
   (
     1,
     'Paninazzo',
-    'Panino con la mortadella',
+    'Panino con fette di mortadella artigianale e pane al sesamo, perfetto per una pausa pranzo.',
     'glutine, sesamo',
     4.50,
     'secondo',
@@ -302,7 +303,7 @@ VALUES
   (
     2,
     'Carbonara',
-    'Pasta alla carbonara',
+    'Spaghetti con salsa di uova, pecorino e guanciale croccante, un classico della cucina romana.',
     'uova, latticini, glutine',
     8.90,
     'primo',
@@ -314,7 +315,7 @@ VALUES
   (
     3,
     'Cotoletta con le patatine',
-    'Cotoletta di pollo accompagnata da delle patatine fritte',
+    'Cotoletta di pollo impanata e fritta, servita con patatine fritte dorate.',
     'uova, glutine, latticini, soia, sesamo',
     11.20,
     'secondo',
@@ -325,8 +326,8 @@ VALUES
   ),
   (
     4,
-    'Spaghetti all arrabbiata',
-    'Piatto di spaghetti condito con pomodoro e peperoncino',
+    'Spaghetti all\'arrabbiata',
+    'Spaghetti conditi con salsa di pomodoro piccante, aglio e peperoncino.',
     'glutine, aglio, peperoncino',
     8.90,
     'primo',
@@ -338,7 +339,7 @@ VALUES
   (
     5,
     'Panna cotta',
-    'Panna cotta condita con caramello e granella di nocciola',
+    'Dolce al cucchiaio di panna fresca con caramello e granella di nocciole.',
     'latticini, uova, gelatina, frutta a guscio',
     4.50,
     'dolce',
@@ -350,7 +351,7 @@ VALUES
   (
     6,
     'Insalata',
-    'Insalata, salsa yogurt e aceto balsamico',
+    'Insalata mista con salsa yogurt, aceto balsamico, noci, soia e sedano croccante.',
     'glutine, latticini, noci, soia, sedano, uova',
     7.30,
     'contorno',
@@ -361,9 +362,9 @@ VALUES
   ),
   (
     7,
-    'Tar tar di manzo',
-    'Carne di manzo di alta qualità. 100% Made in Italy',
-    ' glutine, uova, senape, cipolla, latticini',
+    'Tartare di manzo',
+    'Carne di manzo di alta qualità condita con spezie, cipolla e senape.',
+    'glutine, uova, senape, cipolla, latticini',
     6.40,
     'antipasto',
     'products/7.webp',
@@ -371,6 +372,7 @@ VALUES
     10,
     1
   );
+
 
 CREATE TABLE `prodotti_ordini` (
   `id_prodotto` int(11) NOT NULL,
