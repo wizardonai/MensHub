@@ -172,7 +172,7 @@ const Login = ({
 		<>
 			<img
 				src={logopiccolo}
-				alt='SCU'
+				alt='logo piccolo'
 				className='absolute scale-[0.13] top-3 right-3 translate-x-[43%] translate-y-[-43%] animate-showElement flex tel:hidden'
 				ref={imgAngolo}
 			/>
@@ -395,8 +395,8 @@ const Register = ({
 		<>
 			<img
 				src={logopiccolo}
-				alt='SCU'
-				className='absolute scale-[0.13] top-3 right-3 translate-x-[43%] translate-y-[-43%] animate-showElement'
+				alt='logo piccolo'
+				className='absolute scale-[0.13] top-3 right-3 translate-x-[43%] translate-y-[-43%] animate-showElement tel:hidden'
 				ref={imgAngolo}
 			/>
 			<div
@@ -416,6 +416,7 @@ const Register = ({
 						setUtente={setUtente}
 						animazioniImmagini={animazioniImmagini}
 						id_mensa={id}
+						setId={setId}
 					/>
 				) : (
 					<RegisterMensa
@@ -718,7 +719,7 @@ const RegisterMensa = ({
 			ref={div}
 		>
 			{elementi[pagina]}
-			<div className='flex flex-row items-center justify-center w-full mt-2'>
+			<div className='flex flex-row items-center justify-center w-full tel:w-2/3 mt-2'>
 				<Button
 					variant='indietro'
 					onClick={() => {
@@ -804,11 +805,13 @@ const RegisterCliente = ({
 	animazioniImmagini,
 	setLogin,
 	id_mensa,
+	setId,
 }: {
 	setUtente: Function;
 	animazioniImmagini: Function;
 	setLogin: Function;
 	id_mensa: number;
+	setId: Function;
 }) => {
 	const [data, setData] = useState({
 		nome: "",
@@ -884,20 +887,9 @@ const RegisterCliente = ({
 			) {
 				setEmailInviata(false);
 				toast.error(res + "");
+				setId(-1);
 			} else {
 				toast.success(res);
-
-				// sleep(1000).then(() => {
-				// 	animazioniImmagini(45, 5, window.innerHeight);
-
-				// 	//@ts-ignore
-				// 	div.current.classList.remove("animate-showElement");
-				// 	//@ts-ignore
-				// 	div.current.classList.add("animate-hideElement");
-				// 	sleep(1500).then(() => {
-				// 		setLogin("1");
-				// 	});
-				// });
 			}
 		});
 	};
@@ -1337,6 +1329,12 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 			</div>
 			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 hidden tel:flex'>
 				<img
+					src={logopiccolo}
+					alt='logo piccolo'
+					className='absolute scale-[0.13] top-3 left-3 translate-x-[-43%] translate-y-[-43%] animate-showElement'
+					width={400}
+				/>
+				<img
 					src={loginTop}
 					alt=''
 					className='absolute top-[-90svh] z-[-1] border-0 transition-[top] duration-1000 ease-in-out'
@@ -1351,7 +1349,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					</p>
 				</div>
 				<div
-					className='absolute justify-center items-center w-[400px] right-0 top-[13%] h-[520px]'
+					className='absolute justify-center items-center w-[400px] right-0 top-[15%] h-[520px]'
 					ref={inputs}
 				>
 					{login === "?" ? (

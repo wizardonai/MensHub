@@ -10,7 +10,16 @@ import {
 } from "../components/shadcn/Carousel";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-const Product = ({ carrello, setCarrello }: { carrello: Array<prodottoCarrello>, setCarrello: Function }) => {
+import imgSopra from "../img/sopra_benvenuto.png";
+import imgSotto from "../img/sotto_login.png";
+
+const Product = ({
+	carrello,
+	setCarrello,
+}: {
+	carrello: Array<prodottoCarrello>;
+	setCarrello: Function;
+}) => {
 	const tmp: any = useLoaderData();
 
 	if (!tmp)
@@ -29,7 +38,8 @@ const Product = ({ carrello, setCarrello }: { carrello: Array<prodottoCarrello>,
 	const product: prodotto = tmp;
 
 	return (
-		<>
+		<div className='h-full w-full overflow-hidden absolute top-0 left-0'>
+			<img src={imgSopra} alt='' className='absolute z-[-1] top-[-18svh]' />
 			<Container className='h-containerProduct py-14'>
 				<div className='flex flex-col items-center h-full justify-evenly'>
 					<p className='text-marrone text-3xl font-bold'>{product.nome}</p>
@@ -62,8 +72,14 @@ const Product = ({ carrello, setCarrello }: { carrello: Array<prodottoCarrello>,
 					</div>
 				</div>
 			</Container>
-			<Navbar page={"Aggiungi al carrello-" + product.id} product={product} carrello={carrello} setCarrello={setCarrello} />
-		</>
+			<Navbar
+				page={"Aggiungi al carrello-" + product.id}
+				product={product}
+				carrello={carrello}
+				setCarrello={setCarrello}
+			/>
+			<img src={imgSotto} alt='' className='absolute z-[-1] bottom-[-15svh]' />
+		</div>
 	);
 };
 
