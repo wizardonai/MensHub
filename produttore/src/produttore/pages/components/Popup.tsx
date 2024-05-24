@@ -108,7 +108,7 @@ export default function Popup({
       )
         .then((response) => {
           if (response === "Prodotto modificato") {
-            
+
             getProdotti(
               JSON.parse(
                 localStorage.getItem("token") || '{"token": "lucaChing"}'
@@ -165,23 +165,20 @@ export default function Popup({
         formData
       )
         .then((response) => {
-          setProdotti([...prodotti.filter((item: any) => (item.id !== prodotto.id))]);
-          
-          console.log(prodotti, [...prodotti.filter((item: any) => (item.id !== prodotto.id))]);
+          //estensione immagine
+          const estensione = immagineValue.name.split(".").pop();
           if (response === "Prodotto modificato") {
-            getProdotti(
-              JSON.parse(
-                localStorage.getItem("token") || '{"token": "lucaChing"}'
-              )
-            ).then((res: any) => {
-              if (res === "Token non valido") {
-                localStorage.removeItem("cart");
-                localStorage.removeItem("token");
-                localStorage.setItem("loggato", "false");
-              } else {
-                setProdotti(res);
-              }
-            });
+            const tmp = prodotti.filter((item: any) => (item.id !== prodotto.id));
+            setProdotti(tmp);
+            setProdotti([...tmp, {
+              id: prodotto.id,
+              nome: nomeValue,
+              prezzo: prezzoValue,
+              categoria: categoriaValue,
+              descrizione: descrizioneValue,
+              allergeni: allergeniValue.join(","),
+              indirizzo_img: "products/"+prodotto.id+"."+estensione,
+            }]);
 
             toast.success(response);
             setPopup(false);
@@ -565,7 +562,7 @@ export default function Popup({
                     deleteProdotto(
                       JSON.parse(
                         localStorage.getItem("token") ||
-                          '{"token": "lucaChing"}'
+                        '{"token": "lucaChing"}'
                       ).token,
                       prodotto.id
                     )
