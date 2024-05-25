@@ -1,11 +1,10 @@
-
 let connection = "";
 
 import { createConnection } from "mysql";
 import express from "express";
 import multer from "multer";
 import jwt from "jsonwebtoken";
-import * as EmailValidator from 'email-validator';
+import * as EmailValidator from "email-validator";
 import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
@@ -13,8 +12,6 @@ import path from "path";
 //import sharp from "sharp";
 import nodemailer from "nodemailer";
 //sharp.cache({ files: 0 });
-
-
 
 const { json, urlencoded } = bodyParser;
 const server = express();
@@ -59,13 +56,13 @@ const upload2 = multer({ storage: storage2 });
 // });
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.zoho.eu',
+  host: "smtp.zoho.eu",
   port: 465,
   secure: true, // use SSL
   auth: {
-    user: 'noreply@menshub.it',
-    pass: '1ehiHDkFLawX'
-  }
+    user: "noreply@menshub.it",
+    pass: "1ehiHDkFLawX",
+  },
 });
 
 function connetti() {
@@ -91,9 +88,8 @@ function connetti() {
 }
 
 server.use(
-  cors(
-    //{ origin: "http://127.0.0.1:80", }
-  )
+  cors()
+  //{ origin: "http://127.0.0.1:80", }
 );
 server.use(json());
 server.use(express.json());
@@ -114,7 +110,6 @@ server.use("/image", express.static("./image"));
 server.use(express.static("../cliente/build"));
 server.use(reactRoutes, express.static("../cliente/build"));
 
-
 server.post("/request/products", (req, res) => {
   let token = req.headers.authorization;
   let idm_utente = "";
@@ -126,13 +121,11 @@ server.post("/request/products", (req, res) => {
       res.end();
     } else {
       try {
-
         const queryPromise = new Promise((resolve, reject) => {
           checkMensaCancellata(decoded.id, resolve);
         });
 
         queryPromise.then((ris) => {
-
           if (ris == false) {
             res.send("Mensa preferita cancellata");
             res.end();
@@ -141,8 +134,8 @@ server.post("/request/products", (req, res) => {
 
             connection.query(
               "SELECT * FROM prodotti where id_mensa=" +
-              idm_utente +
-              " ORDER BY nome",
+                idm_utente +
+                " ORDER BY nome",
               (err, result) => {
                 if (err) {
                   res.send("Errore del database");
@@ -151,7 +144,7 @@ server.post("/request/products", (req, res) => {
                   res.send(result);
                   res.end();
                 }
-              },
+              }
             );
           }
         });
@@ -164,7 +157,6 @@ server.post("/request/products", (req, res) => {
 });
 
 server.post("/request/mense", (req, res) => {
-
   let query = `SELECT * FROM mense WHERE verificato = 1;`;
   connection.query(query, (err, result) => {
     if (err) {
@@ -180,7 +172,6 @@ server.post("/request/mense", (req, res) => {
       }
     }
   });
-
 });
 
 server.post("/request/mensa", (req, res) => {
@@ -191,15 +182,12 @@ server.post("/request/mensa", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-
       try {
         const queryPromise = new Promise((resolve, reject) => {
           checkMensaCancellata(decoded.id, resolve);
-
         });
 
         queryPromise.then((ris) => {
-
           if (ris == false) {
             res.send("Mensa preferita cancellata");
             res.end();
@@ -230,8 +218,9 @@ server.post("/request/mensa", (req, res) => {
   });
 });
 
-server.post('/insert/mensa', (req, res) => {
-  const { nome, indirizzo, regione, provincia, comune, cap, email, telefono } = req.body;
+server.post("/insert/mensa", (req, res) => {
+  const { nome, indirizzo, regione, provincia, comune, cap, email, telefono } =
+    req.body;
 
   const query = `INSERT INTO mense (nome, indirizzo, regione, provincia, comune, cap, email, telefono) VALUES ('${nome}', '${indirizzo}', '${regione}', '${provincia}', '${comune}', ${cap}, '${email}', '${telefono}')`;
 
@@ -270,7 +259,7 @@ server.post("/modify/mensa", (req, res) => {
               id_mensa: id_mensa,
             },
             secretKey,
-            { expiresIn: "90d" },
+            { expiresIn: "90d" }
           );
 
           res.json({ token: token });
@@ -327,11 +316,9 @@ server.post("/send/cart", (req, res) => {
       try {
         const queryPromise = new Promise((resolve, reject) => {
           checkMensaCancellata(decoded.id, resolve);
-
         });
 
         queryPromise.then((ris) => {
-
           if (ris == false) {
             res.send("Mensa preferita cancellata");
             res.end();
@@ -381,7 +368,7 @@ server.post("/register/user", async function (req, res) {
     password,
     confirm_password,
     cliente,
-    id_mensa
+    id_mensa,
   } = req.body;
 
   if (!email || !password) {
@@ -412,7 +399,6 @@ server.post("/register/user", async function (req, res) {
               res.end();
             } else {
               if (result) {
-
                 const token = jwt.sign(
                   {
                     id: result.insertId,
@@ -422,16 +408,17 @@ server.post("/register/user", async function (req, res) {
                     id_mensa: id_mensa,
                   },
                   secretKey,
-                  { expiresIn: "90d" },
+                  { expiresIn: "90d" }
                 );
 
                 let link = url + "/confirm/email/" + token;
-                transporter.sendMail({
-                  from: 'noreply@menshub.it',
-                  to: email,
-                  subject: 'Conferma email di registrazione',
-                  text: 'Ciao, clicca sul link per confermare la tua email: [link]',
-                  html: `
+                transporter.sendMail(
+                  {
+                    from: "noreply@menshub.it",
+                    to: email,
+                    subject: "Conferma email di registrazione",
+                    text: "Ciao, clicca sul link per confermare la tua email: [link]",
+                    html: `
                       <div style="font-family: Arial, sans-serif; color: #333; text-align: center; margin: 0 auto;">
                           <p>Ciao,</p>
                           <p style="margin-bottom: 20px;">Benvenuto a MensHub!</p>
@@ -440,19 +427,21 @@ server.post("/register/user", async function (req, res) {
                           <p style="margin-top: 20px;">Grazie per esserti registrato!</p>
                           <p>Il team di MensHub</p>
                       </div>
-                  `
-                }, (error, info) => {
-
-
-                  if (error) {
-                    console.log(error);
-                    res.send("Errore nell'invio dell'email");
-                    res.end();
-                  } else {
-                    res.send("Registrazione avvenuta. Controlla la casella di posta per confermare l'email.");
-                    res.end();
+                  `,
+                  },
+                  (error, info) => {
+                    if (error) {
+                      console.log(error);
+                      res.send("Errore nell'invio dell'email");
+                      res.end();
+                    } else {
+                      res.send(
+                        "Registrazione avvenuta. Controlla la casella di posta per confermare l'email."
+                      );
+                      res.end();
+                    }
                   }
-                });
+                );
               }
             }
           });
@@ -501,7 +490,6 @@ server.post("/login/user", async function (req, res) {
         res.end();
       } else {
         if (result.length === 1) {
-
           if (result[0].id_mensa == null) {
             const token = jwt.sign(
               {
@@ -512,14 +500,13 @@ server.post("/login/user", async function (req, res) {
                 id_mensa: 0,
               },
               secretKey,
-              { expiresIn: "90d" },
+              { expiresIn: "90d" }
             );
 
             res.json({ token: token, message: "Mensa preferita cancellata" });
             res.send();
             res.end();
           } else {
-
             if (password != result[0].password) {
               res.send("Password errata");
               res.end();
@@ -536,7 +523,7 @@ server.post("/login/user", async function (req, res) {
                   id_mensa: result[0].id_mensa,
                 },
                 secretKey,
-                { expiresIn: "90d" },
+                { expiresIn: "90d" }
               );
 
               let tipo = result[0].cliente;
@@ -545,13 +532,10 @@ server.post("/login/user", async function (req, res) {
               res.send();
               res.end();
             }
-
           }
         } else {
-
           res.send("Utente non trovato");
           res.end();
-
         }
       }
     });
@@ -573,14 +557,11 @@ server.post("/request/profile", (req, res) => {
         res.end();
       } else {
         try {
-
           const queryPromise = new Promise((resolve, reject) => {
             checkMensaCancellata(decoded.id, resolve);
-
           });
 
           queryPromise.then((ris) => {
-
             if (ris == false) {
               res.send("Mensa preferita cancellata");
               res.end();
@@ -609,7 +590,6 @@ server.post("/recover/password", (req, res) => {
       res.end();
     } else {
       if (result.length > 0) {
-
         const token = jwt.sign(
           {
             id: result[0].id,
@@ -619,16 +599,17 @@ server.post("/recover/password", (req, res) => {
             id_mensa: result[0].id_mensa,
           },
           secretKey,
-          { expiresIn: "90d" },
+          { expiresIn: "90d" }
         );
 
         let link = url + "/changepwd/" + token;
-        transporter.sendMail({
-          from: 'noreply@menshub.it',
-          to: email,
-          subject: 'Cambio password',
-          text: 'Ciao, clicca sul link per cambiare la tua password: [link]',
-          html: `
+        transporter.sendMail(
+          {
+            from: "noreply@menshub.it",
+            to: email,
+            subject: "Cambio password",
+            text: "Ciao, clicca sul link per cambiare la tua password: [link]",
+            html: `
               <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; text-align: center;">
                   <p>Ciao,</p>
                   <p style="margin-bottom: 20px;">Hai richiesto di cambiare la tua password.</p>
@@ -637,18 +618,18 @@ server.post("/recover/password", (req, res) => {
                   <p style="margin-top: 20px;">Se non hai richiesto il cambio della password, ignora questa email.</p>
                   <p>Il team di MensHub</p>
               </div>
-          `
-        }, (error, info) => {
-
-          if (error) {
-            res.send("Errore nell'invio dell'email");
-            res.end();
-          } else {
-            res.send("Email inviata con successo");
-            res.end();
+          `,
+          },
+          (error, info) => {
+            if (error) {
+              res.send("Errore nell'invio dell'email");
+              res.end();
+            } else {
+              res.send("Email inviata con successo");
+              res.end();
+            }
           }
-        });
-
+        );
       } else {
         res.send("Email non trovata");
         res.end();
@@ -672,7 +653,6 @@ server.post("/change/password", (req, res) => {
       return;
     } else {
       try {
-
         id_utente = decoded.id;
 
         if (old_psw != null) {
@@ -684,7 +664,7 @@ server.post("/change/password", (req, res) => {
               res.send("Errore del database");
               res.end();
               return;
-            };
+            }
             if (result.length > 0) {
               if (result[0].password === old_psw) {
                 if (new_psw === confirm_new_psw) {
@@ -692,10 +672,10 @@ server.post("/change/password", (req, res) => {
                     let query_set_new_password = `update utenti set password = '${new_psw}' where id=${id_utente};`;
                     connection.query(query_set_new_password, (err, result) => {
                       if (err) {
-                        res.send("Errore del database")
+                        res.send("Errore del database");
                         res.end();
                         return;
-                      };
+                      }
                       if (result) {
                         res.send("Password cambiata con successo");
                         res.end();
@@ -703,11 +683,12 @@ server.post("/change/password", (req, res) => {
                       }
                     });
                   } else {
-                    res.send("La nuova password deve essere diversa dalla vecchia");
+                    res.send(
+                      "La nuova password deve essere diversa dalla vecchia"
+                    );
                     res.end();
                     return;
                   }
-
                 } else {
                   res.send("Le password non combaciano");
                   res.end();
@@ -718,9 +699,7 @@ server.post("/change/password", (req, res) => {
                 res.end();
                 return;
               }
-
             }
-
           });
         } else {
           //resetta password
@@ -731,7 +710,7 @@ server.post("/change/password", (req, res) => {
                 res.send("Errore del database");
                 res.end();
                 return;
-              };
+              }
               if (result) {
                 res.send("Password cambiata con successo");
                 res.end();
@@ -783,8 +762,7 @@ server.post("/delete/user", (req, res) => {
                 res.end();
               } else {
                 if (cliente == 0 && result.length == 1) {
-
-                  query = 'DELETE FROM utenti WHERE id=' + decoded.id + ';';
+                  query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
 
                   connection.query(query, (err, result) => {
                     if (err) {
@@ -804,9 +782,8 @@ server.post("/delete/user", (req, res) => {
                       });
                     }
                   });
-
                 } else if (cliente == 0 && result.length > 1) {
-                  query = 'DELETE FROM utenti WHERE id=' + decoded.id + ';';
+                  query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
 
                   connection.query(query, (err, result) => {
                     if (err) {
@@ -896,15 +873,12 @@ server.post("/request/orders", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-
       try {
         const queryPromise = new Promise((resolve, reject) => {
           checkMensaCancellata(decoded.id, resolve);
-
         });
 
         queryPromise.then((ris) => {
-
           if (ris == false) {
             res.send("Mensa preferita cancellata");
             res.end();
@@ -927,7 +901,10 @@ server.post("/request/orders", (req, res) => {
                 let currentOrder = null;
 
                 result.forEach((row) => {
-                  if (!currentOrder || currentOrder.id_ordine !== row.id_ordine) {
+                  if (
+                    !currentOrder ||
+                    currentOrder.id_ordine !== row.id_ordine
+                  ) {
                     currentOrder = {
                       id_ordine: row.id_ordine,
                       stato_ordine: row.stato_ordine,
@@ -973,8 +950,8 @@ server.post("/producer/get/products", (req, res) => {
       id_mensa = decoded.id_mensa;
       connection.query(
         "SELECT * FROM prodotti where id_mensa=" +
-        id_mensa +
-        " ORDER BY categoria, nome",
+          id_mensa +
+          " ORDER BY categoria, nome",
         (err, result) => {
           if (err) {
             res.send("Errore del database");
@@ -984,7 +961,7 @@ server.post("/producer/get/products", (req, res) => {
             res.send(result);
             res.end();
           }
-        },
+        }
       );
     }
   });
@@ -1044,21 +1021,17 @@ server.post("/producer/get/top10Products", (req, res) => {
       });
     }
   });
-}
-);
+});
 
 server.post("/producer/get/stats", (req, res) => {
   let token = req.headers.authorization;
   let periodo = req.body.periodo;
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, async (err, decoded) => {
-
     if (err) {
       res.send("Token non valido");
       res.end();
-    }
-    else {
-
+    } else {
       let id_mensa = decoded.id_mensa;
       let query = "";
       let ris = [];
@@ -1082,9 +1055,9 @@ server.post("/producer/get/stats", (req, res) => {
               res.end();
             } else {
               if (result.length > 0) {
-                const formattedResult = result.map(row => ({
-                  periodo: new Date(row.periodo).toLocaleDateString('it-IT'),
-                  vendite: row.vendite
+                const formattedResult = result.map((row) => ({
+                  periodo: new Date(row.periodo).toLocaleDateString("it-IT"),
+                  vendite: row.vendite,
                 }));
                 console.log(formattedResult);
                 res.send(formattedResult);
@@ -1101,8 +1074,8 @@ server.post("/producer/get/stats", (req, res) => {
 
           for (let i = 6; i >= 0; i--) {
             const currentDate = new Date();
-            const endDate = new Date(currentDate.getTime() - (i * oneDay));
-            const periodo = `${endDate.toISOString().split('T')[0]}`;
+            const endDate = new Date(currentDate.getTime() - i * oneDay);
+            const periodo = `${endDate.toISOString().split("T")[0]}`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1112,7 +1085,7 @@ server.post("/producer/get/stats", (req, res) => {
                     SELECT id
                     FROM ordini
                     WHERE id_mensa = ${id_mensa}
-                    AND DATE(data) = '${endDate.toISOString().split('T')[0]}'
+                    AND DATE(data) = '${endDate.toISOString().split("T")[0]}'
                     AND stato_ordine = 'completato'
                   )
                 `;
@@ -1127,16 +1100,19 @@ server.post("/producer/get/stats", (req, res) => {
           }
 
           Promise.all(promises)
-            .then(results => {
+            .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const vendite = result.length > 0 && result[0].vendite ? result[0].vendite : 0;
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
+                    : 0;
                 return { vendite: vendite, periodo: periodo };
               });
 
               res.send(ris);
               res.end();
             })
-            .catch(err => {
+            .catch((err) => {
               res.send("Errore del server");
               res.end();
             });
@@ -1147,9 +1123,11 @@ server.post("/producer/get/stats", (req, res) => {
 
           for (let i = 7; i >= 0; i--) {
             const currentDate = new Date();
-            const endDate = new Date(currentDate.getTime() - (i * fourDays));
+            const endDate = new Date(currentDate.getTime() - i * fourDays);
             const startDate = new Date(endDate.getTime() - fourDays);
-            const periodo = `${startDate.toISOString().split('T')[0]} - ${endDate.toISOString().split('T')[0]}`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1159,8 +1137,8 @@ server.post("/producer/get/stats", (req, res) => {
                     SELECT id
                     FROM ordini
                     WHERE id_mensa = ${id_mensa}
-                    AND DATE(data) > '${startDate.toISOString().split('T')[0]}'
-                    AND DATE(data) <= '${endDate.toISOString().split('T')[0]}'
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
                     AND stato_ordine = 'completato'
                   )
                 `;
@@ -1175,16 +1153,19 @@ server.post("/producer/get/stats", (req, res) => {
           }
 
           Promise.all(promises)
-            .then(results => {
+            .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const vendite = result.length > 0 && result[0].vendite ? result[0].vendite : 0;
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
+                    : 0;
                 return { vendite: vendite, periodo: periodo };
               });
 
               res.send(ris);
               res.end();
             })
-            .catch(err => {
+            .catch((err) => {
               console.error(err);
               res.send("Errore del server");
               res.end();
@@ -1196,9 +1177,11 @@ server.post("/producer/get/stats", (req, res) => {
 
           for (let i = 6; i >= 0; i--) {
             const currentDate = new Date();
-            const endDate = new Date(currentDate.getTime() - (i * twoWeeks));
+            const endDate = new Date(currentDate.getTime() - i * twoWeeks);
             const startDate = new Date(endDate.getTime() - twoWeeks);
-            const periodo = `${startDate.toISOString().split('T')[0]} - ${endDate.toISOString().split('T')[0]}`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1208,8 +1191,8 @@ server.post("/producer/get/stats", (req, res) => {
                     SELECT id
                     FROM ordini
                     WHERE id_mensa = ${id_mensa}
-                    AND DATE(data) > '${startDate.toISOString().split('T')[0]}'
-                    AND DATE(data) <= '${endDate.toISOString().split('T')[0]}'
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
                     AND stato_ordine = 'completato'
                   )
                 `;
@@ -1224,15 +1207,18 @@ server.post("/producer/get/stats", (req, res) => {
           }
 
           Promise.all(promises)
-            .then(results => {
+            .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const vendite = result.length > 0 && result[0].vendite ? result[0].vendite : 0;
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
+                    : 0;
                 return { vendite: vendite, periodo: periodo };
               });
               res.send(ris);
               res.end();
             })
-            .catch(err => {
+            .catch((err) => {
               console.error(err);
               res.send("Errore del server");
               res.end();
@@ -1244,9 +1230,11 @@ server.post("/producer/get/stats", (req, res) => {
 
           for (let i = 8; i >= 0; i--) {
             const currentDate = new Date();
-            const endDate = new Date(currentDate.getTime() - (i * threeWeeks)); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
+            const endDate = new Date(currentDate.getTime() - i * threeWeeks); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
             const startDate = new Date(endDate.getTime() - threeWeeks); // 3 settimane prima della data di fine
-            const periodo = `${startDate.toISOString().split('T')[0]} - ${endDate.toISOString().split('T')[0]}`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1256,8 +1244,8 @@ server.post("/producer/get/stats", (req, res) => {
                     SELECT id
                     FROM ordini
                     WHERE id_mensa = ${id_mensa}
-                    AND DATE(data) > '${startDate.toISOString().split('T')[0]}'
-                    AND DATE(data) <= '${endDate.toISOString().split('T')[0]}'
+                    AND DATE(data) > '${startDate.toISOString().split("T")[0]}'
+                    AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
                     AND stato_ordine = 'completato'
                   )
                 `;
@@ -1272,15 +1260,18 @@ server.post("/producer/get/stats", (req, res) => {
           }
 
           Promise.all(promises)
-            .then(results => {
+            .then((results) => {
               ris = results.map(({ result, periodo }) => {
-                const vendite = result.length > 0 && result[0].vendite ? result[0].vendite : 0;
+                const vendite =
+                  result.length > 0 && result[0].vendite
+                    ? result[0].vendite
+                    : 0;
                 return { vendite: vendite, periodo: periodo };
               });
               res.send(ris);
               res.end();
             })
-            .catch(err => {
+            .catch((err) => {
               console.error(err);
               res.send("Errore del server");
               res.end();
@@ -1311,8 +1302,7 @@ server.post("/producer/get/stats", (req, res) => {
               }
               res.end();
             }
-          }
-          );
+          });
           break;
         default:
           res.send("Periodo non valido");
@@ -1339,7 +1329,6 @@ server.post("/producer/get/orders", (req, res) => {
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
                   WHERE id_mensa = ${id_utente}`;
-
 
       connection.query(query, (err, result) => {
         if (err) {
@@ -1370,7 +1359,6 @@ server.post("/producer/get/orders", (req, res) => {
       });
     }
   });
-
 });
 
 server.post("/producer/get/orders/completed", (req, res) => {
@@ -1414,7 +1402,6 @@ server.post("/producer/get/order", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-
       let query = `SELECT po.id_prodotto, po.quantita, p.nome, p.categoria, p.prezzo, p.indirizzo_img
                   FROM prodotti_ordini AS po
                   JOIN prodotti AS p ON po.id_prodotto = p.id
@@ -1460,7 +1447,6 @@ server.post("/producer/change/order", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-
       if (stato_ordine === "finito") {
         let query = `SELECT id_prodotto, quantita FROM prodotti_ordini WHERE id_ordine = ${id_ordine};`;
 
@@ -1469,7 +1455,6 @@ server.post("/producer/change/order", (req, res) => {
             res.send("Errore del database");
             res.end();
           } else {
-
             result.forEach((row) => {
               let query = `UPDATE prodotti SET nacq = nacq + ${row.quantita} WHERE id = ${row.id_prodotto};`;
 
@@ -1481,7 +1466,6 @@ server.post("/producer/change/order", (req, res) => {
               });
             });
           }
-
         });
       }
 
@@ -1545,7 +1529,6 @@ server.post("/producer/edit/product", (req, res) => {
 					disponibile = "${disponibile}"
 				WHERE id = "${id}";`;
 
-
       connection.query(query, (err, result) => {
         if (err) {
           res.send("Errore del database");
@@ -1561,72 +1544,76 @@ server.post("/producer/edit/product", (req, res) => {
 
 //serve id del prodotto nella req per caricare immagine
 //richiesta da fare con form-data
-server.post("/producer/editWithImg/product", upload2.single("image"), (req, res) => {
-  const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-    req.body;
+server.post(
+  "/producer/editWithImg/product",
+  upload2.single("image"),
+  (req, res) => {
+    const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
+      req.body;
 
-  let token = req.headers.authorization;
+    let token = req.headers.authorization;
 
+    let cartella = "../server/image/products";
+    let fileDaEliminare = "";
+    let pathFileDaEliminare = "";
+    const estensioneFile = req.file.filename.split(".").pop();
 
-  let cartella = "../server/image/products";
-  let fileDaEliminare = "";
-  let pathFileDaEliminare = "";
-  const estensioneFile = req.file.filename.split(".").pop();
-
-  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
-    if (err) {
-      res.send("Token non valido");
-      res.end();
-    } else {
-      const queryPromise = new Promise((resolve, reject) => {
-        fs.readdir(cartella, (err, files) => {
-          if (err) {
-            console.error("Errore durante la lettura della cartella:", err);
-            return;
-          }
-
-          let query = "SELECT indirizzo_img FROM prodotti WHERE id = " + id + ";";
-
-          connection.query(query, (err, result) => {
+    jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+      if (err) {
+        res.send("Token non valido");
+        res.end();
+      } else {
+        const queryPromise = new Promise((resolve, reject) => {
+          fs.readdir(cartella, (err, files) => {
             if (err) {
-              reject(err);
+              console.error("Errore durante la lettura della cartella:", err);
+              return;
             }
-            pathFileDaEliminare = result[0].indirizzo_img.split("/").pop();
 
-            fileDaEliminare = files.find((file) => file === pathFileDaEliminare);
+            let query =
+              "SELECT indirizzo_img FROM prodotti WHERE id = " + id + ";";
 
-            if (fileDaEliminare) {
-              resolve(fileDaEliminare);
-            } else {
-              reject("File non trovato.");
-              console.log("File non trovato.");
-            }
-          });
-        });
-      });
-
-      queryPromise
-        .then((fileDaEliminare) => {
-
-          const estensioneFileVecchio = fileDaEliminare.split(".").pop();
-
-          if (estensioneFileVecchio != estensioneFile) {
-            let cartella = "../server/image/products";
-            const pathImg = cartella + "/" + fileDaEliminare;
-
-            fs.unlink(pathImg, (err) => {
+            connection.query(query, (err, result) => {
               if (err) {
-                console.error(
-                  `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`,
-                );
+                reject(err);
+              }
+              pathFileDaEliminare = result[0].indirizzo_img.split("/").pop();
+
+              fileDaEliminare = files.find(
+                (file) => file === pathFileDaEliminare
+              );
+
+              if (fileDaEliminare) {
+                resolve(fileDaEliminare);
               } else {
-                console.log(
-                  `Il file ${fileDaEliminare} è stato eliminato con successo`,
-                );
+                reject("File non trovato.");
+                console.log("File non trovato.");
               }
             });
-          }
-          let query = `
+          });
+        });
+
+        queryPromise
+          .then((fileDaEliminare) => {
+            const estensioneFileVecchio = fileDaEliminare.split(".").pop();
+
+            if (estensioneFileVecchio != estensioneFile) {
+              let cartella = "../server/image/products";
+              const pathImg = cartella + "/" + fileDaEliminare;
+
+              fs.unlink(pathImg, (err) => {
+                if (err) {
+                  console.error(
+                    `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
+                  );
+                } else {
+                  console.log(
+                    `Il file ${fileDaEliminare} è stato eliminato con successo`
+                  );
+                }
+              });
+            }
+            let query = `
             UPDATE prodotti
             SET nome = "${nome}",
               descrizione = "${descrizione}",
@@ -1637,61 +1624,65 @@ server.post("/producer/editWithImg/product", upload2.single("image"), (req, res)
               indirizzo_img= "products/${id}.${estensioneFile}"
             WHERE id = "${id}";`;
 
-          connection.query(query, (err, result) => {
-            if (err) {
-              res.send("Errore del database");
+            connection.query(query, (err, result) => {
+              if (err) {
+                res.send("Errore del database");
+                res.end();
+              }
+            });
+
+            const cartella = "../server/image/products";
+
+            fs.readdir(cartella, (err, files) => {
+              if (err) {
+                console.error("Errore durante la lettura della cartella:", err);
+                return;
+              }
+              const filenameConEstensione = id + "." + estensioneFile;
+              let cartella = "../server/image/products/";
+              let fileDaConvertire = files.find(
+                (file) => file === filenameConEstensione
+              );
+
+              // if (fileDaConvertire) {
+              //   sharp(cartella + fileDaConvertire)
+              //     .toFormat("webp")
+              //     .toFile(cartella + filenameConEstensione.replace(/\.[^/.]+$/, ".webp"))
+              //     .then((info) => {
+              //       fs.unlink(cartella + fileDaConvertire, (err) => {
+              //         if (err) {
+              //           console.error(`Errore durante l'eliminazione del file ${fileDaConvertire}: ${err}`);
+              //         } else {
+              //           res.send("Prodotto modificato");
+              //           res.end();
+              //         }
+              //       });
+              //     })
+              //     .catch((err) => {
+              //       console.error("Error converting to WebP:", err);
+              //     });
+              // } else {
+              //   console.log("File non trovato.");
+              // }
+
+              res.send("Prodotto modificato");
               res.end();
-            }
-          });
-
-          const cartella = "../server/image/products";
-
-          fs.readdir(cartella, (err, files) => {
-            if (err) {
-              console.error("Errore durante la lettura della cartella:", err);
-              return;
-            }
-            const filenameConEstensione = id + "." + estensioneFile;
-            let cartella = "../server/image/products/";
-            let fileDaConvertire = files.find((file) => file === filenameConEstensione);
-
-            // if (fileDaConvertire) {
-            //   sharp(cartella + fileDaConvertire)
-            //     .toFormat("webp")
-            //     .toFile(cartella + filenameConEstensione.replace(/\.[^/.]+$/, ".webp"))
-            //     .then((info) => {
-            //       fs.unlink(cartella + fileDaConvertire, (err) => {
-            //         if (err) {
-            //           console.error(`Errore durante l'eliminazione del file ${fileDaConvertire}: ${err}`);
-            //         } else {
-            //           res.send("Prodotto modificato");
-            //           res.end();
-            //         }
-            //       });
-            //     })
-            //     .catch((err) => {
-            //       console.error("Error converting to WebP:", err);
-            //     });
-            // } else {
-            //   console.log("File non trovato.");
-            // }
-
-            res.send("Prodotto modificato");
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            res.send("Errore modifica prodotto");
             res.end();
           });
-        })
-        .catch((error) => {
-          console.log(error);
-          res.send("Errore modifica prodotto");
-          res.end();
-        });
-    }
-  });
-});
+      }
+    });
+  }
+);
 
 //richiesta da fare con form-data
 server.post("/producer/add/product", upload.single("image"), (req, res) => {
-  const { nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+  const { nome, descrizione, allergeni, prezzo, categoria, disponibile } =
+    req.body;
 
   let token = req.headers.authorization;
   let id_utente = "";
@@ -1701,7 +1692,6 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-
       try {
         id_utente = decoded.id;
 
@@ -1749,14 +1739,20 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 
                     fs.readdir(cartella, (err, files) => {
                       if (err) {
-                        console.error("Errore durante la lettura della cartelcla:", err);
+                        console.error(
+                          "Errore durante la lettura della cartelcla:",
+                          err
+                        );
                         res.send("Errore del server");
                         res.end();
                         return;
                       }
-                      const filenameConEstensione = nome + "_" + prezzo + "." + estensioneFile;
+                      const filenameConEstensione =
+                        nome + "_" + prezzo + "." + estensioneFile;
                       const cartella = "../server/image/products/";
-                      let fileDaConvertire = files.find((file) => file === filenameConEstensione);
+                      let fileDaConvertire = files.find(
+                        (file) => file === filenameConEstensione
+                      );
 
                       // if (fileDaConvertire) {
                       //   sharp(cartella + fileDaConvertire)
@@ -1841,11 +1837,11 @@ server.post("/producer/delete/product", (req, res) => {
           fs.unlink(pathImg, (err) => {
             if (err) {
               console.error(
-                `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`,
+                `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
               );
             } else {
               console.log(
-                `Il file ${fileDaEliminare} è stato eliminato con successo`,
+                `Il file ${fileDaEliminare} è stato eliminato con successo`
               );
             }
           });
@@ -1863,9 +1859,7 @@ server.post("/producer/delete/product", (req, res) => {
 });
 
 function renameImage(nome_file, id_prodotto, res) {
-
   try {
-
     const cartella = "../server/image/products";
     const nomeFileSenzaEstensione = nome_file;
 
@@ -1878,7 +1872,7 @@ function renameImage(nome_file, id_prodotto, res) {
 
       // Cerca il file senza estensione nella lista dei file
       const fileDaRinominare = files.find((file) =>
-        file.startsWith(nomeFileSenzaEstensione),
+        file.startsWith(nomeFileSenzaEstensione)
       );
 
       if (fileDaRinominare) {
@@ -1887,7 +1881,7 @@ function renameImage(nome_file, id_prodotto, res) {
         const nuovoNomeFileConEstensione = id_prodotto + estensioneFile;
         const percorsoCompletoNuovo = path.join(
           cartella,
-          nuovoNomeFileConEstensione,
+          nuovoNomeFileConEstensione
         );
 
         // Rinomina il file
@@ -1905,7 +1899,6 @@ function renameImage(nome_file, id_prodotto, res) {
         console.log("File non trovato.");
       }
     });
-
   } catch (error) {
     console.log(error);
   }
@@ -1933,12 +1926,9 @@ function checkMensaCancellata(id, resolve) {
     console.log(error);
     resolve(false);
   }
-
 }
 
 const port = 6969;
 server.listen(port, () => {
   console.log("http://menshub.it");
 });
-
-

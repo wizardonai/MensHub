@@ -108,7 +108,6 @@ export default function Popup({
       )
         .then((response) => {
           if (response === "Prodotto modificato") {
-
             getProdotti(
               JSON.parse(
                 localStorage.getItem("token") || '{"token": "lucaChing"}'
@@ -168,17 +167,20 @@ export default function Popup({
           //estensione immagine
           const estensione = immagineValue.name.split(".").pop();
           if (response === "Prodotto modificato") {
-            const tmp = prodotti.filter((item: any) => (item.id !== prodotto.id));
+            const tmp = prodotti.filter((item: any) => item.id !== prodotto.id);
             setProdotti(tmp);
-            setProdotti([...tmp, {
-              id: prodotto.id,
-              nome: nomeValue,
-              prezzo: prezzoValue,
-              categoria: categoriaValue,
-              descrizione: descrizioneValue,
-              allergeni: allergeniValue.join(","),
-              indirizzo_img: "products/"+prodotto.id+"."+estensione,
-            }]);
+            setProdotti([
+              ...tmp,
+              {
+                id: prodotto.id,
+                nome: nomeValue,
+                prezzo: prezzoValue,
+                categoria: categoriaValue,
+                descrizione: descrizioneValue,
+                allergeni: allergeniValue.join(","),
+                indirizzo_img: "products/" + prodotto.id + "." + estensione,
+              },
+            ]);
 
             toast.success(response);
             setPopup(false);
@@ -562,7 +564,7 @@ export default function Popup({
                     deleteProdotto(
                       JSON.parse(
                         localStorage.getItem("token") ||
-                        '{"token": "lucaChing"}'
+                          '{"token": "lucaChing"}'
                       ).token,
                       prodotto.id
                     )

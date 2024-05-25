@@ -50,13 +50,13 @@ const Prodotti = ({
     );
 
     return (
-      <div className="flex">
+      <div className="flex flex-wrap">
         <div
           onClick={() => {
             setProdottoCliccato(null);
             setPopup(true);
           }}
-          className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
+          className="bg-verdeBordo h-[22svh] w-[15svw] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
         >
           <img
             src={hostnameProductor + "plus.png"}
@@ -72,29 +72,29 @@ const Prodotti = ({
         {prodottiCategoria.map((item: prodotto, index: number) => {
           return (
             <div
-              className="bg-arancioneBordo h-[150px] w-[225px] rounded-lg mt-[15px]  transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]"
               key={index}
+              className="bg-arancioneBordo h-[22svh] w-[15svw] rounded-lg mt-[15px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]"
               onClick={() => {
                 setProdottoCliccato(item);
                 setPopup(true);
               }}
             >
-              <div className="flex items-center">
-                <div className="h-[70px] w-[70px] mt-[10px] ml-[10px] mr-[10px]">
+              <div className="flex mt-[5%] h-[35%] justify-center items-center">
+                <div className="w-[30%] ml-[10px] mr-[10px] ">
                   <img
                     src={hostnameProductor + item.indirizzo_img}
                     alt={item.nome}
                   />
                 </div>
-                <div className="mt-[10px]">
+                <div className="mt-[10px] w-[70%]">
                   <p className="font-bold text-marroneScuro">
                     {item.nome} <br />
-                    {item.prezzo.toFixed(2)}€
+                    {item.prezzo}€
                   </p>
                 </div>
               </div>
-              <div className="ml-[10px] mt-[-2px] h-[65px] flex items-center text-marroneScuro">
-                <TruncateText text={item.descrizione} maxLength={60} />
+              <div className="ml-[10px] h-[60%] flex items-center text-marroneScuro">
+                <TruncateText text={item.descrizione} maxLength={35} />
               </div>
             </div>
           );
@@ -137,13 +137,13 @@ const Prodotti = ({
               </p>
             </div>
           </div>
-          <div className="flex">
+          <div className="flex flex-wrap">
             <div
               onClick={() => {
                 setProdottoCliccato(null);
                 setPopup(true);
               }}
-              className="bg-verdeBordo h-[150px] w-[225px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
+              className="bg-verdeBordo h-[22svh] w-[15svw] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
             >
               <img
                 src={hostnameProductor + "plus.png"}
@@ -160,28 +160,28 @@ const Prodotti = ({
               return (
                 <div
                   key={index}
-                  className="bg-arancioneBordo h-[150px] w-[225px] rounded-lg mt-[15px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]"
+                  className="bg-arancioneBordo h-[22svh] w-[15svw] rounded-lg mt-[15px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover mr-[2%]"
                   onClick={() => {
                     setProdottoCliccato(item);
                     setPopup(true);
                   }}
                 >
-                  <div className="flex items-center">
-                    <div className="h-[70px] w-[70px] mt-[10px] ml-[10px] mr-[10px]">
+                  <div className="flex mt-[5%] h-[35%] justify-center items-center">
+                    <div className="w-[30%] ml-[10px] mr-[10px] ">
                       <img
                         src={hostnameProductor + item.indirizzo_img}
                         alt={item.nome}
                       />
                     </div>
-                    <div className="mt-[10px]">
+                    <div className="mt-[10px] w-[70%]">
                       <p className="font-bold text-marroneScuro">
                         {item.nome} <br />
                         {item.prezzo}€
                       </p>
                     </div>
                   </div>
-                  <div className="ml-[10px] mt-[-2px] h-[65px] flex items-center text-marroneScuro">
-                    <TruncateText text={item.descrizione} maxLength={60} />
+                  <div className="ml-[10px] h-[60%] flex items-center text-marroneScuro">
+                    <TruncateText text={item.descrizione} maxLength={35} />
                   </div>
                 </div>
               );
@@ -323,7 +323,7 @@ const css: styleMap = {
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: "2%",
+    marginLeft: "2svw",
   },
   ricerca: {
     width: "100%",

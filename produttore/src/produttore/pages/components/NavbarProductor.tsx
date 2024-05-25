@@ -32,7 +32,7 @@ const NavbarProductor = ({ page }: { page: string }) => {
   const css: styleMap = {
     navbar: {
       height: "80svh",
-      width: "80%",
+      width: "8svw",
       backgroundColor: "#503431",
       display: "flex",
       flexDirection: "column",

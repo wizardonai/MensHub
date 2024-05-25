@@ -121,11 +121,11 @@ const css: styleMap = {
   },
   sidebar: {
     display: "flex",
-    width: "10%",
+    width: "10svw",
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: "2%",
+    marginLeft: "2svw",
   },
   titolo: { fontSize: "130%", color: "#503431", fontWeight: "bold" },
   containerList: {

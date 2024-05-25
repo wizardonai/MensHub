@@ -44,13 +44,13 @@ export default function Filtri({
     return categorie.map((item: any, index: any) => {
       return (
         <div
-          className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+          className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
           key={index}
           onClick={filtroCliccato}
           id="divFiltro"
         >
           <img
-            className="w-[20px] ml-[-3px] mr-[3px]"
+            className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
             src={hostnameProductor + "filtri/" + item.nome + ".webp"}
           />
           <p
@@ -71,7 +71,7 @@ export default function Filtri({
         id="divFiltro"
       >
         <img
-          className="w-[20px] ml-[-3px] mr-[3px]"
+          className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
           src={hostnameProductor + "filtri/" + filtro + ".webp"}
         />
         <p className="capitalize text-[16px]" id="filtroDaApplicare">
