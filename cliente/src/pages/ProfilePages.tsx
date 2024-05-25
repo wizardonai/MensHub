@@ -47,9 +47,7 @@ const CronologiaAcquistiPage = ({
 				setLoggato("false");
 			}
 			if (typeof res !== "string" && res.length > 0) {
-				setCronologia(
-					res.filter((item: any) => item.stato_ordine !== "")
-				);
+				setCronologia(res.filter((item: any) => item.stato_ordine !== ""));
 				console.log(typeof res);
 			} else setCronologia([]);
 		});
@@ -125,20 +123,28 @@ const CronologiaAcquistiPage = ({
 
 	return (
 		<>
-			<Topbar name='' page='Cronologia' />
-			<Container>
-				<div className='w-full flex flex-col items-center justify-center'>
-					<SectionToggle type='single' collapsible className='w-3/4'>
-						{typeof cronologia === "string" || cronologia.length === 0 ? (
-							<p>NESSUN ORDINE COMPLETATO!</p>
-						) : (
-							generaRighe()
-						)}
-					</SectionToggle>
-				</div>
-			</Container>
-			<Toaster richColors />
-			<Navbar page='Cronologia' />
+			<div className='h-svh w-svw tel:hidden'>
+				<Topbar name='' page='Cronologia' />
+				<Container>
+					<div className='w-full flex flex-col items-center justify-center'>
+						<SectionToggle type='single' collapsible className='w-3/4'>
+							{typeof cronologia === "string" || cronologia.length === 0 ? (
+								<p>NESSUN ORDINE COMPLETATO!</p>
+							) : (
+								generaRighe()
+							)}
+						</SectionToggle>
+					</div>
+				</Container>
+				<Toaster richColors />
+				<Navbar page='Cronologia' />
+			</div>
+			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+				<p className='text-marrone text-2xl w-full text-center'>
+					Dispositivo non supportato! <br />
+					Per una esperienza migliore, utilizza un dispositivo mobile
+				</p>
+			</div>
 		</>
 	);
 };

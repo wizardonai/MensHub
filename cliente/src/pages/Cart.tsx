@@ -263,73 +263,81 @@ const Cart = ({
 
 	return (
 		<>
-			<Topbar page='carrello' name={""} />
-			<Container>
-				<div className='h-[92%] w-full flex items-center flex-col overflow-y-scroll'>
-					<div className='w-[80%]'>
-						<Lista carrello={carrello} setCarrello={setCarrello} />
+			<div className='h-svh w-svw tel:hidden'>
+				<Topbar page='carrello' name={""} />
+				<Container>
+					<div className='h-[92%] w-full flex items-center flex-col overflow-y-scroll'>
+						<div className='w-[80%]'>
+							<Lista carrello={carrello} setCarrello={setCarrello} />
+						</div>
 					</div>
-				</div>
-				<div className='h-[8%] w-full flex flex-row justify-evenly items-center border-t-2 border-dashed'>
-					<div className='text-xl text-marrone'>
-						Totale: {totale.toFixed(2)}€
-					</div>
-					<Drawer>
-						<DrawerTrigger
-							className='bg-[#5c8c46] p-[6px] px-6 rounded-3xl text-background text-xl'
-							disabled={carrello.length === 0}
-						>
-							Ordina
-						</DrawerTrigger>
-						<DrawerContent>
-							<div className='w-full flex flex-col items-center justify-evenly h-40'>
-								<p className='text-xl'>Sicuro di voler ordinare?</p>
-								<p className='text-lg mt-1'>Totale: {totale.toFixed(2)}€</p>
-								<div className='flex flex-row items-center justify-evenly mt-2 w-[65%]'>
-									<DrawerClose className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-5 bg-biancoLatte text-marrone border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'>
-										Annulla
-									</DrawerClose>
-									<DrawerClose
-										onClick={() => {
-											sendOrder(
-												carrello,
-												localStorage.getItem("token") || "scu"
-											).then((res: any) => {
-												if (!res) {
-													toast.error("Errore di connessione");
-													return;
-												}
-												if (res === "Token non valido") {
-													setLoggato(false);
-													return;
-												}
-												if (res === "Mensa preferita cancellata") {
-													localStorage.removeItem("cart");
-													localStorage.removeItem("token");
-													setDatiUtente({} as typeProfilo);
-													setProducts([]);
-													setLoggato("false");
-													return;
-												}
-												if (res.toString() === "Ordine aggiunto") {
-													localStorage.setItem("cart", "[]");
-													setCarrello([]);
-													toast.info("Ordine effettuato");
-												} else toast.error(res + "");
-											});
-										}}
-										className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-marrone text-biancoLatte border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'
-									>
-										Conferma
-									</DrawerClose>
+					<div className='h-[8%] w-full flex flex-row justify-evenly items-center border-t-2 border-dashed'>
+						<div className='text-xl text-marrone'>
+							Totale: {totale.toFixed(2)}€
+						</div>
+						<Drawer>
+							<DrawerTrigger
+								className='bg-[#5c8c46] p-[6px] px-6 rounded-3xl text-background text-xl'
+								disabled={carrello.length === 0}
+							>
+								Ordina
+							</DrawerTrigger>
+							<DrawerContent>
+								<div className='w-full flex flex-col items-center justify-evenly h-40'>
+									<p className='text-xl'>Sicuro di voler ordinare?</p>
+									<p className='text-lg mt-1'>Totale: {totale.toFixed(2)}€</p>
+									<div className='flex flex-row items-center justify-evenly mt-2 w-[65%]'>
+										<DrawerClose className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-5 bg-biancoLatte text-marrone border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'>
+											Annulla
+										</DrawerClose>
+										<DrawerClose
+											onClick={() => {
+												sendOrder(
+													carrello,
+													localStorage.getItem("token") || "scu"
+												).then((res: any) => {
+													if (!res) {
+														toast.error("Errore di connessione");
+														return;
+													}
+													if (res === "Token non valido") {
+														setLoggato(false);
+														return;
+													}
+													if (res === "Mensa preferita cancellata") {
+														localStorage.removeItem("cart");
+														localStorage.removeItem("token");
+														setDatiUtente({} as typeProfilo);
+														setProducts([]);
+														setLoggato("false");
+														return;
+													}
+													if (res.toString() === "Ordine aggiunto") {
+														localStorage.setItem("cart", "[]");
+														setCarrello([]);
+														toast.info("Ordine effettuato");
+													} else toast.error(res + "");
+												});
+											}}
+											className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-marrone text-biancoLatte border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'
+										>
+											Conferma
+										</DrawerClose>
+									</div>
 								</div>
-							</div>
-						</DrawerContent>
-					</Drawer>
-				</div>
-				<Toaster position='top-center' richColors />
-			</Container>
-			<Navbar page='cart' />
+							</DrawerContent>
+						</Drawer>
+					</div>
+					<Toaster position='top-center' richColors />
+				</Container>
+				<Navbar page='cart' />
+			</div>
+			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+				<p className='text-marrone text-2xl w-full text-center'>
+					Dispositivo non supportato! <br />
+					Per una esperienza migliore, utilizza un dispositivo mobile
+				</p>
+			</div>
 		</>
 	);
 };

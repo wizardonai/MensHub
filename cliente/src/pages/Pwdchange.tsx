@@ -200,29 +200,40 @@ const Pwdchange = ({ loggato }: { loggato: string }) => {
 	};
 
 	return (
-		<div className='w-full h-full flex flex-col items-center justify-center absolute top-0 bottom-0 overflow-hidden'>
-			<img
-				src={imgSopra}
-				alt=''
-				className='absolute top-[-40svh] z-[-2] transition-[top] duration-1000 ease-in-out'
-				ref={images[0]}
-			/>
-			{loggato ? (
-				<CambiaPassword token={token} animazioniImmagini={animazioniImmagini} />
-			) : (
-				<PasswordDimenticata
-					token={token}
-					animazioniImmagini={animazioniImmagini}
+		<>
+			<div className='w-full h-full flex flex-col items-center justify-center absolute top-0 bottom-0 overflow-hidden tel:hidden'>
+				<img
+					src={imgSopra}
+					alt=''
+					className='absolute top-[-40svh] z-[-2] transition-[top] duration-1000 ease-in-out'
+					ref={images[0]}
 				/>
-			)}
-			<img
-				src={imgSotto}
-				alt=''
-				className='absolute bottom-[-5svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
-				ref={images[1]}
-			/>
-			<Toaster richColors />
-		</div>
+				{loggato ? (
+					<CambiaPassword
+						token={token}
+						animazioniImmagini={animazioniImmagini}
+					/>
+				) : (
+					<PasswordDimenticata
+						token={token}
+						animazioniImmagini={animazioniImmagini}
+					/>
+				)}
+				<img
+					src={imgSotto}
+					alt=''
+					className='absolute bottom-[-5svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
+					ref={images[1]}
+				/>
+				<Toaster richColors />
+			</div>
+			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+				<p className='text-marrone text-2xl w-full text-center'>
+					Dispositivo non supportato! <br />
+					Per una esperienza migliore, utilizza un dispositivo mobile
+				</p>
+			</div>
+		</>
 	);
 };
 

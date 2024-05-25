@@ -404,36 +404,44 @@ const Profile = ({
 
 	return (
 		<>
-			<div className='h-[150px] w-full flex justify-center items-center'>
-				<LazyLoadImage src={topbarProfile} alt='topbarProfile' />
-			</div>
-			<Container className='h-containerProfile w-full overflow-y-scroll'>
-				<div className='w-full h-full flex items-center flex-col justify-start'>
-					<div className='flex flex-col items-start justify-start w-[85%]'>
-						<InfoUtente datiUtente={datiUtente} />
-						<MensaPreferita
-							datiUtente={datiUtente}
-							mense={mense}
-							setDatiUtente={setDatiUtente}
-							setProducts={setProducts}
-							setLoggato={setLoggato}
-						/>
-						<BtnCronologia />
-						<BtnDisconnetti setTipoPopup={setTipoPopup} />
-						<BtnElmininaAccount setTipoPopup={setTipoPopup} />
-					</div>
-					{/* <Elementi setLoggato={setLoggato} setTipoPopup={setTipoPopup} /> */}
+			<div className='w-svw h-svh tel:hidden'>
+				<div className='h-[150px] w-full flex justify-center items-center'>
+					<LazyLoadImage src={topbarProfile} alt='topbarProfile' />
 				</div>
-				<Popup
-					tipoPopup={tipoPopup}
-					setTipoPopup={setTipoPopup}
-					setLoggato={setLoggato}
-					setProducts={setProducts}
-					setDatiUtente={setDatiUtente}
-				/>
-			</Container>
-			<Toaster richColors />
-			<Navbar page='profile' lunghezzaCarrello={lunghezzaCarrello} />
+				<Container className='h-containerProfile w-full overflow-y-scroll'>
+					<div className='w-full h-full flex items-center flex-col justify-start'>
+						<div className='flex flex-col items-start justify-start w-[85%]'>
+							<InfoUtente datiUtente={datiUtente} />
+							<MensaPreferita
+								datiUtente={datiUtente}
+								mense={mense}
+								setDatiUtente={setDatiUtente}
+								setProducts={setProducts}
+								setLoggato={setLoggato}
+							/>
+							<BtnCronologia />
+							<BtnDisconnetti setTipoPopup={setTipoPopup} />
+							<BtnElmininaAccount setTipoPopup={setTipoPopup} />
+						</div>
+						{/* <Elementi setLoggato={setLoggato} setTipoPopup={setTipoPopup} /> */}
+					</div>
+					<Popup
+						tipoPopup={tipoPopup}
+						setTipoPopup={setTipoPopup}
+						setLoggato={setLoggato}
+						setProducts={setProducts}
+						setDatiUtente={setDatiUtente}
+					/>
+				</Container>
+				<Toaster richColors />
+				<Navbar page='profile' lunghezzaCarrello={lunghezzaCarrello} />
+			</div>
+			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+				<p className='text-marrone text-2xl w-full text-center'>
+					Dispositivo non supportato! <br />
+					Per una esperienza migliore, utilizza un dispositivo mobile
+				</p>
+			</div>
 		</>
 	);
 };

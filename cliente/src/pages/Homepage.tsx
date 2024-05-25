@@ -412,37 +412,44 @@ const Homepage = ({
 
 	return (
 		<>
-			<link rel='preconnect' href={process.env.REACT_APP_HOSTNAME + ":6969"} />
-			<Topbar page='home' name={username} />
-			<Container>
-				<Searchbar
-					products={products}
-					setFilteredProducts={setFilteredProducts}
-					setPossibiliFiltri={setPossibiliFiltri}
-				/>
-				<div
-					className='h-[50px] w-[100%] overflow-x-scroll overflow-y-hidden flex flex-row items-center flex-nowrap p-[2svw] scrollbar-0 my-[10px]'
-					id='tuttiFiltri'
-				>
-					<Filtri
-						filtro={filtro}
-						setFiltro={setFiltro}
-						possibiliFiltri={possibiliFiltri}
+			<div className='h-svh w-svw flex flex-col tel:hidden'>
+				<Topbar page='home' name={username} />
+				<Container>
+					<Searchbar
+						products={products}
+						setFilteredProducts={setFilteredProducts}
+						setPossibiliFiltri={setPossibiliFiltri}
 					/>
-				</div>
-				<div
-					className='w-full flex justify-evenly flex-row flex-wrap'
-					id='divListone'
-				>
-					<Listone
-						filteredProducts={filteredProducts}
-						filtro={filtro}
-						setCarrello={setCarrello}
-					/>
-				</div>
-			</Container>
-			<Navbar page='home' lunghezzaCarrello={lunghezzaCarrello} />
-			<Toaster position='top-center' richColors />
+					<div
+						className='h-[50px] w-[100%] overflow-x-scroll overflow-y-hidden flex flex-row items-center flex-nowrap p-[2svw] scrollbar-0 my-[10px]'
+						id='tuttiFiltri'
+					>
+						<Filtri
+							filtro={filtro}
+							setFiltro={setFiltro}
+							possibiliFiltri={possibiliFiltri}
+						/>
+					</div>
+					<div
+						className='w-full flex justify-evenly flex-row flex-wrap'
+						id='divListone'
+					>
+						<Listone
+							filteredProducts={filteredProducts}
+							filtro={filtro}
+							setCarrello={setCarrello}
+						/>
+					</div>
+				</Container>
+				<Navbar page='home' lunghezzaCarrello={lunghezzaCarrello} />
+				<Toaster position='top-center' richColors />
+			</div>
+			<div className='h-svh w-svw justify-center items-center hidden tel:flex'>
+				<p className='text-marrone text-2xl w-full text-center'>
+					Dispositivo non supportato! <br />
+					Per una esperienza migliore, utilizza un dispositivo mobile
+				</p>
+			</div>
 		</>
 	);
 };

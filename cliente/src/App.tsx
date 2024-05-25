@@ -86,7 +86,6 @@ function App() {
 				});
 			}
 		}
-
 		router = createBrowserRouter([
 			{
 				path: "/home",

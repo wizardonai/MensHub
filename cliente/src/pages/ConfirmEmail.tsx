@@ -40,7 +40,7 @@ const ConfirmEmail = () => {
 						</p>
 						<Button
 							onClick={() => {
-								localStorage.setItem("login", "?");
+								localStorage.setItem("login", "1");
 								navigate("/login");
 							}}
 							variant='avanti'
