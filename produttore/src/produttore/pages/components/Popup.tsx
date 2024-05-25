@@ -591,7 +591,7 @@ export default function Popup({
                     className="w-[18px] h-[18px]"
                     style={{
                       filter:
-                        "brightness(0) saturate(100%) invert(94%) sepia(20%) saturate(194%) hue-rotate(340deg) brightness(89%) contrast(95%)",
+                        "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(107deg) brightness(105%) contrast(102%)",
                     }}
                   />
                 </div>
@@ -601,7 +601,7 @@ export default function Popup({
                   onClick={saveButton}
                 >
                   <p
-                    className="capitalize text-[16px] text-gialloSfondo select-none pointer-events-none"
+                    className="capitalize text-[16px] text-white select-none pointer-events-none"
                     id="filtroDaApplicare"
                   >
                     Salva
@@ -615,7 +615,7 @@ export default function Popup({
                 onClick={submitButton}
               >
                 <p
-                  className="capitalize text-[16px] text-gialloSfondo select-none pointer-events-none"
+                  className="capitalize text-[16px] text-white select-none pointer-events-none"
                   id="filtroDaApplicare"
                 >
                   Aggiungi

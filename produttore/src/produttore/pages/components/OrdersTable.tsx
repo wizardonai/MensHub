@@ -77,20 +77,23 @@ const OrdersTable = ({
         key={stato}
         onDrop={handleDrop}
         onDragOver={() => {
-          if (ordineTrascinato.stato_ordine !== stato) {
-            //cambia stato ordine
-            ordineTrascinato.stato_ordine = stato;
+          if (ordineTrascinato !== null) {
+            if (ordineTrascinato.stato_ordine !== stato) {
+              //cambia stato ordine
+              ordineTrascinato.stato_ordine = stato;
 
-            updateOrdine(
-              JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu"}')
-                .token,
-              ordineTrascinato.id_ordine,
-              stato
-            )
-              .then((response) => {})
-              .catch((err: any) => {
-                console.log(err);
-              });
+              updateOrdine(
+                JSON.parse(
+                  localStorage.getItem("token") || '{"token": "scuuuu"}'
+                ).token,
+                ordineTrascinato.id_ordine,
+                stato
+              )
+                .then((response) => {})
+                .catch((err: any) => {
+                  console.log(err);
+                });
+            }
           }
         }}
       >

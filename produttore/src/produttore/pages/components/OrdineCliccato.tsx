@@ -117,7 +117,7 @@ const OrdineCliccato = ({
               className="w-[20px] h-[20px]"
               style={{
                 filter:
-                  "brightness(0) saturate(100%) invert(94%) sepia(20%) saturate(194%) hue-rotate(340deg) brightness(89%) contrast(95%)",
+                  "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(107deg) brightness(105%) contrast(102%)",
               }}
             />
           </div>
@@ -148,15 +148,7 @@ const OrdineCliccato = ({
               setOrdineCliccato(null);
             }}
           >
-            <p
-              className="px-[10px]"
-              style={{
-                filter:
-                  "brightness(0) saturate(100%) invert(94%) sepia(20%) saturate(194%) hue-rotate(340deg) brightness(89%) contrast(95%)",
-              }}
-            >
-              Completato
-            </p>
+            <p className="px-[10px] text-white">Completato</p>
           </div>
         </div>
       </div>
