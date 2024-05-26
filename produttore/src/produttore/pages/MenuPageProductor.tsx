@@ -50,7 +50,7 @@ const Prodotti = ({
     );
 
     return (
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap w-full">
         <div
           onClick={() => {
             setProdottoCliccato(null);
@@ -118,7 +118,7 @@ const Prodotti = ({
       );
 
       return (
-        <div key={index} className="mb-5">
+        <div key={index} className="mb-5 w-full">
           <div className="flex">
             <div
               className="bg-arancioneBordo h-[25px] rounded-full flex items-center px-3 mr-[1%]"
@@ -289,7 +289,7 @@ const MenuPageProductor = ({
           />
         </div>
         <div style={css.divCategorie}>
-          <Filtri filtro={filtro} setFiltro={setFiltro} categorie={categorie} />
+          <Filtri filtro={filtro} setFiltro={setFiltro} categorie={categorie} popup={false}/>
         </div>
         <div style={css.container}>
           <Prodotti

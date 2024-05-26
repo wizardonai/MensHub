@@ -5,10 +5,12 @@ export default function Filtri({
   filtro,
   setFiltro,
   categorie,
+  popup,
 }: {
   filtro: string;
   setFiltro: Function;
   categorie: any;
+  popup: boolean;
 }): JSX.Element {
   const findIndex = (x: string) => {
     for (let i = 0; i < categorie.length; i++) {
@@ -42,25 +44,51 @@ export default function Filtri({
 
   if (filtro === "") {
     return categorie.map((item: any, index: any) => {
-      return (
-        <div
-          className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo pr-7"
-          key={index}
-          onClick={filtroCliccato}
-          id="divFiltro"
-        >
-          <img
-            className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
-            src={hostnameProductor + "filtri/" + item.nome + ".webp"}
-          />
-          <p
-            className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
-            id="filtroDaApplicare"
+      console.log(popup);
+      if(popup){
+        console.log("popup");
+        return (
+          <div
+            className="bg-arancioneChiaro h-[25px] rounded-full inline-flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo pr-7"
+            key={index}
+            onClick={filtroCliccato}
+            id="divFiltro"
           >
-            {item.nome}
-          </p>
-        </div>
-      );
+            <img 
+              className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
+              src={hostnameProductor + "filtri/" + item.nome + ".webp" }
+              
+            />
+            <p
+              className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
+              id="filtroDaApplicare"
+            >
+              {item.nome}
+            </p>
+          </div>
+        );
+      }else{
+        return (
+          <div
+            className="bg-arancioneChiaro h-[25px] rounded-full inline-flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo "
+            key={index}
+            onClick={filtroCliccato}
+            id="divFiltro"
+          >
+            <img 
+              className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
+              src={hostnameProductor + "filtri/" + item.nome + ".webp" }
+              
+            />
+            <p
+              className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
+              id="filtroDaApplicare"
+            >
+              {item.nome}
+            </p>
+          </div>
+        );
+      }
     });
   } else {
     return (

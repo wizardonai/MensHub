@@ -445,6 +445,7 @@ export default function Popup({
                     filtro={filtro}
                     setFiltro={setFiltro}
                     categorie={categorie}
+                    popup={true}
                   />
                 </div>
               </div>
