@@ -11,6 +11,7 @@ import fs from "fs";
 import path from "path";
 //import sharp from "sharp";
 import nodemailer from "nodemailer";
+import e from "express";
 //sharp.cache({ files: 0 });
 
 const { json, urlencoded } = bodyParser;
@@ -734,78 +735,86 @@ server.post("/change/password", (req, res) => {
 server.post("/delete/user", (req, res) => {
   let token = req.headers.authorization;
   let password = req.body.password;
+  let confirm_password = req.body.confirm_password;
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
       res.send("Token non valido");
       res.end();
     } else {
-      let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+      if (password != confirm_password) {
+        res.send("Le password non combaciano");
+        res.end();
+      } else {
+        let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
 
-      connection.query(query, (err, result) => {
-        if (err) {
-          res.send("Errore del database");
-          res.end();
-        } else {
-          if (result.length > 0) {
-            let cliente = result[0].cliente;
-
-            if (cliente == 1) {
-              query = `DELETE FROM utenti WHERE id=${decoded.id};`;
-            } else {
-              query = `SELECT * FROM utenti WHERE cliente=0 AND id_mensa=${decoded.id_mensa};`;
-            }
-
-            connection.query(query, (err, result) => {
-              if (err) {
-                res.send("Errore del database");
-                res.end();
-              } else {
-                if (cliente == 0 && result.length == 1) {
-                  query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
-
-                  connection.query(query, (err, result) => {
-                    if (err) {
-                      res.send("Errore del database");
-                      res.end();
-                    } else {
-                      query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
-
-                      connection.query(query, (err, result) => {
-                        if (err) {
-                          res.send("Errore del database");
-                          res.end();
-                        } else {
-                          res.send("Mensa eliminata");
-                          res.end();
-                        }
-                      });
-                    }
-                  });
-                } else if (cliente == 0 && result.length > 1) {
-                  query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
-
-                  connection.query(query, (err, result) => {
-                    if (err) {
-                      res.send("Errore del database");
-                      res.end();
-                    } else {
-                      res.send("Utente eliminato");
-                      res.end();
-                    }
-                  });
-                } else {
-                  res.send("Utente eliminato");
-                  res.end();
-                }
-              }
-            });
-          } else {
-            res.send("Password errata");
+        connection.query(query, (err, result) => {
+          if (err) {
+            res.send("Errore del database");
             res.end();
+          } else {
+            if (result.length > 0) {
+              let cliente = result[0].cliente;
+
+              if (cliente == 1) {
+                query = `DELETE FROM utenti WHERE id=${decoded.id};`;
+              } else {
+                query = `SELECT * FROM utenti WHERE cliente=0 AND id_mensa=${decoded.id_mensa};`;
+              }
+
+              connection.query(query, (err, result) => {
+                if (err) {
+                  res.send("Errore del database");
+                  res.end();
+                } else {
+                  if (cliente == 0 && result.length == 1) {
+                    query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
+
+                    connection.query(query, (err, result) => {
+                      if (err) {
+                        res.send("Errore del database");
+                        res.end();
+                      } else {
+                        query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
+
+                        connection.query(query, (err, result) => {
+                          if (err) {
+                            res.send("Errore del database");
+                            res.end();
+                          } else {
+                            res.send("Mensa eliminata");
+                            res.end();
+                          }
+                        });
+                      }
+                    });
+                  } else if (cliente == 0 && result.length > 1) {
+                    query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
+
+                    connection.query(query, (err, result) => {
+                      if (err) {
+                        res.send("Errore del database");
+                        res.end();
+                      } else {
+                        res.send("Utente eliminato");
+                        res.end();
+                      }
+                    });
+                  } else {
+                    res.send("Utente eliminato");
+                    res.end();
+                  }
+                }
+              });
+            } else {
+              res.send("Password errata");
+              res.end();
+            }
           }
-        }
-      });
+        });
+      }
+
+
     }
   });
 });
@@ -813,53 +822,59 @@ server.post("/delete/user", (req, res) => {
 server.post("/delete/mensa", (req, res) => {
   let token = req.headers.authorization;
   let password = req.body.password;
+  let confirm_password = req.body.confirm_password;
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
       res.send("Token non valido");
       res.end();
     } else {
-      let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+      if (password != confirm_password) {
+        res.send("Le password non combaciano");
+        res.end();
+      } else {
+        let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
 
-      connection.query(query, (err, result) => {
-        if (err) {
-          res.send("Errore del database");
-          res.end();
-        } else {
-          if (result.length > 0) {
-            let cliente = result[0].cliente;
+        connection.query(query, (err, result) => {
+          if (err) {
+            res.send("Errore del database");
+            res.end();
+          } else {
+            if (result.length > 0) {
+              let cliente = result[0].cliente;
 
-            if (cliente == 0) {
-              let query = `DELETE FROM utenti WHERE id_mensa=${decoded.id_mensa} AND cliente=0;`;
+              if (cliente == 0) {
+                let query = `DELETE FROM utenti WHERE id_mensa=${decoded.id_mensa} AND cliente=0;`;
 
-              connection.query(query, (err, result) => {
-                if (err) {
-                  res.send("Errore del database");
-                  res.end();
-                } else {
-                  let query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
+                connection.query(query, (err, result) => {
+                  if (err) {
+                    res.send("Errore del database");
+                    res.end();
+                  } else {
+                    let query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
 
-                  connection.query(query, (err, result) => {
-                    if (err) {
-                      res.send("Errore del database");
-                      res.end();
-                    } else {
-                      res.send("Mensa eliminata");
-                      res.end();
-                    }
-                  });
-                }
-              });
+                    connection.query(query, (err, result) => {
+                      if (err) {
+                        res.send("Errore del database");
+                        res.end();
+                      } else {
+                        res.send("Mensa eliminata");
+                        res.end();
+                      }
+                    });
+                  }
+                });
+              } else {
+                res.send("Non sei autorizzato a cancellare la mensa");
+                res.end();
+              }
             } else {
-              res.send("Non sei autorizzato a cancellare la mensa");
+              res.send("Password errata");
               res.end();
             }
-          } else {
-            res.send("Password errata");
-            res.end();
           }
-        }
-      });
+        });
+      }
     }
   });
 });
@@ -1060,7 +1075,7 @@ server.post("/producer/get/stats", (req, res) => {
               res.end();
             } else {
               if (result.length > 0) {
-                result.forEach(row => {
+                result.forEach((row) => {
                   hours[row.periodo].vendite = row.vendite;
                 });
                 res.send(hours);
@@ -1329,7 +1344,7 @@ server.post("/producer/get/orders", (req, res) => {
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
-                  WHERE id_mensa = ${id_utente}`;
+                  WHERE id_mensa = ${id_utente} AND stato_ordine != 'completato' AND DATE(o.data) = CURDATE()`;
 
       connection.query(query, (err, result) => {
         if (err) {
@@ -1375,7 +1390,8 @@ server.post("/producer/get/orders/completed", (req, res) => {
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
-                  WHERE o.id_mensa = ${id_utente} AND o.stato_ordine = 'completato'`;
+                  WHERE o.id_mensa = ${id_utente} AND o.stato_ordine = 'completato'
+                  ORDER BY o.data DESC;`;
 
       connection.query(query, (err, result) => {
         if (err) {
