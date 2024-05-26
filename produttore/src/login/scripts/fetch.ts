@@ -194,7 +194,11 @@ export async function getOrdini(token: { token: string }) {
   await axios
     .request(config)
     .then((res) => {
-      response = res.data;
+      if (res.data === "Non sono presenti ordini") {
+        response = [];
+      } else {
+        response = res.data;
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -391,19 +395,23 @@ export async function getProdottiCompletati(token: string) {
   return response;
 }
 
-export async function deleteMensa(token: string, password: string) {
+export async function deleteMensa(token: string, password: string, confirm_password: string) {
   let response;
+  let data = JSON.stringify({
+    password: sha256.create().update(password).hex(),
+    confirm_password: sha256.create().update(confirm_password).hex(),
+  });
 
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `${urlServer}/producer/delete/mensa`,
+    url: `${urlServer}/delete/mensa`,
     headers: {
       Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
     },
-    data: new URLSearchParams({
-      password: password,
-    }),
+    data: data,
+
   };
 
   await axios
@@ -532,6 +540,36 @@ export async function changeProdottoImmagine(token: string, dati: any) {
       Authorization: "Bearer " + token,
     },
     data: dati,
+  };
+
+  await axios
+    .request(config)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      response = err.response.data;
+    });
+
+  return response;
+}
+
+export async function deleteAccount(token: string, password: string, confirm_password: string) {
+  let response;
+  let data = JSON.stringify({
+    password: sha256.create().update(password).hex(),
+    confirm_password: sha256.create().update(confirm_password).hex(),
+  });
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${urlServer}/delete/user`,
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    data: data,
   };
 
   await axios

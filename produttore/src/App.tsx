@@ -71,6 +71,7 @@ export const sleep = (delay: number) =>
 
 const App = () => {
   const [ordini, setOrdini] = useState<any>([]);
+  const [flag, setFlag] = useState<boolean>(false);
 
   //loggato o no
   const [utente, setUtente] = useState("no");
@@ -135,7 +136,7 @@ const App = () => {
       },
       {
         path: "/productorHome",
-        element: <HomePageProductor ordini={ordini} setOrdini={setOrdini} />,
+        element: <HomePageProductor ordini={ordini} setOrdini={setOrdini} flag={flag} setFlag={setFlag} />,
       },
       {
         path: "/productorMenu",

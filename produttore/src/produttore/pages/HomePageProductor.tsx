@@ -9,20 +9,25 @@ import { getOrdini } from "src/login/scripts/fetch";
 const HomePageProductor = ({
   ordini,
   setOrdini,
+  flag,
+  setFlag,
 }: {
   ordini: any;
   setOrdini: Function;
+  flag: boolean;
+  setFlag: Function;
 }) => {
   const [ordineTrascinato, setOrdineTrascinato] = useState<any>(null);
   const [ordineCliccato, setOrdineCliccato] = useState<any>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prodotti, setProdotti] = useState<any>([]);
 
-  if (ordini.length === 0) {
+  if (ordini.length === 0 && flag === false) {
     getOrdini(
       JSON.parse(localStorage.getItem("token") || '{"token":"lucasuperchicco"}')
     ).then((data) => {
       setOrdini(data);
+      setFlag(true);
     });
   }
 

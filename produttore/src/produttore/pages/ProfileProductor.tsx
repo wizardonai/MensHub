@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import {
   changePassword,
+  deleteAccount,
   deleteMensa,
   getStatMensa,
   getTopProdotti,
@@ -166,6 +167,82 @@ const ProfileProductor = () => {
     });
   };
 
+  const deleteButton1 = () => {
+    let passwordEliminaValue = "";
+    if (passwordElimina.current) {
+      passwordEliminaValue = passwordElimina.current.value;
+    }
+
+    let confermaPasswordEliminaValue = "";
+    if (confermaPasswordElimina.current) {
+      confermaPasswordEliminaValue = confermaPasswordElimina.current.value;
+    }
+
+    if (passwordEliminaValue === "" || confermaPasswordEliminaValue === "") {
+      toast.error("Compila tutti i campi!");
+      return;
+    }
+
+    if (passwordEliminaValue !== confermaPasswordEliminaValue) {
+      toast.error("Le password non corrispondono!");
+      return;
+    }
+
+    deleteAccount(
+      JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
+        .token,
+      passwordEliminaValue,
+      confermaPasswordEliminaValue
+    ).then((res) => {
+      if (res === "Utente eliminato") {
+        toast.success("Account eliminato con successo");
+        localStorage.removeItem("token");
+        localStorage.removeItem("login");
+        navigate(`/login`);
+      } else {
+        toast.error(res);
+      }
+    });
+  }
+
+  const deleteButton2 = () => {
+    let passwordEliminaValue = "";
+    if (passwordElimina.current) {
+      passwordEliminaValue = passwordElimina.current.value;
+    }
+
+    let confermaPasswordEliminaValue = "";
+    if (confermaPasswordElimina.current) {
+      confermaPasswordEliminaValue = confermaPasswordElimina.current.value;
+    }
+
+    if (passwordEliminaValue === "" || confermaPasswordEliminaValue === "") {
+      toast.error("Compila tutti i campi!");
+      return;
+    }
+
+    if (passwordEliminaValue !== confermaPasswordEliminaValue) {
+      toast.error("Le password non corrispondono!");
+      return;
+    }
+
+    deleteMensa(
+      JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
+        .token,
+      passwordEliminaValue,
+      confermaPasswordEliminaValue
+    ).then((res) => {
+      if (res === "Mensa eliminata") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("login");
+        navigate(`/login`);
+        toast.success("Mensa eliminata con successo");
+      } else {
+        toast.error(res);
+      }
+    });
+  }
+
   const changeButton = () => {
     let old_pswValue = "";
     if (old_psw.current) {
@@ -203,43 +280,6 @@ const ProfileProductor = () => {
       confirm_new_pswValue
     ).then((response) => {
       toast.info(response);
-    });
-  };
-
-  const deleteButton = () => {
-    let passwordEliminaValue = "";
-    if (password.current) {
-      passwordEliminaValue = password.current.value;
-    }
-
-    let confermaPasswordEliminaValue = "";
-    if (confermaPassword.current) {
-      confermaPasswordEliminaValue = confermaPassword.current.value;
-    }
-
-    if (passwordEliminaValue === "" || confermaPasswordEliminaValue === "") {
-      toast.error("Compila tutti i campi!");
-      return;
-    }
-
-    if (passwordEliminaValue !== confermaPasswordEliminaValue) {
-      toast.error("Le password non corrispondono!");
-      return;
-    }
-
-    deleteMensa(
-      JSON.parse(localStorage.getItem("token") || '{"token": "scuuuu scuuu"}')
-        .token,
-      passwordEliminaValue
-    ).then((res) => {
-      if (res === "Risposta Eliminazione avvenuta con successo") {
-        toast.success("Mensa eliminata con successo");
-        localStorage.removeItem("token");
-        localStorage.removeItem("login");
-        navigate(`/login`);
-      } else {
-        toast.error("Errore nella eliminazione");
-      }
     });
   };
 
@@ -629,7 +669,7 @@ const ProfileProductor = () => {
                       <Button
                         type="submit"
                         className="rounded-full bg-red-600 hover:bg-red-700"
-                        onClick={submitButton}
+                        onClick={deleteButton1}
                       >
                         Elimina
                       </Button>
@@ -714,7 +754,7 @@ const ProfileProductor = () => {
                       <Button
                         type="submit"
                         className="rounded-full bg-red-600 hover:bg-red-700"
-                        onClick={submitButton}
+                        onClick={deleteButton2}
                       >
                         Elimina
                       </Button>

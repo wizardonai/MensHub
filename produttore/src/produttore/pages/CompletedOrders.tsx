@@ -26,8 +26,6 @@ const TabellaOrdini = ({
     <div className="w-1/2 h-[100%]">
       <p className="font-bold text-marroneScuro text-2xl pl-[5%]">{titolo}</p>
       {ordini.map((ordine: any) => {
-        console.log(ordine.data.split("T")[0]);
-        console.log(new Date().toISOString().split("T")[0]);
         if (titolo === "Oggi" && ordine.data.split("T")[0] == new Date().toISOString().split("T")[0])
           return (
             <div className="flex flex-col items-center">

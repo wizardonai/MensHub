@@ -44,9 +44,7 @@ export default function Filtri({
 
   if (filtro === "") {
     return categorie.map((item: any, index: any) => {
-      console.log(popup);
       if(popup){
-        console.log("popup");
         return (
           <div
             className="bg-arancioneChiaro h-[25px] rounded-full inline-flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo pr-7"
