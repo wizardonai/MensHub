@@ -81,7 +81,6 @@ const ProfileProductor = () => {
           setRicarica(false);
           return;
         }
-        console.log(res);
         if (periodoCliccato !== "1A" && periodoCliccato !== "1G") {
           (res as any[]).forEach((element: any) => {
             element.periodo =
@@ -90,12 +89,11 @@ const ProfileProductor = () => {
               element.periodo.substring(5, 7);
           });
         }
-        if(periodoCliccato === "1G"){
+        if (periodoCliccato === "1G") {
           (res as any[]).forEach((element: any) => {
             element.periodo = element.periodo + ":00";
           });
         }
-      
 
         setOrdiniCompletati(res);
       }
@@ -156,10 +154,13 @@ const ProfileProductor = () => {
       cliente: 0,
       id_mensa: dati[0].id,
     }).then((res) => {
-      if (res === "Registrazione avvenuta. Controlla la casella di posta per confermare l'email.") {
+      if (
+        res ===
+        "Registrazione avvenuta. Controlla la casella di posta per confermare l'email."
+      ) {
         toast.success("Utente registrato con successo!");
         setPopupEmail(false);
-      }else {
+      } else {
         toast.error(res);
       }
     });
@@ -365,35 +366,35 @@ const ProfileProductor = () => {
             </p>
           </div>
           <div className="pt-[15px] w-1/2 ">
-            <div className="flex">
-              <div
+            <div
+              style={{
+                boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+              }}
+              className="w-[70%] h-[5svh] bg-arancioneBordo rounded-3xl flex  items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+              onClick={() => {
+                navigate("/completedOrders");
+              }}
+            >
+              <p className="font-bold text-xl text-marroneScuro ml-[10%] mr-[20%] w-3/5">
+                Ordini completati
+              </p>
+              <img
+                src={hostnameProductor + "check.png"}
+                className="h-2/3"
                 style={{
-                  boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+                  filter:
+                    "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
                 }}
-                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
-                onClick={() => {
-                  navigate("/completedOrders");
-                }}
-              >
-                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
-                  Ordini completati
-                </p>
-                <img
-                  src={hostnameProductor + "check.png"}
-                  className="h-1/2"
-                  style={{
-                    filter:
-                      "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
-                  }}
-                />
-              </div>
+              />
+            </div>
+            <div className="flex mt-[10px]">
               <Dialog>
                 <DialogTrigger asChild>
                   <div
                     style={{
                       boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
                     }}
-                    className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                    className="w-[33.5%] h-[10svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[3%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
                     onClick={() => {
                       setPopupEmail(true);
                     }}
@@ -526,6 +527,29 @@ const ProfileProductor = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+              <div
+                style={{
+                  boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+                }}
+                className="w-[33.5%] h-[10svh] bg-arancioneBordo rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("login");
+                  navigate(`/login`);
+                }}
+              >
+                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
+                  Logout account
+                </p>
+                <img
+                  src={hostnameProductor + "logout.png"}
+                  className="h-1/2"
+                  style={{
+                    filter:
+                      "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                  }}
+                />
+              </div>
             </div>
             <div className="flex mt-[10px]">
               <Dialog>
@@ -534,7 +558,7 @@ const ProfileProductor = () => {
                     style={{
                       boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
                     }}
-                    className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
+                    className="w-[33.5%] h-[10svh] bg-rossoScuro rounded-3xl flex justify-center items-center mr-[3%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-rossoScuroHover"
                   >
                     <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
                       Elimina account
@@ -544,7 +568,92 @@ const ProfileProductor = () => {
                       className="h-1/2"
                       style={{
                         filter:
-                          "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                          "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(107deg) brightness(105%) contrast(102%)",
+                      }}
+                    />
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <div className="flex justify-center">
+                        <p className="font-bold text-marroneScuro text-xl">
+                          Elimina account
+                        </p>
+                      </div>
+                    </DialogTitle>
+                    <DialogDescription>
+                      <div className="flex justify-center">
+                        Quest'azione sarà irreversible
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="password" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Password
+                        </p>
+                      </Label>
+                      <Input
+                        id="password"
+                        placeholder=""
+                        type="password"
+                        defaultValue=""
+                        ref={
+                          passwordElimina as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="confermaPassword" className="text-right">
+                        <p className="font-bold text-marroneScuro text-lg">
+                          Conferma password
+                        </p>
+                      </Label>
+                      <Input
+                        id="confermaPassword"
+                        placeholder=""
+                        type="password"
+                        defaultValue=""
+                        ref={
+                          confermaPasswordElimina as unknown as React.RefObject<HTMLInputElement>
+                        }
+                        className="w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <div className="w-[100%] flex justify-center">
+                      <Button
+                        type="submit"
+                        className="rounded-full bg-red-600 hover:bg-red-700"
+                        onClick={submitButton}
+                      >
+                        Elimina
+                      </Button>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div
+                    style={{
+                      boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
+                    }}
+                    className="w-[33.5%] h-[10svh] bg-rossoScuro rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-rossoScuroHover"
+                  >
+                    <p className="font-bold text-xl text-marroneScuro ml-[8%] w-1/2">
+                      Elimina mensa
+                    </p>
+                    <img
+                      src={hostnameProductor + "deleteMensa.png"}
+                      className="h-2/3"
+                      style={{
+                        filter:
+                          "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(107deg) brightness(105%) contrast(102%)",
                       }}
                     />
                   </div>
@@ -613,29 +722,6 @@ const ProfileProductor = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              <div
-                style={{
-                  boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
-                }}
-                className="w-[32.5%] h-[11svh] bg-arancioneBordo rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordoHover"
-                onClick={() => {
-                  localStorage.removeItem("token");
-                  localStorage.removeItem("login");
-                  navigate(`/login`);
-                }}
-              >
-                <p className="font-bold text-xl text-marroneScuro ml-[10%] w-3/5">
-                  Logout account
-                </p>
-                <img
-                  src={hostnameProductor + "logout.png"}
-                  className="h-1/2"
-                  style={{
-                    filter:
-                      "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
-                  }}
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -675,7 +761,7 @@ const ProfileProductor = () => {
                 )
               )}
             </div>
-            <ResponsiveContainer width="85%" height={250}>
+            <ResponsiveContainer width="85%" height="70%">
               <BarChart
                 className="ml-[-20px] mt-[20px]"
                 data={ordiniCompletati}

@@ -134,8 +134,8 @@ server.post("/request/products", (req, res) => {
 
             connection.query(
               "SELECT * FROM prodotti where id_mensa=" +
-              idm_utente +
-              " ORDER BY nome",
+                idm_utente +
+                " ORDER BY nome",
               (err, result) => {
                 if (err) {
                   res.send("Errore del database");
@@ -950,8 +950,8 @@ server.post("/producer/get/products", (req, res) => {
       id_mensa = decoded.id_mensa;
       connection.query(
         "SELECT * FROM prodotti where id_mensa=" +
-        id_mensa +
-        " ORDER BY categoria, nome",
+          id_mensa +
+          " ORDER BY categoria, nome",
         (err, result) => {
           if (err) {
             res.send("Errore del database");
@@ -1060,7 +1060,7 @@ server.post("/producer/get/stats", (req, res) => {
               res.end();
             } else {
               if (result.length > 0) {
-                result.forEach(row => {
+                result.forEach((row) => {
                   hours[row.periodo].vendite = row.vendite;
                 });
                 res.send(hours);
@@ -1129,8 +1129,9 @@ server.post("/producer/get/stats", (req, res) => {
             const currentDate = new Date();
             const endDate = new Date(currentDate.getTime() - i * fourDays);
             const startDate = new Date(endDate.getTime() - fourDays);
-            const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
-              }`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1182,8 +1183,9 @@ server.post("/producer/get/stats", (req, res) => {
             const currentDate = new Date();
             const endDate = new Date(currentDate.getTime() - i * twoWeeks);
             const startDate = new Date(endDate.getTime() - twoWeeks);
-            const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
-              }`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1234,8 +1236,9 @@ server.post("/producer/get/stats", (req, res) => {
             const currentDate = new Date();
             const endDate = new Date(currentDate.getTime() - i * threeWeeks); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
             const startDate = new Date(endDate.getTime() - threeWeeks); // 3 settimane prima della data di fine
-            const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
-              }`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${
+              endDate.toISOString().split("T")[0]
+            }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
