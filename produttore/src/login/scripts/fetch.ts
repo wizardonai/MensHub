@@ -386,7 +386,11 @@ export async function getProdottiCompletati(token: string) {
   await axios
     .request(config)
     .then((res) => {
-      response = res.data;
+      if (res.data === "Non sono presenti ordini completati") {
+        response = [];
+      } else {
+        response = res.data;
+      }
     })
     .catch((err) => {
       console.log(err);
