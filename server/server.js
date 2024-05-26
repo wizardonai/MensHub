@@ -134,8 +134,8 @@ server.post("/request/products", (req, res) => {
 
             connection.query(
               "SELECT * FROM prodotti where id_mensa=" +
-                idm_utente +
-                " ORDER BY nome",
+              idm_utente +
+              " ORDER BY nome",
               (err, result) => {
                 if (err) {
                   res.send("Errore del database");
@@ -950,8 +950,8 @@ server.post("/producer/get/products", (req, res) => {
       id_mensa = decoded.id_mensa;
       connection.query(
         "SELECT * FROM prodotti where id_mensa=" +
-          id_mensa +
-          " ORDER BY categoria, nome",
+        id_mensa +
+        " ORDER BY categoria, nome",
         (err, result) => {
           if (err) {
             res.send("Errore del database");
@@ -987,7 +987,7 @@ server.post("/producer/get/top10Products", (req, res) => {
           query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) = CURDATE()`;
           break;
         case "1S":
-          query += ` WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 WEEK`;
+          query += `WHERE o.id_mensa = ${id_mensa} AND o.data >= CURDATE() - INTERVAL (WEEKDAY(CURDATE())) DAY`;
           break;
         case "1M":
           query += `WHERE o.id_mensa = ${id_mensa} AND DATE(o.data) >= CURDATE() - INTERVAL 1 MONTH`;
@@ -1038,16 +1038,21 @@ server.post("/producer/get/stats", (req, res) => {
       let promises = [];
       switch (periodo) {
         case "1G":
+          const hours = Array.from({ length: 24 }, (_, i) => ({
+            periodo: i,
+            vendite: 0,
+          }));
+
           query = `
-            SELECT DATE(data) AS periodo, SUM(quantita) AS vendite
-            FROM ordini
-            JOIN prodotti_ordini ON ordini.id = prodotti_ordini.id_ordine
-            WHERE id_mensa = ${id_mensa}
-              AND data = CURDATE()
-              AND stato_ordine = 'completato'
-            GROUP BY periodo
-            ORDER BY periodo;
-          `;
+              SELECT HOUR(ora_consegna) AS periodo, SUM(quantita) AS vendite
+              FROM ordini
+              JOIN prodotti_ordini ON ordini.id = prodotti_ordini.id_ordine
+              WHERE id_mensa = ${id_mensa}
+                AND DATE(data) = CURDATE()
+                AND stato_ordine = 'completato'
+              GROUP BY periodo
+              ORDER BY periodo;
+            `;
 
           connection.query(query, (err, result) => {
             if (err) {
@@ -1055,20 +1060,19 @@ server.post("/producer/get/stats", (req, res) => {
               res.end();
             } else {
               if (result.length > 0) {
-                const formattedResult = result.map((row) => ({
-                  periodo: new Date(row.periodo).toLocaleDateString("it-IT"),
-                  vendite: row.vendite,
-                }));
-                console.log(formattedResult);
-                res.send(formattedResult);
+                result.forEach(row => {
+                  hours[row.periodo].vendite = row.vendite;
+                });
+                res.send(hours);
               } else {
-                res.send("Non sono presenti dati");
+                res.send(hours); // Invia comunque l'array delle ore anche se non ci sono vendite
               }
               res.end();
             }
           });
 
           break;
+
         case "1S":
           const oneDay = 1000 * 60 * 60 * 24;
 
@@ -1125,9 +1129,8 @@ server.post("/producer/get/stats", (req, res) => {
             const currentDate = new Date();
             const endDate = new Date(currentDate.getTime() - i * fourDays);
             const startDate = new Date(endDate.getTime() - fourDays);
-            const periodo = `${startDate.toISOString().split("T")[0]} - ${
-              endDate.toISOString().split("T")[0]
-            }`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
+              }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1179,9 +1182,8 @@ server.post("/producer/get/stats", (req, res) => {
             const currentDate = new Date();
             const endDate = new Date(currentDate.getTime() - i * twoWeeks);
             const startDate = new Date(endDate.getTime() - twoWeeks);
-            const periodo = `${startDate.toISOString().split("T")[0]} - ${
-              endDate.toISOString().split("T")[0]
-            }`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
+              }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `
@@ -1232,9 +1234,8 @@ server.post("/producer/get/stats", (req, res) => {
             const currentDate = new Date();
             const endDate = new Date(currentDate.getTime() - i * threeWeeks); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
             const startDate = new Date(endDate.getTime() - threeWeeks); // 3 settimane prima della data di fine
-            const periodo = `${startDate.toISOString().split("T")[0]} - ${
-              endDate.toISOString().split("T")[0]
-            }`;
+            const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
+              }`;
 
             const promise = new Promise((resolve, reject) => {
               const query = `

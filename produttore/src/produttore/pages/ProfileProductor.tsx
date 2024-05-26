@@ -81,7 +81,8 @@ const ProfileProductor = () => {
           setRicarica(false);
           return;
         }
-        if (periodoCliccato !== "1A") {
+        console.log(res);
+        if (periodoCliccato !== "1A" && periodoCliccato !== "1G") {
           (res as any[]).forEach((element: any) => {
             element.periodo =
               element.periodo.substring(8, 10) +
@@ -89,6 +90,12 @@ const ProfileProductor = () => {
               element.periodo.substring(5, 7);
           });
         }
+        if(periodoCliccato === "1G"){
+          (res as any[]).forEach((element: any) => {
+            element.periodo = element.periodo + ":00";
+          });
+        }
+      
 
         setOrdiniCompletati(res);
       }
@@ -146,14 +153,14 @@ const ProfileProductor = () => {
       email: emailValue,
       password: passwordValue,
       confirm_password: confermaPasswordValue,
-      cliente: 1,
+      cliente: 0,
       id_mensa: dati[0].id,
     }).then((res) => {
-      if (res === "Risposta Registrazione avvenuta con successo") {
+      if (res === "Registrazione avvenuta. Controlla la casella di posta per confermare l'email.") {
         toast.success("Utente registrato con successo!");
         setPopupEmail(false);
-      } else {
-        toast.error("Errore nella registrazione");
+      }else {
+        toast.error(res);
       }
     });
   };

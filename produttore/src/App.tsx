@@ -84,6 +84,7 @@ const App = () => {
     return localStorage.getItem("login");
   };
 
+
   if (categorie.length === 0) {
     const fetchCategories = async () => {
       getCategorie(

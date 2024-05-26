@@ -44,7 +44,7 @@ export default function Filtri({
     return categorie.map((item: any, index: any) => {
       return (
         <div
-          className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+          className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo pr-7"
           key={index}
           onClick={filtroCliccato}
           id="divFiltro"
@@ -65,7 +65,7 @@ export default function Filtri({
   } else {
     return (
       <div
-        className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+        className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo "
         key={findIndex(filtro)}
         onClick={filtroCliccato}
         id="divFiltro"
