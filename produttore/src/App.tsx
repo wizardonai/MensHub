@@ -12,7 +12,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import HomePageProductor from "./produttore/pages/HomePageProductor";
 import MenuPageProductor from "./produttore/pages/MenuPageProductor";
-import Balance from "./produttore/pages/Balance";
 import ProfileProductor from "./produttore/pages/ProfileProductor";
 import {
   getAllergeni,
@@ -83,7 +82,6 @@ const App = () => {
     setUtente(localStorage.getItem("login") || "");
     return localStorage.getItem("login");
   };
-
 
   if (categorie.length === 0) {
     const fetchCategories = async () => {

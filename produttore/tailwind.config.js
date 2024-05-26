@@ -56,6 +56,8 @@ module.exports = {
         verdeBordo: "var(--verdeBordo)",
         verdeBordoHover: "var(--verdeBordoHover)",
         marroneScuro: "var(--marroneScuro)",
+        rossoScuro: "var(--rossoScuro)",
+        rossoScuroHover: "var(--rossoScuroHover)",
       },
       borderRadius: {
         lg: `var(--radius)`,
