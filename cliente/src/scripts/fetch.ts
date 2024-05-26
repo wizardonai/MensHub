@@ -125,10 +125,11 @@ export async function getProdotti(token: string) {
 //ok
 export async function sendOrder(
 	carrello: Array<prodottoCarrello>,
-	token: string
+	token: string,
+	ora_consegna: string
 ) {
 	let response;
-	let data = JSON.stringify({ carrello: carrello });
+	let data = JSON.stringify({ carrello: carrello, ora_consegna: ora_consegna });
 
 	let config = {
 		method: "post",
@@ -399,7 +400,7 @@ export async function confirmEmail(token: string) {
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: "Bearer " + token,
-		}
+		},
 	};
 
 	await axios

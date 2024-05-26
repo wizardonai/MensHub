@@ -1325,7 +1325,6 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					className='absolute bottom-[-15svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
 					ref={images[1]}
 				/>
-				<Toaster richColors />
 			</div>
 			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 hidden tel:flex'>
 				<img
@@ -1383,6 +1382,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					ref={images[3]}
 				/>
 			</div>
+			<Toaster richColors />
 		</>
 	);
 };

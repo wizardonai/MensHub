@@ -13,6 +13,13 @@ import {
 	DrawerContent,
 	DrawerTrigger,
 } from "../components/shadcn/Drawer";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../components/shadcn/Select";
 
 const Elemento = ({
 	item,
@@ -248,9 +255,8 @@ const Cart = ({
 	carrello: Array<prodottoCarrello>;
 	setCarrello: Function;
 }) => {
-	// const [carrello, setCarrello] = useState(
-	// 	JSON.parse(localStorage.getItem("cart") || "{}") as Array<prodottoCarrello>
-	// );
+	const [orario, setOrario] = useState("");
+
 	const [totale, setTotale] = useState(0);
 	useEffect(() => {
 		let tmp = 0;
@@ -260,6 +266,20 @@ const Cart = ({
 
 		setTotale(tmp);
 	}, [carrello]);
+
+	function generaOrario(start: number, end: number) {
+		let orari = [];
+		for (let i = start; i <= end; i++) {
+			let orario = i < 10 ? "0" + i : i + "";
+			orari.push(
+				<SelectItem value={orario} key={i}>
+					{orario}
+				</SelectItem>
+			);
+		}
+
+		return orari;
+	}
 
 	return (
 		<>
@@ -286,15 +306,56 @@ const Cart = ({
 								<div className='w-full flex flex-col items-center justify-evenly h-40'>
 									<p className='text-xl'>Sicuro di voler ordinare?</p>
 									<p className='text-lg mt-1'>Totale: {totale.toFixed(2)}€</p>
+									<div className='flex justify-center items-center flex-row w-full'>
+										<Select
+											onValueChange={(e) => {
+												setOrario(
+													e +
+														(orario.split(":")[1] === undefined
+															? ":00"
+															: ":" + orario.split(":")[1])
+												);
+											}}
+										>
+											<SelectTrigger className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone w-1/4 mr-1'>
+												<p className='mr-2'>
+													{orario !== undefined ? orario.split(":")[0] : ""}
+												</p>
+											</SelectTrigger>
+											<SelectContent defaultValue={orario.split(":")[0]}>
+												{generaOrario(12, 22)}
+											</SelectContent>
+										</Select>
+										<Select
+											onValueChange={(e) => {
+												setOrario(orario.split(":")[0] + ":" + e);
+											}}
+											disabled={orario === "" || orario === undefined}
+										>
+											<SelectTrigger className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone w-1/4 mr-1'>
+												<p className='mr-2'>
+													{orario !== undefined ? orario.split(":")[1] : ""}
+												</p>
+											</SelectTrigger>
+											<SelectContent defaultValue={orario.split(":")[1]}>
+												<SelectItem value='00'>00</SelectItem>
+												<SelectItem value='15'>15</SelectItem>
+												<SelectItem value='30'>30</SelectItem>
+												<SelectItem value='45'>45</SelectItem>
+											</SelectContent>
+										</Select>
+									</div>
 									<div className='flex flex-row items-center justify-evenly mt-2 w-[65%]'>
 										<DrawerClose className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-5 bg-biancoLatte text-marrone border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'>
 											Annulla
 										</DrawerClose>
 										<DrawerClose
+											disabled={orario === "" || orario === undefined}
 											onClick={() => {
 												sendOrder(
 													carrello,
-													localStorage.getItem("token") || "scu"
+													localStorage.getItem("token") || "scu",
+													orario
 												).then((res: any) => {
 													if (!res) {
 														toast.error("Errore di connessione");
@@ -313,6 +374,7 @@ const Cart = ({
 														return;
 													}
 													if (res.toString() === "Ordine aggiunto") {
+														setOrario("");
 														localStorage.setItem("cart", "[]");
 														setCarrello([]);
 														toast.info("Ordine effettuato");
