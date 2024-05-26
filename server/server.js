@@ -328,7 +328,7 @@ server.post("/send/cart", (req, res) => {
 
             let data = req.body.carrello;
 
-            let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente) VALUES (${data[0].id_mensa}, NOW(), 'da fare', ${id_utente});`;
+            let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente, ora_consegna) VALUES (${data[0].id_mensa}, NOW(), 'da fare', ${id_utente}, "${req.body.ora_consegna}" );`;
 
             connection.query(query, (err, result) => {
               if (err) {
