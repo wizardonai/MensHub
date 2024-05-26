@@ -1401,7 +1401,7 @@ server.post("/producer/get/orders/completed", (req, res) => {
           if (result.length > 0) {
             res.send(result);
           } else {
-            res.send("Ordine non trovato");
+            res.send("Non sono presenti ordini completati");
           }
           res.end();
         }
