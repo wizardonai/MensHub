@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 import { Container, Navbar } from "../components/Components";
-import { prodotto, prodottoCarrello, urlImg } from "../utils";
+import { prodotto, prodottoCarrello, urlImg } from "../../utils";
 import {
 	Carousel,
 	CarouselContent,

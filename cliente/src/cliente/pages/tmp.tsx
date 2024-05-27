@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { sleep } from "../utils";
+import { sleep } from "../../utils";
 import { Toaster } from "../components/shadcn/Sonner";
 import { toast } from "sonner";
 

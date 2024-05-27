@@ -6,7 +6,7 @@ import {
 	dataMensa,
 	dataReg,
 	prodottoCarrello,
-} from "../utils";
+} from "../../utils";
 import exp from "constants";
 
 const url = process.env.REACT_APP_URL || "";

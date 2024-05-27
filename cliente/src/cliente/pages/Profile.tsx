@@ -18,7 +18,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/shadcn/Select";
-import { mensa, sleep, typeProfilo } from "../utils";
+import { mensa, sleep, typeProfilo } from "../../utils";
 import { Button } from "../components/shadcn/Button";
 import { Label } from "../components/shadcn/Label";
 import { LazyLoadImage } from "react-lazy-load-image-component";

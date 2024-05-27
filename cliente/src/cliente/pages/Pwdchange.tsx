@@ -6,7 +6,7 @@ import imgSopra from "../img/sopra_benvenuto.png";
 import { Input } from "../components/shadcn/Input";
 import { Button } from "../components/shadcn/Button";
 import { Label } from "../components/shadcn/Label";
-import { sleep } from "../utils";
+import { sleep } from "../../utils";
 import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
 import { changePassword } from "../scripts/fetch";

@@ -1,14 +1,14 @@
 import { useLocalStorage } from "usehooks-ts";
 
-import imgSopra from "../img/sopra_benvenuto.png";
-import imgSotto from "../img/sotto_login.png";
-import loginTop from "../img/topLogin.png";
-import loginBottom from "../img/bottomLogin.png";
-import loginCerchio from "../img/cerchioLogin.png";
+import imgSopra from "./cliente/img/sopra_benvenuto.png";
+import imgSotto from "./cliente/img/sotto_login.png";
+import loginTop from "./cliente/img/topLogin.png";
+import loginBottom from "./cliente/img/bottomLogin.png";
+import loginCerchio from "./cliente/img/cerchioLogin.png";
 
-import { Button } from "../components/shadcn/Button";
+import { Button } from "./cliente/components/shadcn/Button";
 import { useEffect, useRef, useState } from "react";
-import { dataLog, dataMensa, dataReg, mensa, sleep } from "../utils";
+import { dataLog, dataMensa, dataReg, mensa, sleep } from "./utils";
 import {
 	getMense,
 	loginUser,
@@ -16,20 +16,20 @@ import {
 	registerMensa,
 	registerUser,
 	sendEmail,
-} from "../scripts/fetch";
-import { Label } from "../components/shadcn/Label";
-import { Input } from "../components/shadcn/Input";
+} from "./cliente/scripts/fetch";
+import { Label } from "./cliente/components/shadcn/Label";
+import { Input } from "./cliente/components/shadcn/Input";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../components/shadcn/Select";
-import { Toaster } from "../components/shadcn/Sonner";
+} from "./cliente/components/shadcn/Select";
+import { Toaster } from "./cliente/components/shadcn/Sonner";
 import { toast } from "sonner";
 
-import logopiccolo from "../img/logoPiccolo.png";
+import logopiccolo from "./cliente/img/logoPiccolo.png";
 
 //
 //
@@ -1325,6 +1325,8 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					className='absolute bottom-[-15svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
 					ref={images[1]}
 				/>
+
+				<Toaster richColors position='bottom-center' />
 			</div>
 			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 hidden tel:flex'>
 				<img
@@ -1381,8 +1383,8 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					className='absolute bottom-[-40svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
 					ref={images[3]}
 				/>
+				<Toaster richColors position='top-center' />
 			</div>
-			<Toaster richColors />
 		</>
 	);
 };

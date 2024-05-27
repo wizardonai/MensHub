@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Container, Navbar, Topbar } from "../components/Components";
-import { Nullable, prodottoCarrello, typeProfilo, urlImg } from "../utils";
+import { Nullable, prodottoCarrello, typeProfilo, urlImg } from "../../utils";
 
 import deleteImg from "../img/delete.webp";
 import { sendOrder } from "../scripts/fetch";

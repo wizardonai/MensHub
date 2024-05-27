@@ -41,7 +41,7 @@ const ConfirmEmail = () => {
 						<Button
 							onClick={() => {
 								localStorage.setItem("login", "1");
-								navigate("/login");
+								navigate("/auth");
 							}}
 							variant='avanti'
 							className='p-8 text-2xl  rounded-lg mt-4'

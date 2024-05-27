@@ -3,20 +3,55 @@ import {
 	createBrowserRouter,
 	redirect,
 } from "react-router-dom";
-// import RegisterPage from "./pages/RegisterPage";
-import Homepage from "./pages/Homepage";
-import Cart from "./pages/Cart";
+import Homepage from "./cliente/pages/Homepage";
+import Cart from "./cliente/pages/Cart";
 import { useLocalStorage } from "usehooks-ts";
-import Profile from "./pages/Profile";
-import { getProdotti, getProfilo } from "./scripts/fetch";
-import ProfilePages from "./pages/ProfilePages";
+import Profile from "./cliente/pages/Profile";
+import { getProdotti, getProfilo } from "./cliente/scripts/fetch";
+import ProfilePages from "./cliente/pages/ProfilePages";
 import { prodotto, prodottoCarrello, typeProfilo } from "./utils";
-import Product from "./pages/Product";
+import Product from "./cliente/pages/Product";
 import { useEffect, useState } from "react";
-import Auth from "./pages/Auth";
-import Pwdchange from "./pages/Pwdchange";
-import Tmp from "./pages/tmp";
-import ConfirmEmail from "./pages/ConfirmEmail";
+import Auth from "./Auth";
+import Pwdchange from "./cliente/pages/Pwdchange";
+import ConfirmEmail from "./cliente/pages/ConfirmEmail";
+import {
+	getAllergeni,
+	getCategorie,
+	getInformazioniMensa,
+	getProdottiCompletati,
+} from "./produttore/scripts/fetch";
+import HomePageProductor from "./produttore/pages/HomePageProductor";
+import MenuPageProductor from "./produttore/pages/MenuPageProductor";
+import CompletedOrders from "./produttore/pages/CompletedOrders";
+import ProfileProductor from "./produttore/pages/ProfileProductor";
+
+export const hostnameProductor = (process.env.REACT_APP_URL || "") + "/image/";
+
+export type ArrayProdotti = {
+	prodotti: Array<{
+		allergeni: string;
+		categoria: string;
+		descrizione: string;
+		disponibile: number;
+		fd: number;
+		id: number;
+		id_mensa: number;
+		indirizzo_img: string;
+		nacq: number;
+		nome: string;
+		prezzo: number;
+	}>;
+};
+interface styleThing {
+	[thingName: string]: string;
+}
+export interface styleMap {
+	[thingName: string]: styleThing;
+}
+export interface filtroMap {
+	[thingName: string]: boolean;
+}
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", "?");
@@ -28,6 +63,13 @@ function App() {
 		[] as Array<prodottoCarrello>
 	);
 	const [lunghezzaCarrello, setLunghezzaCarrello] = useState(0);
+
+	//produttore
+	const [ordini, setOrdini] = useState<any>([]);
+	const [flag, setFlag] = useState<boolean>(false);
+
+	const [categorie, setCategorie] = useState<Array<string>>([]);
+	const [allergeni, setAllergeni] = useState<Array<string>>([]);
 
 	useEffect(() => {
 		let sommaCarrello = 0;
@@ -86,6 +128,7 @@ function App() {
 				});
 			}
 		}
+
 		router = createBrowserRouter([
 			{
 				path: "/home",
@@ -159,14 +202,74 @@ function App() {
 			},
 		]);
 	} else if (loggato === "produttore") {
+		// else if (false) {
+		if (categorie.length === 0) {
+			getCategorie({ token: localStorage.getItem("token") || "scu" }).then(
+				(res: any) => {
+					if (res === "Token non valido") {
+						localStorage.removeItem("cart");
+						localStorage.removeItem("token");
+						localStorage.setItem("loggato", "false");
+					}
+					setCategorie(res);
+				}
+			);
+		}
+
+		if (allergeni.length === 0) {
+			getAllergeni().then((res: any) => {
+				if (res === "Token non valido") {
+					localStorage.removeItem("cart");
+					localStorage.removeItem("token");
+					localStorage.setItem("loggato", "false");
+				}
+				setAllergeni(res);
+			});
+		}
+
 		router = createBrowserRouter([
 			{
-				path: "/home",
-				element: <Tmp setLoggato={setLoggato} />,
+				path: "/productorHome",
+				element: (
+					<HomePageProductor
+						ordini={ordini}
+						setOrdini={setOrdini}
+						flag={flag}
+						setFlag={setFlag}
+						setLoggato={setLoggato}
+					/>
+				),
+			},
+			{
+				path: "/productorMenu",
+				element: (
+					<MenuPageProductor
+						allergeni={allergeni}
+						categorie={categorie}
+						setLoggato={setLoggato}
+					/>
+				),
+				loader: async () => {
+					return getProdotti(localStorage.getItem("token") || "scu");
+				},
+			},
+			{
+				path: "/completedOrders",
+				element: <CompletedOrders setLoggato={setLoggato} />,
+				loader: async () => {
+					return getProdottiCompletati(localStorage.getItem("token") || "scu");
+				},
+			},
+			{
+				path: "/productorProfile",
+				element: <ProfileProductor setLoggato={setLoggato} />,
+				loader: async () => {
+					return getInformazioniMensa(localStorage.getItem("token") || "scu");
+				},
 			},
 			{
 				path: "*",
-				loader: () => redirect("/home"),
+				loader: () => redirect("/productorHome"),
 			},
 		]);
 	} else {

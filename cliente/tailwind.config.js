@@ -1,4 +1,5 @@
 const { fontFamily } = require("tailwindcss/defaultTheme");
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -6,12 +7,9 @@ module.exports = {
 	content: ["src/**/*.{ts,tsx}"],
 	theme: {
 		screens: {
+			mobileProduttore: { max: "1000px" },
 			tel: "450px",
-			sm: "640px",
-			md: "768px",
-			lg: "1024px",
-			xl: "1280px",
-			"2xl": "1536px",
+			...defaultTheme.screens,
 		},
 		container: {
 			center: true,
@@ -57,10 +55,19 @@ module.exports = {
 				},
 				marrone: "var(--marrone)",
 				arancioneScuro: "var(--arancioneScuro)",
-				arancioneChiaro: "var(--arancioneChiaro)",
 				marroncino: "var(--marroncino)",
 				biancoLatte: "var(--biancolatte)",
 				rosso: "var(--rosso)",
+				arancioneBordo: "var(--arancioneBordo)",
+				arancioneBordoHover: "var(--arancioneBordoHover)",
+				arancioneChiaro: "var(--arancioneChiaro)",
+				gialloSfondo: "var(--gialloSfondo)",
+				gialloSfondoHover: "var(--gialloSfondoHover)",
+				verdeBordo: "var(--verdeBordo)",
+				verdeBordoHover: "var(--verdeBordoHover)",
+				marroneScuro: "var(--marroneScuro)",
+				rossoScuro: "var(--rossoScuro)",
+				rossoScuroHover: "var(--rossoScuroHover)",
 			},
 			borderRadius: {
 				lg: `var(--radius)`,

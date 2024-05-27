@@ -49,13 +49,23 @@
 		--containerProductH: calc(100% - var(--navbarH));
 		--marrone: #4f3431;
 		--arancioneScuro: #e39423;
-		--arancioneChiaro: #e6a854;
 		--marroncino: #a28245;
 		--biancolatte: #fffae7;
 		--rosso: #d14a3b;
 
 		--filterImgBianco: invert(88%) sepia(18%) saturate(200%) hue-rotate(350deg)
 			brightness(107%) contrast(104%);
+
+		--arancioneBordo: #e59421;
+		--arancioneBordoHover: #d68a1e;
+		--arancioneChiaro: #e5a855;
+		--gialloSfondo: #fffae7;
+		--gialloSfondoHover: #ede9d8;
+		--verdeBordo: #608b46;
+		--verdeBordoHover: #537d3e;
+		--marroneScuro: #503431;
+		--rossoScuro: #d24a3c;
+		--rossoScuroHover: #b84337;
 	}
 
 	/* *DARK MODE*
@@ -135,6 +145,12 @@ body {
 }
 
 #root {
+	width: 100svw;
+	height: 100svh;
+	overflow-x: hidden;
+}
+
+.page {
 	width: 100svw;
 	height: 100svh;
 	overflow-x: hidden;

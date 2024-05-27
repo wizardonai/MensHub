@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { ordine, prodotto, typeProfilo, urlImg } from "../utils";
+import { ordine, prodotto, typeProfilo, urlImg } from "../../utils";
 import { useState } from "react";
 import { getCronologia } from "../scripts/fetch";
 import { Container, Navbar, Topbar } from "../components/Components";

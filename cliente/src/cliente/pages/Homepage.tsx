@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Container, Navbar, Topbar } from "../components/Components";
 import { useState } from "react";
-import { prodotto, sleep, urlImg } from "../utils";
+import { prodotto, sleep, urlImg } from "../../utils";
 import { Input } from "../components/shadcn/Input";
 import searchImg from "../img/search.webp";
 import antipastoImg from "../img/antipasto.webp";

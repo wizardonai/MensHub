@@ -1,4 +1,4 @@
-import { Color, Solver, hexToRgb } from "./scripts/filterGenerator";
+import { Color, Solver, hexToRgb } from "./cliente/scripts/filterGenerator";
 
 export const urlImg = (process.env.REACT_APP_URL || "") + "/image/";
 

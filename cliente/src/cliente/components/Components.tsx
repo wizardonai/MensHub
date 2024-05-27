@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "./shadcn/utils";
-import { prodotto, prodottoCarrello } from "../utils";
+import { prodotto, prodottoCarrello } from "../../utils";
 
 import homeImg from "../img/home.webp";
 import cartImg from "../img/cart.webp";
@@ -47,13 +47,13 @@ export const Navbar = ({
 	product,
 	lunghezzaCarrello,
 	carrello,
-	setCarrello
+	setCarrello,
 }: {
 	page: string;
 	product?: prodotto;
 	lunghezzaCarrello?: number;
 	carrello?: Array<prodottoCarrello>;
-	setCarrello?: Function
+	setCarrello?: Function;
 }) => {
 	const navigate = useNavigate();
 
@@ -74,7 +74,7 @@ export const Navbar = ({
 		<div className='w-full h-navbar flex flex-row justify-evenly items-center'>
 			<div className='w-[90%] h-full flex flex-row justify-evenly items-center'>
 				{page.split("-")[0] === "Aggiungi al carrello" ||
-					page === "Cronologia" ? (
+				page === "Cronologia" ? (
 					<>
 						<div
 							className={`bg-marrone flex justify-center items-center`}
