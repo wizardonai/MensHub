@@ -12,7 +12,6 @@ import fs from "fs";
 import path from "path";
 //import sharp from "sharp";
 import nodemailer from "nodemailer";
-import e from "express";
 //sharp.cache({ files: 0 });
 
 const { json, urlencoded } = bodyParser;
@@ -334,7 +333,7 @@ server.post("/send/cart", (req, res) => {
 
             let query = `INSERT INTO ordini (id_mensa, data, stato_ordine, id_utente, ora_consegna) VALUES (?, NOW(), 'da fare', ?, ? );`;
 
-            connection.query(query, [mysql.escape(data[0].id_mensa), mysql.escape(id_utente), mysql.escape(req.body.ora_consegna)], (err, result) => {
+            connection.query(query, [mysql.escape(data[0].id_mensa), id_utente, mysql.escape(req.body.ora_consegna)], (err, result) => {
               if (err) {
                 res.send("Errore del database");
                 res.end();
@@ -344,7 +343,7 @@ server.post("/send/cart", (req, res) => {
                 let prodottiOrdiniQuery = `INSERT INTO prodotti_ordini (id_prodotto, id_ordine, quantita) VALUES`;
 
                 data.forEach((item, index) => {
-                  prodottiOrdiniQuery += ` (${item.id}, ${id_ordine}, ${item.quantita})`;
+                  prodottiOrdiniQuery += ` (${mysql.esacpe(item.id)}, ${mysql.escape(id_ordine)}, ${mysql.escape(item.quantita)})`;
                   if (index !== data.length - 1) prodottiOrdiniQuery += ",";
                 });
 
@@ -397,8 +396,8 @@ server.post("/register/user", async function (req, res) {
       } else {
         let queryInsertUser;
         if (EmailValidator.validate(email)) {
-          queryInsertUser = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES('${nome}','${cognome}','${email}','${password}',${id_mensa},${cliente});`;
-          connection.query(queryInsertUser, (err, result) => {
+          queryInsertUser = `INSERT INTO utenti (nome,cognome,email,password,id_mensa,cliente) VALUES(?,?,?,?,?,?);`;
+          connection.query(queryInsertUser,[mysql.escape(nome),mysql.escape(cognome),mysql.escape(email),mysql.escape(password),mysql.escape(id_mensa),mysql.escape(cliente)], (err, result) => {
             if (err) {
               res.send("Errore del database");
               res.end();
@@ -488,9 +487,9 @@ server.post("/login/user", async function (req, res) {
   let password = req.body.password;
 
   if (EmailValidator.validate(email)) {
-    let query = `SELECT * FROM utenti WHERE email="${email}";`;
+    let query = `SELECT * FROM utenti WHERE email= ? ;`;
 
-    connection.query(query, (err, result) => {
+    connection.query(query, [mysql.escape(email)], (err, result) => {
       if (err) {
         res.send("Errore del database");
         res.end();
@@ -590,9 +589,9 @@ server.post("/request/profile", (req, res) => {
 server.post("/recover/password", (req, res) => {
   let email = req.body.email;
 
-  let query = `SELECT * FROM utenti WHERE email="${email}";`;
+  let query = `SELECT * FROM utenti WHERE email= ? ;`;
 
-  connection.query(query, (err, result) => {
+  connection.query(query, [mysql.escape(email)],  (err, result) => {
     if (err) {
       res.send("Errore del database");
       res.end();
@@ -667,8 +666,8 @@ server.post("/change/password", (req, res) => {
         if (old_psw != null) {
           //cambio password
           let query_check_old_psw;
-          query_check_old_psw = `select password from utenti where id=${id_utente};`;
-          connection.query(query_check_old_psw, (err, result) => {
+          query_check_old_psw = `select password from utenti where id= ? ;`;
+          connection.query(query_check_old_psw, [id_utente], (err, result) => {
             if (err) {
               res.send("Errore del database");
               res.end();
@@ -678,8 +677,8 @@ server.post("/change/password", (req, res) => {
               if (result[0].password === old_psw) {
                 if (new_psw === confirm_new_psw) {
                   if (new_psw != old_psw) {
-                    let query_set_new_password = `update utenti set password = '${new_psw}' where id=${id_utente};`;
-                    connection.query(query_set_new_password, (err, result) => {
+                    let query_set_new_password = `update utenti set password = ? where id = ? ;`;
+                    connection.query(query_set_new_password, [mysql.escape(new_psw),mysql.escape(id_utente)], (err, result) => {
                       if (err) {
                         res.send("Errore del database");
                         res.end();
@@ -713,8 +712,8 @@ server.post("/change/password", (req, res) => {
         } else {
           //resetta password
           if (new_psw === confirm_new_psw) {
-            let query_reset_password = `update utenti set password = '${new_psw}' where id=${id_utente};`;
-            connection.query(query_reset_password, (err, result) => {
+            let query_reset_password = `update utenti set password = ? where id = ?;`;
+            connection.query(query_reset_password, [mysql.escape(new_psw),mysql.escape(id_utente)], (err, result) => {
               if (err) {
                 res.send("Errore del database");
                 res.end();
@@ -754,9 +753,9 @@ server.post("/delete/user", (req, res) => {
         res.send("Le password non combaciano");
         res.end();
       } else {
-        let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+        let query = `SELECT * FROM utenti WHERE id = ? AND password = ?;`;
 
-        connection.query(query, (err, result) => {
+        connection.query(query, [decoded.id,mysql.escape(password)], (err, result) => {
           if (err) {
             res.send("Errore del database");
             res.end();
@@ -841,9 +840,9 @@ server.post("/delete/mensa", (req, res) => {
         res.send("Le password non combaciano");
         res.end();
       } else {
-        let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+        let query = `SELECT * FROM utenti WHERE id = ? AND password = ?;`;
 
-        connection.query(query, (err, result) => {
+        connection.query(query, [decoded.id,mysql.escape(password)], (err, result) => {
           if (err) {
             res.send("Errore del database");
             res.end();
@@ -1420,7 +1419,7 @@ server.post("/producer/get/orders/completed", (req, res) => {
 
 server.post("/producer/get/order", (req, res) => {
   let token = req.headers.authorization;
-  let id_ordine = req.body.id_ordine;
+  let id_ordine = mysql.escape(req.body.id_ordine);
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
@@ -1430,9 +1429,9 @@ server.post("/producer/get/order", (req, res) => {
       let query = `SELECT po.id_prodotto, po.quantita, p.nome, p.categoria, p.prezzo, p.indirizzo_img
                   FROM prodotti_ordini AS po
                   JOIN prodotti AS p ON po.id_prodotto = p.id
-                  WHERE po.id_ordine = ${id_ordine};`;
+                  WHERE po.id_ordine = ?;`;
 
-      connection.query(query, (err, result) => {
+      connection.query(query, [id_ordine], (err, result) => {
         if (err) {
           res.send("Errore del database");
           res.end();
