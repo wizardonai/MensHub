@@ -46,8 +46,6 @@ export default function Popup({
   const [lastVerticalMouseMoveY, setLastVerticalMouseMoveY] = useState(0);
   const [salvaImmagine, setSalvaImmagine] = useState(false);
 
-  console.log(filtro);
-
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -359,7 +357,6 @@ export default function Popup({
       }
 
       setImage(file);
-      console.log(file);
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -439,34 +436,31 @@ export default function Popup({
                   onWheel={handleHorizontalWheel}
                   ref={horizontalDivRef}
                 >
-                  {
-                    (console.log(filtro),
-                    filtro ? (
-                      <div
-                        className="bg-arancioneChiaro h-[25px] rounded-full inline-flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo "
-                        onClick={() => setFiltro("")}
-                        id="divFiltro"
-                      >
-                        <img
-                          className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
-                          src={hostnameProductor + "filtri/" + filtro + ".webp"}
-                        />
-                        <p
-                          className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
-                          id="filtroDaApplicare"
-                        >
-                          {filtro}
-                        </p>
-                      </div>
-                    ) : (
-                      <Filtri
-                        filtro={filtro}
-                        setFiltro={setFiltro}
-                        categorie={categorie}
-                        popup={true}
+                  {filtro ? (
+                    <div
+                      className="bg-arancioneChiaro h-[25px] rounded-full inline-flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo "
+                      onClick={() => setFiltro("")}
+                      id="divFiltro"
+                    >
+                      <img
+                        className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
+                        src={hostnameProductor + "filtri/" + filtro + ".webp"}
                       />
-                    ))
-                  }
+                      <p
+                        className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
+                        id="filtroDaApplicare"
+                      >
+                        {filtro}
+                      </p>
+                    </div>
+                  ) : (
+                    <Filtri
+                      filtro={filtro}
+                      setFiltro={setFiltro}
+                      categorie={categorie}
+                      popup={true}
+                    />
+                  )}
                 </div>
               </div>
               <div className="pl-[15px] pt-[3%]">

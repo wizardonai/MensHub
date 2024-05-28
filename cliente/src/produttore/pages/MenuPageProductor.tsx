@@ -143,7 +143,6 @@ const Prodotti = ({
               onClick={() => {
                 setProdottoCliccato(null);
                 setCategoriaCliccata(categoria.nome);
-                console.log(categoria.nome);
                 setPopup(true);
               }}
               className="bg-verdeBordo h-[175px] w-[200px] border-gialloSfondo rounded-lg mt-[15px] flex items-center justify-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover mr-[2%]"
@@ -184,7 +183,7 @@ const Prodotti = ({
                     </div>
                   </div>
                   <div className="ml-[10px] h-[60%] flex items-center text-marroneScuro">
-                    <TruncateText text={item.descrizione} maxLength={35} />
+                    <TruncateText text={item.descrizione} maxLength={43} />
                   </div>
                 </div>
               );
