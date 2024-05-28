@@ -52,7 +52,7 @@ export default function Popup({
   useEffect(() => {
     if (prodotto) {
       nome.current!.value = prodotto.nome;
-      prezzo.current!.value = prodotto.prezzo;
+      prezzo.current!.value = prodotto.prezzo.toFixed(2);
       setFiltro(prodotto.categoria);
       descrizione.current!.value = prodotto.descrizione;
       setImageUrl(hostnameProductor + prodotto.indirizzo_img);

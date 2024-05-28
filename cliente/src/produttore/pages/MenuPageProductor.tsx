@@ -27,6 +27,7 @@ const Prodotti = ({
   allergeni,
   prodotti,
   setProdotti,
+  strSrc,
 }: {
   filtro: string;
   dati: any;
@@ -34,6 +35,7 @@ const Prodotti = ({
   allergeni: any;
   prodotti: any;
   setProdotti: Function;
+  strSrc: string;
 }) => {
   const [popup, setPopup] = useState(false);
   const [prodottoCliccato, setProdottoCliccato] = useState<any>(null);
@@ -118,6 +120,9 @@ const Prodotti = ({
         (item: prodotto) => item.categoria === categoria.nome
       );
 
+      if (strSrc !== "" && prodottiCategoria.length === 0) {
+        return null;
+      }
       return (
         <div key={index} className="mb-5 w-full">
           <div className="flex">
@@ -317,6 +322,7 @@ const MenuPageProductor = ({
               allergeni={allergeni}
               prodotti={prodotti}
               setProdotti={setProdotti}
+              strSrc={strSrc}
             />
           </div>
         </div>
