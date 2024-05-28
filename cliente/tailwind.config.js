@@ -103,8 +103,8 @@ module.exports = {
 				swipeLeftCarrello: {
 					from: { width: "100%" },
 					to: {
-						width: "75%",
-						clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
+						width: "72.5%",
+						// clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
 						borderTopRightRadius: "0",
 					},
 				},
@@ -112,15 +112,14 @@ module.exports = {
 					from: { width: "0%", display: "none" },
 					to: {
 						width: "25%",
-						// display: "flex",
-						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
+						// clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
 						borderBottomLeftRadius: "0",
 					},
 				},
 				swipeRightCarrello: {
 					from: {
-						width: "75%",
-						clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
+						width: "72.5%",
+						// clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
 					},
 					to: {
 						width: "100%",
@@ -130,8 +129,7 @@ module.exports = {
 				swipeRightCarrelloEl: {
 					from: {
 						width: "25%",
-						// display: "flex",
-						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
+						// clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
 						borderBottomLeftRadius: "0",
 					},
 					to: { width: "0%", display: "none" },

@@ -9,6 +9,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
+import mysql from "mysql";
 //import sharp from "sharp";
 import nodemailer from "nodemailer";
 //sharp.cache({ files: 0 });
@@ -110,6 +111,51 @@ server.use("/image", express.static("./image"));
 server.use(express.static("../cliente/build"));
 server.use(reactRoutes, express.static("../cliente/build"));
 
+// server.post("/request/products", (req, res) => {
+// 	let token = req.headers.authorization;
+// 	let idm_utente = "";
+// 	res.header("Access-Control-Allow-Origin", "*");
+
+// 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+// 		if (err) {
+// 			res.send("Token non valido");
+// 			res.end();
+// 		} else {
+// 			try {
+// 				const queryPromise = new Promise((resolve, reject) => {
+// 					checkMensaCancellata(decoded.id, resolve);
+// 				});
+
+// 				queryPromise.then((ris) => {
+// 					if (ris == false) {
+// 						res.send("Mensa preferita cancellata");
+// 						res.end();
+// 					} else {
+// 						idm_utente = decoded.id_mensa;
+
+// 						connection.query(
+// 							"SELECT * FROM prodotti where id_mensa=" +
+// 								idm_utente +
+// 								" ORDER BY nome",
+// 							(err, result) => {
+// 								if (err) {
+// 									res.send("Errore del database");
+// 									res.end();
+// 								} else {
+// 									res.send(result);
+// 									res.end();
+// 								}
+// 							}
+// 						);
+// 					}
+// 				});
+// 			} catch (error) {
+// 				res.status(500).send("Errore del server");
+// 				res.end();
+// 			}
+// 		}
+// 	});
+// });
 server.post("/request/products", (req, res) => {
 	let token = req.headers.authorization;
 	let idm_utente = "";
@@ -125,29 +171,37 @@ server.post("/request/products", (req, res) => {
 					checkMensaCancellata(decoded.id, resolve);
 				});
 
-				queryPromise.then((ris) => {
-					if (ris == false) {
-						res.send("Mensa preferita cancellata");
-						res.end();
-					} else {
-						idm_utente = decoded.id_mensa;
+				queryPromise
+					.then((ris) => {
+						if (ris == false) {
+							res.send("Mensa preferita cancellata");
+							res.end();
+						} else {
+							idm_utente = decoded.id_mensa;
 
-						connection.query(
-							"SELECT * FROM prodotti where id_mensa=" +
-								idm_utente +
-								" ORDER BY nome",
-							(err, result) => {
-								if (err) {
-									res.send("Errore del database");
-									res.end();
-								} else {
-									res.send(result);
-									res.end();
+							// Utilizzo del prepared statement con i placeholder
+							const sqlQuery =
+								"SELECT * FROM prodotti WHERE id_mensa = ? ORDER BY nome";
+
+							connection.query(
+								sqlQuery,
+								[mysql.escape(idm_utente)],
+								(err, result) => {
+									if (err) {
+										res.send("Errore del database");
+										res.end();
+									} else {
+										res.send(result);
+										res.end();
+									}
 								}
-							}
-						);
-					}
-				});
+							);
+						}
+					})
+					.catch((error) => {
+						res.status(500).send("Errore del server");
+						res.end();
+					});
 			} catch (error) {
 				res.status(500).send("Errore del server");
 				res.end();

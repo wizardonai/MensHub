@@ -12,6 +12,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import imgSopra from "../img/sopra_benvenuto.png";
 import imgSotto from "../img/sotto_login.png";
+import { Button } from "../components/shadcn/Button";
 
 const Product = ({
 	carrello,
@@ -92,11 +93,21 @@ const Product = ({
 					className='absolute z-[-1] bottom-[-15svh]'
 				/>
 			</div>
-			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+			<div className='h-svh w-svw hidden justify-center items-center tel:flex flex-col'>
 				<p className='text-marrone text-2xl w-full text-center'>
 					Dispositivo non supportato! <br />
 					Per una esperienza migliore, utilizza un dispositivo mobile
 				</p>
+				<Button
+					className='mt-2 text-xl p-5'
+					variant='avanti'
+					onClick={() => {
+						localStorage.clear();
+						setLoggato(false);
+					}}
+				>
+					Disconnettiti
+				</Button>
 			</div>
 		</>
 	);

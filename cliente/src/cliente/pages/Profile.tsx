@@ -23,7 +23,7 @@ import { Button } from "../components/shadcn/Button";
 import { Label } from "../components/shadcn/Label";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-import deleteImg from "../img/deleteBlack.webp";
+import deleteImg from "../img/delete.webp";
 import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
 
@@ -181,11 +181,7 @@ const BtnElmininaAccount = ({ setTipoPopup }: { setTipoPopup: Function }) => {
 				<LazyLoadImage
 					src={deleteImg}
 					alt=''
-					className='w-[37px] h-[37px] ml-1'
-					style={{
-						filter:
-							"invert(20%) sepia(5%) saturate(4693%) hue-rotate(317deg) brightness(83%) contrast(83%)",
-					}}
+					className='w-[calc(40px * 0.8)] h-[40px] ml-2'
 				/>
 			</div>
 		</div>
@@ -441,11 +437,21 @@ const Profile = ({
 				<Toaster richColors />
 				<Navbar page='profile' lunghezzaCarrello={lunghezzaCarrello} />
 			</div>
-			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+			<div className='h-svh w-svw hidden justify-center items-center tel:flex flex-col'>
 				<p className='text-marrone text-2xl w-full text-center'>
 					Dispositivo non supportato! <br />
 					Per una esperienza migliore, utilizza un dispositivo mobile
 				</p>
+				<Button
+					className='mt-2 text-xl p-5'
+					variant='avanti'
+					onClick={() => {
+						localStorage.clear();
+						setLoggato(false);
+					}}
+				>
+					Disconnettiti
+				</Button>
 			</div>
 		</>
 	);

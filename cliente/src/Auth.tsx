@@ -1203,9 +1203,9 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 	};
 
 	const btnBenvenuti = () => (
-		<div className='h-[70%] w-[80%] flex flex-col justify-between items-center tel:h-full tel:w-full tel:justify-center'>
+		<div className='mobileProduttore:h-[70%] mobileProduttore:w-[80%] flex flex-col mobileProduttore:justify-between items-center h-full w-full justify-center'>
 			<div
-				className='flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement tel:hidden'
+				className='mobileProduttore:flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement hidden'
 				ref={divBenvenuto}
 			>
 				<p className='text-marrone text-5xl font-bold tracking-tight'>
@@ -1294,7 +1294,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 
 	return (
 		<>
-			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 flex tel:hidden'>
+			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 mobileProduttore:flex hidden'>
 				<img
 					src={imgSopra}
 					alt=''
@@ -1328,7 +1328,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 
 				<Toaster richColors position='bottom-center' />
 			</div>
-			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 hidden tel:flex'>
+			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 mobileProduttore:hidden flex'>
 				<img
 					src={logopiccolo}
 					alt='logo piccolo'

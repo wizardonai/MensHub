@@ -20,6 +20,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/shadcn/Select";
+import { Button } from "../components/shadcn/Button";
+import carrelloVuoto from "../img/carrelloVuoto.webp";
 
 const Elemento = ({
 	item,
@@ -62,16 +64,18 @@ const Elemento = ({
 					);
 
 					tmp.className += " animate-swipeLeftCarrello";
+					tmp.className = tmp.className.replace(
+						" rounded-3xl",
+						" rounded-l-3xl"
+					);
 					tmp.children["altriDati"].className += " hidden";
 
-					let btnElimina = tmp.parentNode.children[1];
-
-					btnElimina.className = btnElimina.className.replace(" hidden", "");
-					btnElimina.className = btnElimina.className.replace(
-						" animate-swipeRightCarrelloEl",
-						""
+					bottoneElimina.current?.classList.replace("hidden", "flex");
+					bottoneElimina.current?.classList.replace(
+						"animate-swipeRightCarrelloEl",
+						"animate-swipeLeftCarrelloEl"
 					);
-					btnElimina.className += " animate-swipeLeftCarrelloEl";
+					bottoneElimina.current?.classList.replace("w-0", "w-[22.5%]");
 				}
 			} else {
 				let tmp: any = e.currentTarget;
@@ -90,22 +94,26 @@ const Elemento = ({
 					].className.replace(" hidden", "");
 
 					tmp.className += " animate-swipeRightCarrello";
-
-					let btnElimina = tmp.parentNode.children[1];
-					btnElimina.className += " animate-swipeRightCarrelloEl";
-					btnElimina.className = btnElimina.className.replace(
-						" animate-swipeLeftCarrelloEl",
-						""
+					tmp.className = tmp.className.replace(
+						" rounded-l-3xl",
+						" rounded-3xl"
 					);
+
+					bottoneElimina.current?.classList.replace("flex", "hidden");
+					bottoneElimina.current?.classList.replace(
+						"animate-swipeLeftCarrelloEl",
+						"animate-swipeRightCarrelloEl"
+					);
+					bottoneElimina.current?.classList.replace("w-[22.5%]", "w-0");
 				}
 			}
 		}
 	};
 
 	return (
-		<div className='flex flex-row justify-start items-center'>
+		<div className='flex flex-row justify-evenly items-center'>
 			<div
-				className='w-full h-[80px] flex flex-row justify-start items-center rounded-3xl bg-arancioneScuro mb-3'
+				className='w-full h-[80px] flex flex-row justify-center items-center rounded-3xl bg-arancioneScuro mb-3'
 				onTouchStart={(e) => {
 					setEnd(null);
 					setStart(e.targetTouches[0].clientX);
@@ -188,7 +196,7 @@ const Elemento = ({
 				</div>
 			</div>
 			<div
-				className='h-[80px] justify-center hidden items-center clip-searchbtn bg-red-800 mb-3'
+				className='h-[80px] justify-center hidden items-center bg-red-800 mb-3 w-0 rounded-r-3xl'
 				onClick={() => {
 					let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 					tmp = tmp.filter((item2: prodottoCarrello) => item2.id !== item.id);
@@ -224,7 +232,7 @@ const Elemento = ({
 				<LazyLoadImage
 					src={deleteImg}
 					alt=''
-					className='w-[40px] h-[40px] ml-7 mt-5'
+					className='w-[calc(40px * 0.8)] h-[40px]'
 				/>
 			</div>
 		</div>
@@ -291,11 +299,21 @@ const Cart = ({
 			<div className='h-svh w-svw tel:hidden'>
 				<Topbar page='carrello' name={""} />
 				<Container>
-					<div className='h-[92%] w-full flex items-center flex-col overflow-y-scroll'>
-						<div className='w-[80%]'>
-							<Lista carrello={carrello} setCarrello={setCarrello} />
+					{carrello.length !== 0 ? (
+						<div className='h-[92%] w-full flex items-center flex-col overflow-y-scroll'>
+							<div className='w-[80%]'>
+								<Lista carrello={carrello} setCarrello={setCarrello} />
+							</div>
 						</div>
-					</div>
+					) : (
+						<div className='h-[92%] w-full flex items-center justify-center flex-col overflow-y-scroll'>
+							<img
+								src={carrelloVuoto}
+								alt='Carrello vuoto'
+								className='w-[80%]'
+							/>
+						</div>
+					)}
 					<div className='h-[8%] w-full flex flex-row justify-evenly items-center border-t-2 border-dashed'>
 						<div className='text-xl text-marrone'>
 							Totale: {totale.toFixed(2)}€
@@ -399,11 +417,21 @@ const Cart = ({
 				</Container>
 				<Navbar page='cart' />
 			</div>
-			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+			<div className='h-svh w-svw hidden justify-center items-center tel:flex flex-col'>
 				<p className='text-marrone text-2xl w-full text-center'>
 					Dispositivo non supportato! <br />
 					Per una esperienza migliore, utilizza un dispositivo mobile
 				</p>
+				<Button
+					className='mt-2 text-xl p-5'
+					variant='avanti'
+					onClick={() => {
+						localStorage.clear();
+						setLoggato(false);
+					}}
+				>
+					Disconnettiti
+				</Button>
 			</div>
 		</>
 	);

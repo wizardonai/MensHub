@@ -67,7 +67,7 @@ export const Navbar = ({
 
 	useEffect(() => {
 		let h = window.screen.height - 20;
-		setHeight(h / 10 - 20);
+		setHeight(h / 10 - 25);
 	}, []);
 
 	return (
@@ -171,11 +171,8 @@ export const Navbar = ({
 								<LazyLoadImage
 									src={homeImg}
 									alt='home'
-									width={50}
-									height={50}
-									style={{
-										filter: "var(--filterImgBianco)",
-									}}
+									width={30}
+									height={30}
 								/>
 							)}
 						</div>
@@ -201,15 +198,16 @@ export const Navbar = ({
 									<LazyLoadImage
 										src={cartImg}
 										alt='cart'
-										width={50}
-										height={50}
-										style={{
-											filter: "var(--filterImgBianco)",
-										}}
+										width={30}
+										height={30}
 									/>
-									<div className='rounded-full bg-[#5c8c46] flex justify-center items-center absolute top-0.5 right-0.5 w-5 h-5'>
-										<p className='text-white'>{lunghezzaCarrello}</p>
-									</div>
+									{lunghezzaCarrello !== 0 ? (
+										<div className='rounded-full bg-[#5c8c46] flex justify-center items-center absolute -top-2 -right-2 w-5 h-5'>
+											<p className='text-white'>{lunghezzaCarrello}</p>
+										</div>
+									) : (
+										""
+									)}
 								</div>
 							)}
 						</div>
@@ -235,11 +233,8 @@ export const Navbar = ({
 								<LazyLoadImage
 									src={profileImg}
 									alt='profile'
-									width={50}
-									height={50}
-									style={{
-										filter: "var(--filterImgBianco)",
-									}}
+									width={28}
+									height={28}
 								/>
 							)}
 						</div>

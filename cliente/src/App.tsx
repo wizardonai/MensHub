@@ -80,7 +80,7 @@ function App() {
 	}, [carrello]);
 
 	useEffect(() => {
-		setDatiUtente({} as typeProfilo);
+		if (Object.keys(datiUtente).length > 0) setDatiUtente({} as typeProfilo);
 	}, [loggato]);
 
 	let router;
@@ -209,7 +209,7 @@ function App() {
 			},
 			{
 				path: "/changepwd/:token",
-				element: <Pwdchange loggato={loggato} />,
+				element: <Pwdchange loggato={loggato} setLoggato={setLoggato} />,
 				loader: ({ params }) => {
 					if (!params.token) return redirect("/home");
 					return params.token;
@@ -345,7 +345,7 @@ function App() {
 			},
 			{
 				path: "/changepwd/:token",
-				element: <Pwdchange loggato={loggato} />,
+				element: <Pwdchange loggato={loggato} setLoggato={setLoggato} />,
 				loader: ({ params }) => {
 					if (!params.token) return redirect("/home");
 					return params.token;

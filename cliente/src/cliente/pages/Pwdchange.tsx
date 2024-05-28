@@ -163,7 +163,13 @@ const CambiaPassword = ({
 	);
 };
 
-const Pwdchange = ({ loggato }: { loggato: string }) => {
+const Pwdchange = ({
+	loggato,
+	setLoggato,
+}: {
+	loggato: string;
+	setLoggato: Function;
+}) => {
 	const token: any = useLoaderData();
 
 	const [images, setImages] = useState([useRef(null), useRef(null)]);
@@ -227,12 +233,22 @@ const Pwdchange = ({ loggato }: { loggato: string }) => {
 				/>
 				<Toaster richColors />
 			</div>
-			<div className='h-svh w-svw hidden justify-center items-center tel:flex'>
+			{/* <div className='h-svh w-svw hidden justify-center items-center tel:flex flex-col'>
 				<p className='text-marrone text-2xl w-full text-center'>
 					Dispositivo non supportato! <br />
 					Per una esperienza migliore, utilizza un dispositivo mobile
 				</p>
-			</div>
+				<Button
+					className='mt-2 text-xl p-5'
+					variant='avanti'
+					onClick={() => {
+						localStorage.clear();
+						setLoggato(false);
+					}}
+				>
+					Disconnettiti
+				</Button>
+			</div> */}
 		</>
 	);
 };
