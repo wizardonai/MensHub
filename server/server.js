@@ -1543,8 +1543,7 @@ server.post("/producer/delete/order", (req, res) => {
 });
 
 server.post("/producer/edit/product", (req, res) => {
-  const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-    req.body;
+  const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
 
   let token = req.headers.authorization;
 
@@ -1554,16 +1553,11 @@ server.post("/producer/edit/product", (req, res) => {
       res.end();
     } else {
       let query = `
-				UPDATE prodotti
-				SET nome = "${nome}",
-					descrizione = "${descrizione}",
-					allergeni = "${allergeni}",
-					prezzo = "${prezzo}",
-					categoria = "${categoria}",
-					disponibile = "${disponibile}"
-				WHERE id = "${id}";`;
+        UPDATE prodotti
+        SET nome = ?, descrizione = ?, allergeni = ?, prezzo = ?, categoria = ?, disponibile = ?
+        WHERE id = ?`;
 
-      connection.query(query, (err, result) => {
+      connection.query(query, [nome, descrizione, allergeni, prezzo, categoria, disponibile, id], (err, result) => {
         if (err) {
           res.send("Errore del database");
           res.end();
@@ -1576,147 +1570,85 @@ server.post("/producer/edit/product", (req, res) => {
   });
 });
 
-//serve id del prodotto nella req per caricare immagine
-//richiesta da fare con form-data
-server.post(
-  "/producer/editWithImg/product",
-  upload2.single("image"),
-  (req, res) => {
-    const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-      req.body;
+server.post("/producer/editWithImg/product", upload2.single("image"), (req, res) => {
+  const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
+  let token = req.headers.authorization;
 
-    let token = req.headers.authorization;
+  let cartella = "./server/image/products";
+  let fileDaEliminare = "";
+  let pathFileDaEliminare = "";
+  const estensioneFile = req.file.filename.split(".").pop();
 
-    let cartella = "../server/image/products";
-    let fileDaEliminare = "";
-    let pathFileDaEliminare = "";
-    const estensioneFile = req.file.filename.split(".").pop();
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      res.send("Token non valido");
+      res.end();
+    } else {
+      const queryPromise = new Promise((resolve, reject) => {
+        fs.readdir(cartella, (err, files) => {
+          if (err) {
+            console.error("Errore durante la lettura della cartella:", err);
+            return;
+          }
 
-    jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
-      if (err) {
-        res.send("Token non valido");
-        res.end();
-      } else {
-        const queryPromise = new Promise((resolve, reject) => {
-          fs.readdir(cartella, (err, files) => {
+          let query = "SELECT indirizzo_img FROM prodotti WHERE id = ?";
+
+          connection.query(query, [id], (err, result) => {
             if (err) {
-              console.error("Errore durante la lettura della cartella:", err);
-              return;
+              reject(err);
             }
+            pathFileDaEliminare = result[0].indirizzo_img.split("/").pop();
 
-            let query =
-              "SELECT indirizzo_img FROM prodotti WHERE id = " + id + ";";
+            fileDaEliminare = files.find(file => file === pathFileDaEliminare);
 
-            connection.query(query, (err, result) => {
-              if (err) {
-                reject(err);
-              }
-              pathFileDaEliminare = result[0].indirizzo_img.split("/").pop();
-
-              fileDaEliminare = files.find(
-                (file) => file === pathFileDaEliminare
-              );
-
-              if (fileDaEliminare) {
-                resolve(fileDaEliminare);
-              } else {
-                reject("File non trovato.");
-                console.log("File non trovato.");
-              }
-            });
+            if (fileDaEliminare) {
+              resolve(fileDaEliminare);
+            } else {
+              reject("File non trovato.");
+              console.log("File non trovato.");
+            }
           });
         });
+      });
 
-        queryPromise
-          .then((fileDaEliminare) => {
-            const estensioneFileVecchio = fileDaEliminare.split(".").pop();
+      queryPromise
+        .then(fileDaEliminare => {
+          const estensioneFileVecchio = fileDaEliminare.split(".").pop();
 
-            if (estensioneFileVecchio != estensioneFile) {
-              let cartella = "../server/image/products";
-              const pathImg = cartella + "/" + fileDaEliminare;
+          fs.rename(`${cartella}/${fileDaEliminare}`, `${cartella}/${id}.${estensioneFile}`, (err) => {
+            if (err) {
+              console.error("Errore durante il cambio nome del file:", err);
+              res.send("Errore durante il cambio nome del file");
+              res.end();
+            } else {
+              let query = `
+                UPDATE prodotti
+                SET nome = ?, descrizione = ?, allergeni = ?, prezzo = ?, categoria = ?, disponibile = ?, indirizzo_img = ?
+                WHERE id = ?`;
 
-              fs.unlink(pathImg, (err) => {
+              connection.query(query, [nome, descrizione, allergeni, prezzo, categoria, disponibile, `products/${id}.${estensioneFile}`, id], (err, result) => {
                 if (err) {
-                  console.error(
-                    `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
-                  );
+                  res.send("Errore del database");
+                  res.end();
                 } else {
-                  console.log(
-                    `Il file ${fileDaEliminare} è stato eliminato con successo`
-                  );
+                  res.send("Prodotto modificato");
+                  res.end();
                 }
               });
             }
-            let query = `
-            UPDATE prodotti
-            SET nome = "${nome}",
-              descrizione = "${descrizione}",
-              allergeni = "${allergeni}",
-              prezzo = "${prezzo}",
-              categoria = "${categoria}",
-              disponibile = "${disponibile}",
-              indirizzo_img= "products/${id}.${estensioneFile}"
-            WHERE id = "${id}";`;
-
-            connection.query(query, (err, result) => {
-              if (err) {
-                res.send("Errore del database");
-                res.end();
-              }
-            });
-
-            const cartella = "../server/image/products";
-
-            fs.readdir(cartella, (err, files) => {
-              if (err) {
-                console.error("Errore durante la lettura della cartella:", err);
-                return;
-              }
-              const filenameConEstensione = id + "." + estensioneFile;
-              let cartella = "../server/image/products/";
-              let fileDaConvertire = files.find(
-                (file) => file === filenameConEstensione
-              );
-
-              // if (fileDaConvertire) {
-              //   sharp(cartella + fileDaConvertire)
-              //     .toFormat("webp")
-              //     .toFile(cartella + filenameConEstensione.replace(/\.[^/.]+$/, ".webp"))
-              //     .then((info) => {
-              //       fs.unlink(cartella + fileDaConvertire, (err) => {
-              //         if (err) {
-              //           console.error(`Errore durante l'eliminazione del file ${fileDaConvertire}: ${err}`);
-              //         } else {
-              //           res.send("Prodotto modificato");
-              //           res.end();
-              //         }
-              //       });
-              //     })
-              //     .catch((err) => {
-              //       console.error("Error converting to WebP:", err);
-              //     });
-              // } else {
-              //   console.log("File non trovato.");
-              // }
-
-              res.send("Prodotto modificato");
-              res.end();
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            res.send("Errore modifica prodotto");
-            res.end();
           });
-      }
-    });
-  }
-);
+        })
+        .catch(error => {
+          console.log(error);
+          res.send("Errore modifica prodotto");
+          res.end();
+        });
+    }
+  });
+});
 
-//richiesta da fare con form-data
 server.post("/producer/add/product", upload.single("image"), (req, res) => {
-  const { nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-    req.body;
+  const { nome, descrizione, allergeni, prezzo, categoria, disponibile } = req.body;
 
   let token = req.headers.authorization;
   let id_utente = "";
@@ -1732,8 +1664,8 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
         const estensioneFile = req.file.filename.split(".").pop();
 
         const queryPromise = new Promise((resolve, reject) => {
-          let query = `SELECT id_mensa FROM utenti WHERE id="${id_utente};"`;
-          connection.query(query, (err, results) => {
+          let query = "SELECT id_mensa FROM utenti WHERE id = ?";
+          connection.query(query, [id_utente], (err, results) => {
             if (err) {
               reject(err);
             } else {
@@ -1743,14 +1675,16 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
         });
 
         queryPromise
-          .then((results) => {
+          .then(results => {
             let id_prodotto = "";
             const id_mensa = results[0].id_mensa;
 
             const queryPromise2 = new Promise((resolve, reject) => {
-              let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES("${nome}","${descrizione}","${allergeni}","${prezzo}","${categoria}","","${disponibile}","0","${id_mensa}");`;
+              let query = `
+                INSERT INTO prodotti (nome, descrizione, allergeni, prezzo, categoria, indirizzo_img, disponibile, nacq, id_mensa)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-              connection.query(query, (err, result) => {
+              connection.query(query, [nome, descrizione, allergeni, prezzo, categoria, "", disponibile, "0", id_mensa], (err, result) => {
                 if (err) {
                   reject(err);
                 } else {
@@ -1761,10 +1695,10 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
             });
 
             queryPromise2
-              .then((results) => {
-                let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome="${nome}" AND descrizione="${descrizione}" AND prezzo="${prezzo}";`;
+              .then(results => {
+                let query = "UPDATE prodotti SET indirizzo_img = ? WHERE id = ?";
 
-                connection.query(query, (err, result) => {
+                connection.query(query, [`products/${id_prodotto}.${estensioneFile}`, id_prodotto], (err, result) => {
                   if (err) {
                     res.send("Errore del database");
                     res.end();
@@ -1773,55 +1707,34 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 
                     fs.readdir(cartella, (err, files) => {
                       if (err) {
-                        console.error(
-                          "Errore durante la lettura della cartelcla:",
-                          err
-                        );
+                        console.error("Errore durante la lettura della cartella:", err);
                         res.send("Errore del server");
                         res.end();
                         return;
                       }
-                      const filenameConEstensione =
-                        nome + "_" + prezzo + "." + estensioneFile;
-                      const cartella = "../server/image/products/";
-                      let fileDaConvertire = files.find(
-                        (file) => file === filenameConEstensione
-                      );
+                      const filenameConEstensione = `${nome}_${prezzo}.${estensioneFile}`;
 
-                      // if (fileDaConvertire) {
-                      //   sharp(cartella + fileDaConvertire)
-                      //     .toFormat("webp")
-                      //     .toFile(cartella + filenameConEstensione.replace(/\.[^/.]+$/, ".webp"))
-                      //     .then((info) => {
-                      //       fs.unlink(cartella + fileDaConvertire, (err) => {
-                      //         if (err) {
-                      //           console.error(`Errore durante l'eliminazione del file ${fileDaConvertire}: ${err}`);
-                      //           res.send("Errore del server");
-                      //           res.end();
-                      //         } else {
-                      //           renameImage(nome + "_" + prezzo, id_prodotto, res);
-                      //         }
-                      //       });
-                      //     })
-                      //     .catch((err) => {
-                      //       console.error("Error converting to WebP:", err);
-                      //     });
-                      // } else {
-                      //   console.log("File non trovato.");
-                      // }
-
-                      renameImage(nome + "_" + prezzo, id_prodotto, res); //da togliere se si usa sharp
+                      // Rename file
+                      fs.rename(`${cartella}/${filenameConEstensione}`, `${cartella}/${id_prodotto}.${estensioneFile}`, (err) => {
+                        if (err) {
+                          res.send("Errore durante il cambio nome del file");
+                          res.end();
+                        } else {
+                          res.send("Prodotto aggiunto con successo");
+                          res.end();
+                        }
+                      });
                     });
                   }
                 });
               })
-              .catch((error) => {
+              .catch(error => {
                 console.log(error);
                 res.send("Errore inserimento prodotto");
                 res.end();
               });
           })
-          .catch((error) => {
+          .catch(error => {
             res.send("Errore inserimento prodotto");
             res.end();
           });
@@ -1836,10 +1749,10 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 server.post("/producer/delete/product", (req, res) => {
   const { id } = req.body;
 
-  let query = `DELETE from prodotti WHERE id = '${id}';`;
+  let query = "DELETE from prodotti WHERE id = ?";
   let fileDaEliminare = "";
 
-  connection.query(query, (err, result) => {
+  connection.query(query, [id], (err, result) => {
     if (err) {
       res.send("Errore del database");
       res.end();
@@ -1853,7 +1766,7 @@ server.post("/producer/delete/product", (req, res) => {
             return;
           }
 
-          fileDaEliminare = files.find((file) => file.startsWith(id + "."));
+          fileDaEliminare = files.find(file => file.startsWith(id + "."));
 
           if (fileDaEliminare) {
             resolve(fileDaEliminare);
@@ -1865,29 +1778,21 @@ server.post("/producer/delete/product", (req, res) => {
       });
 
       queryPromise
-        .then((fileDaEliminare) => {
-          const pathImg = cartella + "/" + fileDaEliminare;
-
-          fs.unlink(pathImg, (err) => {
+        .then(fileDaEliminare => {
+          fs.unlink(`${cartella}/${fileDaEliminare}`, (err) => {
             if (err) {
-              console.error(
-                `Errore durante l'eliminazione del file ${fileDaEliminare}: ${err}`
-              );
+              console.error("Errore durante l'eliminazione del file:", err);
             } else {
-              console.log(
-                `Il file ${fileDaEliminare} è stato eliminato con successo`
-              );
+              console.log(`File ${fileDaEliminare} eliminato con successo`);
             }
           });
-
-          res.send("Prodotto eliminato");
-          res.end();
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
-          res.send("Errore eliminazione");
-          res.end();
         });
+
+      res.send("Prodotto eliminato");
+      res.end();
     }
   });
 });
