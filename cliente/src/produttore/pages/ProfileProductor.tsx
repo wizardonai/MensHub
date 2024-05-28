@@ -161,7 +161,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
 				res ===
 				"Registrazione avvenuta. Controlla la casella di posta per confermare l'email."
 			) {
-				toast.success("Utente registrato con successo!");
+				toast.success(res);
 				setPopupEmail(false);
 			} else {
 				toast.error(res);
@@ -175,30 +175,20 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
 			passwordEliminaValue = passwordElimina.current.value;
 		}
 
-		let confermaPasswordEliminaValue = "";
-		if (confermaPasswordElimina.current) {
-			confermaPasswordEliminaValue = confermaPasswordElimina.current.value;
-		}
-
-		if (passwordEliminaValue === "" || confermaPasswordEliminaValue === "") {
+		if (passwordEliminaValue === "") {
 			toast.error("Compila tutti i campi!");
 			return;
 		}
 
-		if (passwordEliminaValue !== confermaPasswordEliminaValue) {
-			toast.error("Le password non corrispondono!");
-			return;
-		}
 
 		deleteAccount(
 			localStorage.getItem("token") || "scu",
-			passwordEliminaValue,
-			confermaPasswordEliminaValue
+			passwordEliminaValue
 		).then((res) => {
-			if (res === "Utente eliminato") {
+			if (res === "Utente eliminato" || res === "Mensa eliminata") {
 				toast.success("Account eliminato con successo");
 				localStorage.removeItem("token");
-				localStorage.removeItem("login");
+				localStorage.removeItem("loggato");
 				navigate(`/login`);
 			} else {
 				toast.error(res);
@@ -212,29 +202,19 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
 			passwordEliminaValue = passwordElimina.current.value;
 		}
 
-		let confermaPasswordEliminaValue = "";
-		if (confermaPasswordElimina.current) {
-			confermaPasswordEliminaValue = confermaPasswordElimina.current.value;
-		}
 
-		if (passwordEliminaValue === "" || confermaPasswordEliminaValue === "") {
+		if (passwordEliminaValue === "") {
 			toast.error("Compila tutti i campi!");
-			return;
-		}
-
-		if (passwordEliminaValue !== confermaPasswordEliminaValue) {
-			toast.error("Le password non corrispondono!");
 			return;
 		}
 
 		deleteMensa(
 			localStorage.getItem("token") || "scu",
-			passwordEliminaValue,
-			confermaPasswordEliminaValue
+			passwordEliminaValue
 		).then((res) => {
 			if (res === "Mensa eliminata") {
 				localStorage.removeItem("token");
-				localStorage.removeItem("login");
+				localStorage.removeItem("loggato");
 				navigate(`/login`);
 				toast.success("Mensa eliminata con successo");
 			} else {
@@ -653,26 +633,6 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
 													className='w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo'
 												/>
 											</div>
-											<div className='grid grid-cols-4 items-center gap-4'>
-												<Label
-													htmlFor='confermaPassword'
-													className='text-right'
-												>
-													<p className='font-bold text-marroneScuro text-lg'>
-														Conferma password
-													</p>
-												</Label>
-												<Input
-													id='confermaPassword'
-													placeholder=''
-													type='password'
-													defaultValue=''
-													ref={
-														confermaPasswordElimina as unknown as React.RefObject<HTMLInputElement>
-													}
-													className='w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo'
-												/>
-											</div>
 										</div>
 										<DialogFooter>
 											<div className='w-[100%] flex justify-center'>
@@ -737,26 +697,6 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
 													defaultValue=''
 													ref={
 														passwordElimina as unknown as React.RefObject<HTMLInputElement>
-													}
-													className='w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo'
-												/>
-											</div>
-											<div className='grid grid-cols-4 items-center gap-4'>
-												<Label
-													htmlFor='confermaPassword'
-													className='text-right'
-												>
-													<p className='font-bold text-marroneScuro text-lg'>
-														Conferma password
-													</p>
-												</Label>
-												<Input
-													id='confermaPassword'
-													placeholder=''
-													type='password'
-													defaultValue=''
-													ref={
-														confermaPasswordElimina as unknown as React.RefObject<HTMLInputElement>
 													}
 													className='w-[300%] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo'
 												/>

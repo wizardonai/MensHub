@@ -398,13 +398,11 @@ export async function getProdottiCompletati(token: string) {
 
 export async function deleteMensa(
 	token: string,
-	password: string,
-	confirm_password: string
+	password: string
 ) {
 	let response;
 	let data = JSON.stringify({
 		password: sha256.create().update(password).hex(),
-		confirm_password: sha256.create().update(confirm_password).hex(),
 	});
 
 	let config = {
@@ -560,13 +558,11 @@ export async function changeProdottoImmagine(token: string, dati: any) {
 
 export async function deleteAccount(
 	token: string,
-	password: string,
-	confirm_password: string
+	password: string
 ) {
 	let response;
 	let data = JSON.stringify({
 		password: sha256.create().update(password).hex(),
-		confirm_password: sha256.create().update(confirm_password).hex(),
 	});
 
 	let config = {
