@@ -2,7 +2,7 @@ let connection = "";
 
 import { createConnection } from "mysql";
 import express from "express";
-import { mysql } from "mysql";
+import mysql from "mysql";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import * as EmailValidator from "email-validator";
@@ -16,7 +16,7 @@ import nodemailer from "nodemailer";
 
 const { json, urlencoded } = bodyParser;
 const server = express();
-const mysql = require('mysql'); //libreria mysql
+
 const secretKey = "CaccaPoopShitMierda";
 // const url = "http://menshub.it";
 const url = "http://localhost:3000";
@@ -69,8 +69,8 @@ const transporter = nodemailer.createTransport({
 function connetti() {
   connection = createConnection({
     host: "localhost",
-    user: "application",
-    password: "lucachingscu69#]!",
+    user: "root",
+    password: "",
   });
   connection.connect(function (err) {
     if (err) {
@@ -488,7 +488,6 @@ server.post("/login/user", async function (req, res) {
 
   if (EmailValidator.validate(email)) {
     let query = `SELECT * FROM utenti WHERE email= ? ;`;
-
     connection.query(query, [mysql.escape(email)], (err, result) => {
       if (err) {
         res.send("Errore del database");
@@ -1472,9 +1471,9 @@ server.post("/producer/change/order", (req, res) => {
       res.end();
     } else {
       if (stato_ordine === "finito") {
-        let query = `SELECT id_prodotto, quantita FROM prodotti_ordini WHERE id_ordine = ${id_ordine};`;
+        let query = `SELECT id_prodotto, quantita FROM prodotti_ordini WHERE id_ordine = ?;`;
 
-        connection.query(query, (err, result) => {
+        connection.query(query, [mysql.escape(id_ordine)], (err, result) => {
           if (err) {
             res.send("Errore del database");
             res.end();
@@ -1493,9 +1492,9 @@ server.post("/producer/change/order", (req, res) => {
         });
       }
 
-      let query = `UPDATE ordini SET stato_ordine = '${stato_ordine}' WHERE id = ${id_ordine};`;
+      let query = `UPDATE ordini SET stato_ordine = ? WHERE id = ?;`;
 
-      connection.query(query, (err, result) => {
+      connection.query(query, [mysql.escape(stato_ordine),mysql.escape(id_ordine)], (err, result) => {
         if (err) {
           res.send("Errore del database");
           res.end();
@@ -1517,9 +1516,9 @@ server.post("/producer/delete/order", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-      let query = `DELETE FROM ordini WHERE id = ${id_ordine};`;
+      let query = `DELETE FROM ordini WHERE id = ?;`;
 
-      connection.query(query, (err, result) => {
+      connection.query(query, [mysql.escape(id_ordine)],(err, result) => {
         if (err) {
           res.send("Errore del database");
           res.end();
@@ -1545,15 +1544,15 @@ server.post("/producer/edit/product", (req, res) => {
     } else {
       let query = `
 				UPDATE prodotti
-				SET nome = "${nome}",
-					descrizione = "${descrizione}",
-					allergeni = "${allergeni}",
-					prezzo = "${prezzo}",
-					categoria = "${categoria}",
-					disponibile = "${disponibile}"
-				WHERE id = "${id}";`;
+				SET nome = ?,
+					descrizione = ?,
+					allergeni = ?,
+					prezzo = ?,
+					categoria = ?,
+					disponibile = ?
+				WHERE id = ?;`;
 
-      connection.query(query, (err, result) => {
+      connection.query(query, [mysql.escape(nome),mysql.escape(descrizione),mysql.escape(allergeni),mysql.escape(prezzo),mysql.escape(categoria),mysql.escape(disponibile),mysql.escape(id)],(err, result) => {
         if (err) {
           res.send("Errore del database");
           res.end();
@@ -1595,9 +1594,9 @@ server.post(
             }
 
             let query =
-              "SELECT indirizzo_img FROM prodotti WHERE id = " + id + ";";
+              "SELECT indirizzo_img FROM prodotti WHERE id = ?;";
 
-            connection.query(query, (err, result) => {
+            connection.query(query, [id],(err, result) => {
               if (err) {
                 reject(err);
               }
@@ -1639,16 +1638,16 @@ server.post(
             }
             let query = `
             UPDATE prodotti
-            SET nome = "${nome}",
-              descrizione = "${descrizione}",
-              allergeni = "${allergeni}",
-              prezzo = "${prezzo}",
-              categoria = "${categoria}",
-              disponibile = "${disponibile}",
+            SET nome = ?,
+              descrizione = ?,
+              allergeni = ?,
+              prezzo = ?,
+              categoria = ?,
+              disponibile = ?,
               indirizzo_img= "products/${id}.${estensioneFile}"
-            WHERE id = "${id}";`;
+            WHERE id = ?;`;
 
-            connection.query(query, (err, result) => {
+            connection.query(query,[mysql.escape(nome),mysql.escape(descrizione),mysql.escape(allergeni),mysql.escape(prezzo),mysql.escape(categoria),mysql.escape(disponibile),mysql.escape(id)], (err, result) => {
               if (err) {
                 res.send("Errore del database");
                 res.end();
@@ -1738,9 +1737,9 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
             const id_mensa = results[0].id_mensa;
 
             const queryPromise2 = new Promise((resolve, reject) => {
-              let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES("${nome}","${descrizione}","${allergeni}","${prezzo}","${categoria}","","${disponibile}","0","${id_mensa}");`;
+              let query = `insert into prodotti (nome,descrizione,allergeni,prezzo,categoria,indirizzo_img,disponibile,nacq,id_mensa) VALUES(?,?,?,?,?,"",?,"0",?);`;
 
-              connection.query(query, (err, result) => {
+              connection.query(query, [mysql.escape(nome),mysql.escape(descrizione),mysql.escape(allergeni),mysql.escape(prezzo),mysql.escape(categoria),mysql.escape(disponibile),mysql.escape(id_mensa)] ,(err, result) => {
                 if (err) {
                   reject(err);
                 } else {
@@ -1752,9 +1751,9 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 
             queryPromise2
               .then((results) => {
-                let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome="${nome}" AND descrizione="${descrizione}" AND prezzo="${prezzo}";`;
+                let query = `update prodotti SET indirizzo_img= 'products/${id_prodotto}.${estensioneFile}' WHERE nome= ? AND descrizione = ? AND prezzo = ?;`;
 
-                connection.query(query, (err, result) => {
+                connection.query(query, [nome,descrizione,prezzo] ,(err, result) => {
                   if (err) {
                     res.send("Errore del database");
                     res.end();
@@ -1826,10 +1825,10 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 server.post("/producer/delete/product", (req, res) => {
   const { id } = req.body;
 
-  let query = `DELETE from prodotti WHERE id = '${id}';`;
+  let query = `DELETE from prodotti WHERE id = ?;`;
   let fileDaEliminare = "";
 
-  connection.query(query, (err, result) => {
+  connection.query(query, [mysql.escape(id)] ,(err, result) => {
     if (err) {
       res.send("Errore del database");
       res.end();
