@@ -69,8 +69,8 @@ const transporter = nodemailer.createTransport({
 function connetti() {
   connection = createConnection({
     host: "localhost",
-    user: "root",
-    password: "",
+    user: "application",
+    password: "lucachingscu69#]!",
   });
   connection.connect(function (err) {
     if (err) {
@@ -133,21 +133,22 @@ server.post("/request/products", (req, res) => {
           } else {
             idm_utente = decoded.id_mensa;
 
-            connection.query(
-              "SELECT * FROM prodotti where id_mensa=" +
-              idm_utente +
-              " ORDER BY nome",
-              (err, result) => {
-                if (err) {
-                  res.send("Errore del database");
-                  res.end();
-                } else {
-                  res.send(result);
-                  res.end();
-                }
+            // Utilizzo del prepared statement con i placeholder
+            const sqlQuery = "SELECT * FROM prodotti WHERE id_mensa = ? ORDER BY nome";
+
+            connection.query(sqlQuery, [idm_utente], (err, result) => {
+              if (err) {
+                res.send("Errore del database");
+                res.end();
+              } else {
+                res.send(result);
+                res.end();
               }
-            );
+            });
           }
+        }).catch((error) => {
+          res.status(500).send("Errore del server");
+          res.end();
         });
       } catch (error) {
         res.status(500).send("Errore del server");
@@ -156,6 +157,7 @@ server.post("/request/products", (req, res) => {
     }
   });
 });
+
 
 server.post("/request/mense", (req, res) => {
   let query = `SELECT * FROM mense WHERE verificato = 1;`;
@@ -257,6 +259,7 @@ server.post("/modify/mensa", (req, res) => {
               nome: decoded.nome,
               cognome: decoded.cognome,
               email: decoded.email,
+              cliente: decoded.cliente,
               id_mensa: id_mensa,
             },
             secretKey,
@@ -407,6 +410,7 @@ server.post("/register/user", async function (req, res) {
                     cognome: cognome,
                     email: email,
                     id_mensa: id_mensa,
+                    cliente: cliente,
                   },
                   secretKey,
                   { expiresIn: "90d" }
@@ -498,6 +502,7 @@ server.post("/login/user", async function (req, res) {
                 nome: result[0].nome,
                 cognome: result[0].cognome,
                 email: result[0].email,
+                cliente: result[0].cliente,
                 id_mensa: 0,
               },
               secretKey,
@@ -521,6 +526,7 @@ server.post("/login/user", async function (req, res) {
                   nome: result[0].nome,
                   cognome: result[0].cognome,
                   email: result[0].email,
+                  cliente: result[0].cliente,
                   id_mensa: result[0].id_mensa,
                 },
                 secretKey,
@@ -598,6 +604,7 @@ server.post("/recover/password", (req, res) => {
             cognome: result[0].cognome,
             email: result[0].email,
             id_mensa: result[0].id_mensa,
+            cliente: result[0].cliente,
           },
           secretKey,
           { expiresIn: "90d" }
