@@ -79,6 +79,10 @@ function App() {
 		setLunghezzaCarrello(sommaCarrello);
 	}, [carrello]);
 
+	useEffect(() => {
+		setDatiUtente({} as typeProfilo);
+	}, [loggato]);
+
 	let router;
 	if (loggato === "cliente") {
 		if (Object.keys(datiUtente).length === 0) {
@@ -90,6 +94,7 @@ function App() {
 				id: -1,
 				id_mensa: -1,
 				nome: "",
+				cliente: -1,
 			});
 			getProfilo(localStorage.getItem("token") || "scu").then((res: any) => {
 				if (!res) {
@@ -100,8 +105,15 @@ function App() {
 					return;
 				}
 				if (res === "Mensa preferita cancellata") {
-					localStorage.removeItem("cart");
-					localStorage.removeItem("token");
+					localStorage.clear();
+					setDatiUtente({} as typeProfilo);
+					setProducts([]);
+					setLoggato("false");
+					return;
+				}
+
+				if (res.cliente === 0) {
+					localStorage.clear();
 					setDatiUtente({} as typeProfilo);
 					setProducts([]);
 					setLoggato("false");
@@ -138,6 +150,7 @@ function App() {
 						products={products}
 						setCarrello={setCarrello}
 						lunghezzaCarrello={lunghezzaCarrello}
+						setLoggato={setLoggato}
 					/>
 				),
 			},
@@ -178,7 +191,13 @@ function App() {
 			},
 			{
 				path: "/product/:id",
-				element: <Product carrello={carrello} setCarrello={setCarrello} />,
+				element: (
+					<Product
+						carrello={carrello}
+						setCarrello={setCarrello}
+						setLoggato={setLoggato}
+					/>
+				),
 				loader: ({ params }) => {
 					const tmp = products.filter(
 						(product) => product.id === parseInt(params.id || "-1")
@@ -202,7 +221,47 @@ function App() {
 			},
 		]);
 	} else if (loggato === "produttore") {
-		// else if (false) {
+		if (Object.keys(datiUtente).length === 0) {
+			setDatiUtente({
+				cognome: "",
+				email: "",
+				exp: -1,
+				iat: -1,
+				id: -1,
+				id_mensa: -1,
+				nome: "",
+				cliente: -1,
+			});
+			getProfilo(localStorage.getItem("token") || "scu").then((res: any) => {
+				if (!res) {
+					return;
+				}
+				if (res === "Token non valido") {
+					localStorage.setItem("loggato", "false");
+					return;
+				}
+				if (res === "Mensa preferita cancellata") {
+					localStorage.clear();
+					setDatiUtente({} as typeProfilo);
+					setProducts([]);
+					setLoggato("false");
+					return;
+				}
+
+				if (res.cliente === 1) {
+					localStorage.clear();
+					setDatiUtente({} as typeProfilo);
+					setProducts([]);
+					setLoggato("false");
+					return;
+				}
+
+				if (res) {
+					setUsername(res.nome);
+					setDatiUtente(res);
+				}
+			});
+		}
 		if (categorie.length === 0) {
 			getCategorie({ token: localStorage.getItem("token") || "scu" }).then(
 				(res: any) => {

@@ -201,6 +201,11 @@ const CompletedOrders = ({ setLoggato }: { setLoggato: Function }) => {
 	const [prodotti, setProdotti] = useState<any>([]);
 	const [ordineCliccato, setOrdineCliccato] = useState<any>(null);
 
+	if (localStorage.getItem("loggato") !== '"produttore"') {
+		setLoggato("?");
+		return;
+	}
+
 	if (!dati) return <p>CARICAMENTO</p>;
 
 	return (

@@ -44,6 +44,11 @@ const HomePageProductor = ({
 		return () => clearInterval(interval);
 	}, []);
 
+	if (localStorage.getItem("loggato") !== '"produttore"') {
+		setLoggato("?");
+		return;
+	}
+
 	return (
 		<>
 			<div className='page flex mobileProduttore:hidden' style={css.page}>

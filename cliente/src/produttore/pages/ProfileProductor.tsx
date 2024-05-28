@@ -58,6 +58,11 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
 	const old_psw = useRef<HTMLTextAreaElement>(null);
 	const confirm_new_psw = useRef<HTMLTextAreaElement>(null);
 
+	if (localStorage.getItem("loggato") !== '"produttore"') {
+		setLoggato("?");
+		return;
+	}
+
 	if (!dati) return <p>CARICAMENTO</p>;
 
 	if (ricarica) {

@@ -16,11 +16,18 @@ import imgSotto from "../img/sotto_login.png";
 const Product = ({
 	carrello,
 	setCarrello,
+	setLoggato,
 }: {
 	carrello: Array<prodottoCarrello>;
 	setCarrello: Function;
+	setLoggato: Function;
 }) => {
 	const tmp: any = useLoaderData();
+
+	if (localStorage.getItem("loggato") !== '"cliente"') {
+		setLoggato("?");
+		return;
+	}
 
 	if (!tmp)
 		return (

@@ -360,11 +360,13 @@ const Homepage = ({
 	products,
 	setCarrello,
 	lunghezzaCarrello,
+	setLoggato,
 }: {
 	username: string;
 	products: Array<prodotto>;
 	setCarrello: Function;
 	lunghezzaCarrello: number;
+	setLoggato: Function;
 }) => {
 	const [assegnato, setAssegnato] = useState(false);
 	const [filteredProducts, setFilteredProducts] = useState(
@@ -380,6 +382,11 @@ const Homepage = ({
 		["dolce", dolceImg],
 		["bibita", bibitaImg],
 	]);
+
+	if (localStorage.getItem("loggato") !== '"cliente"') {
+		setLoggato("?");
+		return;
+	}
 
 	if (!products)
 		return (

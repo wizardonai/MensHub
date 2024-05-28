@@ -36,6 +36,7 @@ export type typeProfilo = {
 	id: number;
 	id_mensa: number;
 	nome: string;
+	cliente: number;
 };
 export type ordine = {
 	data: string;

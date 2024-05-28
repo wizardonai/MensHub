@@ -257,6 +257,7 @@ server.post("/modify/mensa", (req, res) => {
 							cognome: decoded.cognome,
 							email: decoded.email,
 							id_mensa: id_mensa,
+							cliente: decoded.cliente,
 						},
 						secretKey,
 						{ expiresIn: "90d" }
@@ -406,6 +407,7 @@ server.post("/register/user", async function (req, res) {
 										cognome: cognome,
 										email: email,
 										id_mensa: id_mensa,
+										cliente: cliente,
 									},
 									secretKey,
 									{ expiresIn: "90d" }
@@ -498,6 +500,7 @@ server.post("/login/user", async function (req, res) {
 								cognome: result[0].cognome,
 								email: result[0].email,
 								id_mensa: 0,
+								cliente: result[0].cliente,
 							},
 							secretKey,
 							{ expiresIn: "90d" }
@@ -521,6 +524,7 @@ server.post("/login/user", async function (req, res) {
 									cognome: result[0].cognome,
 									email: result[0].email,
 									id_mensa: result[0].id_mensa,
+									cliente: result[0].cliente,
 								},
 								secretKey,
 								{ expiresIn: "90d" }
@@ -597,6 +601,7 @@ server.post("/recover/password", (req, res) => {
 						cognome: result[0].cognome,
 						email: result[0].email,
 						id_mensa: result[0].id_mensa,
+						cliente: result[0].cliente,
 					},
 					secretKey,
 					{ expiresIn: "90d" }

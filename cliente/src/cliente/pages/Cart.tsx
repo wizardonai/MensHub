@@ -281,6 +281,11 @@ const Cart = ({
 		return orari;
 	}
 
+	if (localStorage.getItem("loggato") !== '"cliente"') {
+		setLoggato("?");
+		return;
+	}
+
 	return (
 		<>
 			<div className='h-svh w-svw tel:hidden'>

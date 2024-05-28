@@ -267,13 +267,20 @@ const MenuPageProductor = ({
 		}
 	}, [strSrc]);
 
-	//ordina i dati in base alla categoria segue l'ordine di filtri
-	prodotti.sort((a: prodotto, b: prodotto) => {
-		const aIndex = categorie.findIndex((x: any[]) => x[0] === a.categoria);
-		const bIndex = categorie.findIndex((x: any[]) => x[0] === b.categoria);
+	useEffect(() => {
+		//ordina i dati in base alla categoria segue l'ordine di filtri
+		prodotti.sort((a: prodotto, b: prodotto) => {
+			const aIndex = categorie.findIndex((x: any[]) => x[0] === a.categoria);
+			const bIndex = categorie.findIndex((x: any[]) => x[0] === b.categoria);
 
-		return aIndex - bIndex;
-	});
+			return aIndex - bIndex;
+		});
+	}, []);
+
+	if (localStorage.getItem("loggato") !== '"produttore"') {
+		setLoggato("?");
+		return;
+	}
 
 	return (
 		<>

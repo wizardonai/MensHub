@@ -27,6 +27,11 @@ const CronologiaAcquistiPage = ({
 	const [chiesto, setChiesto] = useState(false);
 	const [cronologia, setCronologia] = useState([] as Array<ordine>);
 
+	if (localStorage.getItem("loggato") !== '"cliente"') {
+		setLoggato("?");
+		return;
+	}
+
 	if (!chiesto && cronologia.length === 0) {
 		setChiesto(true);
 		//fetch cronologia

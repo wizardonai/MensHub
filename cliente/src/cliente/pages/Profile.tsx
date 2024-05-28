@@ -373,6 +373,11 @@ const Profile = ({
 	const [tipoPopup, setTipoPopup] = useState("");
 	const [mense, setMense] = useState([] as Array<mensa>);
 
+	if (localStorage.getItem("loggato") !== '"cliente"') {
+		setLoggato("?");
+		return;
+	}
+
 	if (!mense) {
 		return (
 			<div className='w-full h-full flex justify-center items-center bg-white'>
