@@ -7,7 +7,7 @@ import loginBottom from "./cliente/img/bottomLogin.png";
 import loginCerchio from "./cliente/img/cerchioLogin.png";
 
 import { Button } from "./cliente/components/shadcn/Button";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { dataLog, dataMensa, dataReg, mensa, sleep } from "./utils";
 import {
 	getMense,
@@ -30,6 +30,7 @@ import { Toaster } from "./cliente/components/shadcn/Sonner";
 import { toast } from "sonner";
 
 import logopiccolo from "./cliente/img/logoPiccolo.png";
+import { Checkbox } from "./cliente/components/shadcn/Checkbox";
 
 //
 //
@@ -400,7 +401,7 @@ const Register = ({
 				ref={imgAngolo}
 			/>
 			<div
-				className='flex flex-col justify-center items-center h-full animate-showElement'
+				className='flex flex-col justify-center items-center h-full animate-showElement w-[85%]'
 				ref={div}
 			>
 				{utente === "?" ? (
@@ -451,7 +452,7 @@ const ContattiMensa = ({
 					onChange={(e) => {
 						setData({ ...data, nome: e.target.value });
 					}}
-					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone w-full'
 					defaultValue={data.nome}
 				/>
 			</div>
@@ -465,7 +466,7 @@ const ContattiMensa = ({
 					onChange={(e) => {
 						setData({ ...data, email: e.target.value });
 					}}
-					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone w-full'
 					defaultValue={data.email}
 				/>
 			</div>
@@ -480,7 +481,7 @@ const ContattiMensa = ({
 						setData({ ...data, telefono: e.target.value });
 					}}
 					pattern='[0-9]{10}'
-					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone w-full'
 					defaultValue={data.telefono}
 				/>
 			</div>
@@ -490,9 +491,13 @@ const ContattiMensa = ({
 const IndirizzoMensa = ({
 	data,
 	setData,
+	setPrivacy,
+	setCookie,
 }: {
 	data: dataMensa;
 	setData: Function;
+	setPrivacy: Function;
+	setCookie: Function;
 }) => {
 	const [regioni, setRegioni] = useState([] as Array<string>);
 	const [province, setProvince] = useState([]);
@@ -556,7 +561,7 @@ const IndirizzoMensa = ({
 	}
 
 	return (
-		<div className='flex  items-center gap-4 flex-col w-full animate-showFast'>
+		<div className='flex  items-center gap-4 flex-col animate-showFast w-full'>
 			<div className='flex flex-col w-full'>
 				<Label htmlFor='regione' className='text-marrone font-bold mb-0.5'>
 					Regione
@@ -683,6 +688,44 @@ const IndirizzoMensa = ({
 					defaultValue={data.indirizzo}
 				/>
 			</div>
+			<div className='flex flex-row w-[95%]'>
+				<div className='h-full'>
+					<Checkbox
+						variant='menshub'
+						id='privacy'
+						onCheckedChange={(e) => setPrivacy(e)}
+					/>
+				</div>
+				<p className='text-marrone font-bold text-sm ml-0.5'>
+					Dichiaro di avere 18 anni e di aver letto e accettato
+					<a
+						href='https://www.iubenda.com/privacy-policy/74362538'
+						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
+						title='Privacy Policy'
+					>
+						Privacy Policy
+					</a>
+				</p>
+			</div>
+			<div className='flex flex-row w-[95%]'>
+				<div className='h-full'>
+					<Checkbox
+						variant='menshub'
+						id='privacy'
+						onCheckedChange={(e) => setCookie(e)}
+					/>
+				</div>
+				<p className='text-marrone font-bold text-sm ml-0.5'>
+					Dichiaro di avere 18 anni e di aver letto e accettato
+					<a
+						href='https://www.iubenda.com/privacy-policy/74362538/cookie-policy'
+						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
+						title='Cookie Policy'
+					>
+						Cookie Policy
+					</a>
+				</p>
+			</div>
 		</div>
 	);
 };
@@ -703,9 +746,17 @@ const RegisterMensa = ({
 
 	const [data, setData] = useState({} as dataMensa);
 
+	const [privacy, setPrivacy] = useState(true);
+	const [cookie, setCookie] = useState(true);
+
 	const elementi = [
 		<ContattiMensa data={data} setData={setData} />,
-		<IndirizzoMensa data={data} setData={setData} />,
+		<IndirizzoMensa
+			data={data}
+			setData={setData}
+			setPrivacy={setPrivacy}
+			setCookie={setCookie}
+		/>,
 	];
 
 	useEffect(() => {
@@ -715,11 +766,11 @@ const RegisterMensa = ({
 
 	return (
 		<div
-			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll w-[85%]'
+			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll w-3/4 tel:overflow-y-hidden'
 			ref={div}
 		>
 			{elementi[pagina]}
-			<div className='flex flex-row items-center justify-center w-full tel:w-2/3 mt-2'>
+			<div className='flex flex-row items-center justify-center mt-2 w-[95%]'>
 				<Button
 					variant='indietro'
 					onClick={() => {
@@ -733,7 +784,11 @@ const RegisterMensa = ({
 							sleep(900).then(() => {
 								setUtente("?");
 							});
-						} else setPagina(0);
+						} else {
+							setPagina(0);
+							setPrivacy(true);
+							setCookie(true);
+						}
 					}}
 					className='w-1/2 p-2 rounded-3xl mt-1 mr-1'
 				>
@@ -757,6 +812,8 @@ const RegisterMensa = ({
 								return;
 							}
 							setPagina(1);
+							setPrivacy(false);
+							setCookie(false);
 						} else if (pagina === 1) {
 							if (
 								data.regione === undefined ||
@@ -791,6 +848,7 @@ const RegisterMensa = ({
 							}
 						}
 					}}
+					disabled={!privacy || !cookie}
 				>
 					{pagina === 0 ? "Avanti" : "Registra"}
 				</Button>
@@ -826,6 +884,8 @@ const RegisterCliente = ({
 	const [mense, setMense] = useState([] as Array<mensa>);
 	const div = useRef(null);
 	const [emailInviata, setEmailInviata] = useState(false);
+	const [privacy, setPrivacy] = useState(false);
+	const [cookie, setCookie] = useState(false);
 
 	if (mense.length === 0) {
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
@@ -896,7 +956,7 @@ const RegisterCliente = ({
 
 	return (
 		<div
-			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll'
+			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll tel:overflow-y-scroll'
 			ref={div}
 		>
 			<div className='grid w-full items-center gap-4'>
@@ -1014,6 +1074,44 @@ const RegisterCliente = ({
 					</div>
 				)}
 			</div>
+			<div className='flex flex-row w-[95%]'>
+				<div className='h-full'>
+					<Checkbox
+						variant='menshub'
+						id='privacy'
+						onCheckedChange={(e: boolean) => setPrivacy(e)}
+					/>
+				</div>
+				<p className='text-marrone font-bold text-sm ml-0.5'>
+					Dichiaro di avere 18 anni e di aver letto e accettato
+					<a
+						href='https://www.iubenda.com/privacy-policy/74362538'
+						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
+						title='Privacy Policy'
+					>
+						Privacy Policy
+					</a>
+				</p>
+			</div>
+			<div className='flex flex-row w-[95%]'>
+				<div className='h-full'>
+					<Checkbox
+						variant='menshub'
+						id='privacy'
+						onCheckedChange={(e: boolean) => setCookie(e)}
+					/>
+				</div>
+				<p className='text-marrone font-bold text-sm ml-0.5'>
+					Dichiaro di avere 18 anni e di aver letto e accettato
+					<a
+						href='https://www.iubenda.com/privacy-policy/74362538/cookie-policy'
+						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
+						title='Cookie Policy'
+					>
+						Cookie Policy
+					</a>
+				</p>
+			</div>
 			<div className='flex flex-row items-center justify-center w-full mt-3'>
 				<Button
 					variant='indietro'
@@ -1036,7 +1134,7 @@ const RegisterCliente = ({
 				<Button
 					variant='avanti'
 					onClick={submitRegisterCliccato}
-					disabled={emailInviata}
+					disabled={emailInviata || !privacy || !cookie}
 					className='w-1/2 rounded-3xl mt-1'
 				>
 					Registrati
