@@ -701,6 +701,7 @@ const IndirizzoMensa = ({
 					Dichiaro di avere 18 anni e di aver letto e accettato
 					<a
 						href='https://www.iubenda.com/privacy-policy/74362538'
+						target='_blank'
 						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
 						title='Privacy Policy'
 					>
@@ -720,6 +721,7 @@ const IndirizzoMensa = ({
 					Dichiaro di avere 18 anni e di aver letto e accettato
 					<a
 						href='https://www.iubenda.com/privacy-policy/74362538/cookie-policy'
+						target='_blank'
 						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
 						title='Cookie Policy'
 					>
@@ -1099,6 +1101,7 @@ const RegisterCliente = ({
 						Dichiaro di avere 18 anni e di aver letto e accettato{" "}
 						<a
 							href='https://www.iubenda.com/privacy-policy/74362538'
+							target='_blank'
 							className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
 							title='Privacy Policy'
 						>
@@ -1118,6 +1121,7 @@ const RegisterCliente = ({
 						Dichiaro di avere 18 anni e di aver letto e accettato{" "}
 						<a
 							href='https://www.iubenda.com/privacy-policy/74362538/cookie-policy'
+							target='_blank'
 							className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
 							title='Cookie Policy'
 						>
