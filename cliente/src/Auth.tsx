@@ -31,6 +31,7 @@ import { toast } from "sonner";
 
 import logopiccolo from "./cliente/img/logoPiccolo.png";
 import { Checkbox } from "./cliente/components/shadcn/Checkbox";
+import { domainToASCII } from "url";
 
 //
 //
@@ -442,7 +443,7 @@ const ContattiMensa = ({
 }) => {
 	return (
 		<div className='flex w-full items-center gap-4 flex-col animate-showElement'>
-			<div className='flex flex-col'>
+			<div className='flex flex-col w-full'>
 				<Label htmlFor='nome' className='text-marrone font-bold mb-0.5'>
 					Nome Mensa
 				</Label>
@@ -456,7 +457,7 @@ const ContattiMensa = ({
 					defaultValue={data.nome}
 				/>
 			</div>
-			<div className='flex flex-col'>
+			<div className='flex flex-col w-full'>
 				<Label htmlFor='email' className='text-marrone font-bold mb-0.5'>
 					Email di contatto
 				</Label>
@@ -470,7 +471,7 @@ const ContattiMensa = ({
 					defaultValue={data.email}
 				/>
 			</div>
-			<div className='flex flex-col'>
+			<div className='flex flex-col w-full'>
 				<Label htmlFor='telefono' className='text-marrone font-bold mb-0.5'>
 					Telefono di contatto
 				</Label>
@@ -483,6 +484,20 @@ const ContattiMensa = ({
 					pattern='[0-9]{10}'
 					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone w-full'
 					defaultValue={data.telefono}
+				/>
+			</div>
+			<div className='flex flex-col w-full'>
+				<Label htmlFor='indirizzo' className='text-marrone font-bold mb-0.5'>
+					Indirizzo
+				</Label>
+				<Input
+					id='indirizzo'
+					type='text'
+					onChange={(e) => {
+						setData({ ...data, indirizzo: e.target.value });
+					}}
+					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+					defaultValue={data.indirizzo}
 				/>
 			</div>
 		</div>
@@ -674,20 +689,6 @@ const IndirizzoMensa = ({
 					</SelectContent>
 				</Select>
 			</div>
-			<div className='flex flex-col w-full'>
-				<Label htmlFor='indirizzo' className='text-marrone font-bold mb-0.5'>
-					Indirizzo
-				</Label>
-				<Input
-					id='indirizzo'
-					type='text'
-					onChange={(e) => {
-						setData({ ...data, indirizzo: e.target.value });
-					}}
-					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
-					defaultValue={data.indirizzo}
-				/>
-			</div>
 			<div className='flex flex-row w-[95%]'>
 				<div className='h-full'>
 					<Checkbox
@@ -770,7 +771,7 @@ const RegisterMensa = ({
 			ref={div}
 		>
 			{elementi[pagina]}
-			<div className='flex flex-row items-center justify-center mt-2 w-[95%]'>
+			<div className='flex flex-row items-center justify-center mt-2 w-full'>
 				<Button
 					variant='indietro'
 					onClick={() => {
@@ -806,7 +807,9 @@ const RegisterMensa = ({
 								data.email === undefined ||
 								data.email === "" ||
 								data.telefono === undefined ||
-								data.telefono === ""
+								data.telefono === "" ||
+								data.indirizzo === undefined ||
+								data.indirizzo === ""
 							) {
 								toast.error("Compilare tutti i campi!");
 								return;
@@ -823,8 +826,7 @@ const RegisterMensa = ({
 								data.indirizzo === undefined ||
 								data.regione === "" ||
 								data.provincia === "" ||
-								data.comune === "" ||
-								data.indirizzo === ""
+								data.comune === ""
 							) {
 								toast.error("Compilare tutti i campi!");
 								return;
@@ -884,8 +886,11 @@ const RegisterCliente = ({
 	const [mense, setMense] = useState([] as Array<mensa>);
 	const div = useRef(null);
 	const [emailInviata, setEmailInviata] = useState(false);
-	const [privacy, setPrivacy] = useState(false);
-	const [cookie, setCookie] = useState(false);
+
+	const [pagina, setPagina] = useState("1");
+
+	const [privacy, setPrivacy] = useState(true);
+	const [cookie, setCookie] = useState(true);
 
 	if (mense.length === 0) {
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
@@ -954,12 +959,9 @@ const RegisterCliente = ({
 		});
 	};
 
-	return (
-		<div
-			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll tel:overflow-y-scroll'
-			ref={div}
-		>
-			<div className='grid w-full items-center gap-4'>
+	const pagina1 = () => {
+		return (
+			<>
 				<div className='flex flex-col'>
 					<Label htmlFor='nome' className='text-marrone font-bold mb-0.5'>
 						Nome
@@ -971,6 +973,7 @@ const RegisterCliente = ({
 							setData({ ...data, nome: e.target.value });
 						}}
 						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+						defaultValue={data.nome}
 					/>
 				</div>
 				<div className='flex flex-col'>
@@ -984,48 +987,7 @@ const RegisterCliente = ({
 							setData({ ...data, cognome: e.target.value });
 						}}
 						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
-					/>
-				</div>
-				<div className='flex flex-col'>
-					<Label htmlFor='email' className='text-marrone font-bold mb-0.5'>
-						Email
-					</Label>
-					<Input
-						id='email'
-						type='email'
-						onChange={(e) => {
-							setData({ ...data, email: e.target.value });
-						}}
-						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
-					/>
-				</div>
-				<div className='flex flex-col'>
-					<Label htmlFor='password' className='text-marrone font-bold mb-0.5'>
-						Password
-					</Label>
-					<Input
-						id='password'
-						type='password'
-						onChange={(e) => {
-							setData({ ...data, password: e.target.value });
-						}}
-						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
-					/>
-				</div>
-				<div className='flex flex-col'>
-					<Label
-						htmlFor='confermaPassword'
-						className='text-marrone font-bold mb-0.5'
-					>
-						Conferma password
-					</Label>
-					<Input
-						id='confermaPassword'
-						type='password'
-						onChange={(e) => {
-							setData({ ...data, confirm_password: e.target.value });
-						}}
-						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+						defaultValue={data.cognome}
 					/>
 				</div>
 				{id_mensa !== -1 ? (
@@ -1042,6 +1004,7 @@ const RegisterCliente = ({
 							onValueChange={(e: any) => {
 								setData({ ...data, id_mensa: e });
 							}}
+							defaultValue={data.id_mensa}
 						>
 							<SelectTrigger
 								className='w-full m-0 bg-biancoLatte text-marrone rounded-3xl shadow-lg border-0'
@@ -1073,59 +1036,129 @@ const RegisterCliente = ({
 						</Select>
 					</div>
 				)}
-			</div>
-			<div className='flex flex-row w-[95%]'>
-				<div className='h-full'>
-					<Checkbox
-						variant='menshub'
-						id='privacy'
-						onCheckedChange={(e: boolean) => setPrivacy(e)}
+			</>
+		);
+	};
+	const pagina2 = () => {
+		return (
+			<>
+				<div className='flex flex-col'>
+					<Label htmlFor='email' className='text-marrone font-bold mb-0.5'>
+						Email
+					</Label>
+					<Input
+						id='email'
+						type='email'
+						onChange={(e) => {
+							setData({ ...data, email: e.target.value });
+						}}
+						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+						defaultValue={data.email}
 					/>
 				</div>
-				<p className='text-marrone font-bold text-sm ml-0.5'>
-					Dichiaro di avere 18 anni e di aver letto e accettato
-					<a
-						href='https://www.iubenda.com/privacy-policy/74362538'
-						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
-						title='Privacy Policy'
-					>
-						Privacy Policy
-					</a>
-				</p>
-			</div>
-			<div className='flex flex-row w-[95%]'>
-				<div className='h-full'>
-					<Checkbox
-						variant='menshub'
-						id='privacy'
-						onCheckedChange={(e: boolean) => setCookie(e)}
+				<div className='flex flex-col'>
+					<Label htmlFor='password' className='text-marrone font-bold mb-0.5'>
+						Password
+					</Label>
+					<Input
+						id='password'
+						type='password'
+						onChange={(e) => {
+							setData({ ...data, password: e.target.value });
+						}}
+						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+						defaultValue={data.password}
 					/>
 				</div>
-				<p className='text-marrone font-bold text-sm ml-0.5'>
-					Dichiaro di avere 18 anni e di aver letto e accettato
-					<a
-						href='https://www.iubenda.com/privacy-policy/74362538/cookie-policy'
-						className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
-						title='Cookie Policy'
+				<div className='flex flex-col'>
+					<Label
+						htmlFor='confermaPassword'
+						className='text-marrone font-bold mb-0.5'
 					>
-						Cookie Policy
-					</a>
-				</p>
+						Conferma password
+					</Label>
+					<Input
+						id='confermaPassword'
+						type='password'
+						onChange={(e) => {
+							setData({ ...data, confirm_password: e.target.value });
+						}}
+						className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone'
+						defaultValue={data.confirm_password}
+					/>
+				</div>
+				<div className='flex flex-row w-[95%]'>
+					<div className='h-full'>
+						<Checkbox
+							variant='menshub'
+							id='privacy'
+							onCheckedChange={(e: boolean) => setPrivacy(e)}
+						/>
+					</div>
+					<p className='text-marrone font-bold text-sm ml-0.5'>
+						Dichiaro di avere 18 anni e di aver letto e accettato{" "}
+						<a
+							href='https://www.iubenda.com/privacy-policy/74362538'
+							className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
+							title='Privacy Policy'
+						>
+							Privacy Policy
+						</a>
+					</p>
+				</div>
+				<div className='flex flex-row w-[95%]'>
+					<div className='h-full'>
+						<Checkbox
+							variant='menshub'
+							id='privacy'
+							onCheckedChange={(e: boolean) => setCookie(e)}
+						/>
+					</div>
+					<p className='text-marrone font-bold text-sm ml-0.5'>
+						Dichiaro di avere 18 anni e di aver letto e accettato{" "}
+						<a
+							href='https://www.iubenda.com/privacy-policy/74362538/cookie-policy'
+							className='iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe underline italic'
+							title='Cookie Policy'
+						>
+							Cookie Policy
+						</a>
+					</p>
+				</div>
+			</>
+		);
+	};
+
+	return (
+		<div
+			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll tel:overflow-y-scroll w-3/4'
+			ref={div}
+		>
+			<div className='grid w-full items-center gap-4'>
+				{pagina === "1" ? pagina1() : ""}
+				{pagina === "2" ? pagina2() : ""}
 			</div>
+
 			<div className='flex flex-row items-center justify-center w-full mt-3'>
 				<Button
 					variant='indietro'
 					onClick={() => {
-						animazioniImmagini(35, 0, window.innerHeight);
+						if (pagina === "1") {
+							animazioniImmagini(35, 0, window.innerHeight);
 
-						//@ts-ignore
-						div.current.classList.remove("animate-showElement");
-						//@ts-ignore
-						div.current.classList.add("animate-hideElement");
+							//@ts-ignore
+							div.current.classList.remove("animate-showElement");
+							//@ts-ignore
+							div.current.classList.add("animate-hideElement");
 
-						sleep(900).then(() => {
-							setUtente("?");
-						});
+							sleep(900).then(() => {
+								setUtente("?");
+							});
+						} else {
+							setPagina("1");
+							setPrivacy(true);
+							setCookie(true);
+						}
 					}}
 					className='w-1/2 rounded-3xl mt-1 mr-1'
 				>
@@ -1133,11 +1166,27 @@ const RegisterCliente = ({
 				</Button>
 				<Button
 					variant='avanti'
-					onClick={submitRegisterCliccato}
+					onClick={
+						pagina === "2"
+							? submitRegisterCliccato
+							: () => {
+									if (
+										data.nome === "" ||
+										data.cognome === "" ||
+										data.id_mensa === -1
+									) {
+										toast.error("Compilare tutti i campi!");
+										return;
+									}
+									setPagina("2");
+									setPrivacy(false);
+									setCookie(false);
+							  }
+					}
 					disabled={emailInviata || !privacy || !cookie}
 					className='w-1/2 rounded-3xl mt-1'
 				>
-					Registrati
+					{pagina === "2" ? "Registrati" : "Avanti"}
 				</Button>
 			</div>
 		</div>
@@ -1448,7 +1497,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					</p>
 				</div>
 				<div
-					className='absolute justify-center items-center w-[400px] right-0 top-[15%] h-[520px]'
+					className='flex absolute justify-center items-center w-[400px] right-0 top-[15%] h-[520px]'
 					ref={inputs}
 				>
 					{login === "?" ? (

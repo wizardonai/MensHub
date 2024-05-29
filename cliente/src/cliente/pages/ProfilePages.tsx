@@ -81,6 +81,7 @@ const CronologiaAcquistiPage = ({
 					className='border-0 bg-biancoLatte rounded-3xl mb-2 w-full'
 				>
 					<SectionToggleTrigger className='bg-arancioneScuro rounded-2xl flex flex-row justify-between items-center px-4 no-underline h-[70px]'>
+						<p className='text-marrone'>#{item.id_ordine}</p>
 						<div key={index} className='w-full text-marrone text-lg'>
 							{item.data.slice(0, 10).split("-").reverse().join("/")}
 						</div>
