@@ -610,6 +610,7 @@ server.post("/recover/password", (req, res) => {
 						email: result[0].email,
 						id_mensa: result[0].id_mensa,
 						cliente: result[0].cliente,
+						recover: true
 					},
 					secretKey,
 					{ expiresIn: "90d" }
@@ -645,6 +646,25 @@ server.post("/recover/password", (req, res) => {
 				);
 			} else {
 				res.send("Email non trovata");
+				res.end();
+			}
+		}
+	});
+});
+
+server.post("/check/recover", (req, res) => {
+	let token = req.headers.authorization;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			if (decoded.recover) {
+				res.send("Recover");
+				res.end();
+			} else {
+				res.send("No recover");
 				res.end();
 			}
 		}
