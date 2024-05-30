@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { hostnameProductor } from "../../App";
 
 export default function Filtri({
@@ -6,11 +6,13 @@ export default function Filtri({
   setFiltro,
   categorie,
   popup,
+  categorieFiltrate,
 }: {
   filtro: string;
   setFiltro: Function;
   categorie: any;
   popup: boolean;
+  categorieFiltrate: string[];
 }): JSX.Element {
   const findIndex = (x: string) => {
     for (let i = 0; i < categorie.length; i++) {
@@ -65,25 +67,31 @@ export default function Filtri({
           </div>
         );
       } else {
-        return (
-          <div
-            className="bg-arancioneChiaro h-[25px] rounded-full inline-flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo "
-            key={index}
-            onClick={filtroCliccato}
-            id="divFiltro"
-          >
-            <img
-              className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
-              src={hostnameProductor + "filtri/" + item.nome + ".webp"}
-            />
-            <p
-              className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
-              id="filtroDaApplicare"
+        //mostro solo i filtri con prodotti nella categoria
+        if (
+          categorieFiltrate.includes(item.nome) ||
+          categorieFiltrate.length === 6
+        ) {
+          return (
+            <div
+              className="bg-arancioneChiaro h-[25px] rounded-full inline-flex items-center px-3 mr-[10px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo "
+              key={index}
+              onClick={filtroCliccato}
+              id="divFiltro"
             >
-              {item.nome}
-            </p>
-          </div>
-        );
+              <img
+                className="w-[20px] ml-[-3px] mr-[3px] select-none pointer-events-none"
+                src={hostnameProductor + "filtri/" + item.nome + ".webp"}
+              />
+              <p
+                className="capitalize text-[16px] select-none pointer-events-none text-marroneScuro"
+                id="filtroDaApplicare"
+              >
+                {item.nome}
+              </p>
+            </div>
+          );
+        }
       }
     });
   } else {

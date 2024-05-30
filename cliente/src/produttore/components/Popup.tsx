@@ -81,9 +81,9 @@ export default function Popup({
     }
     const allergeniValue = allergeniScelti;
 
-    let prezzoValue = "";
+    let prezzoValue = 0;
     if (prezzo.current) {
-      prezzoValue = prezzo.current.value;
+      prezzoValue = parseFloat(prezzo.current.value);
     }
 
     if (salvaImmagine === false) {
@@ -91,7 +91,7 @@ export default function Popup({
         nomeValue === "" ||
         categoriaValue === "" ||
         descrizioneValue === "" ||
-        prezzoValue === ""
+        prezzoValue === 0
       ) {
         toast.error("Si prega di compilare tutti i campi.");
         return;
@@ -103,7 +103,7 @@ export default function Popup({
         nomeValue,
         descrizioneValue,
         allergeniValue.join(","),
-        parseFloat(prezzoValue),
+        prezzoValue,
         categoriaValue,
         1
       )
@@ -137,7 +137,7 @@ export default function Popup({
         categoriaValue === "" ||
         descrizioneValue === "" ||
         immagineValue === null ||
-        prezzoValue === ""
+        prezzoValue === 0
       ) {
         toast.error("Si prega di compilare tutti i campi.");
         return;
@@ -146,7 +146,8 @@ export default function Popup({
       // Aggiungi la pietanza
       const formData = new FormData();
       formData.append("id", prodotto.id);
-      if (prezzoValue !== null) formData.append("prezzo", prezzoValue);
+      if (prezzoValue !== null)
+        formData.append("prezzo", prezzoValue.toString());
       if (nomeValue !== null) formData.append("nome", nomeValue);
       formData.append("categoria", categoriaValue);
       if (descrizioneValue !== null)
@@ -459,6 +460,7 @@ export default function Popup({
                       setFiltro={setFiltro}
                       categorie={categorie}
                       popup={true}
+                      categorieFiltrate={categorie}
                     />
                   )}
                 </div>

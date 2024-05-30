@@ -230,6 +230,26 @@ const MenuPageProductor = ({
   const [prodottiFiltrati, setProdottiFiltrati] = useState<any>([]);
   const [prodotti, setProdotti] = useState<any>([]);
   const [strSrc, setStrSrc] = useState("");
+  const [categorieFiltrate, setCategorieFiltrate] = useState<any>([]);
+
+  useEffect(() => {
+    setCategorieFiltrate([]);
+
+    if (strSrc.length > 0) {
+      prodottiFiltrati.forEach((prodotto: any) => {
+        let categoria = prodotto.categoria;
+
+        if (!categorieFiltrate.includes(categoria)) {
+          setCategorieFiltrate((categorieFiltrate: any[]) => [
+            ...categorieFiltrate,
+            categoria,
+          ]);
+        }
+      });
+    } else {
+      setCategorieFiltrate(categorie);
+    }
+  }, [prodottiFiltrati]);
 
   useEffect(() => {
     getProdotti({ token: localStorage.getItem("token") || "scu" }).then(
@@ -312,6 +332,7 @@ const MenuPageProductor = ({
               setFiltro={setFiltro}
               categorie={categorie}
               popup={false}
+              categorieFiltrate={categorieFiltrate}
             />
           </div>
           <div style={css.container}>
