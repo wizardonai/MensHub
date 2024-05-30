@@ -378,7 +378,7 @@ export default function Popup({
         }
       }}
     >
-      <div className="bg-gialloSfondo w-[600px] h-[65%] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px] ">
+      <div className="bg-gialloSfondo w-[600px] h-[465px] shadow-lg rounded-2xl border-arancioneBordoHover border-[4px] ">
         <div className="flex justify-between">
           <div>
             <p className="font-bold text-xl pl-[15px] pt-[10px] select-none pointer-events-none text-marroneScuro">
