@@ -73,8 +73,7 @@ export const Navbar = ({
 	return (
 		<div className='w-full h-navbar flex flex-row justify-evenly items-center'>
 			<div className='w-[90%] h-full flex flex-row justify-evenly items-center'>
-				{page.split("-")[0] === "Aggiungi al carrello" ||
-				page === "Cronologia" ? (
+				{page.split("-")[0] === "Aggiungi" || page === "Cronologia" ? (
 					<>
 						<div
 							className={`bg-marrone flex justify-center items-center`}
@@ -92,7 +91,7 @@ export const Navbar = ({
 							<LazyLoadImage src={goBackImg} alt='' className='w-[40%]' />
 						</div>
 						<div
-							className={`bg-transparent flex justify-center items-center border-2 border-marrone`}
+							className={`bg-background flex justify-center items-center border-2 border-marrone`}
 							style={{
 								width: height * 4 + "px",
 								borderRadius: "28px",

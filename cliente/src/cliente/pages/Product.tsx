@@ -82,7 +82,7 @@ const Product = ({
 					</div>
 				</Container>
 				<Navbar
-					page={"Aggiungi al carrello-" + product.id}
+					page={"Aggiungi-" + product.id}
 					product={product}
 					carrello={carrello}
 					setCarrello={setCarrello}
