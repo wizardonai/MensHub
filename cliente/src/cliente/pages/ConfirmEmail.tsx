@@ -33,7 +33,7 @@ const ConfirmEmail = () => {
 		<>
 			<div className='flex flex-col w-full h-full animate-showElement justify-center items-center '>
 				{ok ? (
-					<div className='flex flex-col items-center justify-evenly h-1/2'>
+					<div className='flex flex-col items-center justify-evenly h-1/4'>
 						<p className='text-3xl text-marrone'>Email confermata</p>
 						<p className='text-2xl text-marrone'>
 							Ora puoi effettuare il login
@@ -44,7 +44,7 @@ const ConfirmEmail = () => {
 								navigate("/auth");
 							}}
 							variant='avanti'
-							className='p-8 text-2xl  rounded-lg mt-4'
+							className='p-6 text-xl rounded-3xl mt-4 '
 						>
 							Login
 						</Button>

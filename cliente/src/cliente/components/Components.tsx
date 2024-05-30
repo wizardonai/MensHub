@@ -89,17 +89,10 @@ export const Navbar = ({
 								else navigate("/home");
 							}}
 						>
-							<LazyLoadImage
-								src={goBackImg}
-								alt=''
-								className='w-[40%]'
-								style={{
-									filter: "var(--filterImgBianco)",
-								}}
-							/>
+							<LazyLoadImage src={goBackImg} alt='' className='w-[40%]' />
 						</div>
 						<div
-							className={`bg-marrone flex justify-center items-center`}
+							className={`bg-transparent flex justify-center items-center border-2 border-marrone`}
 							style={{
 								width: height * 4 + "px",
 								borderRadius: "28px",
@@ -143,7 +136,7 @@ export const Navbar = ({
 								}
 							}}
 						>
-							<p className='text-white text-xl capitalize'>
+							<p className='text-marrone text-xl uppercase font-bold'>
 								{page.split("-")[0]}
 							</p>
 						</div>
@@ -198,8 +191,8 @@ export const Navbar = ({
 									<LazyLoadImage
 										src={cartImg}
 										alt='cart'
-										width={30}
-										height={30}
+										width={27}
+										height={27}
 									/>
 									{lunghezzaCarrello !== 0 ? (
 										<div className='rounded-full bg-[#5c8c46] flex justify-center items-center absolute -top-2 -right-2 w-5 h-5'>

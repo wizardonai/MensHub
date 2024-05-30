@@ -31,7 +31,6 @@ import { toast } from "sonner";
 
 import logopiccolo from "./cliente/img/logoPiccolo.png";
 import { Checkbox } from "./cliente/components/shadcn/Checkbox";
-import { domainToASCII } from "url";
 
 //
 //
@@ -255,7 +254,7 @@ const Login = ({
 							)}
 							<div className='flex flex-col mt-1'>
 								<p
-									className='text-marrone text-base underline'
+									className='text-marrone text-base underline cursor-pointer'
 									onClick={() => {
 										//@ts-ignore
 										div2.current.classList.add("animate-hideFast");
@@ -763,7 +762,7 @@ const RegisterMensa = ({
 	];
 
 	useEffect(() => {
-		animazioniImmagini(40, 0, window.innerHeight);
+		animazioniImmagini(45, 5, window.innerHeight);
 		//eslint-disable-next-line
 	}, []);
 
@@ -844,6 +843,7 @@ const RegisterMensa = ({
 									if (typeof res === "string") {
 										toast.error(res);
 									} else {
+										toast.success("Mensa creata con successo");
 										setId(res);
 										setLogin(0);
 										setUtente("cliente");
@@ -964,6 +964,15 @@ const RegisterCliente = ({
 	const pagina1 = () => {
 		return (
 			<>
+				{id_mensa !== -1 ? (
+					<div className='flex flex-col'>
+						<p className='text-2xl text-marrone text-center'>
+							Crea l'utente amministratore:
+						</p>
+					</div>
+				) : (
+					""
+				)}
 				<div className='flex flex-col'>
 					<Label htmlFor='nome' className='text-marrone font-bold mb-0.5'>
 						Nome
@@ -1227,7 +1236,7 @@ const SceltaUtente = ({
 				variant='avanti'
 				className='w-full rounded-3xl py-[22px] text-lg mt-2'
 				onClick={() => {
-					animazioniImmagini(55, 15, window.innerHeight);
+					animazioniImmagini(45, 5, window.innerHeight);
 
 					//@ts-ignore
 					div.current.classList.remove("animate-showElement");
@@ -1245,7 +1254,7 @@ const SceltaUtente = ({
 				variant='avanti'
 				className='w-full rounded-3xl py-[22px] text-lg mt-2'
 				onClick={() => {
-					animazioniImmagini(40, 0, window.innerHeight);
+					animazioniImmagini(45, 5, window.innerHeight);
 					//@ts-ignore
 					div.current.classList.remove("animate-showElement");
 					//@ts-ignore
@@ -1330,33 +1339,114 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 		sotto: number,
 		width: number
 	) => {
-		const generaProporzioni = (sopra: number, sotto: number, width: number) => {
-			const rapportoProporzione1 = 1242 / width;
-			const rapportoProporzione2 = width / 1242;
+		const generaProporzioni = (
+			sopra: number,
+			sotto: number,
+			width: number,
+			height: number
+		) => {
+			const rapportoProporzione = width / 1242;
 
-			const sopraHeight = sopra * rapportoProporzione2;
-			const sottoHeight = sotto * rapportoProporzione2;
-			const cerchio = 450 * rapportoProporzione2;
+			const proporzioneAltezza = 858 / height;
+
+			const sopraHeight = sopra * rapportoProporzione;
+			const sottoHeight = sotto * rapportoProporzione;
+			const cerchio = 450 * rapportoProporzione;
 
 			return {
 				sopra: Math.round(sopraHeight),
 				sotto: Math.round(sottoHeight),
 				cerchio: Math.round(cerchio),
+				// altezza: (proporzioneAltezza * Math.round(sopraHeight)) / 5,
+				altezza: proporzioneAltezza,
 			};
 		};
 
-		const proporzioni = generaProporzioni(sopra, sotto, window.innerWidth);
+		const proporzioni = generaProporzioni(
+			sopra,
+			sotto,
+			window.innerWidth,
+			window.innerHeight
+		);
 
 		//@ts-ignore
-		images[2].current.style.top = `-${proporzioni.sopra}svh`;
+		images[2].current.style.top = `-${
+			proporzioni.sopra * proporzioni.altezza
+		}svh`;
 		//@ts-ignore
 		images[3].current.style.bottom = `-${proporzioni.sotto}svh`;
 	};
 
+	useEffect(() => {
+		// if (window.innerWidth > 450 && window.innerWidth <= 1000) {
+		// 	const generaProporzioni = (
+		// 		sopra: number,
+		// 		sotto: number,
+		// 		width: number
+		// 	) => {
+		// 		return {
+		// 			sopra: (sopra * width) / 450,
+		// 			sotto: (sotto * width) / 450,
+		// 		};
+		// 	};
+
+		// 	//con 450x811
+		// 	const proporzioni = generaProporzioni(55, 15, window.innerWidth);
+		// 	console.log(proporzioni);
+
+		// 	//@ts-ignore
+		// 	images[0].current.style.top = `-${proporzioni.sopra}svh`;
+		// 	//@ts-ignore
+		// 	images[1].current.style.bottom = `-${proporzioni.sotto}svh`;
+		// 	//@ts-ignore
+		// }
+
+		if (window.innerWidth >= 450) {
+			console.log("scuuuu");
+
+			animazioneProduttore(90, 40, window.innerWidth);
+
+			const generaProporzioni = (
+				sopra: number,
+				sotto: number,
+				width: number
+			) => {
+				const rapportoProporzione = width / 1242;
+
+				const sopraHeight = sopra * rapportoProporzione;
+				const sottoHeight = sotto * rapportoProporzione;
+
+				return {
+					sopra: Math.round(sopraHeight),
+					sotto: Math.round(sottoHeight),
+				};
+			};
+
+			const proporzioni = generaProporzioni(16, 5, window.innerWidth);
+
+			//@ts-ignore
+			console.log(divBenvenuto.current.classList, proporzioni);
+
+			//@ts-ignore
+			divBenvenuto.current.classList.add("top-[" + proporzioni.sopra + "%]");
+			//  = `${proporzioni.sopra}%`;
+			//@ts-ignore
+			divBenvenuto.current.classList.add(
+				"left-[" + (proporzioni.sopra + 1) + "%]"
+			);
+
+			//@ts-ignore
+			// divBenvenuto.current.style.top = `${proporzioni.sopra}%`;
+			//@ts-ignore
+			// divBenvenuto.current.style.left = `${proporzioni.sotto}%`;
+		}
+		//eslint-disable-next-line
+	}, []);
+
 	const btnBenvenuti = () => (
-		<div className='mobileProduttore:h-[70%] mobileProduttore:w-[80%] flex flex-col mobileProduttore:justify-between items-center h-full w-full justify-center'>
+		<div className='h-[70%] w-[80%] flex flex-col justify-between items-center tel:h-full tel:w-full tel:justify-center'>
 			<div
-				className='mobileProduttore:flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement hidden'
+				className='flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement tel:hidden'
 				ref={divBenvenuto}
 			>
 				<p className='text-marrone text-5xl font-bold tracking-tight'>
@@ -1412,40 +1502,10 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 		</div>
 	);
 
-	useEffect(() => {
-		if (window.innerWidth > 450) {
-			animazioneProduttore(90, 40, window.innerWidth);
-
-			const generaProporzioni = (
-				sopra: number,
-				sotto: number,
-				width: number
-			) => {
-				const rapportoProporzione1 = 1242 / width;
-				const rapportoProporzione2 = width / 1242;
-
-				const sopraHeight = sopra * rapportoProporzione2;
-				const sottoHeight = sotto * rapportoProporzione2;
-				return {
-					sopra: Math.round(sopraHeight),
-					sotto: Math.round(sottoHeight),
-				};
-			};
-
-			const proporzioni = generaProporzioni(16, 5, window.innerWidth);
-			console.log(proporzioni);
-
-			//@ts-ignore
-			divBenvenuto.current.style.top = `${proporzioni.sopra}%`;
-			//@ts-ignore
-			divBenvenuto.current.style.left = `${proporzioni.sotto}%`;
-		}
-		//eslint-disable-next-line
-	}, []);
-
 	return (
 		<>
-			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 mobileProduttore:flex hidden'>
+			{/* <div className='w-svw h-svh overflow-hidden absolute top-0 left-0 mobileProduttore:flex hidden'> */}
+			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 flex tel:hidden'>
 				<img
 					src={imgSopra}
 					alt=''
@@ -1479,7 +1539,8 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 
 				<Toaster richColors position='bottom-center' />
 			</div>
-			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 mobileProduttore:hidden flex'>
+			{/* <div className='w-svw h-svh overflow-hidden absolute top-0 left-0 mobileProduttore:hidden flex'> */}
+			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 hidden tel:flex'>
 				<img
 					src={logopiccolo}
 					alt='logo piccolo'
@@ -1493,7 +1554,7 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					ref={images[2]}
 				/>
 				<div
-					className='absolute top-[16%] left-[5%] flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement'
+					className='hidden absolute tel:flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement'
 					ref={divBenvenuto}
 				>
 					<p className='text-marrone text-7xl font-bold tracking-tight w-3/4'>

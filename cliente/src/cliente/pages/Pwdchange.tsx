@@ -38,7 +38,7 @@ const PasswordDimenticata = ({
 				}
 				className='mt-1'
 			/>
-			<Label htmlFor='confermaPassword' className='mt-3 text-marrone weight'>
+			<Label htmlFor='confermaPassword' className='text-marrone weight'>
 				Conferma password
 			</Label>
 			<Input
@@ -52,7 +52,7 @@ const PasswordDimenticata = ({
 			/>
 			<Button
 				variant='avanti'
-				className='rounded-3xl shadow-lg text-lg w-full mt-5'
+				className='rounded-3xl shadow-lg text-lg w-full mt-1'
 				onClick={() => {
 					//chiamata al server
 
@@ -207,14 +207,14 @@ const Pwdchange = ({
 
 	return (
 		<>
-			<div className='w-full h-full flex flex-col items-center justify-center absolute top-0 bottom-0 overflow-hidden tel:hidden'>
+			<div className='w-full h-full flex flex-col items-center justify-center absolute top-0 bottom-0 overflow-hidden'>
 				<img
 					src={imgSopra}
 					alt=''
 					className='absolute top-[-40svh] z-[-2] transition-[top] duration-1000 ease-in-out'
 					ref={images[0]}
 				/>
-				{loggato ? (
+				{loggato === "cliente" || loggato === "produttore" ? (
 					<CambiaPassword
 						token={token}
 						animazioniImmagini={animazioniImmagini}
@@ -233,22 +233,6 @@ const Pwdchange = ({
 				/>
 				<Toaster richColors />
 			</div>
-			{/* <div className='h-svh w-svw hidden justify-center items-center tel:flex flex-col'>
-				<p className='text-marrone text-2xl w-full text-center'>
-					Dispositivo non supportato! <br />
-					Per una esperienza migliore, utilizza un dispositivo mobile
-				</p>
-				<Button
-					className='mt-2 text-xl p-5'
-					variant='avanti'
-					onClick={() => {
-						localStorage.clear();
-						setLoggato(false);
-					}}
-				>
-					Disconnettiti
-				</Button>
-			</div> */}
 		</>
 	);
 };

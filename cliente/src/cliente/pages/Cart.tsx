@@ -326,9 +326,15 @@ const Cart = ({
 								Ordina
 							</DrawerTrigger>
 							<DrawerContent>
-								<div className='w-full flex flex-col items-center justify-evenly h-40'>
-									<p className='text-xl'>Sicuro di voler ordinare?</p>
-									<p className='text-lg mt-1'>Totale: {totale.toFixed(2)}€</p>
+								<div className='w-full flex flex-col items-center justify-evenly py-5'>
+									<p className='text-xl text-marrone'>
+										Sicuro di voler ordinare?
+									</p>
+									<p className='text-lg mt-1 text-marrone'>
+										Totale:{" "}
+										<span className='font-bold'>{totale.toFixed(2)}€</span>
+									</p>
+									<p className='text-lg'>Orario:</p>
 									<div className='flex justify-center items-center flex-row w-full'>
 										<Select
 											onValueChange={(e) => {
