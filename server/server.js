@@ -2,6 +2,7 @@ let connection = "";
 
 import { createConnection } from "mysql";
 import express from "express";
+import mysql from "mysql";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import * as EmailValidator from "email-validator";
@@ -9,7 +10,6 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
-import mysql from "mysql";
 //import sharp from "sharp";
 import nodemailer from "nodemailer";
 //sharp.cache({ files: 0 });
@@ -18,7 +18,7 @@ const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
 // const url = "http://menshub.it";
-const url = "http://172.20.10.3:3000";
+const url = "http://localhost:3000";
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -111,51 +111,6 @@ server.use("/image", express.static("./image"));
 server.use(express.static("../cliente/build"));
 server.use(reactRoutes, express.static("../cliente/build"));
 
-// server.post("/request/products", (req, res) => {
-// 	let token = req.headers.authorization;
-// 	let idm_utente = "";
-// 	res.header("Access-Control-Allow-Origin", "*");
-
-// 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
-// 		if (err) {
-// 			res.send("Token non valido");
-// 			res.end();
-// 		} else {
-// 			try {
-// 				const queryPromise = new Promise((resolve, reject) => {
-// 					checkMensaCancellata(decoded.id, resolve);
-// 				});
-
-// 				queryPromise.then((ris) => {
-// 					if (ris == false) {
-// 						res.send("Mensa preferita cancellata");
-// 						res.end();
-// 					} else {
-// 						idm_utente = decoded.id_mensa;
-
-// 						connection.query(
-// 							"SELECT * FROM prodotti where id_mensa=" +
-// 								idm_utente +
-// 								" ORDER BY nome",
-// 							(err, result) => {
-// 								if (err) {
-// 									res.send("Errore del database");
-// 									res.end();
-// 								} else {
-// 									res.send(result);
-// 									res.end();
-// 								}
-// 							}
-// 						);
-// 					}
-// 				});
-// 			} catch (error) {
-// 				res.status(500).send("Errore del server");
-// 				res.end();
-// 			}
-// 		}
-// 	});
-// });
 server.post("/request/products", (req, res) => {
 	let token = req.headers.authorization;
 	let idm_utente = "";
@@ -171,37 +126,29 @@ server.post("/request/products", (req, res) => {
 					checkMensaCancellata(decoded.id, resolve);
 				});
 
-				queryPromise
-					.then((ris) => {
-						if (ris == false) {
-							res.send("Mensa preferita cancellata");
-							res.end();
-						} else {
-							idm_utente = decoded.id_mensa;
-
-							// Utilizzo del prepared statement con i placeholder
-							const sqlQuery =
-								"SELECT * FROM prodotti WHERE id_mensa = ? ORDER BY nome";
-
-							connection.query(
-								sqlQuery,
-								[mysql.escape(idm_utente)],
-								(err, result) => {
-									if (err) {
-										res.send("Errore del database");
-										res.end();
-									} else {
-										res.send(result);
-										res.end();
-									}
-								}
-							);
-						}
-					})
-					.catch((error) => {
-						res.status(500).send("Errore del server");
+				queryPromise.then((ris) => {
+					if (ris == false) {
+						res.send("Mensa preferita cancellata");
 						res.end();
-					});
+					} else {
+						idm_utente = decoded.id_mensa;
+
+						connection.query(
+							"SELECT * FROM prodotti where id_mensa=" +
+								idm_utente +
+								" ORDER BY nome",
+							(err, result) => {
+								if (err) {
+									res.send("Errore del database");
+									res.end();
+								} else {
+									res.send(result);
+									res.end();
+								}
+							}
+						);
+					}
+				});
 			} catch (error) {
 				res.status(500).send("Errore del server");
 				res.end();
@@ -273,8 +220,9 @@ server.post("/request/mensa", (req, res) => {
 });
 
 server.post("/insert/mensa", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	const { nome, indirizzo, regione, provincia, comune, cap, email, telefono } =
-		req.body;
+		sanitizedBody;
 
 	const query = `INSERT INTO mense (nome, indirizzo, regione, provincia, comune, cap, email, telefono) VALUES ('${nome}', '${indirizzo}', '${regione}', '${provincia}', '${comune}', ${cap}, '${email}', '${telefono}')`;
 
@@ -290,7 +238,8 @@ server.post("/insert/mensa", (req, res) => {
 
 server.post("/modify/mensa", (req, res) => {
 	let token = req.headers.authorization;
-	let id_mensa = req.body.id_mensa;
+	const sanitizedBody = sanitizeRequestBody(req.body);
+	let id_mensa = sanitizedBody.id_mensa;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
@@ -416,6 +365,7 @@ server.post("/send/cart", (req, res) => {
 });
 
 server.post("/register/user", async function (req, res) {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	const {
 		nome,
 		cognome,
@@ -424,7 +374,7 @@ server.post("/register/user", async function (req, res) {
 		confirm_password,
 		cliente,
 		id_mensa,
-	} = req.body;
+	} = sanitizedBody;
 
 	if (!email || !password) {
 		res.send("Email o password mancante!");
@@ -534,8 +484,9 @@ server.post("/confirm/email", (req, res) => {
 });
 
 server.post("/login/user", async function (req, res) {
-	let email = req.body.email;
-	let password = req.body.password;
+	const sanitizedBody = sanitizeRequestBody(req.body);
+	let email = sanitizedBody.email;
+	let password = sanitizedBody.password;
 
 	if (EmailValidator.validate(email)) {
 		let query = `SELECT * FROM utenti WHERE email="${email}";`;
@@ -638,7 +589,8 @@ server.post("/request/profile", (req, res) => {
 });
 
 server.post("/recover/password", (req, res) => {
-	let email = req.body.email;
+	const sanitizedBody = sanitizeRequestBody(req.body);
+	let email = sanitizedBody.email;
 
 	let query = `SELECT * FROM utenti WHERE email="${email}";`;
 
@@ -656,6 +608,7 @@ server.post("/recover/password", (req, res) => {
 						email: result[0].email,
 						id_mensa: result[0].id_mensa,
 						cliente: result[0].cliente,
+						recover: true,
 					},
 					secretKey,
 					{ expiresIn: "90d" }
@@ -697,13 +650,32 @@ server.post("/recover/password", (req, res) => {
 	});
 });
 
+server.post("/check/recover", (req, res) => {
+	let token = req.headers.authorization;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			if (decoded.recover) {
+				res.send("Recover");
+				res.end();
+			} else {
+				res.send("No recover");
+				res.end();
+			}
+		}
+	});
+});
+
 server.post("/change/password", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	let token = req.headers.authorization;
 	let id_utente = null;
-	let old_psw = req.body.old_psw;
-	let new_psw = req.body.new_psw;
-	let confirm_new_psw = req.body.confirm_new_psw;
-
+	let old_psw = sanitizedBody.old_psw;
+	let new_psw = sanitizedBody.new_psw;
+	let confirm_new_psw = sanitizedBody.confirm_new_psw;
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			console.log("Token non valido");
@@ -791,146 +763,136 @@ server.post("/change/password", (req, res) => {
 });
 
 server.post("/delete/user", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	let token = req.headers.authorization;
-	let password = req.body.password;
-	let confirm_password = req.body.confirm_password;
+	let password = sanitizedBody.password;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			if (password != confirm_password) {
-				res.send("Le password non combaciano");
-				res.end();
-			} else {
-				let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+			let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
 
-				connection.query(query, (err, result) => {
-					if (err) {
-						res.send("Errore del database");
-						res.end();
-					} else {
-						if (result.length > 0) {
-							let cliente = result[0].cliente;
+			connection.query(query, (err, result) => {
+				if (err) {
+					res.send("Errore del database");
+					res.end();
+				} else {
+					if (result.length > 0) {
+						let cliente = result[0].cliente;
 
-							if (cliente == 1) {
-								query = `DELETE FROM utenti WHERE id=${decoded.id};`;
+						if (cliente == 1) {
+							query = `DELETE FROM utenti WHERE id=${decoded.id};`;
+						} else {
+							query = `SELECT * FROM utenti WHERE cliente=0 AND id_mensa=${decoded.id_mensa};`;
+						}
+
+						connection.query(query, (err, result) => {
+							if (err) {
+								res.send("Errore del database");
+								res.end();
 							} else {
-								query = `SELECT * FROM utenti WHERE cliente=0 AND id_mensa=${decoded.id_mensa};`;
+								if (cliente == 0 && result.length == 1) {
+									query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
+
+									connection.query(query, (err, result) => {
+										if (err) {
+											res.send("Errore del database");
+											res.end();
+										} else {
+											query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
+
+											connection.query(query, (err, result) => {
+												if (err) {
+													res.send("Errore del database");
+													res.end();
+												} else {
+													res.send("Mensa eliminata");
+													res.end();
+												}
+											});
+										}
+									});
+								} else if (cliente == 0 && result.length > 1) {
+									query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
+
+									connection.query(query, (err, result) => {
+										if (err) {
+											res.send("Errore del database");
+											res.end();
+										} else {
+											res.send("Utente eliminato");
+											res.end();
+										}
+									});
+								} else {
+									res.send("Utente eliminato");
+									res.end();
+								}
 							}
+						});
+					} else {
+						res.send("Password errata");
+						res.end();
+					}
+				}
+			});
+		}
+	});
+});
+
+server.post("/delete/mensa", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
+	let token = req.headers.authorization;
+	let password = sanitizedBody.password;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
+
+			connection.query(query, (err, result) => {
+				if (err) {
+					res.send("Errore del database");
+					res.end();
+				} else {
+					if (result.length > 0) {
+						let cliente = result[0].cliente;
+
+						if (cliente == 0) {
+							let query = `DELETE FROM utenti WHERE id_mensa=${decoded.id_mensa} AND cliente=0;`;
 
 							connection.query(query, (err, result) => {
 								if (err) {
 									res.send("Errore del database");
 									res.end();
 								} else {
-									if (cliente == 0 && result.length == 1) {
-										query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
+									let query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
 
-										connection.query(query, (err, result) => {
-											if (err) {
-												res.send("Errore del database");
-												res.end();
-											} else {
-												query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
-
-												connection.query(query, (err, result) => {
-													if (err) {
-														res.send("Errore del database");
-														res.end();
-													} else {
-														res.send("Mensa eliminata");
-														res.end();
-													}
-												});
-											}
-										});
-									} else if (cliente == 0 && result.length > 1) {
-										query = "DELETE FROM utenti WHERE id=" + decoded.id + ";";
-
-										connection.query(query, (err, result) => {
-											if (err) {
-												res.send("Errore del database");
-												res.end();
-											} else {
-												res.send("Utente eliminato");
-												res.end();
-											}
-										});
-									} else {
-										res.send("Utente eliminato");
-										res.end();
-									}
+									connection.query(query, (err, result) => {
+										if (err) {
+											res.send("Errore del database");
+											res.end();
+										} else {
+											res.send("Mensa eliminata");
+											res.end();
+										}
+									});
 								}
 							});
 						} else {
-							res.send("Password errata");
+							res.send("Non sei autorizzato a cancellare la mensa");
 							res.end();
 						}
-					}
-				});
-			}
-		}
-	});
-});
-
-server.post("/delete/mensa", (req, res) => {
-	let token = req.headers.authorization;
-	let password = req.body.password;
-	let confirm_password = req.body.confirm_password;
-
-	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
-		if (err) {
-			res.send("Token non valido");
-			res.end();
-		} else {
-			if (password != confirm_password) {
-				res.send("Le password non combaciano");
-				res.end();
-			} else {
-				let query = `SELECT * FROM utenti WHERE id=${decoded.id} AND password="${password}";`;
-
-				connection.query(query, (err, result) => {
-					if (err) {
-						res.send("Errore del database");
-						res.end();
 					} else {
-						if (result.length > 0) {
-							let cliente = result[0].cliente;
-
-							if (cliente == 0) {
-								let query = `DELETE FROM utenti WHERE id_mensa=${decoded.id_mensa} AND cliente=0;`;
-
-								connection.query(query, (err, result) => {
-									if (err) {
-										res.send("Errore del database");
-										res.end();
-									} else {
-										let query = `DELETE FROM mense WHERE id=${decoded.id_mensa};`;
-
-										connection.query(query, (err, result) => {
-											if (err) {
-												res.send("Errore del database");
-												res.end();
-											} else {
-												res.send("Mensa eliminata");
-												res.end();
-											}
-										});
-									}
-								});
-							} else {
-								res.send("Non sei autorizzato a cancellare la mensa");
-								res.end();
-							}
-						} else {
-							res.send("Password errata");
-							res.end();
-						}
+						res.send("Password errata");
+						res.end();
 					}
-				});
-			}
+				}
+			});
 		}
 	});
 });
@@ -1038,9 +1000,36 @@ server.post("/producer/get/products", (req, res) => {
 	});
 });
 
-server.post("/producer/get/top10Products", (req, res) => {
+server.post("/producer/set/paid", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	let token = req.headers.authorization;
-	let periodo = req.body.periodo;
+	let id_ordine = sanitizedBody.id_ordine;
+	let pagato = sanitizedBody.pagato;
+
+	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+		if (err) {
+			res.send("Token non valido");
+			res.end();
+		} else {
+			let query = `UPDATE ordini SET pagato=${pagato} WHERE id=${id_ordine};`;
+
+			connection.query(query, (err, result) => {
+				if (err) {
+					res.send("Errore del database");
+					res.end();
+				} else {
+					res.send("Pagamento aggiornato");
+					res.end();
+				}
+			});
+		}
+	});
+});
+
+server.post("/producer/get/top10Products", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
+	let token = req.headers.authorization;
+	let periodo = sanitizedBody.periodo;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
@@ -1095,8 +1084,9 @@ server.post("/producer/get/top10Products", (req, res) => {
 });
 
 server.post("/producer/get/stats", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	let token = req.headers.authorization;
-	let periodo = req.body.periodo;
+	let periodo = sanitizedBody.periodo;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, async (err, decoded) => {
 		if (err) {
@@ -1403,7 +1393,7 @@ server.post("/producer/get/orders", (req, res) => {
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
-                  WHERE id_mensa = ${id_utente} AND stato_ordine != 'completato' AND DATE(o.data) = CURDATE()`;
+                  WHERE id_mensa = ${id_utente} AND stato_ordine != 'completato'`;
 
 			connection.query(query, (err, result) => {
 				if (err) {
@@ -1470,8 +1460,9 @@ server.post("/producer/get/orders/completed", (req, res) => {
 });
 
 server.post("/producer/get/order", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	let token = req.headers.authorization;
-	let id_ordine = req.body.id_ordine;
+	let id_ordine = sanitizedBody.id_ordine;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
@@ -1514,9 +1505,10 @@ server.post("/producer/get/order", (req, res) => {
 });
 
 server.post("/producer/change/order", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	let token = req.headers.authorization;
-	let id_ordine = req.body.id_ordine;
-	let stato_ordine = req.body.stato_ordine;
+	let id_ordine = sanitizedBody.id_ordine;
+	let stato_ordine = sanitizedBody.stato_ordine;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
@@ -1561,8 +1553,9 @@ server.post("/producer/change/order", (req, res) => {
 });
 
 server.post("/producer/delete/order", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	let token = req.headers.authorization;
-	let id_ordine = req.body.id_ordine;
+	let id_ordine = sanitizedBody.id_ordine;
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
@@ -1585,8 +1578,9 @@ server.post("/producer/delete/order", (req, res) => {
 });
 
 server.post("/producer/edit/product", (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-		req.body;
+		sanitizedBody;
 
 	let token = req.headers.authorization;
 
@@ -1624,8 +1618,9 @@ server.post(
 	"/producer/editWithImg/product",
 	upload2.single("image"),
 	(req, res) => {
+		const sanitizedBody = sanitizeRequestBody(req.body);
 		const { id, nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-			req.body;
+			sanitizedBody;
 
 		let token = req.headers.authorization;
 
@@ -1757,8 +1752,9 @@ server.post(
 
 //richiesta da fare con form-data
 server.post("/producer/add/product", upload.single("image"), (req, res) => {
+	const sanitizedBody = sanitizeRequestBody(req.body);
 	const { nome, descrizione, allergeni, prezzo, categoria, disponibile } =
-		req.body;
+		sanitizedBody;
 
 	let token = req.headers.authorization;
 	let id_utente = "";
@@ -1876,7 +1872,8 @@ server.post("/producer/add/product", upload.single("image"), (req, res) => {
 });
 
 server.post("/producer/delete/product", (req, res) => {
-	const { id } = req.body;
+	const sanitizedBody = sanitizeRequestBody(req.body);
+	const { id } = sanitizedBody;
 
 	let query = `DELETE from prodotti WHERE id = '${id}';`;
 	let fileDaEliminare = "";
@@ -2002,6 +1999,23 @@ function checkMensaCancellata(id, resolve) {
 		console.log(error);
 		resolve(false);
 	}
+}
+
+function sanitizeString(value) {
+	if (value == null) return value;
+	let sanitizedValue = mysql.escape(value);
+	if (typeof value === "string") {
+		sanitizedValue = sanitizedValue.substring(1, sanitizedValue.length - 1);
+	}
+	return sanitizedValue;
+}
+
+function sanitizeRequestBody(reqBody) {
+	let sanitizedBody = {};
+	for (let key in reqBody) {
+		sanitizedBody[key] = sanitizeString(reqBody[key]);
+	}
+	return sanitizedBody;
 }
 
 const port = 6969;

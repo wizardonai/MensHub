@@ -9,7 +9,7 @@ import { Label } from "../components/shadcn/Label";
 import { sleep } from "../../utils";
 import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
-import { changePassword } from "../scripts/fetch";
+import { changePassword, checkRecover } from "../scripts/fetch";
 
 const PasswordDimenticata = ({
 	token,
@@ -163,21 +163,33 @@ const CambiaPassword = ({
 	);
 };
 
-const Pwdchange = ({
-	loggato,
-	setLoggato,
-}: {
-	loggato: string;
-	setLoggato: Function;
-}) => {
+const Pwdchange = () => {
 	const token: any = useLoaderData();
 
 	const [images, setImages] = useState([useRef(null), useRef(null)]);
+	const [loggato, setLoggato] = useState("?");
 
 	const navigate = useNavigate();
+
 	if (!token || token === "") {
 		navigate("/");
 		return;
+	}
+
+	if (loggato === "?") {
+		checkRecover(token).then((res) => {
+			if (res === "Token non valido") {
+				navigate("/");
+				return;
+			}
+
+			if (res === "Recover") {
+				setLoggato("no");
+				return;
+			}
+
+			setLoggato("si");
+		});
 	}
 
 	const animazioniImmagini = (sopra: number, sotto: number, height: number) => {
@@ -214,7 +226,7 @@ const Pwdchange = ({
 					className='absolute top-[-40svh] z-[-2] transition-[top] duration-1000 ease-in-out'
 					ref={images[0]}
 				/>
-				{loggato === "cliente" || loggato === "produttore" ? (
+				{loggato === "si" ? (
 					<CambiaPassword
 						token={token}
 						animazioniImmagini={animazioniImmagini}

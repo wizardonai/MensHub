@@ -7,7 +7,6 @@ import {
 	dataReg,
 	prodottoCarrello,
 } from "../../utils";
-import exp from "constants";
 
 const url = process.env.REACT_APP_URL || "";
 
@@ -390,6 +389,7 @@ export async function deleteUser(token: string, pwd: string) {
 	return response;
 }
 
+//ok
 export async function confirmEmail(token: string) {
 	let response;
 
@@ -397,6 +397,32 @@ export async function confirmEmail(token: string) {
 		method: "post",
 		maxBodyLength: Infinity,
 		url: `${url}/confirm/email`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + token,
+		},
+	};
+
+	await axios
+		.request(config)
+		.then((res) => {
+			response = res.data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+	return response;
+}
+
+//
+export async function checkRecover(token: string) {
+	let response;
+
+	let config = {
+		method: "post",
+		maxBodyLength: Infinity,
+		url: `${url}/check/recover`,
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: "Bearer " + token,

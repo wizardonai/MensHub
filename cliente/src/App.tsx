@@ -209,7 +209,7 @@ function App() {
 			},
 			{
 				path: "/changepwd/:token",
-				element: <Pwdchange loggato={loggato} setLoggato={setLoggato} />,
+				element: <Pwdchange />,
 				loader: ({ params }) => {
 					if (!params.token) return redirect("/home");
 					return params.token;
@@ -345,7 +345,7 @@ function App() {
 			},
 			{
 				path: "/changepwd/:token",
-				element: <Pwdchange loggato={loggato} setLoggato={setLoggato} />,
+				element: <Pwdchange />,
 				loader: ({ params }) => {
 					if (!params.token) return redirect("/home");
 					return params.token;
