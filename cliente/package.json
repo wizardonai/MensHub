@@ -41,7 +41,7 @@
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.3.3",
 		"usehooks-ts": "^3.0.1",
-		"vaul": "^0.8.0",
+		"vaul": "^0.9.1",
 		"web-vitals": "^2.1.0"
 	},
 	"scripts": {

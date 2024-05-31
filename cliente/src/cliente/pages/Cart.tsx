@@ -11,6 +11,7 @@ import {
 	Drawer,
 	DrawerClose,
 	DrawerContent,
+	DrawerHandle,
 	DrawerTrigger,
 } from "../components/shadcn/Drawer";
 import {
@@ -294,6 +295,19 @@ const Cart = ({
 		return;
 	}
 
+	function generaMinuti() {
+		let lista = [];
+		for (let i = 0; i < 60; i += 5) {
+			lista.push(
+				<SelectItem key={i} value={i < 10 ? "0" + i : i + ""}>
+					{i < 10 ? "0" + i : i + ""}
+				</SelectItem>
+			);
+		}
+
+		return lista;
+	}
+
 	return (
 		<>
 			<div className='h-svh w-svw tel:hidden'>
@@ -367,10 +381,7 @@ const Cart = ({
 												</p>
 											</SelectTrigger>
 											<SelectContent defaultValue={orario.split(":")[1]}>
-												<SelectItem value='00'>00</SelectItem>
-												<SelectItem value='15'>15</SelectItem>
-												<SelectItem value='30'>30</SelectItem>
-												<SelectItem value='45'>45</SelectItem>
+												{generaMinuti()}
 											</SelectContent>
 										</Select>
 									</div>
