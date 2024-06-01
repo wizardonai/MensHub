@@ -412,7 +412,7 @@ export default function Popup({
                   className="w-[225px] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro  bg-gialloSfondo"
                 />
               </div>
-              <div className="pl-[15px] pt-[3%]">
+              <div className="pl-[15px] pt-[5px]">
                 <p className=" font-bold select-none pointer-events-none text-marroneScuro">
                   Prezzo
                 </p>
@@ -426,7 +426,7 @@ export default function Popup({
                   className="w-[75px] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro bg-gialloSfondo"
                 />
               </div>
-              <div className="pl-[15px] pt-[3%]">
+              <div className="pl-[15px] pt-[5px]">
                 <p className="font-bold select-none pointer-events-none text-marroneScuro">
                   Scegli la categoria
                 </p>
@@ -465,7 +465,7 @@ export default function Popup({
                   )}
                 </div>
               </div>
-              <div className="pl-[15px] pt-[3%]">
+              <div className="pl-[15px] pt-[5px]">
                 <p className="font-bold select-none pointer-events-none text-marroneScuro">
                   Descrizione
                 </p>
@@ -474,7 +474,7 @@ export default function Popup({
                   ref={descrizione}
                   rows={4}
                   cols={50}
-                  className="w-[225px] h-[12svh] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro bg-gialloSfondo overflow-auto"
+                  className="w-[225px] h-[100px] mt-[5px] rounded-2xl px-[8px] border-[3px] border-arancioneChiaro bg-gialloSfondo overflow-auto"
                   style={{ scrollbarWidth: "none", resize: "none" }}
                 />
               </div>
@@ -525,7 +525,7 @@ export default function Popup({
                   />
                 </div>
               </div>
-              <div className="pt-[5%]">
+              <div className="pt-[7px]">
                 <p className="font-bold select-none pointer-events-none text-marroneScuro">
                   Allergeni
                 </p>
@@ -534,7 +534,7 @@ export default function Popup({
                   style={{ scrollbarWidth: "none" }}
                 >
                   <div
-                    className="flex flex-wrap overflow-auto w-[225px] h-[15svh]"
+                    className="flex flex-wrap overflow-auto w-[225px] h-[120px]"
                     style={{ scrollbarWidth: "none" }}
                     onMouseDown={handleVerticalMouseDown}
                     ref={verticalDivRef}
@@ -544,7 +544,7 @@ export default function Popup({
                         return (
                           <div
                             key={index}
-                            className="bg-verdeBordo h-[25px] rounded-full flex items-center px-3 mx-1 my-1 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
+                            className="bg-verdeBordo h-[25px] rounded-full flex items-center px-3 mx-1 my-[2px] mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
                             onClick={handleAllergeni(allergene.nome)}
                           >
                             <p className="capitalize text-[16px] select-none pointer-events-none text-gialloSfondo">
@@ -556,7 +556,7 @@ export default function Popup({
                         return (
                           <div
                             key={index}
-                            className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mx-1 my-1 mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
+                            className="bg-arancioneChiaro h-[25px] rounded-full flex items-center px-3 mx-1 my-[2px] mr-[1%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-arancioneBordo"
                             onClick={handleAllergeni(allergene.nome)}
                           >
                             <p className="capitalize text-[16px] select-none pointer-events-none">
@@ -576,7 +576,7 @@ export default function Popup({
               <>
                 <div
                   style={{ backgroundColor: "#d24a3c" }}
-                  className="w-[30px] h-[30px] flex justify-center rounded-full items-center my-4 mr-[2%] mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer"
+                  className="w-[30px] h-[30px] flex justify-center rounded-full items-center my-[2px] mr-[2%] mt-[20px] transform transition-transform hover:scale-105 hover:cursor-pointer"
                   onClick={() => {
                     deleteProdotto(
                       localStorage.getItem("token") || "scu",
@@ -610,7 +610,7 @@ export default function Popup({
                   />
                 </div>
                 <div
-                  className="bg-verdeBordo h-[25px] rounded-full flex items-center px-8 py-4 mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
+                  className="bg-verdeBordo h-[29px] rounded-full flex items-center px-8 py-[2px] mt-[20px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
                   id="divFiltro"
                   onClick={saveButton}
                 >
@@ -624,7 +624,7 @@ export default function Popup({
               </>
             ) : (
               <div
-                className="bg-verdeBordo h-[25px] rounded-full flex items-center px-8 py-4 mt-[3svh] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
+                className="bg-verdeBordo h-[29px] rounded-full flex items-center px-8 py-[2px] mt-[20px] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-verdeBordoHover"
                 id="divFiltro"
                 onClick={submitButton}
               >
