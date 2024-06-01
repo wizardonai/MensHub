@@ -402,7 +402,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                 </p>
                 <img
                   src={hostnameProductor + "check.png"}
-                  className="h-2/3"
+                  className="h-1/2"
                   style={{
                     filter:
                       "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
@@ -651,14 +651,14 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                       style={{
                         boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
                       }}
-                      className="w-[33.5%] h-[8svh] bg-rossoScuro rounded-3xl flex justify-center items-center mr-[5%] transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-rossoScuroHover"
+                      className="w-[33.5%] h-[8svh] bg-rossoScuro rounded-3xl flex justify-center items-center transform transition-transform hover:scale-105 hover:cursor-pointer hover:bg-rossoScuroHover"
                     >
-                      <p className="font-bold text-xl text-white ml-[8%] w-1/2">
+                      <p className="font-bold text-xl pl-[10%] text-white w-1/2 mr-[22%]">
                         Elimina mensa
                       </p>
                       <img
                         src={hostnameProductor + "deleteMensa.png"}
-                        className="h-2/3"
+                        className="h-1/2"
                         style={{
                           filter:
                             "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(107deg) brightness(105%) contrast(102%)",
