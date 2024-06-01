@@ -1,4 +1,4 @@
-import React, { DragEvent } from "react";
+import React, { DragEvent, useEffect, useState } from "react";
 import { hostnameProductor, styleMap } from "../../App";
 import "../pages/css/shakera.css";
 import { getOrdine, updateOrdine } from "../scripts/fetch";
@@ -28,6 +28,12 @@ const OrdersTable = ({
   setIsDragging: Function;
   setProdotti: Function;
 }) => {
+  const [cambiabile, setCambiabile] = useState<boolean>(true);
+
+  useEffect(() => {
+    setCambiabile(true);
+  }, ordineTrascinato);
+
   const handleDragStart = (event: DragEvent<HTMLDivElement>, ordine: any) => {
     event.currentTarget.classList.add("dragging");
     setOrdineTrascinato(ordine);
@@ -52,7 +58,7 @@ const OrdersTable = ({
         style={{
           pointerEvents: "none",
           opacity:
-            isDragging && ordineTrascinato.stato_ordine !== stato
+            isDragging && cambiabile && ordineTrascinato.stato_ordine !== stato
               ? "100%"
               : "0%",
         }}
@@ -68,7 +74,7 @@ const OrdersTable = ({
           scrollbarWidth: "none",
           border: "10px solid " + colore,
           opacity:
-            isDragging && ordineTrascinato.stato_ordine !== stato
+            isDragging && cambiabile && ordineTrascinato.stato_ordine !== stato
               ? "50%"
               : "100%",
         }}
@@ -76,9 +82,10 @@ const OrdersTable = ({
         onDrop={handleDrop}
         onDragOver={() => {
           if (ordineTrascinato !== null) {
-            if (ordineTrascinato.stato_ordine !== stato) {
+            if (ordineTrascinato.stato_ordine !== stato && cambiabile) {
               //cambia stato ordine
               ordineTrascinato.stato_ordine = stato;
+              setCambiabile(false);
 
               updateOrdine(
                 localStorage.getItem("token") || "scu",
