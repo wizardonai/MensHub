@@ -419,11 +419,12 @@ export default function Popup({
                 <Input
                   id="prezzo"
                   placeholder=""
-                  type="numeric"
+                  type="number"
                   defaultValue=""
                   ref={prezzo}
                   step="0.01"
-                  className="w-[75px] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro bg-gialloSfondo"
+                  min="0"
+                  className="w-[75px] mt-[5px] rounded-2xl border-[3px] border-arancioneChiaro bg-gialloSfondo [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
               <div className="pl-[15px] pt-[5px]">

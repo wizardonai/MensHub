@@ -267,13 +267,13 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
           <NavbarProductor page="profileProductor" />
         </div>
         <div style={css.centerPage}>
-          <div>
+          <div className="h-[4svh]">
             <p className="font-bold text-5xl text-marroneScuro">
               {dati[0].nome}
             </p>
           </div>
-          <div className="flex">
-            <div className="pt-[15px] w-1/2">
+          <div className="flex h-[35svh]">
+            <div className="pt-[5svh] w-1/2">
               <div className="flex">
                 <div className="w-1/2">
                   <p className="font-bold text-xl text-marroneScuro">Email:</p>
@@ -387,7 +387,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                 {dati[0].indirizzo}
               </p>
             </div>
-            <div className="pt-[15px] w-1/2 ">
+            <div className="pt-[5svh] w-1/2 ">
               <div
                 style={{
                   boxShadow: "3px 3px 17px -3px rgba(0, 0, 0, 0.30)",
@@ -402,7 +402,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                 </p>
                 <img
                   src={hostnameProductor + "check.png"}
-                  className="h-1/2"
+                  className="h-1/2 mr-[3%]"
                   style={{
                     filter:
                       "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
@@ -426,7 +426,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                       </p>
                       <img
                         src={hostnameProductor + "connected.png"}
-                        className="h-1/2"
+                        className="h-1/2 mr-[3%]"
                         style={{
                           filter:
                             "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
@@ -568,7 +568,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                   </p>
                   <img
                     src={hostnameProductor + "logout.png"}
-                    className="h-1/2"
+                    className="h-1/2 mr-[3%]"
                     style={{
                       filter:
                         "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
@@ -590,7 +590,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                       </p>
                       <img
                         src={hostnameProductor + "deleteBin.png"}
-                        className="h-1/2"
+                        className="h-1/2 mr-[3%]"
                         style={{
                           filter:
                             "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(107deg) brightness(105%) contrast(102%)",
@@ -658,7 +658,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                       </p>
                       <img
                         src={hostnameProductor + "deleteMensa.png"}
-                        className="h-1/2"
+                        className="h-1/2 mr-[3%]"
                         style={{
                           filter:
                             "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(107deg) brightness(105%) contrast(102%)",
@@ -716,7 +716,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
               </div>
             </div>
           </div>
-          <div className="flex pt-[20px]">
+          <div className="flex pt-[3svh] h-[35svh]">
             <div className="w-1/2">
               <p className="font-bold text-2xl text-marroneScuro">
                 Totale vendite:{" "}
@@ -752,7 +752,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                   )
                 )}
               </div>
-              <ResponsiveContainer width="85%" height="70%">
+              <ResponsiveContainer width="85%" height="95%">
                 <BarChart
                   className="ml-[-20px] mt-[20px]"
                   data={ordiniCompletati}
@@ -770,13 +770,13 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                 Prodotti più venduti:
               </p>
               <div>
-                {topProdotti.map(
+                {topProdotti.slice(0, 5).map(
                   (item: any, index: number) => (
                     count++,
                     (
                       <div
                         key={index}
-                        className="flex w-[70%] mt-[3px] border-b-2 border-marroneScuro pb-1"
+                        className="flex h-[7svh] w-[70%] border-b-2 border-marroneScuro pb-1 items-center"
                       >
                         <div className="flex justify-center w-[10%]">
                           {count < 4 ? (
