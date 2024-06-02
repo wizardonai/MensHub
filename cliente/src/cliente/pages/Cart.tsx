@@ -23,6 +23,7 @@ import {
 } from "../components/shadcn/Select";
 import { Button } from "../components/shadcn/Button";
 import carrelloVuoto from "../img/carrelloVuoto.webp";
+import { useNavigate } from "react-router-dom";
 
 const Elemento = ({
 	item,
@@ -210,6 +211,8 @@ const Elemento = ({
 						""
 					);
 
+					divtot.current?.classList.replace("rounded-l-3xl", "rounded-3xl");
+
 					//@ts-ignore
 					divtot.current.children["altriDati"].className =
 						//@ts-ignore
@@ -257,13 +260,17 @@ const Cart = ({
 	setProducts,
 	carrello,
 	setCarrello,
-}: {
+}: // setApriUltimoAcquisto,
+{
 	setLoggato: Function;
 	setDatiUtente: Function;
 	setProducts: Function;
 	carrello: Array<prodottoCarrello>;
 	setCarrello: Function;
+	// setApriUltimoAcquisto: Function;
 }) => {
+	const navigate = useNavigate();
+
 	const [orario, setOrario] = useState("");
 
 	const [totale, setTotale] = useState(0);
@@ -418,7 +425,11 @@ const Cart = ({
 														localStorage.setItem("cart", "[]");
 														setCarrello([]);
 														toast.info("Ordine effettuato");
-													} else toast.error(res + "");
+														// setApriUltimoAcquisto(true);
+														navigate("/profile/cronologiaacquisti");
+														return;
+													}
+													toast.error(res + "");
 												});
 											}}
 											className='inline-flex items-center justify-center whitespace-nowrap  text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-marrone text-biancoLatte border-2 border-marrone font-bold shadow-lg tracking-wide rounded-2xl w-[40%] p-2'

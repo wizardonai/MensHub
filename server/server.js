@@ -18,7 +18,7 @@ const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
 // const url = "http://menshub.it";
-const url = "http://localhost:3000";
+const url = "http://172.20.10.3:3000";
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -923,7 +923,7 @@ server.post("/request/orders", (req, res) => {
                 FROM ordini AS o
 								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
 								WHERE id_utente="${id_utente}" AND id_mensa = ${id_mensa}
-								ORDER BY o.data, po.id_ordine;`;
+								ORDER BY o.data desc, po.id_ordine`;
 
 						connection.query(query, (err, result) => {
 							if (err) {
@@ -1380,20 +1380,20 @@ server.post("/producer/get/stats", (req, res) => {
 
 server.post("/producer/get/orders", (req, res) => {
 	let token = req.headers.authorization;
-	let id_utente = "";
+	let id_mensa = "";
 
 	jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
 		if (err) {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			id_utente = decoded.id;
+			id_mensa = decoded.id_mensa;
 
 			let query = `SELECT id as id_ordine, id_utente, stato_ordine, ora_consegna, pagato, num_prodotti, tot_prezzo  
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
-                  WHERE id_mensa = ${id_utente} AND stato_ordine != 'completato'`;
+                  WHERE id_mensa = ${id_mensa} AND stato_ordine != 'completato'`;
 
 			connection.query(query, (err, result) => {
 				if (err) {
@@ -1434,12 +1434,12 @@ server.post("/producer/get/orders/completed", (req, res) => {
 			res.send("Token non valido");
 			res.end();
 		} else {
-			let id_utente = decoded.id;
+			let id_mensa = decoded.id_mensa;
 			let query = `SELECT id as id_ordine, id_utente, stato_ordine, data, ora_consegna, pagato, num_prodotti, tot_prezzo  
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
-                  WHERE o.id_mensa = ${id_utente} AND o.stato_ordine = 'completato'
+                  WHERE o.id_mensa = ${id_mensa} AND o.stato_ordine = 'completato'
                   ORDER BY o.data DESC;`;
 
 			connection.query(query, (err, result) => {

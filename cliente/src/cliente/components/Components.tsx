@@ -99,7 +99,7 @@ export const Navbar = ({
 							}}
 							ref={buttons.home}
 							onClick={() => {
-								if (page.split("-")[0] === "Aggiungi al carrello") {
+								if (page.split("-")[0] === "Aggiungi") {
 									const id = page.split("-")[1];
 									let carrelloTmp = carrello;
 									let presente = false;

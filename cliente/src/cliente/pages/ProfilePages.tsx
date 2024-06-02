@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ordine, prodotto, typeProfilo, urlImg } from "../../utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getCronologia } from "../scripts/fetch";
 import { Container, Navbar, Topbar } from "../components/Components";
 import {
@@ -19,14 +19,22 @@ const CronologiaAcquistiPage = ({
 	setLoggato,
 	setDatiUtente,
 	setProducts,
-}: {
+}: // apriUltimoAcquisto,
+// setApriUltimoAcquisto,
+{
 	products: Array<prodotto>;
 	setLoggato: Function;
 	setDatiUtente: Function;
 	setProducts: Function;
+	// apriUltimoAcquisto: boolean;
+	// setApriUltimoAcquisto: Function;
 }) => {
 	const [chiesto, setChiesto] = useState(false);
 	const [cronologia, setCronologia] = useState([] as Array<ordine>);
+
+	// useEffect(() => {
+	// 	setApriUltimoAcquisto(false);
+	// }, []);
 
 	if (localStorage.getItem("loggato") !== '"cliente"') {
 		setLoggato("?");
@@ -53,8 +61,7 @@ const CronologiaAcquistiPage = ({
 				setLoggato("false");
 			}
 			if (typeof res !== "string" && res.length > 0) {
-				setCronologia(res.filter((item: any) => item.stato_ordine !== ""));
-				console.log(typeof res);
+				setCronologia(res);
 			} else setCronologia([]);
 		});
 
@@ -73,6 +80,8 @@ const CronologiaAcquistiPage = ({
 	}
 
 	const generaRighe = () => {
+		// console.log(apriUltimoAcquisto);
+
 		return cronologia.map((item: ordine, index: number) => {
 			return (
 				<SectionToggleItem
@@ -134,13 +143,20 @@ const CronologiaAcquistiPage = ({
 				<Topbar name='' page='Cronologia' />
 				<Container>
 					<div className='w-full flex flex-col items-center justify-center'>
-						<SectionToggle type='single' collapsible className='w-3/4'>
-							{typeof cronologia === "string" || cronologia.length === 0 ? (
-								<p>NESSUN ORDINE COMPLETATO!</p>
-							) : (
-								generaRighe()
-							)}
-						</SectionToggle>
+						{typeof cronologia === "string" || cronologia.length === 0 ? (
+							<p>NESSUN ORDINE!</p>
+						) : (
+							<SectionToggle
+								type='single'
+								collapsible
+								className='w-3/4'
+								defaultValue={
+									cronologia.length > 0 ? cronologia[0].id_ordine + "" : ""
+								}
+							>
+								{generaRighe()}
+							</SectionToggle>
+						)}
 					</div>
 				</Container>
 				<Toaster richColors />
@@ -162,6 +178,7 @@ const CronologiaAcquistiPage = ({
 					Disconnettiti
 				</Button>
 			</div>
+			<Toaster richColors />
 		</>
 	);
 };
@@ -171,11 +188,15 @@ const ProfilePages = ({
 	setLoggato,
 	setDatiUtente,
 	setProducts,
-}: {
+}: // apriUltimoAcquisto,
+// setApriUltimoAcquisto,
+{
 	products: Array<prodotto>;
 	setLoggato: Function;
 	setDatiUtente: Function;
 	setProducts: Function;
+	// apriUltimoAcquisto: boolean;
+	// setApriUltimoAcquisto: Function;
 }) => {
 	const { page } = useParams<{ page: string }>();
 
@@ -191,6 +212,8 @@ const ProfilePages = ({
 					setLoggato={setLoggato}
 					setDatiUtente={setDatiUtente}
 					setProducts={setProducts}
+					// setApriUltimoAcquisto={setApriUltimoAcquisto}
+					// apriUltimoAcquisto={apriUltimoAcquisto}
 				/>
 			);
 		default:

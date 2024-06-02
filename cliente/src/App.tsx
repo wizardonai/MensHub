@@ -64,6 +64,8 @@ function App() {
 	);
 	const [lunghezzaCarrello, setLunghezzaCarrello] = useState(0);
 
+	// const [apriUltimoAcquisto, setApriUltimoAcquisto] = useState(false);
+
 	//produttore
 	const [ordini, setOrdini] = useState<any>([]);
 	const [flag, setFlag] = useState<boolean>(false);
@@ -163,6 +165,7 @@ function App() {
 						setProducts={setProducts}
 						carrello={carrello}
 						setCarrello={setCarrello}
+						// setApriUltimoAcquisto={setApriUltimoAcquisto}
 					/>
 				),
 			},
@@ -186,6 +189,8 @@ function App() {
 						setLoggato={setLoggato}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
+						// apriUltimoAcquisto={apriUltimoAcquisto}
+						// setApriUltimoAcquisto={setApriUltimoAcquisto}
 					/>
 				),
 			},

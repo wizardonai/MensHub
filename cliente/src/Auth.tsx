@@ -894,6 +894,8 @@ const RegisterCliente = ({
 	const [privacy, setPrivacy] = useState(true);
 	const [cookie, setCookie] = useState(true);
 
+	const [openMensaPreferita, setOpenMensaPreferita] = useState(false);
+
 	if (mense.length === 0) {
 		setMense([{ id: -1, indirizzo: "richiesto", nome: "richiesto" }]);
 		if (id_mensa === -1) {
@@ -1016,6 +1018,7 @@ const RegisterCliente = ({
 								setData({ ...data, id_mensa: e });
 							}}
 							defaultValue={data.id_mensa}
+							onOpenChange={(e) => setOpenMensaPreferita(e)}
 						>
 							<SelectTrigger
 								className='w-full m-0 bg-biancoLatte text-marrone rounded-3xl shadow-lg border-0'
@@ -1174,6 +1177,7 @@ const RegisterCliente = ({
 						}
 					}}
 					className='w-1/2 rounded-3xl mt-1 mr-1'
+					disabled={openMensaPreferita}
 				>
 					Indietro
 				</Button>
@@ -1196,7 +1200,7 @@ const RegisterCliente = ({
 									setCookie(false);
 							  }
 					}
-					disabled={emailInviata || !privacy || !cookie}
+					disabled={emailInviata || !privacy || !cookie || openMensaPreferita}
 					className='w-1/2 rounded-3xl mt-1'
 				>
 					{pagina === "2" ? "Registrati" : "Avanti"}
