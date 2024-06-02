@@ -1,10 +1,19 @@
 import { hostnameProductor, styleMap } from "../../App";
 
 import { useLoaderData } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavbarProductor from "../components/NavbarProductor";
 import { getOrdine } from "../scripts/fetch";
 import { Button } from "../components/shadcn/Button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/shadcn/Popover";
+import { cn } from "../components/shadcn/utils";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
+import { Calendar } from "../components/shadcn/Calendar";
 
 const TabellaOrdini = ({
   ordineCliccato,
@@ -21,10 +30,65 @@ const TabellaOrdini = ({
   setProdotti: Function;
   titolo: string;
 }) => {
+  const [date, setDate] = useState<Date>();
+  const [ordiniCpy, setOrdiniCpy] = useState<any>(ordini);
+
+  useEffect(() => {
+    if (titolo === "Passato") {
+      if (date !== undefined) {
+        setOrdiniCpy(
+          ordini.filter(
+            (ordine: any) =>
+              ordine.data.split("T")[0] == format(date, "yyyy-MM-dd")
+          )
+        );
+      } else {
+        setOrdiniCpy(ordini);
+      }
+    }
+  }, [titolo, date, ordini]);
+
   return (
     <div className="w-1/2 h-[100%]">
-      <p className="font-bold text-marroneScuro text-2xl pl-[5%]">{titolo}</p>
-      {ordini.map((ordine: any) => {
+      <p className="font-bold text-marroneScuro text-2xl pl-[5%] flex">
+        <div className="w-1/2">{titolo} </div>
+        <div className="w-1/2 flex justify-end mr-[2%]">
+          {titolo === "Passato" ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  className="w-[20%] transform transition-transform hover:scale-105 hover:cursor-pointer"
+                  variant={"ghost"}
+                >
+                  <img
+                    src={hostnameProductor + "calendar.png"}
+                    style={
+                      date === undefined
+                        ? {
+                            filter:
+                              "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                          }
+                        : {
+                            filter:
+                              "brightness(0) saturate(100%) invert(86%) sepia(28%) saturate(7367%) hue-rotate(344deg) brightness(86%) contrast(94%)",
+                          }
+                    }
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          ) : null}
+        </div>
+      </p>
+      {ordiniCpy.map((ordine: any) => {
         if (
           titolo === "Oggi" &&
           ordine.data.split("T")[0] == new Date().toISOString().split("T")[0]
@@ -109,9 +173,12 @@ const TabellaOrdini = ({
             </div>
           );
         if (
-          ordine.data.split("T")[0] != new Date().toISOString().split("T")[0] &&
-          titolo === "Passato"
-        )
+          (ordine.data.split("T")[0] !=
+            new Date().toISOString().split("T")[0] &&
+            titolo === "Passato") ||
+          (date !== undefined &&
+            ordine.data.split("T")[0] == format(date, "yyyy-MM-dd"))
+        ) {
           return (
             <div className="flex flex-col items-center">
               <div
@@ -191,6 +258,7 @@ const TabellaOrdini = ({
               ) : null}
             </div>
           );
+        }
       })}
     </div>
   );
