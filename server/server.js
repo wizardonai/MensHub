@@ -85,7 +85,7 @@ function connetti() {
 }
 
 server.use(cors({
-	origin: "http://127.0.0.1:80" 
+	origin: "http://127.0.0.1:80"
 }));
 server.use(json());
 server.use(express.json());
@@ -1340,7 +1340,7 @@ server.post("/producer/get/stats", (req, res) => {
 						});
 
 					break;
-					case "1A":
+				case "1A":
 					// Loop attraverso gli ultimi 12 mesi
 					for (let i = 0; i < 12; i++) {
 						const currentDate = new Date();
@@ -1380,7 +1380,8 @@ server.post("/producer/get/stats", (req, res) => {
 								const vendite = result.length > 0 && result[0].vendite ? result[0].vendite : 0;
 								return { vendite: vendite, periodo: periodo };
 							});
-							res.send(ris);
+							const risInverted = ris.reverse(); // Inverti l'array
+							res.send(risInverted);
 							res.end();
 						})
 						.catch((err) => {
