@@ -955,6 +955,7 @@ server.post("/request/orders", (req, res) => {
 											id_ordine: row.id_ordine,
 											stato_ordine: row.stato_ordine,
 											data: row.data,
+											ora_consegna: row.ora_consegna,
 											prodotti: [],
 										};
 										orders.push(currentOrder);
