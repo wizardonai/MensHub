@@ -488,7 +488,11 @@ const ContattiMensa = ({
 					id='telefono'
 					type='tel'
 					onChange={(e) => {
-						setData({ ...data, telefono: e.target.value });
+						setData({
+							...data,
+							telefono: e.target.value.replace(/[^0-9]/, ""),
+						});
+						e.target.value = e.target.value.replace(/[^0-9]/, "");
 					}}
 					pattern='[0-9]{10}'
 					className='bg-biancoLatte rounded-3xl border-0 shadow-lg focus:outline-none focus:ring-transparent text-marrone w-full'
@@ -1163,7 +1167,7 @@ const RegisterCliente = ({
 
 	return (
 		<div
-			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll tel:overflow-y-scroll w-3/4'
+			className='flex flex-col justify-between items-center animate-showElement overflow-y-scroll tel:overflow-y-hidden w-3/4'
 			ref={div}
 		>
 			<div className='grid w-full items-center gap-4'>
