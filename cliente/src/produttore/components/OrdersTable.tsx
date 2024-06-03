@@ -94,7 +94,7 @@ const OrdersTable = ({
                 ordineTrascinato.id_ordine,
                 stato
               )
-                .then((response) => {})
+                .then((response) => { })
                 .catch((err: any) => {
                   console.log(err);
                 });
@@ -110,9 +110,10 @@ const OrdersTable = ({
                 });
                 return updatedOrdini;
               });
-              if (ordineCliccato.id_ordine === ordineTrascinato.id_ordine) {
-                setOrdineCliccato({ ...ordineCliccato, stato_ordine: stato });
-              }
+              if (ordineCliccato !== null && ordineCliccato !== undefined)
+                if (ordineCliccato.id_ordine === ordineTrascinato.id_ordine) {
+                  setOrdineCliccato({ ...ordineCliccato, stato_ordine: stato });
+                }
 
               setIsDragging(false);
             }

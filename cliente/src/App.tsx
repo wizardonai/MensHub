@@ -26,6 +26,7 @@ import MenuPageProductor from "./produttore/pages/MenuPageProductor";
 import CompletedOrders from "./produttore/pages/CompletedOrders";
 import ProfileProductor from "./produttore/pages/ProfileProductor";
 import { toast } from "sonner";
+import { set } from "date-fns";
 
 export const hostnameProductor = (process.env.REACT_APP_URL || "") + "/image/";
 
@@ -67,6 +68,7 @@ function App() {
 	const [lunghezzaCarrello, setLunghezzaCarrello] = useState(0);
 
 	const [chiestoProfilo, setChiestoProfilo] = useState(false);
+	const [chiestoProdotti, setChiestoProdotti] = useState(false);
 
 	//produttore
 	const [ordini, setOrdini] = useState<any>([]);
@@ -123,22 +125,22 @@ function App() {
 					setDatiUtente(res);
 				}
 			});
+		}
+		if (products.length === 0 && !chiestoProdotti) {
+			setChiestoProdotti(true);
+			getProdotti(localStorage.getItem("token") || "scu").then((res: any) => {
+				if (!res) {
+					return;
+				}
+				if (res === "Token non valido") {
+					localStorage.setItem("loggato", "false");
+					return;
+				}
 
-			if (products.length === 0) {
-				getProdotti(localStorage.getItem("token") || "scu").then((res: any) => {
-					if (!res) {
-						return;
-					}
-					if (res === "Token non valido") {
-						localStorage.setItem("loggato", "false");
-						return;
-					}
-
-					if (typeof res === "object") {
-						setProducts(res);
-					}
-				});
-			}
+				if (typeof res === "object") {
+					setProducts(res);
+				}
+			});
 		}
 
 		router = createBrowserRouter([
@@ -151,6 +153,7 @@ function App() {
 						setCarrello={setCarrello}
 						lunghezzaCarrello={lunghezzaCarrello}
 						setLoggato={setLoggato}
+						loggato={loggato}
 					/>
 				),
 			},

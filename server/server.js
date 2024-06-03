@@ -1349,9 +1349,6 @@ server.post("/producer/get/stats", (req, res) => {
 				case "1A":
 					const oneMonth = 1000 * 60 * 60 * 24 * 30; // Approssimazione di un mese in millisecondi
 
-					// Creazione dell'array di promesse
-					const promises = [];
-
 					// Loop attraverso gli ultimi 12 mesi
 					for (let i = 11; i >= 0; i--) {
 						const currentDate = new Date();
@@ -1364,17 +1361,17 @@ server.post("/producer/get/stats", (req, res) => {
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
-													SELECT SUM(quantita) AS vendite
-													FROM prodotti_ordini
-													WHERE id_ordine IN (
-														SELECT id
-														FROM ordini
-														WHERE id_mensa = ${id_mensa}
-														AND DATE(data) >= '${startDate.toISOString().split("T")[0]}'
-														AND DATE(data) < '${endDate.toISOString().split("T")[0]}'
-														AND stato_ordine = 'completato'
-													)
-												`;
+											SELECT SUM(quantita) AS vendite
+											FROM prodotti_ordini
+											WHERE id_ordine IN (
+												SELECT id
+												FROM ordini
+												WHERE id_mensa = ${id_mensa}
+												AND DATE(data) >= '${startDate.toISOString().split("T")[0]}'
+												AND DATE(data) < '${endDate.toISOString().split("T")[0]}'
+												AND stato_ordine = 'completato'
+											)
+										`;
 
 							connection.query(query, (err, result) => {
 								if (err) reject(err);

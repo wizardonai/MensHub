@@ -362,12 +362,14 @@ const Homepage = ({
 	setCarrello,
 	lunghezzaCarrello,
 	setLoggato,
+	loggato,
 }: {
 	username: string;
 	products: Array<prodotto>;
 	setCarrello: Function;
 	lunghezzaCarrello: number;
 	setLoggato: Function;
+	loggato: any;
 }) => {
 	const [assegnato, setAssegnato] = useState(false);
 	const [filteredProducts, setFilteredProducts] = useState(
@@ -384,22 +386,13 @@ const Homepage = ({
 		["bibita", bibitaImg],
 	]);
 
-	if (localStorage.getItem("loggato") !== '"cliente"') {
+	if (loggato !== "cliente") {
 		setLoggato("?");
 		return;
 	}
 
-	if (!products)
-		return (
-			<div className='w-full h-full flex justify-center items-center bg-white'>
-				<video autoPlay loop muted>
-					<source src={loadingVideo} type='video/mp4' />
-				</video>
-			</div>
-		);
-
 	if (products.length === 0) {
-		if (localStorage.getItem("token") === "false") {
+		if (typeof localStorage.getItem("token") !== "string") {
 			navigate("/login");
 			return;
 		}
