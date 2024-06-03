@@ -66,6 +66,7 @@ const TabellaOrdini = ({
                   variant={"ghost"}
                 >
                   <img
+                    className="select-none pointer-events-none"
                     src={hostnameProductor + "calendar.png"}
                     style={{
                       filter:
@@ -79,6 +80,9 @@ const TabellaOrdini = ({
                   mode="single"
                   selected={date}
                   onSelect={setDate}
+                  disabled={(date) =>
+                    date >= new Date() || date < new Date("1900-01-01")
+                  }
                   initialFocus
                 />
               </PopoverContent>
@@ -127,7 +131,7 @@ const TabellaOrdini = ({
                 <div className="flex items-center">
                   <div className="flex w-1/2 items-center justify-end">
                     <img
-                      className="h-5 mr-[5px]"
+                      className="h-5 mr-[5px] select-none pointer-events-none"
                       style={{
                         filter:
                           "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
@@ -221,7 +225,7 @@ const TabellaOrdini = ({
                   </p>
                 </div>
                 <div className="flex items-center">
-                  <div className="flex w-1/2 items-center justify-end">
+                  <div className="flex w-1/2 items-center justify-end select-none pointer-events-none">
                     <img
                       className="h-5 mr-[5px]"
                       style={{
