@@ -50,7 +50,6 @@ const TabellaOrdini = ({
       }
     }
   }, [titolo, date, ordini]);
-  console.log(date?.toString().split("T")[0]);
 
   return (
     <div className="w-1/2 h-[100%]">
