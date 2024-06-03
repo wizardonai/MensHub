@@ -31,6 +31,9 @@ const TabellaOrdini = ({
   titolo: string;
 }) => {
   const [date, setDate] = useState<Date>();
+  const day = date?.getDate();
+  const month = (date?.getMonth() ?? 0) + 1;
+  const year = date?.getFullYear();
   const [ordiniCpy, setOrdiniCpy] = useState<any>(ordini);
 
   useEffect(() => {
@@ -47,6 +50,7 @@ const TabellaOrdini = ({
       }
     }
   }, [titolo, date, ordini]);
+
   return (
     <div className="w-1/2 h-[100%]">
       <p className="font-bold text-marroneScuro text-2xl pl-[5%] flex">
@@ -55,7 +59,7 @@ const TabellaOrdini = ({
             ? titolo
             : date === undefined
             ? "Tutte le date"
-            : date.toISOString().split("T")[0]}{" "}
+            : year + "-" + month + "-" + day}
         </div>
         <div className="w-1/2 flex justify-end mr-[6%]">
           {titolo === "Passato" ? (
@@ -66,6 +70,7 @@ const TabellaOrdini = ({
                   variant={"ghost"}
                 >
                   <img
+                    className="select-none pointer-events-none"
                     src={hostnameProductor + "calendar.png"}
                     style={{
                       filter:
@@ -79,6 +84,9 @@ const TabellaOrdini = ({
                   mode="single"
                   selected={date}
                   onSelect={setDate}
+                  disabled={(date) =>
+                    date >= new Date() || date < new Date("1900-01-01")
+                  }
                   initialFocus
                 />
               </PopoverContent>
@@ -127,7 +135,7 @@ const TabellaOrdini = ({
                 <div className="flex items-center">
                   <div className="flex w-1/2 items-center justify-end">
                     <img
-                      className="h-5 mr-[5px]"
+                      className="h-5 mr-[5px] select-none pointer-events-none"
                       style={{
                         filter:
                           "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
@@ -221,7 +229,7 @@ const TabellaOrdini = ({
                   </p>
                 </div>
                 <div className="flex items-center">
-                  <div className="flex w-1/2 items-center justify-end">
+                  <div className="flex w-1/2 items-center justify-end select-none pointer-events-none">
                     <img
                       className="h-5 mr-[5px]"
                       style={{
