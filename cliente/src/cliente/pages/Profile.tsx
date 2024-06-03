@@ -25,7 +25,6 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import deleteImg from "../img/delete.webp";
 import { toast } from "sonner";
-import { Toaster } from "../components/shadcn/Sonner";
 
 import loadingVideo from "../img/loading.mov";
 
@@ -225,12 +224,14 @@ const MensaPreferita = ({
 	setDatiUtente,
 	setProducts,
 	setLoggato,
+	setCarrello,
 }: {
 	datiUtente: typeProfilo;
 	mense: Array<mensa>;
 	setDatiUtente: Function;
 	setProducts: Function;
 	setLoggato: Function;
+	setCarrello: Function;
 }) => {
 	return (
 		<div className='flex flex-col items-start justify-center w-3/4 mb-4'>
@@ -264,7 +265,7 @@ const MensaPreferita = ({
 									return;
 								}
 								setProducts(res);
-								localStorage.setItem("cart", JSON.stringify([]));
+								setCarrello([]);
 							});
 						});
 					}
@@ -359,12 +360,14 @@ const Profile = ({
 	setDatiUtente,
 	setProducts,
 	lunghezzaCarrello,
+	setCarrello,
 }: {
 	setLoggato: Function;
 	datiUtente: typeProfilo;
 	setDatiUtente: Function;
 	setProducts: Function;
 	lunghezzaCarrello: number;
+	setCarrello: Function;
 }) => {
 	const [tipoPopup, setTipoPopup] = useState("");
 	const [mense, setMense] = useState([] as Array<mensa>);
@@ -419,6 +422,7 @@ const Profile = ({
 								setDatiUtente={setDatiUtente}
 								setProducts={setProducts}
 								setLoggato={setLoggato}
+								setCarrello={setCarrello}
 							/>
 							<BtnCronologia />
 							<BtnDisconnetti setTipoPopup={setTipoPopup} />

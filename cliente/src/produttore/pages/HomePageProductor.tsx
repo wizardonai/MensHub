@@ -110,7 +110,23 @@ const HomePageProductor = ({
                 ordini={ordini}
                 setOrdini={setOrdini}
               ></OrdineCliccato>
-            ) : null}
+            ) : (
+              <div
+                style={{
+                  borderRadius: "25px",
+                  height: "100%",
+                  width: "100%",
+                  alignItems: "center",
+                  overflow: "auto",
+                  scrollbarWidth: "none",
+                  border: "10px solid grey",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                {" "}
+              </div>
+            )}
           </div>
         </div>
       </div>

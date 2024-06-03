@@ -50,6 +50,8 @@ const Login = ({
 	const [nuovaMensa, setNuovaMensa] = useState(-1);
 	const [token, setToken] = useState("");
 
+	const [selettoreMensaAperto, setSelettoreMensaAperto] = useState(false);
+
 	const [data, setData] = useState({
 		email: "",
 		password: "",
@@ -223,7 +225,10 @@ const Login = ({
 									>
 										Nuova mensa preferita
 									</Label>
-									<Select onValueChange={(e: any) => setNuovaMensa(e)}>
+									<Select
+										onValueChange={(e: any) => setNuovaMensa(e)}
+										onOpenChange={(e) => setSelettoreMensaAperto(e)}
+									>
 										<SelectTrigger
 											id='mensaprefe'
 											className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone'
@@ -256,12 +261,14 @@ const Login = ({
 								<p
 									className='text-marrone text-base underline cursor-pointer'
 									onClick={() => {
-										//@ts-ignore
-										div2.current.classList.add("animate-hideFast");
-										animazioniImmagini(35, 0, window.innerHeight);
-										sleep(400).then(() => {
-											setPwdDimenticata(true);
-										});
+										if (!selettoreMensaAperto) {
+											//@ts-ignore
+											div2.current.classList.add("animate-hideFast");
+											animazioniImmagini(35, 0, window.innerHeight);
+											sleep(400).then(() => {
+												setPwdDimenticata(true);
+											});
+										}
 									}}
 								>
 									Password dimenticata?
@@ -288,15 +295,18 @@ const Login = ({
 										setLogin("?");
 									});
 								}}
+								disabled={selettoreMensaAperto}
 							>
 								Indietro
 							</Button>
-							<button
+							<Button
 								onClick={submitLoginCliccato}
 								className='w-1/2 bg-marrone p-2 text-biancoLatte rounded-3xl'
+								variant='avanti'
+								disabled={selettoreMensaAperto}
 							>
 								Accedi
-							</button>
+							</Button>
 						</div>
 					</div>
 				)}
@@ -1394,67 +1404,43 @@ const Auth = ({
 	};
 
 	useEffect(() => {
-		// if (window.innerWidth > 450 && window.innerWidth <= 1000) {
-		// 	const generaProporzioni = (
-		// 		sopra: number,
-		// 		sotto: number,
-		// 		width: number
-		// 	) => {
-		// 		return {
-		// 			sopra: (sopra * width) / 450,
-		// 			sotto: (sotto * width) / 450,
-		// 		};
-		// 	};
-
-		// 	//con 450x811
-		// 	const proporzioni = generaProporzioni(55, 15, window.innerWidth);
-		// 	console.log(proporzioni);
-
-		// 	//@ts-ignore
-		// 	images[0].current.style.top = `-${proporzioni.sopra}svh`;
-		// 	//@ts-ignore
-		// 	images[1].current.style.bottom = `-${proporzioni.sotto}svh`;
-		// 	//@ts-ignore
-		// }
-
 		if (window.innerWidth >= 450) {
-			console.log("scuuuu");
+			// console.log("scuuuu");
 
 			animazioneProduttore(90, 40, window.innerWidth);
 
-			const generaProporzioni = (
-				sopra: number,
-				sotto: number,
-				width: number
-			) => {
-				const rapportoProporzione = width / 1242;
+			if (divBenvenuto.current)
+				//@ts-ignore
+				divBenvenuto.current.classList.replace("mt-[-45svh]", "mt-0");
 
-				const sopraHeight = sopra * rapportoProporzione;
-				const sottoHeight = sotto * rapportoProporzione;
+			// const generaProporzioni = (
+			// 	sopra: number,
+			// 	sotto: number,
+			// 	width: number
+			// ) => {
+			// 	const rapportoProporzione = width / 1242;
 
-				return {
-					sopra: Math.round(sopraHeight),
-					sotto: Math.round(sottoHeight),
-				};
-			};
+			// 	const sopraHeight = sopra * rapportoProporzione;
+			// 	const sottoHeight = sotto * rapportoProporzione;
 
-			const proporzioni = generaProporzioni(16, 5, window.innerWidth);
+			// 	return {
+			// 		sopra: Math.round(sopraHeight),
+			// 		sotto: Math.round(sottoHeight),
+			// 	};
+			// };
 
-			//@ts-ignore
-			console.log(divBenvenuto.current.classList, proporzioni);
+			// const proporzioni = generaProporzioni(16, 5, window.innerWidth);
 
-			//@ts-ignore
-			divBenvenuto.current.classList.add("top-[" + proporzioni.sopra + "%]");
-			//  = `${proporzioni.sopra}%`;
-			//@ts-ignore
-			divBenvenuto.current.classList.add(
-				"left-[" + (proporzioni.sopra + 1) + "%]"
-			);
-
-			//@ts-ignore
-			// divBenvenuto.current.style.top = `${proporzioni.sopra}%`;
-			//@ts-ignore
-			// divBenvenuto.current.style.left = `${proporzioni.sotto}%`;
+			// //@ts-ignore
+			// divBenvenuto.current.classList.add("top-[" + proporzioni.sopra + "%]");
+			// //@ts-ignore
+			// divBenvenuto.current.classList.add(
+			// 	"left-[" + (proporzioni.sopra + 1) + "%]"
+			// );
+		} else {
+			if (divBenvenuto.current)
+				//@ts-ignore
+				divBenvenuto.current.classList.replace("mt-[-45svh]", "mt-0");
 		}
 		//eslint-disable-next-line
 	}, []);
@@ -1462,8 +1448,8 @@ const Auth = ({
 	const btnBenvenuti = () => (
 		<div className='h-[70%] w-[80%] flex flex-col justify-between items-center tel:h-full tel:w-full tel:justify-center'>
 			<div
-				className='flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement tel:hidden'
-				ref={divBenvenuto}
+				className='flex flex-col items-center transition-all duration-1000 ease-in-out animate-showElement tel:hidden mt-0'
+				ref={window.innerWidth < 450 ? divBenvenuto : null}
 			>
 				<p className='text-marrone text-5xl font-bold tracking-tight'>
 					Benvenuto in Menshub
@@ -1481,12 +1467,15 @@ const Auth = ({
 					className='p-[26px] text-lg w-[90%] rounded-[30px] mb-4 tel:w-3/4'
 					onClick={() => {
 						animazioniImmagini(45, 5, window.innerHeight);
+						if (window.innerWidth < 450) {
+							//@ts-ignore
+							divBenvenuto.current.classList.replace("mt-0", "mt-[-45svh]");
+						}
 						//@ts-ignore
-						divBenvenuto.current.classList.add("mt-[-45svh]");
-						//@ts-ignore
-						divBottoni.current.classList.remove("animate-showElement");
-						//@ts-ignore
-						divBottoni.current.classList.add("animate-hideElement");
+						divBottoni.current.classList.replace(
+							"animate-showElement",
+							"animate-hideElement"
+						);
 
 						sleep(900).then(() => {
 							setLogin("1");
@@ -1500,8 +1489,10 @@ const Auth = ({
 					className='p-[26px] text-lg w-[90%] rounded-[30px] tel:w-3/4'
 					onClick={() => {
 						animazioniImmagini(35, 0, window.innerHeight);
-						//@ts-ignore
-						divBenvenuto.current.classList.add("mt-[-45svh]");
+						if (window.innerWidth < 450) {
+							//@ts-ignore
+							divBenvenuto.current.classList.replace("mt-0", "mt-[-45svh]");
+						}
 						//@ts-ignore
 						divBottoni.current.classList.remove("animate-showElement");
 						//@ts-ignore
@@ -1568,8 +1559,8 @@ const Auth = ({
 					ref={images[2]}
 				/>
 				<div
-					className='hidden absolute tel:flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement'
-					ref={divBenvenuto}
+					className='absolute flex flex-col items-center transition-[margin] duration-1000 ease-in-out animate-showElement top-[10%] left-[7%]'
+					ref={window.innerWidth >= 450 ? divBenvenuto : null}
 				>
 					<p className='text-marrone text-7xl font-bold tracking-tight w-3/4'>
 						Benvenuto in Menshub

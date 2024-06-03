@@ -18,7 +18,7 @@ const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
 // const url = "http://menshub.it";
-const url = "http://172.20.10.3:3000";
+const url = "http://192.168.1.147:3000";
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -69,8 +69,11 @@ const transporter = nodemailer.createTransport({
 function connetti() {
 	connection = createConnection({
 		host: "localhost",
+		// host: "localhost"
 		user: "root",
+		// user: "menshub",
 		password: "",
+		// password: "Lucachingscu69#[!",
 	});
 	connection.connect(function (err) {
 		if (err) {

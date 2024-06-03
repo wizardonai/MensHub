@@ -176,6 +176,7 @@ function App() {
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
 						lunghezzaCarrello={lunghezzaCarrello}
+						setCarrello={setCarrello}
 					/>
 				),
 			},
