@@ -140,8 +140,8 @@ server.post("/request/products", (req, res) => {
 
 						connection.query(
 							"SELECT * FROM prodotti where id_mensa=" +
-								idm_utente +
-								" ORDER BY nome",
+							idm_utente +
+							" ORDER BY nome",
 							(err, result) => {
 								if (err) {
 									res.send("Errore del database");
@@ -989,8 +989,8 @@ server.post("/producer/get/products", (req, res) => {
 			id_mensa = decoded.id_mensa;
 			connection.query(
 				"SELECT * FROM prodotti where id_mensa=" +
-					id_mensa +
-					" ORDER BY categoria, nome",
+				id_mensa +
+				" ORDER BY categoria, nome",
 				(err, result) => {
 					if (err) {
 						res.send("Errore del database");
@@ -1196,9 +1196,8 @@ server.post("/producer/get/stats", (req, res) => {
 						const currentDate = new Date();
 						const endDate = new Date(currentDate.getTime() - i * fourDays);
 						const startDate = new Date(endDate.getTime() - fourDays);
-						const periodo = `${startDate.toISOString().split("T")[0]} - ${
-							endDate.toISOString().split("T")[0]
-						}`;
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
+							}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
@@ -1250,9 +1249,8 @@ server.post("/producer/get/stats", (req, res) => {
 						const currentDate = new Date();
 						const endDate = new Date(currentDate.getTime() - i * twoWeeks);
 						const startDate = new Date(endDate.getTime() - twoWeeks);
-						const periodo = `${startDate.toISOString().split("T")[0]} - ${
-							endDate.toISOString().split("T")[0]
-						}`;
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
+							}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
@@ -1303,9 +1301,8 @@ server.post("/producer/get/stats", (req, res) => {
 						const currentDate = new Date();
 						const endDate = new Date(currentDate.getTime() - i * threeWeeks); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
 						const startDate = new Date(endDate.getTime() - threeWeeks); // 3 settimane prima della data di fine
-						const periodo = `${startDate.toISOString().split("T")[0]} - ${
-							endDate.toISOString().split("T")[0]
-						}`;
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
+							}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
@@ -1350,31 +1347,62 @@ server.post("/producer/get/stats", (req, res) => {
 
 					break;
 				case "1A":
-					query = `
-            SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL t.n MONTH), '%m/%y') AS periodo,
-                   COALESCE(SUM(po.quantita), 0) AS vendite
-            FROM (SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11) AS t
-            LEFT JOIN ordini o ON YEAR(o.data) = YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND MONTH(o.data) = MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)) AND o.id_mensa = ${id_mensa}
-            LEFT JOIN prodotti_ordini po ON o.id = po.id_ordine
-            AND o.stato_ordine = 'completato'
-            GROUP BY YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)), MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH))
-            ORDER BY YEAR(DATE_SUB(CURDATE(), INTERVAL t.n MONTH)), MONTH(DATE_SUB(CURDATE(), INTERVAL t.n MONTH));
-          `;
+					const oneMonth = 1000 * 60 * 60 * 24 * 30; // Approssimazione di un mese in millisecondi
 
-					connection.query(query, (err, result) => {
-						if (err) {
-							res.send("Errore del database");
+					// Creazione dell'array di promesse
+					const promises = [];
+
+					// Loop attraverso gli ultimi 12 mesi
+					for (let i = 11; i >= 0; i--) {
+						const currentDate = new Date();
+						const endDate = new Date(currentDate.getTime() - i * oneMonth); // Data corrente meno i mesi necessari per ottenere una data precedente di i mesi
+						const startDate = new Date(endDate); // Inizio del mese
+						startDate.setDate(1); // Impostazione del giorno al primo del mese
+
+						// Formattazione della data nel formato "MM/YY"
+						const formattedStartDate = `${('0' + (startDate.getMonth() + 1)).slice(-2)}/${String(startDate.getFullYear()).slice(-2)}`;
+
+						const promise = new Promise((resolve, reject) => {
+							const query = `
+													SELECT SUM(quantita) AS vendite
+													FROM prodotti_ordini
+													WHERE id_ordine IN (
+														SELECT id
+														FROM ordini
+														WHERE id_mensa = ${id_mensa}
+														AND DATE(data) >= '${startDate.toISOString().split("T")[0]}'
+														AND DATE(data) < '${endDate.toISOString().split("T")[0]}'
+														AND stato_ordine = 'completato'
+													)
+												`;
+
+							connection.query(query, (err, result) => {
+								if (err) reject(err);
+								resolve({ result: result, periodo: formattedStartDate }); // Risultato della query e periodo corrente
+							});
+						});
+
+						promises.push(promise);
+					}
+
+					// Esecuzione delle promesse
+					Promise.all(promises)
+						.then((results) => {
+							const ris = results.map(({ result, periodo }) => {
+								const vendite = result.length > 0 && result[0].vendite ? result[0].vendite : 0;
+								return { vendite: vendite, periodo: periodo };
+							});
+							res.send(ris);
 							res.end();
-						} else {
-							if (result.length > 0) {
-								res.send(result);
-							} else {
-								res.send("Non sono presenti dati");
-							}
+						})
+						.catch((err) => {
+							console.error(err);
+							res.send("Errore del server");
 							res.end();
-						}
-					});
+						});
+
 					break;
+
 				default:
 					res.send("Periodo non valido");
 					res.end();
