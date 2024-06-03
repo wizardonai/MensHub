@@ -28,12 +28,6 @@ const OrdersTable = ({
   setIsDragging: Function;
   setProdotti: Function;
 }) => {
-  const [cambiabile, setCambiabile] = useState<boolean>(true);
-
-  useEffect(() => {
-    setCambiabile(true);
-  }, ordineTrascinato);
-
   const handleDragStart = (event: DragEvent<HTMLDivElement>, ordine: any) => {
     event.currentTarget.classList.add("dragging");
     setOrdineTrascinato(ordine);
@@ -58,7 +52,7 @@ const OrdersTable = ({
         style={{
           pointerEvents: "none",
           opacity:
-            isDragging && cambiabile && ordineTrascinato.stato_ordine !== stato
+            isDragging && ordineTrascinato.stato_ordine !== stato
               ? "100%"
               : "0%",
         }}
@@ -74,7 +68,7 @@ const OrdersTable = ({
           scrollbarWidth: "none",
           border: "10px solid " + colore,
           opacity:
-            isDragging && cambiabile && ordineTrascinato.stato_ordine !== stato
+            isDragging && ordineTrascinato.stato_ordine !== stato
               ? "50%"
               : "100%",
         }}
@@ -82,10 +76,18 @@ const OrdersTable = ({
         onDrop={handleDrop}
         onDragOver={() => {
           if (ordineTrascinato !== null) {
-            if (ordineTrascinato.stato_ordine !== stato && cambiabile) {
-              //cambia stato ordine
-              ordineTrascinato.stato_ordine = stato;
-              setCambiabile(false);
+            if (ordineTrascinato.stato_ordine !== stato) {
+              if (stato === "da fare") {
+                setOrdineTrascinato({
+                  ...ordineTrascinato,
+                  stato_ordine: "da fare",
+                });
+              } else {
+                setOrdineTrascinato({
+                  ...ordineTrascinato,
+                  stato_ordine: "in corso",
+                });
+              }
 
               updateOrdine(
                 localStorage.getItem("token") || "scu",
@@ -96,6 +98,23 @@ const OrdersTable = ({
                 .catch((err: any) => {
                   console.log(err);
                 });
+              setOrdini((prevOrdini: any) => {
+                const updatedOrdini = prevOrdini.map((ordine: any) => {
+                  if (ordine.id_ordine === ordineTrascinato.id_ordine) {
+                    return {
+                      ...ordine,
+                      stato_ordine: stato,
+                    };
+                  }
+                  return ordine;
+                });
+                return updatedOrdini;
+              });
+              if (ordineCliccato.id_ordine === ordineTrascinato.id_ordine) {
+                setOrdineCliccato({ ...ordineCliccato, stato_ordine: stato });
+              }
+
+              setIsDragging(false);
             }
           }
         }}
@@ -129,14 +148,14 @@ const OrdersTable = ({
                 </p>
                 <div className="flex w-1/2 items-center justify-end">
                   <img
-                    className="h-5 mr-[5px]"
+                    className="h-5 mr-[5px] select-none pointer-events-none"
                     style={{
                       filter:
                         "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
                     }}
                     src={hostnameProductor + "dish.png"}
                   />
-                  <p className="text-2xl relative text-right select-none pointer-events-none font-bold text-marroneScuro">
+                  <p className="w-[25px] text-2xl relative text-right select-none pointer-events-none font-bold text-marroneScuro">
                     {ordine.num_prodotti}
                   </p>
                 </div>
@@ -155,7 +174,7 @@ const OrdersTable = ({
                     />
                   ) : (
                     <img
-                      src={hostnameProductor + "X.png"}
+                      src={hostnameProductor + "x.png"}
                       style={css.x}
                       className="select-none pointer-events-none"
                     />

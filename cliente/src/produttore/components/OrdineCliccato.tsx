@@ -63,13 +63,16 @@ const OrdineCliccato = ({
             <p
               className="pr-1 font-bold text-marroneScuro cursor-pointer"
               onClick={() => {
+                setOrdineCliccato({
+                  ...ordineCliccato,
+                  pagato: ordineCliccato.pagato ? 0 : 1,
+                });
                 setPagato(
                   localStorage.getItem("token") || "scu",
                   ordineCliccato.id_ordine,
                   ordineCliccato.pagato ? 0 : 1
                 )
                   .then(() => {
-                    ordineCliccato.pagato = ordineCliccato.pagato ? 0 : 1;
                     setOrdini(
                       ordini.map((ordine: any) => {
                         if (ordine.id_ordine === ordineCliccato.id_ordine) {
@@ -92,13 +95,16 @@ const OrdineCliccato = ({
                 style={css.check}
                 className="cursor-pointer"
                 onClick={() => {
+                  setOrdineCliccato({
+                    ...ordineCliccato,
+                    pagato: ordineCliccato.pagato ? 0 : 1,
+                  });
                   setPagato(
                     localStorage.getItem("token") || "scu",
                     ordineCliccato.id_ordine,
                     ordineCliccato.pagato ? 0 : 1
                   )
                     .then(() => {
-                      ordineCliccato.pagato = ordineCliccato.pagato ? 0 : 1;
                       setOrdini(
                         ordini.map((ordine: any) => {
                           if (ordine.id_ordine === ordineCliccato.id_ordine) {
@@ -115,17 +121,20 @@ const OrdineCliccato = ({
               />
             ) : (
               <img
-                src={hostnameProductor + "X.png"}
+                src={hostnameProductor + "x.png"}
                 style={css.x}
                 className="cursor-pointer"
                 onClick={() => {
+                  setOrdineCliccato({
+                    ...ordineCliccato,
+                    pagato: ordineCliccato.pagato ? 0 : 1,
+                  });
                   setPagato(
                     localStorage.getItem("token") || "scu",
                     ordineCliccato.id_ordine,
                     ordineCliccato.pagato ? 0 : 1
                   )
                     .then(() => {
-                      ordineCliccato.pagato = ordineCliccato.pagato ? 0 : 1;
                       setOrdini(
                         ordini.map((ordine: any) => {
                           if (ordine.id_ordine === ordineCliccato.id_ordine) {

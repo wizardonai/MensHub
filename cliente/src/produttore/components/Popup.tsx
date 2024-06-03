@@ -405,7 +405,7 @@ export default function Popup({
             onClick={() => setPopup(false)}
           >
             <img
-              src={hostnameProductor + "X.png"}
+              src={hostnameProductor + "x.png"}
               alt="close"
               className="w-[10px] h-[10px] transform transition-transform hover:scale-105 select-none pointer-events-none"
               style={{
