@@ -754,20 +754,18 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                   )
                 )}
               </div>
-              {Array.isArray(ordiniCompletati) && ordiniCompletati.length > 0 ? (
-                <ResponsiveContainer width="85%" height="95%">
-                  <BarChart className="ml-[-20px] mt-[20px]" data={ordiniCompletati}>
-                    <XAxis dataKey="periodo" stroke="#503431" />
-                    <YAxis stroke="#503431" />
-                    <Tooltip />
-                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                    <Bar dataKey="vendite" fill="#e59421" barSize={30} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <p>Non ci sono dati disponibili per visualizzare il grafico.</p>
-              )}
-
+              <ResponsiveContainer width="85%" height="95%">
+                <BarChart
+                  className="ml-[-20px] mt-[20px]"
+                  data={ordiniCompletati}
+                >
+                  <XAxis dataKey="periodo" stroke="#503431" />
+                  <YAxis stroke="#503431" />
+                  <Tooltip />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <Bar dataKey="vendite" fill="#e59421" barSize={30} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
             <div className="w-1/2">
               <p className="font-bold text-2xl text-marroneScuro">
