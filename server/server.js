@@ -17,8 +17,8 @@ import nodemailer from "nodemailer";
 const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
-//const url = "http://menshub.it";
-const url = "http://localhost:3000";
+const url = "http://menshub.it";
+//const url = "http://localhost:3000";
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -48,14 +48,6 @@ const storage2 = multer.diskStorage({
 const upload = multer({ storage: storage });
 const upload2 = multer({ storage: storage2 });
 
-// const transporter = nodemailer.createTransport({
-//   service: "Zoho",
-//   auth: {
-//     user: 'noreply@menshub.it',
-//     pass: '1ehiHDkFLawX',
-//   },
-// });
-
 const transporter = nodemailer.createTransport({
 	host: "smtp.zoho.eu",
 	port: 465,
@@ -69,10 +61,10 @@ const transporter = nodemailer.createTransport({
 function connetti() {
 	connection = createConnection({
 		host: "localhost",
-		user: "root",
-		//user: "menshub",
-		password: "",
-		//password: "Lucachingscu69#[!",
+		//user: "root",
+		user: "menshub",
+		//password: "",
+		password: "Lucachingscu69#[!",
 	});
 	connection.connect(function (err) {
 		console.log("Connecting...");
@@ -93,7 +85,7 @@ function connetti() {
 }
 
 server.use(cors({
-	//origin: "http://127.0.0.1:80" 
+	origin: "http://127.0.0.1:80" 
 }));
 server.use(json());
 server.use(express.json());
@@ -2048,7 +2040,7 @@ function sanitizeRequestBody(reqBody) {
 	return sanitizedBody;
 }
 
-const port = 6969;
+const port = 80;
 server.listen(port, () => {
 	console.log("http://menshub.it");
 });
