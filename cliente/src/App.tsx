@@ -3,58 +3,122 @@ import {
 	createBrowserRouter,
 	redirect,
 } from "react-router-dom";
-// import RegisterPage from "./pages/RegisterPage";
-import Homepage from "./pages/Homepage";
-import Cart from "./pages/Cart";
+import Homepage from "./cliente/pages/Homepage";
+import Cart from "./cliente/pages/Cart";
 import { useLocalStorage } from "usehooks-ts";
-import Profile from "./pages/Profile";
-import { getProdotti, getProfilo } from "./scripts/fetch";
-import ProfilePages from "./pages/ProfilePages";
+import Profile from "./cliente/pages/Profile";
+import { getProdotti, getProfilo } from "./cliente/scripts/fetch";
+import ProfilePages from "./cliente/pages/ProfilePages";
 import { prodotto, prodottoCarrello, typeProfilo } from "./utils";
-import Product from "./pages/Product";
-import { useState } from "react";
-import Auth from "./pages/Auth";
-import Pwdchange from "./pages/Pwdchange";
-import Tmp from "./pages/tmp";
-import ConfirmEmail from "./pages/ConfirmEmail";
+import Product from "./cliente/pages/Product";
+import { useEffect, useState } from "react";
+import Auth from "./Auth";
+import Pwdchange from "./cliente/pages/Pwdchange";
+import ConfirmEmail from "./cliente/pages/ConfirmEmail";
+import {
+	getAllergeni,
+	getCategorie,
+	getInformazioniMensa,
+	getProdottiCompletati,
+} from "./produttore/scripts/fetch";
+import HomePageProductor from "./produttore/pages/HomePageProductor";
+import MenuPageProductor from "./produttore/pages/MenuPageProductor";
+import CompletedOrders from "./produttore/pages/CompletedOrders";
+import ProfileProductor from "./produttore/pages/ProfileProductor";
+import { toast } from "sonner";
+
+export const hostnameProductor = (process.env.REACT_APP_URL || "") + "/image/";
+
+export type ArrayProdotti = {
+	prodotti: Array<{
+		allergeni: string;
+		categoria: string;
+		descrizione: string;
+		disponibile: number;
+		fd: number;
+		id: number;
+		id_mensa: number;
+		indirizzo_img: string;
+		nacq: number;
+		nome: string;
+		prezzo: number;
+	}>;
+};
+interface styleThing {
+	[thingName: string]: string;
+}
+export interface styleMap {
+	[thingName: string]: styleThing;
+}
+export interface filtroMap {
+	[thingName: string]: boolean;
+}
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", "?");
+	const [login, setLogin] = useLocalStorage("login", "?");
 	const [username, setUsername] = useState("");
 	const [datiUtente, setDatiUtente] = useState({} as typeProfilo);
 	const [products, setProducts] = useState([] as Array<prodotto>);
-	const [carrello, setCarrello] = useLocalStorage("cart", [] as Array<prodottoCarrello>);
+	const [carrello, setCarrello] = useLocalStorage(
+		"cart",
+		[] as Array<prodottoCarrello>
+	);
+	const [lunghezzaCarrello, setLunghezzaCarrello] = useState(0);
+
+	const [chiestoProfilo, setChiestoProfilo] = useState(false);
+
+	//produttore
+	const [ordini, setOrdini] = useState<any>([]);
+	const [flag, setFlag] = useState<boolean>(false);
+
+	const [categorie, setCategorie] = useState<Array<string>>([]);
+	const [allergeni, setAllergeni] = useState<Array<string>>([]);
+
+	useEffect(() => {
+		let sommaCarrello = 0;
+		carrello.forEach((element) => {
+			sommaCarrello += element.quantita;
+		});
+		setLunghezzaCarrello(sommaCarrello);
+	}, [carrello]);
+
+	useEffect(() => {
+		if (Object.keys(datiUtente).length > 0) setDatiUtente({} as typeProfilo);
+	}, [loggato]);
 
 	let router;
 	if (loggato === "cliente") {
-		if (Object.keys(datiUtente).length === 0) {
-			setDatiUtente({
-				cognome: "",
-				email: "",
-				exp: -1,
-				iat: -1,
-				id: -1,
-				id_mensa: -1,
-				nome: "",
-			});
+		//chiedo profilo e prodotti
+		if (Object.keys(datiUtente).length === 0 && !chiestoProfilo) {
+			setChiestoProfilo(true);
 			getProfilo(localStorage.getItem("token") || "scu").then((res: any) => {
 				if (!res) {
+					toast.error("Errore nella connessione al server");
 					return;
 				}
 				if (res === "Token non valido") {
+					setDatiUtente({} as typeProfilo);
 					localStorage.setItem("loggato", "false");
 					return;
 				}
 				if (res === "Mensa preferita cancellata") {
-					localStorage.removeItem("cart");
-					localStorage.removeItem("token");
+					localStorage.clear();
 					setDatiUtente({} as typeProfilo);
 					setProducts([]);
 					setLoggato("false");
 					return;
 				}
 
-				if (res) {
+				if (res.cliente === 0) {
+					localStorage.clear();
+					setDatiUtente({} as typeProfilo);
+					setProducts([]);
+					setLoggato("false");
+					return;
+				}
+
+				if (typeof res === "object") {
 					setUsername(res.nome);
 					setDatiUtente(res);
 				}
@@ -70,15 +134,12 @@ function App() {
 						return;
 					}
 
-					setProducts(res);
+					if (typeof res === "object") {
+						setProducts(res);
+					}
 				});
 			}
 		}
-
-		let sommaCarrello = 0;
-		carrello.forEach(element => {
-			sommaCarrello += element.quantita;
-		});
 
 		router = createBrowserRouter([
 			{
@@ -88,7 +149,8 @@ function App() {
 						username={username}
 						products={products}
 						setCarrello={setCarrello}
-						lunghezzaCarrello={sommaCarrello}
+						lunghezzaCarrello={lunghezzaCarrello}
+						setLoggato={setLoggato}
 					/>
 				),
 			},
@@ -101,6 +163,7 @@ function App() {
 						setProducts={setProducts}
 						carrello={carrello}
 						setCarrello={setCarrello}
+						setChiestoProfilo={setChiestoProfilo}
 					/>
 				),
 			},
@@ -112,7 +175,8 @@ function App() {
 						datiUtente={datiUtente}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
-						lunghezzaCarrello={sommaCarrello}
+						lunghezzaCarrello={lunghezzaCarrello}
+						setCarrello={setCarrello}
 					/>
 				),
 			},
@@ -124,12 +188,19 @@ function App() {
 						setLoggato={setLoggato}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
+						setChiestoProfilo={setChiestoProfilo}
 					/>
 				),
 			},
 			{
 				path: "/product/:id",
-				element: <Product carrello={carrello} setCarrello={setCarrello} />,
+				element: (
+					<Product
+						carrello={carrello}
+						setCarrello={setCarrello}
+						setLoggato={setLoggato}
+					/>
+				),
 				loader: ({ params }) => {
 					const tmp = products.filter(
 						(product) => product.id === parseInt(params.id || "-1")
@@ -141,7 +212,7 @@ function App() {
 			},
 			{
 				path: "/changepwd/:token",
-				element: <Pwdchange loggato={loggato} />,
+				element: <Pwdchange />,
 				loader: ({ params }) => {
 					if (!params.token) return redirect("/home");
 					return params.token;
@@ -153,14 +224,114 @@ function App() {
 			},
 		]);
 	} else if (loggato === "produttore") {
+		if (Object.keys(datiUtente).length === 0) {
+			setDatiUtente({
+				cognome: "",
+				email: "",
+				exp: -1,
+				iat: -1,
+				id: -1,
+				id_mensa: -1,
+				nome: "",
+				cliente: -1,
+			});
+			getProfilo(localStorage.getItem("token") || "scu").then((res: any) => {
+				if (!res) {
+					return;
+				}
+				if (res === "Token non valido") {
+					localStorage.setItem("loggato", "false");
+					return;
+				}
+				if (res === "Mensa preferita cancellata") {
+					localStorage.clear();
+					setDatiUtente({} as typeProfilo);
+					setProducts([]);
+					setLoggato("false");
+					return;
+				}
+
+				if (res.cliente === 1) {
+					localStorage.clear();
+					setDatiUtente({} as typeProfilo);
+					setProducts([]);
+					setLoggato("false");
+					return;
+				}
+
+				if (res) {
+					setUsername(res.nome);
+					setDatiUtente(res);
+				}
+			});
+		}
+		if (categorie.length === 0) {
+			getCategorie({ token: localStorage.getItem("token") || "scu" }).then(
+				(res: any) => {
+					if (res === "Token non valido") {
+						localStorage.removeItem("cart");
+						localStorage.removeItem("token");
+						localStorage.setItem("loggato", "false");
+					}
+					setCategorie(res);
+				}
+			);
+		}
+
+		if (allergeni.length === 0) {
+			getAllergeni().then((res: any) => {
+				if (res === "Token non valido") {
+					localStorage.removeItem("cart");
+					localStorage.removeItem("token");
+					localStorage.setItem("loggato", "false");
+				}
+				setAllergeni(res);
+			});
+		}
+
 		router = createBrowserRouter([
 			{
-				path: "/home",
-				element: <Tmp setLoggato={setLoggato} />,
+				path: "/productorHome",
+				element: (
+					<HomePageProductor
+						ordini={ordini}
+						setOrdini={setOrdini}
+						flag={flag}
+						setFlag={setFlag}
+						setLoggato={setLoggato}
+					/>
+				),
+			},
+			{
+				path: "/productorMenu",
+				element: (
+					<MenuPageProductor
+						allergeni={allergeni}
+						categorie={categorie}
+						setLoggato={setLoggato}
+					/>
+				),
+				loader: async () => {
+					return getProdotti(localStorage.getItem("token") || "scu");
+				},
+			},
+			{
+				path: "/completedOrders",
+				element: <CompletedOrders setLoggato={setLoggato} />,
+				loader: async () => {
+					return getProdottiCompletati(localStorage.getItem("token") || "scu");
+				},
+			},
+			{
+				path: "/productorProfile",
+				element: <ProfileProductor setLoggato={setLoggato} />,
+				loader: async () => {
+					return getInformazioniMensa(localStorage.getItem("token") || "scu");
+				},
 			},
 			{
 				path: "*",
-				loader: () => redirect("/home"),
+				loader: () => redirect("/productorHome"),
 			},
 		]);
 	} else {
@@ -173,25 +344,26 @@ function App() {
 		router = createBrowserRouter([
 			{
 				path: "/auth",
-				element: <Auth setLoggato={setLoggato} />,
+				element: (
+					<Auth setLoggato={setLoggato} setLogin={setLogin} login={login} />
+				),
 			},
 			{
 				path: "/changepwd/:token",
-				element: <Pwdchange loggato={loggato} />,
+				element: <Pwdchange />,
 				loader: ({ params }) => {
 					if (!params.token) return redirect("/home");
 					return params.token;
 				},
 			},
 			{
-				path : "/confirm/email/:token",
-				element : <ConfirmEmail />,
+				path: "/confirm/email/:token",
+				element: <ConfirmEmail setLogin={setLogin} />,
 			},
 			{
 				path: "/*",
 				loader: () => redirect("/auth"),
 			},
-
 		]);
 	}
 

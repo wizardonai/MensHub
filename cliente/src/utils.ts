@@ -1,4 +1,4 @@
-import { Color, Solver, hexToRgb } from "./scripts/filterGenerator";
+import { Color, Solver, hexToRgb } from "./cliente/scripts/filterGenerator";
 
 export const urlImg = (process.env.REACT_APP_URL || "") + "/image/";
 
@@ -36,6 +36,7 @@ export type typeProfilo = {
 	id: number;
 	id_mensa: number;
 	nome: string;
+	cliente: number;
 };
 export type ordine = {
 	data: string;
@@ -45,6 +46,7 @@ export type ordine = {
 		quantita: number;
 	}>;
 	stato_ordine: string;
+	ora_consegna: string;
 };
 
 export type prodotto = {

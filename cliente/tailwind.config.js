@@ -1,10 +1,16 @@
 const { fontFamily } = require("tailwindcss/defaultTheme");
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	darkMode: ["class"],
 	content: ["src/**/*.{ts,tsx}"],
 	theme: {
+		screens: {
+			mobileProduttore: { max: "1000px" },
+			tel: "450px",
+			...defaultTheme.screens,
+		},
 		container: {
 			center: true,
 			padding: "2rem",
@@ -49,10 +55,19 @@ module.exports = {
 				},
 				marrone: "var(--marrone)",
 				arancioneScuro: "var(--arancioneScuro)",
-				arancioneChiaro: "var(--arancioneChiaro)",
 				marroncino: "var(--marroncino)",
 				biancoLatte: "var(--biancolatte)",
 				rosso: "var(--rosso)",
+				arancioneBordo: "var(--arancioneBordo)",
+				arancioneBordoHover: "var(--arancioneBordoHover)",
+				arancioneChiaro: "var(--arancioneChiaro)",
+				gialloSfondo: "var(--gialloSfondo)",
+				gialloSfondoHover: "var(--gialloSfondoHover)",
+				verdeBordo: "var(--verdeBordo)",
+				verdeBordoHover: "var(--verdeBordoHover)",
+				marroneScuro: "var(--marroneScuro)",
+				rossoScuro: "var(--rossoScuro)",
+				rossoScuroHover: "var(--rossoScuroHover)",
 			},
 			borderRadius: {
 				lg: `var(--radius)`,
@@ -88,8 +103,8 @@ module.exports = {
 				swipeLeftCarrello: {
 					from: { width: "100%" },
 					to: {
-						width: "75%",
-						clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
+						width: "72.5%",
+						// clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
 						borderTopRightRadius: "0",
 					},
 				},
@@ -97,15 +112,14 @@ module.exports = {
 					from: { width: "0%", display: "none" },
 					to: {
 						width: "25%",
-						// display: "flex",
-						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
+						// clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
 						borderBottomLeftRadius: "0",
 					},
 				},
 				swipeRightCarrello: {
 					from: {
-						width: "75%",
-						clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
+						width: "72.5%",
+						// clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%, 0% 38%)",
 					},
 					to: {
 						width: "100%",
@@ -115,8 +129,7 @@ module.exports = {
 				swipeRightCarrelloEl: {
 					from: {
 						width: "25%",
-						// display: "flex",
-						clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
+						// clipPath: "polygon(38% 0, 100% 0, 100% 100%, 0 100%, 0% 100%)",
 						borderBottomLeftRadius: "0",
 					},
 					to: { width: "0%", display: "none" },
@@ -266,9 +279,9 @@ module.exports = {
 				swipeLeftCarrelloEl: "swipeLeftCarrelloEl 0.5s forwards",
 				swipeRightCarrello: "swipeRightCarrello 0.5s forwards",
 				swipeRightCarrelloEl: "swipeRightCarrelloEl 0.5s forwards",
-				hideElement: "hideElement 1s forwards",
+				hideElement: "hideElement 0.5s forwards",
 				hideFast: "hideElement 0.5s forwards",
-				showElement: "showElement 1s forwards",
+				showElement: "showElement 0.5s forwards",
 				showFast: "showElement 0.5s forwards",
 				sopra0: "sopra0 1s forwards",
 				sopra5: "sopra5 1s forwards",
