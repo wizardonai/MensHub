@@ -720,10 +720,12 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
             <div className="w-1/2">
               <p className="font-bold text-2xl text-marroneScuro">
                 Totale vendite:{" "}
-                {ordiniCompletati.reduce(
-                  (total: number, item: any) => total + item.vendite,
-                  0
-                )}
+                {ordiniCompletati !== null && ordiniCompletati !== undefined
+                  ? ordiniCompletati.reduce(
+                      (total: number, item: any) => total + item.vendite,
+                      0
+                    )
+                  : null}
               </p>
               <div className="flex">
                 {periodo.map((item) =>
