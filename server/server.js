@@ -278,14 +278,17 @@ server.post("/modify/mensa", (req, res) => {
 server.post("/request/categories", (req, res) => {
 	let query = `SELECT * FROM categorie;`;
 	connection.query(query, (err, result) => {
-		if (err) throw new Error(err);
-
-		if (result.length > 0) {
-			res.send(result);
+		if (err) {
+			res.send("Errore del database");
 			res.end();
 		} else {
-			res.send("nessuna categoria trovata");
-			res.end();
+			if (result.length > 0) {
+				res.send(result);
+				res.end();
+			} else {
+				res.send("nessuna categoria trovata");
+				res.end();
+			}
 		}
 	});
 });
@@ -349,9 +352,13 @@ server.post("/send/cart", (req, res) => {
 								});
 
 								connection.query(prodottiOrdiniQuery, (err, result) => {
-									if (err) throw new Error(err);
-									res.send("Ordine aggiunto");
-									res.end();
+									if (err) {
+										res.send("Errore del database");
+										res.end();
+									} else {
+										res.send("Ordine aggiunto");
+										res.end();
+									}
 								});
 							}
 						});
