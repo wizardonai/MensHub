@@ -31,6 +31,9 @@ const TabellaOrdini = ({
   titolo: string;
 }) => {
   const [date, setDate] = useState<Date>();
+  const day = date?.getDate();
+  const month = (date?.getMonth() ?? 0) + 1;
+  const year = date?.getFullYear();
   const [ordiniCpy, setOrdiniCpy] = useState<any>(ordini);
 
   useEffect(() => {
@@ -47,6 +50,8 @@ const TabellaOrdini = ({
       }
     }
   }, [titolo, date, ordini]);
+  console.log(date?.toString().split("T")[0]);
+
   return (
     <div className="w-1/2 h-[100%]">
       <p className="font-bold text-marroneScuro text-2xl pl-[5%] flex">
@@ -55,7 +60,7 @@ const TabellaOrdini = ({
             ? titolo
             : date === undefined
             ? "Tutte le date"
-            : date.toISOString().split("T")[0]}{" "}
+            : year + "-" + month + "-" + day}
         </div>
         <div className="w-1/2 flex justify-end mr-[6%]">
           {titolo === "Passato" ? (
