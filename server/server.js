@@ -278,14 +278,17 @@ server.post("/modify/mensa", (req, res) => {
 server.post("/request/categories", (req, res) => {
   let query = `SELECT * FROM categorie;`;
   connection.query(query, (err, result) => {
-    if (err) throw new Error(err);
-
-    if (result.length > 0) {
-      res.send(result);
+    if (err) {
+      res.send("Errore del database");
       res.end();
     } else {
-      res.send("nessuna categoria trovata");
-      res.end();
+      if (result.length > 0) {
+        res.send(result);
+        res.end();
+      } else {
+        res.send("nessuna categoria trovata");
+        res.end();
+      }
     }
   });
 });
@@ -348,9 +351,13 @@ server.post("/send/cart", (req, res) => {
                 });
 
                 connection.query(prodottiOrdiniQuery, (err, result) => {
-                  if (err) throw new Error(err);
-                  res.send("Ordine aggiunto");
-                  res.end();
+                  if (err) {
+                    res.send("Errore del database");
+                    res.end();
+                  } else {
+                    res.send("Ordine aggiunto");
+                    res.end();
+                  }
                 });
               }
             });
@@ -608,6 +615,7 @@ server.post("/recover/password", (req, res) => {
             email: result[0].email,
             id_mensa: result[0].id_mensa,
             cliente: result[0].cliente,
+            recover: true,
           },
           secretKey,
           { expiresIn: "90d" }
@@ -643,6 +651,25 @@ server.post("/recover/password", (req, res) => {
         );
       } else {
         res.send("Email non trovata");
+        res.end();
+      }
+    }
+  });
+});
+
+server.post("/check/recover", (req, res) => {
+  let token = req.headers.authorization;
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
+    if (err) {
+      res.send("Token non valido");
+      res.end();
+    } else {
+      if (decoded.recover) {
+        res.send("Recover");
+        res.end();
+      } else {
+        res.send("No recover");
         res.end();
       }
     }
@@ -985,7 +1012,6 @@ server.post("/producer/set/paid", (req, res) => {
   let token = req.headers.authorization;
   let id_ordine = sanitizedBody.id_ordine;
   let pagato = sanitizedBody.pagato;
-  console.log(pagato);
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
@@ -1361,20 +1387,20 @@ server.post("/producer/get/stats", (req, res) => {
 
 server.post("/producer/get/orders", (req, res) => {
   let token = req.headers.authorization;
-  let id_utente = "";
+  let id_mensa = "";
 
   jwt.verify(token.replace("Bearer ", ""), secretKey, (err, decoded) => {
     if (err) {
       res.send("Token non valido");
       res.end();
     } else {
-      id_utente = decoded.id;
+      id_mensa = decoded.id_mensa;
 
       let query = `SELECT id as id_ordine, id_utente, stato_ordine, ora_consegna, pagato, num_prodotti, tot_prezzo  
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
-                  WHERE id_mensa = ${id_utente} AND stato_ordine != 'completato'`;
+                  WHERE id_mensa = ${id_mensa} AND stato_ordine != 'completato'`;
 
       connection.query(query, (err, result) => {
         if (err) {
@@ -1415,12 +1441,12 @@ server.post("/producer/get/orders/completed", (req, res) => {
       res.send("Token non valido");
       res.end();
     } else {
-      let id_utente = decoded.id;
+      let id_mensa = decoded.id_mensa;
       let query = `SELECT id as id_ordine, id_utente, stato_ordine, data, ora_consegna, pagato, num_prodotti, tot_prezzo  
                   FROM ordini AS o
                   JOIN (SELECT id_ordine, SUM(quantita) AS num_prodotti FROM prodotti_ordini GROUP BY id_ordine) AS po ON o.id = po.id_ordine
                   JOIN (SELECT id_ordine, SUM(p.prezzo) AS tot_prezzo FROM prodotti_ordini AS po JOIN prodotti AS p ON po.id_prodotto = p.id GROUP BY id_ordine) AS pp ON o.id = pp.id_ordine
-                  WHERE o.id_mensa = ${id_utente} AND o.stato_ordine = 'completato'
+                  WHERE o.id_mensa = ${id_mensa} AND o.stato_ordine = 'completato'
                   ORDER BY o.data DESC;`;
 
       connection.query(query, (err, result) => {

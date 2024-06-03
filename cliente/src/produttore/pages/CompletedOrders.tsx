@@ -47,32 +47,30 @@ const TabellaOrdini = ({
       }
     }
   }, [titolo, date, ordini]);
-
   return (
     <div className="w-1/2 h-[100%]">
       <p className="font-bold text-marroneScuro text-2xl pl-[5%] flex">
-        <div className="w-1/2">{titolo} </div>
-        <div className="w-1/2 flex justify-end mr-[2%]">
+        <div className="w-1/2">
+          {titolo === "Oggi"
+            ? titolo
+            : date === undefined
+            ? "Tutte le date"
+            : date.toISOString().split("T")[0]}{" "}
+        </div>
+        <div className="w-1/2 flex justify-end mr-[6%]">
           {titolo === "Passato" ? (
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  className="w-[20%] transform transition-transform hover:scale-105 hover:cursor-pointer"
+                  className="w-[60px] transform transition-transform hover:scale-105 hover:cursor-pointer"
                   variant={"ghost"}
                 >
                   <img
                     src={hostnameProductor + "calendar.png"}
-                    style={
-                      date === undefined
-                        ? {
-                            filter:
-                              "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
-                          }
-                        : {
-                            filter:
-                              "brightness(0) saturate(100%) invert(86%) sepia(28%) saturate(7367%) hue-rotate(344deg) brightness(86%) contrast(94%)",
-                          }
-                    }
+                    style={{
+                      filter:
+                        "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                    }}
                   />
                 </Button>
               </PopoverTrigger>

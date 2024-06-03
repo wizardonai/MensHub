@@ -97,6 +97,11 @@ export default function Popup({
         return;
       }
 
+      if (Number(prezzoValue) <= 0) {
+        toast.error("Il prezzo deve essere maggiore di 0");
+        return;
+      }
+
       changeProdotto(
         localStorage.getItem("token") || "scu",
         prodotto.id,
@@ -140,6 +145,11 @@ export default function Popup({
         prezzoValue === 0
       ) {
         toast.error("Si prega di compilare tutti i campi.");
+        return;
+      }
+
+      if (Number(prezzoValue) <= 0) {
+        toast.error("Il prezzo deve essere maggiore di 0");
         return;
       }
 
@@ -216,6 +226,11 @@ export default function Popup({
       prezzoValue === ""
     ) {
       toast.error("Si prega di compilare tutti i campi.");
+      return;
+    }
+
+    if (Number(prezzoValue) <= 0) {
+      toast.error("Il prezzo deve essere maggiore di 0");
       return;
     }
 
