@@ -517,7 +517,7 @@ ADD
 VALUES
   (
     1,
-    'Paninazzo',
+    'Panino con la mortadella',
     'Panino con fette di mortadella artigianale e pane al sesamo, perfetto per una pausa pranzo.',
     'glutine, sesamo',
     4.50,

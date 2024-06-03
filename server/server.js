@@ -75,7 +75,9 @@ function connetti() {
 		password: "Lucachingscu69#[!",
 	});
 	connection.connect(function (err) {
+		console.log("Connecting...");
 		if (err) {
+			console.log(err);
 			res.send("Errore del database");
 			res.end();
 		} else {
@@ -104,6 +106,10 @@ const reactRoutes = [
 	"/changepwd/:token",
 	"/confirm/email/:token",
 	"/auth",
+	"/productorHome",
+	"/productorMenu",
+	"/completedOrders",
+	"/productorProfile",
 ];
 
 server.use("/image", express.static("./image"));
