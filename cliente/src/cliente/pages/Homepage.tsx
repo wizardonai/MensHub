@@ -450,7 +450,6 @@ const Homepage = ({
 					</div>
 				</Container>
 				<Navbar page='home' lunghezzaCarrello={lunghezzaCarrello} />
-				<Toaster position='top-center' richColors />
 			</div>
 			<div className='h-svh w-svw justify-center items-center hidden tel:flex flex-col'>
 				<p className='text-marrone text-2xl w-full text-center'>

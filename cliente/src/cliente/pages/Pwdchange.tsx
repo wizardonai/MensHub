@@ -95,11 +95,10 @@ const CambiaPassword = ({
 	}, []);
 
 	return (
-		<div
-			className='flex flex-col space-y-1 w-[65%] animate-showElement'
-			ref={div}
-		>
-			<Label htmlFor='vecchiaPassword'>Vecchia password</Label>
+		<div className='flex flex-col w-[65%] animate-showElement' ref={div}>
+			<Label htmlFor='vecchiaPassword' className='text-marrone'>
+				Vecchia password
+			</Label>
 			<Input
 				type='password'
 				id='vecchiaPassword'
@@ -108,7 +107,9 @@ const CambiaPassword = ({
 					setData((prev) => ({ ...prev, oldpwd: e.target.value }))
 				}
 			/>
-			<Label htmlFor='nuovaPassword'>Nuova password</Label>
+			<Label htmlFor='nuovaPassword' className='text-marrone'>
+				Nuova password
+			</Label>
 			<Input
 				type='password'
 				id='nuovaPassword'
@@ -117,7 +118,9 @@ const CambiaPassword = ({
 					setData((prev) => ({ ...prev, pwd: e.target.value }))
 				}
 			/>
-			<Label htmlFor='confermaPassword'>Conferma password</Label>
+			<Label htmlFor='confermaPassword' className='text-marrone'>
+				Conferma password
+			</Label>
 			<Input
 				type='password'
 				id='confermaPassword'
@@ -126,10 +129,10 @@ const CambiaPassword = ({
 					setData((prev) => ({ ...prev, confpwd: e.target.value }))
 				}
 			/>
-			<div className='w-full flex flex-row items-center justify-center '>
+			<div className='w-full flex flex-row items-center justify-center mt-1'>
 				<Button
 					variant='indietro'
-					className='w-1/2 rounded-3xl shadow-lg text-lg'
+					className='w-1/2 rounded-3xl shadow-lg text-lg mr-1'
 					onClick={() => {
 						//@ts-ignore
 						div.current.classList.remove("animate-showElement");
@@ -243,7 +246,6 @@ const Pwdchange = () => {
 					className='absolute bottom-[-5svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
 					ref={images[1]}
 				/>
-				<Toaster richColors />
 			</div>
 		</>
 	);

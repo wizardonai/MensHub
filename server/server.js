@@ -919,7 +919,7 @@ server.post("/request/orders", (req, res) => {
 						let id_utente = decoded.id;
 						let id_mensa = decoded.id_mensa;
 
-						let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita 
+						let query = `SELECT id_ordine, stato_ordine, data, id_prodotto, quantita, ora_consegna 
                 FROM ordini AS o
 								JOIN prodotti_ordini AS po ON o.id = po.id_ordine
 								WHERE id_utente="${id_utente}" AND id_mensa = ${id_mensa}
@@ -942,6 +942,7 @@ server.post("/request/orders", (req, res) => {
 											id_ordine: row.id_ordine,
 											stato_ordine: row.stato_ordine,
 											data: row.data,
+											ora_consegna: row.ora_consegna,
 											prodotti: [],
 										};
 										orders.push(currentOrder);

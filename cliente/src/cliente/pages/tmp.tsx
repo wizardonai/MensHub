@@ -14,7 +14,6 @@ const Tmp = ({ setLoggato }: { setLoggato: Function }) => {
 	return (
 		<>
 			<div>PRODUTTORE</div>
-			<Toaster richColors />
 		</>
 	);
 };

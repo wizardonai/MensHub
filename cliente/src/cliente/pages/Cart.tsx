@@ -27,9 +27,11 @@ import { useNavigate } from "react-router-dom";
 
 const Elemento = ({
 	item,
+	carrello,
 	setCarrello,
 }: {
 	item: prodottoCarrello;
+	carrello: Array<prodottoCarrello>;
 	setCarrello: Function;
 }) => {
 	const [start, setStart] = useState(null as Nullable<number>);
@@ -112,6 +114,13 @@ const Elemento = ({
 		}
 	};
 
+	useEffect(() => {
+		setQuantita(
+			carrello.filter((item2: prodottoCarrello) => item.id === item2.id)[0]
+				.quantita
+		);
+	}, [carrello]);
+
 	return (
 		<div className='flex flex-row justify-evenly items-center'>
 			<div
@@ -156,7 +165,59 @@ const Elemento = ({
 							id=''
 							className='text-marrone text-3xl'
 							onClick={() => {
-								if (quantita === 1) return;
+								if (quantita === 1) {
+									if (
+										//@ts-ignore
+										!divtot.current.classList.contains(
+											"animate-swipeLeftCarrello"
+										)
+									) {
+										if (
+											divtot.current?.classList.contains(
+												"animate-swipeRightCarrello"
+											)
+										) {
+											//@ts-ignore
+											divtot.current.classList.remove(
+												"animate-swipeRightCarrello"
+											);
+										}
+
+										if (
+											divtot.current?.classList.contains(
+												"animate-swipeLeftCarrello"
+											)
+										) {
+											//@ts-ignore
+											divtot.current.classList.remove(
+												"animate-swipeLeftCarrello"
+											);
+										}
+
+										//@ts-ignore
+										divtot.current?.classList.add("animate-swipeLeftCarrello");
+										//@ts-ignore
+										divtot.current?.classList.replace(
+											"rounded-3xl",
+											"rounded-l-3xl"
+										);
+										//@ts-ignore
+										divtot.current?.children["altriDati"].classList.add(
+											"hidden"
+										);
+
+										bottoneElimina.current?.classList.replace("hidden", "flex");
+										bottoneElimina.current?.classList.replace(
+											"animate-swipeRightCarrelloEl",
+											"animate-swipeLeftCarrelloEl"
+										);
+										bottoneElimina.current?.classList.replace(
+											"w-0",
+											"w-[22.5%]"
+										);
+									}
+									return;
+								}
 								let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
 
 								tmp.forEach((item2: prodottoCarrello) => {
@@ -200,8 +261,9 @@ const Elemento = ({
 			<div
 				className='h-[80px] justify-center hidden items-center bg-red-800 mb-3 w-0 rounded-r-3xl'
 				onClick={() => {
-					let tmp = JSON.parse(localStorage.getItem("cart") || "{}");
-					tmp = tmp.filter((item2: prodottoCarrello) => item2.id !== item.id);
+					let tmp = carrello.filter(
+						(item2: prodottoCarrello) => item2.id !== item.id
+					);
 					setCarrello(tmp);
 					// localStorage.setItem("cart", JSON.stringify(tmp));
 
@@ -225,7 +287,6 @@ const Elemento = ({
 						//@ts-ignore
 						bottoneElimina.current.className.replace(
 							" animate-swipeLeftCarrelloEl",
-
 							""
 						);
 					//@ts-ignore
@@ -250,7 +311,12 @@ const Lista = ({
 	setCarrello: Function;
 }) => {
 	return carrello.map((item, index) => (
-		<Elemento item={item} key={index} setCarrello={setCarrello} />
+		<Elemento
+			item={item}
+			key={index}
+			setCarrello={setCarrello}
+			carrello={carrello}
+		/>
 	));
 };
 
@@ -260,6 +326,7 @@ const Cart = ({
 	setProducts,
 	carrello,
 	setCarrello,
+	setChiestoProfilo,
 }: // setApriUltimoAcquisto,
 {
 	setLoggato: Function;
@@ -267,6 +334,7 @@ const Cart = ({
 	setProducts: Function;
 	carrello: Array<prodottoCarrello>;
 	setCarrello: Function;
+	setChiestoProfilo: Function;
 	// setApriUltimoAcquisto: Function;
 }) => {
 	const navigate = useNavigate();
@@ -348,14 +416,14 @@ const Cart = ({
 							</DrawerTrigger>
 							<DrawerContent>
 								<div className='w-full flex flex-col items-center justify-evenly py-5'>
-									<p className='text-xl text-marrone'>
+									<p className='text-xl text-marrone mb-1'>
 										Sicuro di voler ordinare?
 									</p>
-									<p className='text-lg mt-1 text-marrone'>
+									<p className='text-lg mt-1 text-marrone mb-1'>
 										Totale:{" "}
 										<span className='font-bold'>{totale.toFixed(2)}€</span>
 									</p>
-									<p className='text-lg'>Orario:</p>
+									<p className='text-lg text-marrone'>Ora di consegna:</p>
 									<div className='flex justify-center items-center flex-row w-full'>
 										<Select
 											onValueChange={(e) => {
@@ -367,7 +435,7 @@ const Cart = ({
 												);
 											}}
 										>
-											<SelectTrigger className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone w-1/4 mr-1'>
+											<SelectTrigger className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone w-[20%] mr-1'>
 												<p className='mr-2'>
 													{orario !== undefined ? orario.split(":")[0] : ""}
 												</p>
@@ -382,7 +450,7 @@ const Cart = ({
 											}}
 											disabled={orario === "" || orario === undefined}
 										>
-											<SelectTrigger className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone w-1/4 mr-1'>
+											<SelectTrigger className='bg-biancoLatte rounded-3xl border-0 shadow-sm focus:outline-none focus:ring-transparent text-marrone w-[20%] mr-1'>
 												<p className='mr-2'>
 													{orario !== undefined ? orario.split(":")[1] : ""}
 												</p>
@@ -416,6 +484,7 @@ const Cart = ({
 														localStorage.removeItem("cart");
 														localStorage.removeItem("token");
 														setDatiUtente({} as typeProfilo);
+														setChiestoProfilo(false);
 														setProducts([]);
 														setLoggato("false");
 														return;
@@ -424,7 +493,7 @@ const Cart = ({
 														setOrario("");
 														localStorage.setItem("cart", "[]");
 														setCarrello([]);
-														toast.info("Ordine effettuato");
+														toast.success("Ordine effettuato");
 														// setApriUltimoAcquisto(true);
 														navigate("/profile/cronologiaacquisti");
 														return;
@@ -441,7 +510,6 @@ const Cart = ({
 							</DrawerContent>
 						</Drawer>
 					</div>
-					<Toaster position='top-center' richColors />
 				</Container>
 				<Navbar page='cart' />
 			</div>

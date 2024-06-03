@@ -19,22 +19,16 @@ const CronologiaAcquistiPage = ({
 	setLoggato,
 	setDatiUtente,
 	setProducts,
-}: // apriUltimoAcquisto,
-// setApriUltimoAcquisto,
-{
+	setChiestoProfilo,
+}: {
 	products: Array<prodotto>;
 	setLoggato: Function;
 	setDatiUtente: Function;
 	setProducts: Function;
-	// apriUltimoAcquisto: boolean;
-	// setApriUltimoAcquisto: Function;
+	setChiestoProfilo: Function;
 }) => {
 	const [chiesto, setChiesto] = useState(false);
 	const [cronologia, setCronologia] = useState([] as Array<ordine>);
-
-	// useEffect(() => {
-	// 	setApriUltimoAcquisto(false);
-	// }, []);
 
 	if (localStorage.getItem("loggato") !== '"cliente"') {
 		setLoggato("?");
@@ -57,6 +51,7 @@ const CronologiaAcquistiPage = ({
 				localStorage.removeItem("cart");
 				localStorage.removeItem("token");
 				setDatiUtente({} as typeProfilo);
+				setChiestoProfilo(false);
 				setProducts([]);
 				setLoggato("false");
 			}
@@ -81,6 +76,17 @@ const CronologiaAcquistiPage = ({
 
 	const generaRighe = () => {
 		// console.log(apriUltimoAcquisto);
+
+		function calcolaTotale(prodotti: Array<any>) {
+			let tot = 0;
+			prodotti.forEach((element) => {
+				const elemento = products.filter(
+					(product) => product.id === element.id
+				)[0];
+				tot += elemento.prezzo * element.quantita;
+			});
+			return tot;
+		}
 
 		return cronologia.map((item: ordine, index: number) => {
 			return (
@@ -131,6 +137,14 @@ const CronologiaAcquistiPage = ({
 								);
 							})}
 						</div>
+						<div className='w-full flex justify-center items-center flex-row p-1 mt-1'>
+							<p className='w-full text-center text-base text-marrone border-t-2 border-dashed border-marrone p-1'>
+								Totale: {calcolaTotale(item.prodotti).toFixed(2)}€
+							</p>
+							<p className='w-full text-center text-base text-marrone border-t-2 border-dashed border-marrone p-1'>
+								Orario: {item.ora_consegna.slice(0, 5)}
+							</p>
+						</div>
 					</SectionToggleContent>
 				</SectionToggleItem>
 			);
@@ -144,7 +158,7 @@ const CronologiaAcquistiPage = ({
 				<Container>
 					<div className='w-full flex flex-col items-center justify-center'>
 						{typeof cronologia === "string" || cronologia.length === 0 ? (
-							<p>NESSUN ORDINE!</p>
+							<p className='text-marrone'>NESSUN ORDINE!</p>
 						) : (
 							<SectionToggle
 								type='single'
@@ -159,7 +173,6 @@ const CronologiaAcquistiPage = ({
 						)}
 					</div>
 				</Container>
-				<Toaster richColors />
 				<Navbar page='Cronologia' />
 			</div>
 			<div className='h-svh w-svw hidden justify-center items-center tel:flex flex-col'>
@@ -178,7 +191,6 @@ const CronologiaAcquistiPage = ({
 					Disconnettiti
 				</Button>
 			</div>
-			<Toaster richColors />
 		</>
 	);
 };
@@ -188,15 +200,13 @@ const ProfilePages = ({
 	setLoggato,
 	setDatiUtente,
 	setProducts,
-}: // apriUltimoAcquisto,
-// setApriUltimoAcquisto,
-{
+	setChiestoProfilo,
+}: {
 	products: Array<prodotto>;
 	setLoggato: Function;
 	setDatiUtente: Function;
 	setProducts: Function;
-	// apriUltimoAcquisto: boolean;
-	// setApriUltimoAcquisto: Function;
+	setChiestoProfilo: Function;
 }) => {
 	const { page } = useParams<{ page: string }>();
 
@@ -212,8 +222,7 @@ const ProfilePages = ({
 					setLoggato={setLoggato}
 					setDatiUtente={setDatiUtente}
 					setProducts={setProducts}
-					// setApriUltimoAcquisto={setApriUltimoAcquisto}
-					// apriUltimoAcquisto={apriUltimoAcquisto}
+					setChiestoProfilo={setChiestoProfilo}
 				/>
 			);
 		default:

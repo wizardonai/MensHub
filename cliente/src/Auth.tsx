@@ -514,11 +514,16 @@ const IndirizzoMensa = ({
 	setCookie: Function;
 }) => {
 	const [regioni, setRegioni] = useState([] as Array<string>);
+	const [chiesteRegioni, setChiesteRegioni] = useState(false);
+
 	const [province, setProvince] = useState([]);
+	const [chiesteProvince, setChieseProvince] = useState(false);
+
 	const [comuni, setComuni] = useState([]);
 
 	useEffect(() => {
-		if (data.regione === undefined) return;
+		if (data.regione === undefined || chiesteRegioni) return;
+		setChiesteRegioni(true);
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/province/" +
 				data.regione,
@@ -538,7 +543,8 @@ const IndirizzoMensa = ({
 			});
 	}, [data.regione]);
 	useEffect(() => {
-		if (data.provincia === undefined) return;
+		if (data.provincia === undefined || chiesteProvince) return;
+		setChieseProvince(true);
 		fetch(
 			"https://axqvoqvbfjpaamphztgd.functions.supabase.co/comuni/provincia/" +
 				data.provincia,
@@ -1297,9 +1303,15 @@ const SceltaUtente = ({
 	);
 };
 
-const Auth = ({ setLoggato }: { setLoggato: Function }) => {
-	const [login, setLogin] = useLocalStorage("login", "?");
-
+const Auth = ({
+	setLoggato,
+	setLogin,
+	login,
+}: {
+	setLoggato: Function;
+	setLogin: Function;
+	login: any;
+}) => {
 	//eslint-disable-next-line
 	const [images, setImages] = useState([
 		useRef(null),
@@ -1540,8 +1552,6 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					className='absolute bottom-[-15svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
 					ref={images[1]}
 				/>
-
-				<Toaster richColors position='bottom-center' />
 			</div>
 			{/* <div className='w-svw h-svh overflow-hidden absolute top-0 left-0 mobileProduttore:hidden flex'> */}
 			<div className='w-svw h-svh overflow-hidden absolute top-0 left-0 hidden tel:flex'>
@@ -1599,7 +1609,6 @@ const Auth = ({ setLoggato }: { setLoggato: Function }) => {
 					className='absolute bottom-[-40svh] z-[-2] transition-[bottom] duration-1000 ease-in-out'
 					ref={images[3]}
 				/>
-				<Toaster richColors position='top-center' />
 			</div>
 		</>
 	);

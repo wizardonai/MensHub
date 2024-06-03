@@ -5,7 +5,7 @@ import { Button } from "../components/shadcn/Button";
 import { toast } from "sonner";
 import { Toaster } from "../components/shadcn/Sonner";
 
-const ConfirmEmail = () => {
+const ConfirmEmail = ({ setLogin }: { setLogin: Function }) => {
 	const { token } = useParams<{ token: string }>();
 
 	const [confermato, setConfermato] = useState(false);
@@ -40,7 +40,7 @@ const ConfirmEmail = () => {
 						</p>
 						<Button
 							onClick={() => {
-								localStorage.setItem("login", "1");
+								setLogin("1");
 								navigate("/auth");
 							}}
 							variant='avanti'
@@ -53,7 +53,6 @@ const ConfirmEmail = () => {
 					"Caricamento..."
 				)}
 			</div>
-			<Toaster richColors />
 		</>
 	);
 };

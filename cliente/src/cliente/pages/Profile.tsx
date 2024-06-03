@@ -58,7 +58,7 @@ const Popup = ({
 						<div className='flex flex-row justify-around items-center w-3/4'>
 							<Button
 								onClick={() => setTipoPopup("")}
-								className='rounded-xl'
+								className='rounded-xl w-[40%]'
 								variant='indietro'
 							>
 								Annulla
@@ -74,7 +74,7 @@ const Popup = ({
 									setDatiUtente({});
 									setProducts([]);
 								}}
-								className='rounded-xl'
+								className='rounded-xl w-[40%]'
 							>
 								Disconnetti
 							</Button>
@@ -156,10 +156,10 @@ const Popup = ({
 	return (
 		<>
 			<div
-				className='absolute w-full h-full top-0 left-0'
+				className='absolute w-full h-full top-0 left-0 blur bg-background opacity-80 z-[10]'
 				onClick={() => setTipoPopup("")}
 			></div>
-			<div className='w-[350px] h-[180px] absolute top-1/2 left-1/2 mt-[-90px] ml-[-175px]'>
+			<div className='w-[350px] h-[180px] absolute top-1/2 left-1/2 mt-[-90px] ml-[-175px] z-[11]'>
 				<div className='w-full h-full bg-background rounded-3xl flex flex-col justify-evenly items-center border-[2px] border-marrone'>
 					{funzionalita()}
 				</div>
@@ -434,7 +434,6 @@ const Profile = ({
 						setDatiUtente={setDatiUtente}
 					/>
 				</Container>
-				<Toaster richColors />
 				<Navbar page='profile' lunghezzaCarrello={lunghezzaCarrello} />
 			</div>
 			<div className='h-svh w-svw hidden justify-center items-center tel:flex flex-col'>

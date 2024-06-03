@@ -25,6 +25,7 @@ import HomePageProductor from "./produttore/pages/HomePageProductor";
 import MenuPageProductor from "./produttore/pages/MenuPageProductor";
 import CompletedOrders from "./produttore/pages/CompletedOrders";
 import ProfileProductor from "./produttore/pages/ProfileProductor";
+import { toast } from "sonner";
 
 export const hostnameProductor = (process.env.REACT_APP_URL || "") + "/image/";
 
@@ -55,6 +56,7 @@ export interface filtroMap {
 
 function App() {
 	const [loggato, setLoggato] = useLocalStorage("loggato", "?");
+	const [login, setLogin] = useLocalStorage("login", "?");
 	const [username, setUsername] = useState("");
 	const [datiUtente, setDatiUtente] = useState({} as typeProfilo);
 	const [products, setProducts] = useState([] as Array<prodotto>);
@@ -64,7 +66,7 @@ function App() {
 	);
 	const [lunghezzaCarrello, setLunghezzaCarrello] = useState(0);
 
-	// const [apriUltimoAcquisto, setApriUltimoAcquisto] = useState(false);
+	const [chiestoProfilo, setChiestoProfilo] = useState(false);
 
 	//produttore
 	const [ordini, setOrdini] = useState<any>([]);
@@ -87,22 +89,16 @@ function App() {
 
 	let router;
 	if (loggato === "cliente") {
-		if (Object.keys(datiUtente).length === 0) {
-			setDatiUtente({
-				cognome: "",
-				email: "",
-				exp: -1,
-				iat: -1,
-				id: -1,
-				id_mensa: -1,
-				nome: "",
-				cliente: -1,
-			});
+		//chiedo profilo e prodotti
+		if (Object.keys(datiUtente).length === 0 && !chiestoProfilo) {
+			setChiestoProfilo(true);
 			getProfilo(localStorage.getItem("token") || "scu").then((res: any) => {
 				if (!res) {
+					toast.error("Errore nella connessione al server");
 					return;
 				}
 				if (res === "Token non valido") {
+					setDatiUtente({} as typeProfilo);
 					localStorage.setItem("loggato", "false");
 					return;
 				}
@@ -122,7 +118,7 @@ function App() {
 					return;
 				}
 
-				if (res) {
+				if (typeof res === "object") {
 					setUsername(res.nome);
 					setDatiUtente(res);
 				}
@@ -138,7 +134,9 @@ function App() {
 						return;
 					}
 
-					setProducts(res);
+					if (typeof res === "object") {
+						setProducts(res);
+					}
 				});
 			}
 		}
@@ -165,7 +163,7 @@ function App() {
 						setProducts={setProducts}
 						carrello={carrello}
 						setCarrello={setCarrello}
-						// setApriUltimoAcquisto={setApriUltimoAcquisto}
+						setChiestoProfilo={setChiestoProfilo}
 					/>
 				),
 			},
@@ -189,8 +187,7 @@ function App() {
 						setLoggato={setLoggato}
 						setDatiUtente={setDatiUtente}
 						setProducts={setProducts}
-						// apriUltimoAcquisto={apriUltimoAcquisto}
-						// setApriUltimoAcquisto={setApriUltimoAcquisto}
+						setChiestoProfilo={setChiestoProfilo}
 					/>
 				),
 			},
@@ -346,7 +343,9 @@ function App() {
 		router = createBrowserRouter([
 			{
 				path: "/auth",
-				element: <Auth setLoggato={setLoggato} />,
+				element: (
+					<Auth setLoggato={setLoggato} setLogin={setLogin} login={login} />
+				),
 			},
 			{
 				path: "/changepwd/:token",
@@ -358,7 +357,7 @@ function App() {
 			},
 			{
 				path: "/confirm/email/:token",
-				element: <ConfirmEmail />,
+				element: <ConfirmEmail setLogin={setLogin} />,
 			},
 			{
 				path: "/*",

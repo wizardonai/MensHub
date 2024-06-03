@@ -46,6 +46,7 @@ export type ordine = {
 		quantita: number;
 	}>;
 	stato_ordine: string;
+	ora_consegna: string;
 };
 
 export type prodotto = {
