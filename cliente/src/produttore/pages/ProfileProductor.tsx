@@ -299,7 +299,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                     Cambia password
                   </a>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                <DialogContent className="sm:max-w-[425px] bg-gialloSfondo border-arancioneBordoHover border-[4px] rounded-2xl">
                   <DialogHeader>
                     <DialogTitle>
                       <div className="flex justify-center">
@@ -434,7 +434,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                       />
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                  <DialogContent className="sm:max-w-[425px] bg-gialloSfondo border-arancioneBordoHover border-[4px]">
                     <DialogHeader>
                       <DialogTitle>
                         <div className="flex justify-center">
@@ -598,7 +598,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                       />
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                  <DialogContent className="sm:max-w-[425px] bg-gialloSfondo border-arancioneBordoHover border-[4px]">
                     <DialogHeader>
                       <DialogTitle>
                         <div className="flex justify-center">
@@ -666,7 +666,7 @@ const ProfileProductor = ({ setLoggato }: { setLoggato: Function }) => {
                       />
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] bg-gialloSfondo">
+                  <DialogContent className="sm:max-w-[425px] bg-gialloSfondo border-arancioneBordoHover border-[4px]">
                     <DialogHeader>
                       <DialogTitle>
                         <div className="flex justify-center">

@@ -43,9 +43,19 @@ const OrdineCliccato = ({
           <p className="text-2xl w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
             {ordineCliccato.id_ordine}
           </p>
-          <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro">
-            x{ordineCliccato.num_prodotti}
-          </p>
+          <div className="flex w-1/2 items-center justify-end">
+            <img
+              className="h-5 mr-[5px]"
+              style={{
+                filter:
+                  "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+              }}
+              src={hostnameProductor + "dish.png"}
+            />
+            <p className="text-2xl relative text-right select-none pointer-events-none font-bold text-marroneScuro">
+              {ordineCliccato.num_prodotti}
+            </p>
+          </div>
           <p className="w-1/2 select-none pointer-events-none font-bold text-marroneScuro">
             {ordineCliccato.ora_consegna.split(":").slice(0, 2).join(":")}
           </p>

@@ -62,7 +62,7 @@ const TabellaOrdini = ({
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  className="w-[60px] transform transition-transform hover:scale-105 hover:cursor-pointer"
+                  className="w-[60px] h-[27px] mt-[3px] transform transition-transform hover:scale-105 hover:cursor-pointer"
                   variant={"ghost"}
                 >
                   <img
@@ -125,9 +125,19 @@ const TabellaOrdini = ({
                   </p>
                 </div>
                 <div className="flex items-center">
-                  <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro mr-[10px]">
-                    x{ordine.num_prodotti}
-                  </p>
+                  <div className="flex w-1/2 items-center justify-end">
+                    <img
+                      className="h-5 mr-[5px]"
+                      style={{
+                        filter:
+                          "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                      }}
+                      src={hostnameProductor + "dish.png"}
+                    />
+                    <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro mr-[10px]">
+                      {ordine.num_prodotti}
+                    </p>
+                  </div>
                   <img
                     src={hostnameProductor + "/goBack.png"}
                     className={
@@ -160,7 +170,7 @@ const TabellaOrdini = ({
                         </div>
                         <div className="w-1/3 pl-[4svw] flex">
                           <p className="font-bold text-marroneScuro text-xl select-none pointer-events-none">
-                            {prodotto.quantita}
+                            x {prodotto.quantita}
                           </p>
                         </div>
                       </div>
@@ -211,9 +221,19 @@ const TabellaOrdini = ({
                   </p>
                 </div>
                 <div className="flex items-center">
-                  <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro mr-[10px]">
-                    x{ordine.num_prodotti}
-                  </p>
+                  <div className="flex w-1/2 items-center justify-end">
+                    <img
+                      className="h-5 mr-[5px]"
+                      style={{
+                        filter:
+                          "brightness(0) saturate(100%) invert(21%) sepia(4%) saturate(4104%) hue-rotate(317deg) brightness(98%) contrast(93%)",
+                      }}
+                      src={hostnameProductor + "dish.png"}
+                    />
+                    <p className="text-2xl relative w-1/2 text-right select-none pointer-events-none font-bold text-marroneScuro mr-[10px]">
+                      {ordine.num_prodotti}
+                    </p>
+                  </div>
                   <img
                     src={hostnameProductor + "/goBack.png"}
                     className={
@@ -246,7 +266,7 @@ const TabellaOrdini = ({
                         </div>
                         <div className="w-1/3 pl-[4svw] flex">
                           <p className="font-bold text-marroneScuro text-xl select-none pointer-events-none">
-                            {prodotto.quantita}
+                            x {prodotto.quantita}
                           </p>
                         </div>
                       </div>

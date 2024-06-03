@@ -82,7 +82,7 @@ const Prodotti = ({
               }}
             >
               <div className="flex mt-[5%] h-[35%] justify-center items-center">
-                <div className="w-[30%] ml-[10px] mr-[10px] ">
+                <div className="w-[30%] ml-[10px] pr-[10px] ">
                   <img
                     src={hostnameProductor + item.indirizzo_img}
                     alt={item.nome}
@@ -174,7 +174,7 @@ const Prodotti = ({
                   }}
                 >
                   <div className="flex mt-[5%] h-[35%] justify-center items-center">
-                    <div className="w-[30%] ml-[10px] mr-[10px] ">
+                    <div className="w-[30%] ml-[10px] pr-[10px] ">
                       <img
                         src={hostnameProductor + item.indirizzo_img}
                         alt={item.nome}

@@ -386,7 +386,7 @@ export default function Popup({
 
   return (
     <div
-      className="fixed flex justify-center items-center inset-0 bg-slate-800 bg-opacity-10"
+      className="fixed flex justify-center items-center inset-0 bg-slate-950 bg-opacity-20"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           setPopup(false);
@@ -407,7 +407,11 @@ export default function Popup({
             <img
               src={hostnameProductor + "X.png"}
               alt="close"
-              className="w-[20px] h-[20px] transform transition-transform hover:scale-105 select-none pointer-events-none"
+              className="w-[10px] h-[10px] transform transition-transform hover:scale-105 select-none pointer-events-none"
+              style={{
+                filter:
+                  "brightness(0) saturate(100%) invert(57%) sepia(5%) saturate(0%) hue-rotate(258deg) brightness(87%) contrast(94%)",
+              }}
             />
           </button>
         </div>
