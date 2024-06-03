@@ -17,8 +17,8 @@ import nodemailer from "nodemailer";
 const { json, urlencoded } = bodyParser;
 const server = express();
 const secretKey = "CaccaPoopShitMierda";
-const url = "http://menshub.it";
-//const url = "http://localhost:3000";
+//const url = "http://menshub.it";
+const url = "http://localhost:3000";
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -69,10 +69,10 @@ const transporter = nodemailer.createTransport({
 function connetti() {
 	connection = createConnection({
 		host: "localhost",
-		// user: "root",
-		user: "menshub",
-		// password: "",
-		password: "Lucachingscu69#[!",
+		user: "root",
+		//user: "menshub",
+		password: "",
+		//password: "Lucachingscu69#[!",
 	});
 	connection.connect(function (err) {
 		console.log("Connecting...");
@@ -92,7 +92,9 @@ function connetti() {
 	});
 }
 
-server.use(cors({ origin: "http://127.0.0.1:80" }));
+server.use(cors({
+	//origin: "http://127.0.0.1:80" 
+}));
 server.use(json());
 server.use(express.json());
 server.use(urlencoded({ extended: false }));
@@ -1346,32 +1348,29 @@ server.post("/producer/get/stats", (req, res) => {
 						});
 
 					break;
-				case "1A":
-					const oneMonth = 1000 * 60 * 60 * 24 * 30; // Approssimazione di un mese in millisecondi
-
+					case "1A":
 					// Loop attraverso gli ultimi 12 mesi
-					for (let i = 11; i >= 0; i--) {
+					for (let i = 0; i < 12; i++) {
 						const currentDate = new Date();
-						const endDate = new Date(currentDate.getTime() - i * oneMonth); // Data corrente meno i mesi necessari per ottenere una data precedente di i mesi
-						const startDate = new Date(endDate); // Inizio del mese
-						startDate.setDate(1); // Impostazione del giorno al primo del mese
+						const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i + 1, 0); // Ultimo giorno del mese di i mesi fa
+						const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1); // Primo giorno del mese
 
 						// Formattazione della data nel formato "MM/YY"
 						const formattedStartDate = `${('0' + (startDate.getMonth() + 1)).slice(-2)}/${String(startDate.getFullYear()).slice(-2)}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
-											SELECT SUM(quantita) AS vendite
-											FROM prodotti_ordini
-											WHERE id_ordine IN (
-												SELECT id
-												FROM ordini
-												WHERE id_mensa = ${id_mensa}
-												AND DATE(data) >= '${startDate.toISOString().split("T")[0]}'
-												AND DATE(data) < '${endDate.toISOString().split("T")[0]}'
-												AND stato_ordine = 'completato'
-											)
-										`;
+								SELECT SUM(quantita) AS vendite
+								FROM prodotti_ordini
+								WHERE id_ordine IN (
+									SELECT id
+									FROM ordini
+									WHERE id_mensa = ${id_mensa}
+									AND DATE(data) >= '${startDate.toISOString().split("T")[0]}'
+									AND DATE(data) <= '${endDate.toISOString().split("T")[0]}'
+									AND stato_ordine = 'completato'
+								)
+							`;
 
 							connection.query(query, (err, result) => {
 								if (err) reject(err);
@@ -2049,7 +2048,7 @@ function sanitizeRequestBody(reqBody) {
 	return sanitizedBody;
 }
 
-const port = 80;
+const port = 6969;
 server.listen(port, () => {
 	console.log("http://menshub.it");
 });
