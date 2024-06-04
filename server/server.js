@@ -95,7 +95,7 @@ const reactRoutes = [
 	"/home",
 	"/cart",
 	"/profile",
-	"/profile/:page",
+	"/profile/cronologiaacquisti",
 	"/product/:id",
 	"/changepwd/:token",
 	"/confirm/email/:token",

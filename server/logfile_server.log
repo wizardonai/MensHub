@@ -1,0 +1,93 @@
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+Il file 8.JPG è stato eliminato con successo
+Il file 7.webp è stato eliminato con successo
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+File non trovato.
+Il file 13.jpg è stato eliminato con successo
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'root'@'localhost' (using password: NO)
+    at Handshake.Sequence._packetToError (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/sequences/Sequence.js:47:14)
+    at Handshake.ErrorPacket (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/sequences/Handshake.js:123:18)
+    at Protocol._parsePacket (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/Protocol.js:291:23)
+    at Parser._parsePacket (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/Parser.js:433:10)
+    at Parser.write (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/Parser.js:43:10)
+    at Protocol.write (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/Protocol.js:38:16)
+    at Socket.<anonymous> (/home/ubuntu/MensApp/server/node_modules/mysql/lib/Connection.js:88:28)
+    at Socket.<anonymous> (/home/ubuntu/MensApp/server/node_modules/mysql/lib/Connection.js:526:10)
+    at Socket.emit (events.js:314:20)
+    at addChunk (_stream_readable.js:297:12)
+    --------------------
+    at Protocol._enqueue (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/Protocol.js:144:48)
+    at Protocol.handshake (/home/ubuntu/MensApp/server/node_modules/mysql/lib/protocol/Protocol.js:51:23)
+    at Connection.connect (/home/ubuntu/MensApp/server/node_modules/mysql/lib/Connection.js:116:18)
+    at connetti (file:///home/ubuntu/MensApp/server/server.js:77:13)
+    at file:///home/ubuntu/MensApp/server/server.js:35:1
+    at ModuleJob.run (internal/modules/esm/module_job.js:145:37)
+    at async Loader.import (internal/modules/esm/loader.js:182:24)
+    at async Object.loadESM (internal/process/esm_loader.js:68:5) {
+  code: 'ER_ACCESS_DENIED_ERROR',
+  errno: 1045,
+  sqlMessage: "Access denied for user 'root'@'localhost' (using password: NO)",
+  sqlState: '28000',
+  fatal: true
+}
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
+http://menshub.it
+Connecting...
+Connected!
