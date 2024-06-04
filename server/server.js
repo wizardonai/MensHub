@@ -61,9 +61,9 @@ const transporter = nodemailer.createTransport({
 function connetti() {
 	connection = createConnection({
 		host: "localhost",
-		//user: "root",
+		// user: "root",
 		user: "menshub",
-		//password: "",
+		// password: "",
 		password: "Lucachingscu69#[!",
 	});
 	connection.connect(function (err) {
@@ -84,9 +84,11 @@ function connetti() {
 	});
 }
 
-server.use(cors({
-	origin: "http://127.0.0.1:80"
-}));
+server.use(
+	cors({
+		origin: "http://127.0.0.1:80",
+	})
+);
 server.use(json());
 server.use(express.json());
 server.use(urlencoded({ extended: false }));
@@ -134,8 +136,8 @@ server.post("/request/products", (req, res) => {
 
 						connection.query(
 							"SELECT * FROM prodotti where id_mensa=" +
-							idm_utente +
-							" ORDER BY nome",
+								idm_utente +
+								" ORDER BY nome",
 							(err, result) => {
 								if (err) {
 									res.send("Errore del database");
@@ -983,8 +985,8 @@ server.post("/producer/get/products", (req, res) => {
 			id_mensa = decoded.id_mensa;
 			connection.query(
 				"SELECT * FROM prodotti where id_mensa=" +
-				id_mensa +
-				" ORDER BY categoria, nome",
+					id_mensa +
+					" ORDER BY categoria, nome",
 				(err, result) => {
 					if (err) {
 						res.send("Errore del database");
@@ -1190,8 +1192,9 @@ server.post("/producer/get/stats", (req, res) => {
 						const currentDate = new Date();
 						const endDate = new Date(currentDate.getTime() - i * fourDays);
 						const startDate = new Date(endDate.getTime() - fourDays);
-						const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
-							}`;
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${
+							endDate.toISOString().split("T")[0]
+						}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
@@ -1243,8 +1246,9 @@ server.post("/producer/get/stats", (req, res) => {
 						const currentDate = new Date();
 						const endDate = new Date(currentDate.getTime() - i * twoWeeks);
 						const startDate = new Date(endDate.getTime() - twoWeeks);
-						const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
-							}`;
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${
+							endDate.toISOString().split("T")[0]
+						}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
@@ -1295,8 +1299,9 @@ server.post("/producer/get/stats", (req, res) => {
 						const currentDate = new Date();
 						const endDate = new Date(currentDate.getTime() - i * threeWeeks); // Data corrente meno i giorni necessari per ottenere una data precedente di 3 settimane
 						const startDate = new Date(endDate.getTime() - threeWeeks); // 3 settimane prima della data di fine
-						const periodo = `${startDate.toISOString().split("T")[0]} - ${endDate.toISOString().split("T")[0]
-							}`;
+						const periodo = `${startDate.toISOString().split("T")[0]} - ${
+							endDate.toISOString().split("T")[0]
+						}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
@@ -1344,11 +1349,22 @@ server.post("/producer/get/stats", (req, res) => {
 					// Loop attraverso gli ultimi 12 mesi
 					for (let i = 0; i < 12; i++) {
 						const currentDate = new Date();
-						const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i + 1, 0); // Ultimo giorno del mese di i mesi fa
-						const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1); // Primo giorno del mese
+						const endDate = new Date(
+							currentDate.getFullYear(),
+							currentDate.getMonth() - i + 1,
+							0
+						); // Ultimo giorno del mese di i mesi fa
+						const startDate = new Date(
+							currentDate.getFullYear(),
+							currentDate.getMonth() - i,
+							1
+						); // Primo giorno del mese
 
 						// Formattazione della data nel formato "MM/YY"
-						const formattedStartDate = `${('0' + (startDate.getMonth() + 1)).slice(-2)}/${String(startDate.getFullYear()).slice(-2)}`;
+						const formattedStartDate = `${(
+							"0" +
+							(startDate.getMonth() + 1)
+						).slice(-2)}/${String(startDate.getFullYear()).slice(-2)}`;
 
 						const promise = new Promise((resolve, reject) => {
 							const query = `
@@ -1377,7 +1393,10 @@ server.post("/producer/get/stats", (req, res) => {
 					Promise.all(promises)
 						.then((results) => {
 							const ris = results.map(({ result, periodo }) => {
-								const vendite = result.length > 0 && result[0].vendite ? result[0].vendite : 0;
+								const vendite =
+									result.length > 0 && result[0].vendite
+										? result[0].vendite
+										: 0;
 								return { vendite: vendite, periodo: periodo };
 							});
 							const risInverted = ris.reverse(); // Inverti l'array

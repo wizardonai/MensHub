@@ -371,7 +371,10 @@ const PasswordDimenticata = ({
 							}
 							if (res === "Email inviata con successo")
 								toast.info("Email inviata! (controlla spam)");
-							else toast.error(res);
+							else {
+								toast.error(res);
+								setEmailInviata(false);
+							}
 						});
 					}}
 					className='w-1/2 rounded-3xl'
