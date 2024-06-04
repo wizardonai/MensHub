@@ -180,6 +180,8 @@ function App() {
 						setProducts={setProducts}
 						lunghezzaCarrello={lunghezzaCarrello}
 						setCarrello={setCarrello}
+						setChiestoProdotti={setChiestoProdotti}
+						setChiestoProfilo={setChiestoProfilo}
 					/>
 				),
 			},

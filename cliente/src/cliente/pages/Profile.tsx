@@ -34,12 +34,16 @@ const Popup = ({
 	setLoggato,
 	setDatiUtente,
 	setProducts,
+	setChiestoProdotti,
+	setChiestoProfilo,
 }: {
 	tipoPopup: string;
 	setTipoPopup: Function;
 	setLoggato: Function;
 	setDatiUtente: Function;
 	setProducts: Function;
+	setChiestoProdotti: Function;
+	setChiestoProfilo: Function;
 }) => {
 	const [pwd, setPwd] = useState("");
 	const [disabled, setDisabled] = useState(false);
@@ -70,6 +74,8 @@ const Popup = ({
 									localStorage.removeItem("token");
 									localStorage.setItem("login", '"?"');
 									setLoggato(false);
+									setChiestoProdotti(false);
+									setChiestoProfilo(false);
 									setDatiUtente({});
 									setProducts([]);
 								}}
@@ -361,6 +367,8 @@ const Profile = ({
 	setProducts,
 	lunghezzaCarrello,
 	setCarrello,
+	setChiestoProdotti,
+	setChiestoProfilo,
 }: {
 	setLoggato: Function;
 	datiUtente: typeProfilo;
@@ -368,6 +376,8 @@ const Profile = ({
 	setProducts: Function;
 	lunghezzaCarrello: number;
 	setCarrello: Function;
+	setChiestoProdotti: Function;
+	setChiestoProfilo: Function;
 }) => {
 	const [tipoPopup, setTipoPopup] = useState("");
 	const [mense, setMense] = useState([] as Array<mensa>);
@@ -436,6 +446,8 @@ const Profile = ({
 						setLoggato={setLoggato}
 						setProducts={setProducts}
 						setDatiUtente={setDatiUtente}
+						setChiestoProdotti={setChiestoProdotti}
+						setChiestoProfilo={setChiestoProfilo}
 					/>
 				</Container>
 				<Navbar page='profile' lunghezzaCarrello={lunghezzaCarrello} />
