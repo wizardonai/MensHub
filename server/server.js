@@ -1954,6 +1954,11 @@ server.post("/producer/delete/product", (req, res) => {
 	});
 });
 
+server.get("*", (req, res) => {
+	res.sendFile("404.html"), { root: path.join(__dirname, "./") };
+	res.end();
+});
+
 function renameImage(nome_file, id_prodotto, res) {
 	try {
 		const cartella = "../server/image/products";
